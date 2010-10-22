@@ -95,7 +95,6 @@
 			/CONTENT-TYPE "application/x-www-form-urlencoded"
 			/CONTENT-LENGTH "90"
 			/REMOTE_ADDR "193.247.78.6"
-			/REMOTE_HOST "host.domain.loc"
 		  }
 		}
 	}
@@ -114,7 +113,6 @@
 		"CONTENT-TYPE: application/x-www-form-urlencoded"
 		"CONTENT-LENGTH: 90"
 		"REMOTE_ADDR: 193.247.78.6"
-		"REMOTE_HOST: host.domain.loc"
 		""
 		"Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
 	}

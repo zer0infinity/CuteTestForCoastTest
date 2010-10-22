@@ -48,8 +48,8 @@ HTTPProcessorTest::~HTTPProcessorTest() {
 void HTTPProcessorTest::setUp() {
 	StartTrace(HTTPProcessorTest.setUp);
 
-	fArgTemplate["env"]["REMOTE_ADDR"] = "127.0.0.1";
-	fArgTemplate["env"]["HTTP_USER_AGENT"] = "Testframework";
+	fArgTemplate["env"]["header"]["REMOTE_ADDR"] = "127.0.0.1";
+	fArgTemplate["env"]["header"]["USER-AGENT"] = "Testframework";
 	fArgTemplate["query"]["adr"] = "127.0.0.2";
 	fArgTemplate["query"]["port"] = 2412;
 }
@@ -184,7 +184,7 @@ void HTTPProcessorTest::DoReadInputTest() {
 		result["FINXSCUSTNO"] = "CH10601";
 		assertAnyEqual(result, item);
 
-		t_assert(env.LookupPath(item, "header.REMOTE-ADDR"));
+		t_assert(env.LookupPath(item, "header.REMOTE_ADDR"));
 		assertEqual("localhost", item.AsCharPtr(""));
 
 		t_assert(env.LookupPath(item, "header.CONTENT-LENGTH"));
@@ -233,8 +233,6 @@ void HTTPProcessorTest::DoReadInputTest() {
 		t_assert(env.LookupPath(item, "header.CONTENT-LENGTH"));
 		assertEqual("148", item.AsCharPtr(""));
 
-		t_assert(env.LookupPath(item, "header.REMOTE-ADDR"));
-		assertEqual("128.34.125.23", item.AsCharPtr(""));
 		t_assert(env.LookupPath(item, "header.REMOTE_ADDR"));
 		assertEqual("128.34.125.23", item.AsCharPtr(""));
 		t_assert(env.LookupPath(item, "header.HTTPS"));

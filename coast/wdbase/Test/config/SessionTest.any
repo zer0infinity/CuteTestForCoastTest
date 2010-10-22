@@ -52,8 +52,10 @@
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
@@ -63,26 +65,34 @@
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/ExpectedResult	1
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	*
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	*
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/ExpectedResult	0
 		}
@@ -90,80 +100,104 @@
 			/Env
 			{
 				/InstableUserAgent	1
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	*
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	*
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/ExpectedResult	1
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		*
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		*
+				}
 			}
 			/ExpectedResult	0
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"new test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"new test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/ExpectedResult	0
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.2"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.2"
+				}
 			}
 			/ExpectedResult	0
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 				/InstableUserAgent	1
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"new test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"new test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 			}
 			/ExpectedResult	1
 		}
 		{
 			/Env
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.1"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.1"
+				}
 				/InstableRemoteAdress	1
 			}
 			/Session
 			{
-				/"HTTP_USER_AGENT"	"test agent"
-				/"REMOTE_ADDR"		"127.0.0.2"
+				/header {
+					/"USER-AGENT"	"test agent"
+					/"REMOTE_ADDR"		"127.0.0.2"
+				}
 			}
 			/ExpectedResult	1
 		}

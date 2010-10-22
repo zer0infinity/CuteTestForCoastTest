@@ -576,8 +576,8 @@ void SessionListManagerTest::SessionFactoryTest()
 {
 	StartTrace(SessionListManagerTest.SessionFactoryTest);
 	Anything args;
-	args["env"]["HTTP_USER_AGENT"] = "test agent";
-	args["env"]["REMOTE_ADDR"] = "127.0.0.1";
+	args["env"]["header"]["USER-AGENT"] = "test agent";
+	args["env"]["header"]["REMOTE_ADDR"] = "127.0.0.1";
 	Context ctx(args);
 	Session *s, *s1;
 	String sessionId("SessionFactoryTest");

@@ -44,8 +44,6 @@ protected:
 
 	//!set some client info needed for verification
 	virtual void SetWDClientInfo(Context &ctx);
-	//!parse the cookie string into an anything
-	virtual Anything ParseCookie(const String &line);
 
 	//!process the arguments and generate a reply
 	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);

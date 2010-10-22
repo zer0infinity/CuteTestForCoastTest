@@ -28,7 +28,10 @@
 	  /HACC_PORT "2352"
 	  /HTTP_REFERER "http://sentosa.ifa.ch/cgi-bin/wdgateway?port=1109&X=Base64:Qmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOhQhMyzUaDAUvrZZZ7G$9dW5zqf4oH$W8hKYzNG8HrCE1C$2xfY3Qq8Ox8iFSDaOtLN$5Y2iihX1HyJbkufuZRcSRFFTw05KE19HSPWaedivFmp6BUBrWaGVCikAjgdk8Qv54DgFwUtvQe55Vjmce8zg=="
 	  /HTTP_CONNECTION "Keep-Alive"
-	  /HTTP_USER_AGENT "Mozilla/4.51 [en] (WinNT; I)"
+	  /header {
+		  /USER-AGENT "Mozilla/4.51 [en] (WinNT; I)"
+		  /REMOTE_ADDR "193.247.78.80"
+	  }
 	  /HTTP_HOST "sentosa.ifa.ch"
 	  /HTTP_ACCEPT {
 		"image/gif"
@@ -48,7 +51,6 @@
 	  /SERVER_NAME "sentosa.ifa.ch"
 	  /SERVER_PORT "80"
 	  /REMOTE_HOST "krm.ifa.ch"
-	  /REMOTE_ADDR "193.247.78.80"
 	  /DOCUMENT_ROOT "/pc23/htdocs"
 	  /SERVER_ADMIN "rueedi@ifa.ch"
 	  /SCRIPT_FILENAME "/pc23/htdocs/cgi-bin/wdgateway"

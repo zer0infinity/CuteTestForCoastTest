@@ -15,15 +15,19 @@
 
 	/DefaultRequest {
 		/env {
-			/REMOTE_ADDR 		"dummy"
-			/HTTP_USER_AGENT	"dummy"
+			/header {
+				/REMOTE_ADDR 		"dummy"
+				/USER-AGENT	"dummy"
+			}
 		}
 		/query *
 	}
  	/BadLoginRequest {
 		/env {
-			/REMOTE_ADDR 		"dummy"
-			/HTTP_USER_AGENT	"dummy"
+			/header {
+				/REMOTE_ADDR 		"dummy"
+				/USER-AGENT	"dummy"
+			}
 		}
 		/query {
 			/action		"LoginAction"
@@ -32,8 +36,10 @@
 	}
  	/GoodLoginRequest {
 		/env {
-			/REMOTE_ADDR 		"dummy"
-			/HTTP_USER_AGENT	"dummy"
+			/header {
+				/REMOTE_ADDR 		"dummy"
+				/USER-AGENT	"dummy"
+			}
 		}
 		/query {
 			/action		"LoginAction"
@@ -42,8 +48,10 @@
 	}
  	/CustomerRequest2 {
 		/env {
-			/REMOTE_ADDR 		"dummy"
-			/HTTP_USER_AGENT	"dummy"
+			/header {
+				/REMOTE_ADDR 		"dummy"
+				/USER-AGENT	"dummy"
+			}
 		}
 		/query {
 			/action		"GoCustomer2Action"
@@ -51,8 +59,10 @@
 	}
  	/LogoutRequest {
 		/env {
-			/REMOTE_ADDR 		"dummy"
-			/HTTP_USER_AGENT	"dummy"
+			/header {
+				/REMOTE_ADDR 		"dummy"
+				/USER-AGENT	"dummy"
+			}
 		}
 		/query {
 			/action		"Logout"

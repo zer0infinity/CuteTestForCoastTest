@@ -30,6 +30,7 @@ void HTTPProcessor::Init(Server *server) {
 void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
+	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 
 	Anything anyProcessorName = GetName();
 	Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyProcessorName, "RequestProcessor");
@@ -37,12 +38,11 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	MIMEHeader header;
 	HTTPRequestReader reader(this, header);
 	{
-		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request", ctx);
+		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
 		if (! reader.ReadRequest(ctx, Ios, ctx.GetRequest()["ClientInfo"]) ) {
 			return;    // this was an error that forbids to process any further
 		}
 	}
-	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 	Anything request(reader.GetRequest());
 
 	Anything args(ctx.GetRequest());
@@ -52,8 +52,10 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 
 	// prepare the environment for the framework
 	SetWDClientInfo(ctx);
-	ReadRequestBody(Ios, request, header, ctx);
-
+	{
+		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request body", ctx);
+		ReadRequestBody(Ios, request, header, ctx);
+	}
 	SubTraceAny(request, request, "Arguments:");
 }
 
@@ -87,32 +89,6 @@ void HTTPProcessor::SetWDClientInfo(Context &ctx)
 	for (long i = 0; i < sz; ++i) {
 		args["env"]["header"][args["ClientInfo"].SlotName(i)] = args["ClientInfo"][i];
 	}
-	args["env"]["header"]["REMOTE-ADDR"] = args["ClientInfo"]["REMOTE_ADDR"].AsCharPtr("localhost");
-	args["env"]["header"]["HTTPS"] = args["ClientInfo"]["HTTPS"].AsBool(false);
-}
-
-Anything HTTPProcessor::ParseCookie(const String &line)
-{
-	StartTrace(HTTPProcessor.ParseCookie);
-	Trace("Line: " << line);
-
-	Anything cookies;
-	StringTokenizer st(line, ';');
-	String key, cookieVal;
-
-	while (st.NextToken(cookieVal)) {
-		Trace("CookieVal: <" << cookieVal << ">[" << cookieVal.Length() << "]");
-		// remove leading blanks
-		if ( cookieVal.Length() ) {
-			while ( (' ' == cookieVal[0L]) && cookieVal.Length() ) {
-				cookieVal.TrimFront(1);
-			}
-
-			URLUtils::Pair(cookieVal, '=', cookies);
-		}
-	}
-	TraceAny(cookies, "cookies: ");
-	return cookies;
 }
 
 void HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)

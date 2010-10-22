@@ -25,71 +25,68 @@ class EXPORTDECL_RENDERER RowAccessor
 	// CAUTION: objects of this class are used as a better struct..
 	// they are not initialized properly (using a constructor),
 public:
-	RowAccessor() {};
-	~RowAccessor() {};
-
 	void Init(Allocator *a);
 
 	// accessors
-	void SetConfig(Anything &config)			{
+	void SetConfig(Anything &config) {
 		fConfig = config;
 	}
-	const ROAnything GetConfig()	const		{
+	const ROAnything GetConfig() const {
 		return ROAnything(fConfig);
 	}
 
-	void SetFormat( Anything &format)			{
+	void SetFormat(Anything &format) {
 		fFormat = format;
 	}
-	const ROAnything GetFormat()	const		{
+	const ROAnything GetFormat() const {
 		return fFormat;
 	}
 
-	void SetNewlineOn() 						{
+	void SetNewlineOn() {
 		fInsertNewline = true;
 	}
-	bool GetNewline()							{
+	bool GetNewline() {
 		return fInsertNewline;
 	}
 
-	void SetBoldOn() 							{
+	void SetBoldOn() {
 		fIsBold = true;
 	}
-	bool IsBold()								{
+	bool IsBold() {
 		return fIsBold;
 	}
 
-	void SetTeletypeOn() 						{
+	void SetTeletypeOn() {
 		fIsTeletype = true;
 	}
-	bool IsTeletype()							{
+	bool IsTeletype() {
 		return fIsTeletype;
 	}
 
-	void SetFontOptions(String &options) 		{
+	void SetFontOptions(String &options) {
 		fFontOptions = options;
 	}
-	const String &GetFontOptions() const		{
+	const String &GetFontOptions() const {
 		return fFontOptions;
 	}
 
-	void SetRenderer(Renderer *r) 				{
+	void SetRenderer(Renderer *r) {
 		fRenderer = r;
 	}
-	Renderer *GetRenderer() const				{
+	Renderer *GetRenderer() const {
 		return fRenderer;
 	}
 
 	RowAccessor &operator=(const RowAccessor &aka);
 
-	static void *operator new[](size_t size, Allocator *a) throw();
+	static void *operator new[](size_t size, Allocator *a) throw ();
 	static void operator delete[](void *ptr);
 
 protected:
-	const Anything GetIntConfig()	const				{
+	const Anything GetIntConfig() const {
 		return fConfig;
 	}
-	const Anything GetIntFormat()	const				{
+	const Anything GetIntFormat() const {
 		return fFormat;
 	}
 private:
@@ -158,35 +155,32 @@ bool BasicTableRenderer::DoHandleAdditionalRenderers(ROAnything &, ROAnything &,
 	return false;
 }
 
-bool BasicTableRenderer::CanUseInvertedHeaders(Context &c)
+bool BasicTableRenderer::CanUseInvertedHeaders(Context &ctx)
 {
 	// old Netscape 2 browsers do not support background colors in tables
 	// ...inverted headers are then invisible!
-	bool invertHeaders = (c.Lookup("UseBgColors", 1L) != 0);	// default is 'on'
+	bool invertHeaders = (ctx.Lookup("UseBgColors", 1L) != 0);	// default is 'on'
 
-	Anything env(c.GetEnvStore());
-
-	String clientBrowser(env["HTTP_USER_AGENT"].AsString(""));
-	if ( clientBrowser.Contains("Mozilla/2") >= 0) { // problem with R3 SSL ???
+	String clientBrowser = ctx.Lookup("header.USER-AGENT", "");
+	if ( clientBrowser.Contains("Mozilla/2") >= 0) {
 		invertHeaders = false;
 	}
-
 	return invertHeaders;
 }
 
-void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
+void BasicTableRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
-	MethodTimer(BasicTableRenderer.RenderAll, "", c); 		// support for timing
+	MethodTimer(BasicTableRenderer.RenderAll, "", ctx); 		// support for timing
 	StartTrace(BasicTableRenderer.Render);
 	TraceAny(config, "config");
 
-	bool invertHeaders = CanUseInvertedHeaders(c);
+	bool invertHeaders = CanUseInvertedHeaders(ctx);
 
 	Anything reportData;
 
 	long idx = config.FindIndex("DataSource");
 	if (idx >= 0) {
-		Anything tmpStore = c.GetTmpStore();
+		Anything tmpStore = ctx.GetTmpStore();
 		const char *slot = config[idx].AsCharPtr("foo");
 
 		if (!tmpStore.LookupPath(reportData, slot)) {
@@ -202,7 +196,7 @@ void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnyt
 	reply << "<TABLE";
 	ROAnything format, f;
 	if (config.LookupPath(f, "FormatTable")) {
-		format = GetFormat(config, c, f.AsCharPtr(""), "TableFormats", "GlobalTableFormats");
+		format = GetFormat(config, ctx, f.AsCharPtr(""), "TableFormats", "GlobalTableFormats");
 		ROAnything outerOptions;
 		if (format.LookupPath(outerOptions, "OuterTableOptions")) {
 			reply << " " << outerOptions.AsString();
@@ -215,7 +209,7 @@ void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnyt
 	reply << "<TABLE";
 
 	if (format.IsDefined("Options")) {	// options for inner table
-		PrintOptions3(reply, c, format);
+		PrintOptions3(reply, ctx, format);
 	}
 
 	if (invertHeaders) {
@@ -241,8 +235,8 @@ void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnyt
 			ROAnything dummy;		// colors
 
 			long rowSize = 0;
-			RowAccessor *accessors = SetupRowAccessors(config, c, repHeader, &rowSize, true, invertHeaders);
-			PrintRow(row, reply, c, accessors, rowSize, dummy, invertHeaders);
+			RowAccessor *accessors = SetupRowAccessors(config, ctx, repHeader, &rowSize, true, invertHeaders);
+			PrintRow(row, reply, ctx, accessors, rowSize, dummy, invertHeaders);
 
 			CleanupRowAccessors(accessors, rowSize);
 		}
@@ -258,7 +252,7 @@ void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnyt
 					if (sectionConfig.LookupPath(key, "DataSource")) {
 						Anything data;
 						if (reportData.LookupPath(data, key.AsCharPtr())) {
-							PrintBodySection(config, row, reply, c, sectionConfig, data);
+							PrintBodySection(config, row, reply, ctx, sectionConfig, data);
 
 						} else {
 							String msg("BasicTableRenderer: no data was found for table section");
@@ -277,23 +271,23 @@ void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnyt
 	reply << "</TABLE>\n</TD></TR>\n</TABLE>\n";
 }
 
-void BasicTableRenderer::DoPrintEmptySection(std::ostream &reply, Context &c,
+void BasicTableRenderer::DoPrintEmptySection(std::ostream &reply, Context &ctx,
 		const ROAnything &config, const ROAnything &sectionConfig,  int &row)
 {
 }
 
 void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, std::ostream &reply,
-		Context &c, const ROAnything &sectionConfig, const Anything &sectionData)
+		Context &ctx, const ROAnything &sectionConfig, const Anything &sectionData)
 {
 	// a table may consist of several sections: these individual sections
 	// are composed of structurally similar rows
 
-	Anything tmpStore = c.GetTmpStore();
+	Anything tmpStore = ctx.GetTmpStore();
 
 	// determine format for this row (bg color & use bold font?)
 	ROAnything rowFmt, f;
 	if (sectionConfig.LookupPath(f, "FormatRow")) {
-		rowFmt = GetFormat(config, c, f.AsCharPtr(""), "RowFormats", "GlobalTableRowFormats");
+		rowFmt = GetFormat(config, ctx, f.AsCharPtr(""), "RowFormats", "GlobalTableRowFormats");
 	}
 
 	ROAnything rowColors;
@@ -315,7 +309,7 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, st
 	}
 
 	if (!dataSize) {
-		DoPrintEmptySection(reply, c, config, sectionConfig, row);
+		DoPrintEmptySection(reply, ctx, config, sectionConfig, row);
 	} else {
 		long rowSize = 0;		// number of columns
 
@@ -324,7 +318,7 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, st
 		if (sectionConfig.LookupPath(itemConfigs, "Items")) {
 
 			RowAccessor *accessors =
-				SetupRowAccessors(config, c, itemConfigs, &rowSize, isBold, true);
+				SetupRowAccessors(config, ctx, itemConfigs, &rowSize, isBold, true);
 
 			for (long i = 0; i < dataSize; ++i) {
 				// 'sectionData' is expected to either contain an array
@@ -345,14 +339,14 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, st
 
 				tmpStore["RowIndex"] = i;
 
-				PrintRow(row, reply, c, accessors, rowSize, rowColors);
+				PrintRow(row, reply, ctx, accessors, rowSize, rowColors);
 			}
 			CleanupRowAccessors(accessors, rowSize);
 		}
 	}
 }
 
-RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Context &c,
+RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Context &ctx,
 		const ROAnything &rowMeta, long *rowSize, bool isBold, bool invertHeaders)
 {
 	// build cache for faster access to structurally identical rows
@@ -366,7 +360,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 		ROAnything elmt = rowMeta[i];				// meta for one element
 		ROAnything fmt, f;
 		if (elmt.LookupPath(f, "FormatCell")) {
-			fmt = GetFormat(conf, c, f.AsCharPtr(""), "CellFormats", "GlobalTableCellFormats");
+			fmt = GetFormat(conf, ctx, f.AsCharPtr(""), "CellFormats", "GlobalTableCellFormats");
 		}
 
 		RowAccessor &accessor = accessors[i];
@@ -483,7 +477,7 @@ void BasicTableRenderer::CleanupRowAccessors(RowAccessor *accessors, long size)
 	}
 }
 
-void BasicTableRenderer::PrintRow(int &row, std::ostream &reply, Context &c,
+void BasicTableRenderer::PrintRow(int &row, std::ostream &reply, Context &ctx,
 								  RowAccessor *accessors, long rowSize, ROAnything &rowColors, bool invertHeaders)
 {
 	PrintNewLine(row, reply, rowColors, invertHeaders);
@@ -511,7 +505,7 @@ void BasicTableRenderer::PrintRow(int &row, std::ostream &reply, Context &c,
 			reply << fontOptions;
 		}
 
-		PrintElement(reply, c, accessors[i]);						// render element
+		PrintElement(reply, ctx, accessors[i]);						// render element
 
 		if (fontOptions.Length()) {							// end font tag
 			reply << ("</FONT>");
@@ -530,15 +524,15 @@ void BasicTableRenderer::PrintRow(int &row, std::ostream &reply, Context &c,
 	reply << "</TR>\n";
 }
 
-void BasicTableRenderer::PrintElement(std::ostream &reply, Context &c, RowAccessor &accessor)
+void BasicTableRenderer::PrintElement(std::ostream &reply, Context &ctx, RowAccessor &accessor)
 {
 	Renderer *r = accessor.GetRenderer();
 
 	if (r) {
-		r->RenderAll(reply, c, accessor.GetConfig());
+		r->RenderAll(reply, ctx, accessor.GetConfig());
 	} else {
 		// e.g. simple strings
-		Render(reply, c, accessor.GetConfig());	// lookup
+		Render(reply, ctx, accessor.GetConfig());	// lookup
 	}
 }
 
@@ -556,7 +550,7 @@ void BasicTableRenderer::PrintNewLine(int &row, std::ostream &reply, ROAnything 
 	}
 }
 
-ROAnything BasicTableRenderer::GetFormat(const ROAnything &config, Context &c,
+ROAnything BasicTableRenderer::GetFormat(const ROAnything &config, Context &ctx,
 		const char *fmtName, const char *cfgSlot, const char *dftSlot)
 {
 	// determine format to be used for rows (bg colors & bold)
@@ -568,7 +562,7 @@ ROAnything BasicTableRenderer::GetFormat(const ROAnything &config, Context &c,
 	}
 
 	// check global settings
-	rowFmt = c.Lookup(dftSlot);
+	rowFmt = ctx.Lookup(dftSlot);
 	if (rowFmt.LookupPath(fmt, fmtName))
 		;
 
@@ -589,7 +583,7 @@ RegisterRenderer(SequenceRenderer);
 
 SequenceRenderer::SequenceRenderer(const char *name) : Renderer(name) {}
 
-void SequenceRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
+void SequenceRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
-	Renderer::Render(reply, c, config);
+	Renderer::Render(reply, ctx, config);
 }

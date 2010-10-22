@@ -80,8 +80,7 @@ void FormRendererTest::ConfigureField6()
 
 	fEnvironment["ACCEPT-LANGUAGE"]		= "language";
 	fEnvironment["SCRIPT_NAME"]					= "script";
-	fEnvironment["HTTP_USER_AGENT"]				= "agent";
-	fEnvironment["HTTP_USER_AGENT"]["R3SSL"]	= "r3ssl";
+	fEnvironment["header"]["USER-AGENT"]				= "agent";
 
 	Anything tmpStore = fContext.GetTmpStore();
 //	tmpStore["UseBaseURL"] = 123;					// es muss eine Zahl sein sonst wird UseBaseURL ignoriert

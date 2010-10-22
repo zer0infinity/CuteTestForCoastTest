@@ -93,8 +93,8 @@ void Session::Init(const char *id, Context &ctx)
 	// extract some information from environment
 	// for verification purposes
 	Anything env(ctx.GetEnvStore());
-	fRemoteAddr = env["REMOTE_ADDR"].AsCharPtr("");
-	fBrowser = env["HTTP_USER_AGENT"].AsCharPtr("");
+	fRemoteAddr = ctx.Lookup("header.REMOTE_ADDR", "");
+	fBrowser = ctx.Lookup("header.USER-AGENT", "");
 
 	// extract some information from query arguments
 	Anything query(ctx.GetQuery());
@@ -379,10 +379,11 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 namespace {
 	bool CheckHeader(Context &ctx, const String &hdrSlot, const String &expValue, const String &turnOffSlot, String &reason)
 	{
+		StartTrace1(Session.CheckHeader, "looking up [" << hdrSlot << "]");
 		reason.Trim(0);
-		ROAnything env(ctx.GetEnvStore());
-		String currValue(env[hdrSlot].AsString(""));
-		if ((expValue != currValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
+		String currValue = ctx.Lookup(hdrSlot).AsString();
+		Trace("expected [" << expValue << "] current [" << currValue << "]");
+		if ( !currValue.IsEqual(expValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
 			if (currValue.Length() == 0) {
 				reason << " Requests " << hdrSlot << " info is null";
 			} else {
@@ -396,6 +397,7 @@ namespace {
 
 bool Session::Verify(Context &ctx)
 {
+	StartTrace(Session.Verify);
 	TRACE_LOCK_START("Verify");
 	LockUnlockEntry mutex(fMutex);
 	Anything env(ctx.GetEnvStore());
@@ -411,11 +413,11 @@ bool Session::Verify(Context &ctx)
 	ResetAccessTime();
 
 	String reason;
-	if (!CheckHeader(ctx, "REMOTE_ADDR", fRemoteAddr, "InstableRemoteAdress", reason)) {
+	if (!CheckHeader(ctx, "header.REMOTE_ADDR", fRemoteAddr, "InstableRemoteAdress", reason)) {
 		SystemLog::Info(reason);
 		return false;
 	}
-	if (!CheckHeader(ctx, "HTTP_USER_AGENT", fBrowser, "InstableUserAgent", reason)) {
+	if (!CheckHeader(ctx, "header.USER-AGENT", fBrowser, "InstableUserAgent", reason)) {
 		SystemLog::Info(reason);
 		return false;
 	}

@@ -88,7 +88,7 @@ void URLRendererTest::BaseR3SSL()
 	BaseURLRenderer baseUrlRenderer("TestBaseURLRenderer");
 	Anything env, dummy;
 
-	env["HTTP_USER_AGENT"] = "R3SSLV2.0";		// need this in env
+	env["header"]["USER-AGENT"] = "R3SSLV2.0";		// need this in env
 	Context context(env, dummy, 0, 0, 0, 0);
 	// therefore I generate my own context
 
@@ -108,7 +108,7 @@ void URLRendererTest::IntraPage()
 {
 	Anything env, dummy;
 
-	env["HTTP_USER_AGENT"] = "R3SSLV2.0";		// obsoleted
+	env["header"]["USER-AGENT"] = "R3SSLV2.0";		// obsoleted
 	Context context(env, dummy, 0, 0, 0, 0);
 	// therefore I generate my own context
 

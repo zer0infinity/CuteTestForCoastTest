@@ -92,8 +92,8 @@ void SessionTest::SetGetRole ()
 
 void MakeDummyArg(Anything &arg)
 {
-	arg["env"]["REMOTE_ADDR"] = "127.0.0.1";
-	arg["env"]["HTTP_USER_AGENT"] = "Testframework";
+	arg["env"]["header"]["REMOTE_ADDR"] = "127.0.0.1";
+	arg["env"]["header"]["USER-AGENT"] = "Testframework";
 	arg["query"]["adr"] = "127.0.0.2";
 	arg["query"]["port"] = 2412;
 }
@@ -298,21 +298,18 @@ void SessionTest::UseSessionStoreTest()
 void SessionTest::VerifyTest()
 {
 	StartTrace(SessionTest.VerifyTest);
-
-	Context theCtx;
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(cConfig) ) {
+	while (aEntryIterator.Next(cConfig)) {
 		Session s("TestSession");
-		{
-			Anything args;
-			args["env"] = cConfig["Session"].DeepClone();
-			Context ctx(args);
-			s.Init("TestSession", ctx);
-			ctx.GetEnvStore() = cConfig["Env"].DeepClone();
-			ctx.Push(&s);
-			t_assertm(cConfig["ExpectedResult"].AsBool() == s.Verify(ctx), "expected verification to fail");
-		}
+		Anything args;
+		args["env"] = cConfig["Session"].DeepClone();
+		Context ctx(args);
+		s.Init("TestSession", ctx);
+		TraceAny(ctx.GetEnvStore(), "env Store before");
+		ctx.GetEnvStore() = cConfig["Env"].DeepClone();
+		ctx.Push(&s);
+		assertComparem(cConfig["ExpectedResult"].AsBool(), equal_to, s.Verify(ctx), TString("expected verification to fail at idx:") << aEntryIterator.Index());
 	}
 }
 

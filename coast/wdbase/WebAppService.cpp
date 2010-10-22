@@ -66,43 +66,22 @@ void WebAppService::PrepareRequest(Context &ctx)
 	if ( request.LookupPath(anyValue, "header.COOKIE") ) {
 		request["WDCookies"] = anyValue;
 	}
-	if ( request.LookupPath(anyValue, "header.REMOTE-ADDR") ) {
-		request["REMOTE_ADDR"] = anyValue;
-	}
-	if ( request.LookupPath(anyValue, "header.USER-AGENT") ) {
-		request["HTTP_USER_AGENT"] = anyValue;
-	}
 }
 
 bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
 {
-	Anything args(ctx.GetRequest());
-	if (args.IsNull()) {
-		SystemLog::Info("got no args from Coast");
+	if ( ctx.GetRequest().IsNull() ) {
+		SystemLog::Info("got no valid request");
 		return false;
 	}
-
-	// do we got an environment record?
-	Anything env;
-	if (!args.LookupPath(env, "env") || env.IsNull()) {
-		SystemLog::Info("malformed request");
+	if ( ctx.GetEnvStore().IsNull() ) {
+		SystemLog::Info("got no valid env from request");
 		return false;
 	}
-
-	// first sanity check
-	// do we have the REMOTE_ADDR
-	const char *remoteAddr = 0;
-	Anything raddr;
-
-	if (env.LookupPath(raddr, "REMOTE_ADDR") || env.LookupPath(raddr, "header.REMOTE-ADDR")) {
-		remoteAddr = raddr.AsCharPtr(0);
-	}
-
-	if (!remoteAddr) {
-		SystemLog::Info("request doesn't contain REMOTE_ADDR field");
+	if ( ctx.Lookup("header.REMOTE_ADDR").IsNull() ) {
+		SystemLog::Info("request doesn't contain header.REMOTE_ADDR field");
 		return false;
 	}
-
 	return true;
 }
 

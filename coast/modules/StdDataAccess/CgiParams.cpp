@@ -113,7 +113,7 @@ void CgiParams::SynthesizeMinimalCGIEnvironment(Anything &env, Context &ctx)
 	Get("FileName", name, ctx);
 	env["SCRIPT_NAME"] = name;
 	env["QUERY_STRING"] = ctx.Lookup("QUERY_STRING", "");
-	env["REMOTE_ADDR"] = ctx.Lookup("REMOTE_ADDR", "unkown");
+	env["header"]["REMOTE_ADDR"] = ctx.Lookup("header.REMOTE_ADDR", "unkown");
 
 	TraceAny(env, "environment set");
 }
