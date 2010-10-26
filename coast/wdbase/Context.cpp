@@ -33,13 +33,13 @@ const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -
 Context::Context() :
 	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
 			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(0),
-			fMockStream(0), fCopySessionStore(false) {
+			fCopySessionStore(false) {
 	InitTmpStore();
 }
 
 Context::Context(Anything &request) :
 	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(request), fSocket(0), fMockStream(0),
+			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(request), fSocket(0),
 			fCopySessionStore(false) {
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
@@ -48,20 +48,11 @@ Context::Context(Anything &request) :
 Context::Context(Socket *socket) :
 	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
 			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(
-			socket), fMockStream(0), fCopySessionStore(false) {
+			socket), fCopySessionStore(false) {
 	// the arguments we get for this request
 	if (fSocket) {
 		fRequest["ClientInfo"] = fSocket->ClientInfo();
 	}
-	InitTmpStore();
-	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
-}
-
-Context::Context(std::iostream *stream) :
-	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(0),
-			fMockStream(stream), fCopySessionStore(false) {
-	// the arguments we get for this request
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
@@ -71,7 +62,7 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 			// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
 			// while InitSession handels the refcounting correctly.
 			fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-					Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fSocket(0), fMockStream(0),
+					Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fSocket(0),
 			fCopySessionStore(false) {
 	InitSession(s);
 	InitTmpStore();
@@ -571,7 +562,7 @@ Socket *Context::GetSocket() {
 }
 
 std::iostream *Context::GetStream() {
-	return (fSocket) ? fSocket->GetStream() : fMockStream;
+	return fSocket ? fSocket->GetStream() : 0;
 }
 
 long Context::GetReadCount() {

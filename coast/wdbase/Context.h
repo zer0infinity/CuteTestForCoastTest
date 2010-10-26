@@ -31,10 +31,6 @@ public:
 	//! Socket * constructor needed by HandleRequest
 	Context(Socket *);
 
-	/*! Constructor of Context used for TestCases
-		\param ios stream for mocking up socket in tests */
-	Context(std::iostream *ios);
-
 	//! constructor with request anything that contains all information of the request
 	Context(Anything &request);
 
@@ -124,8 +120,8 @@ public:
 		\return Socket object if set; otherwise null */
 	Socket *GetSocket();
 
-	/*! Access to iostream based on socket or fMockStream for tests
-		\return iostream pointer if available or fMockStream */
+	/*! Access to iostream based on socket
+		\return iostream pointer if available or 0 */
 	std::iostream *GetStream();
 
 	/*! Get read count on internal socket if any
@@ -368,9 +364,6 @@ protected:
 
 	//! the requests socket if any
 	Socket *fSocket;
-
-	//! mock of fSocket stream
-	std::iostream *fMockStream;
 
 	/*! if set, make a copy of the session store. This allows concurrent requests using the same session because lookups targeting the session store don't need a lock. */
 	bool fCopySessionStore;
