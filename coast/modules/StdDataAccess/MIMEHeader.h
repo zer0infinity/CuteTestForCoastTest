@@ -74,7 +74,7 @@ public:
 	bool ConsumeEOL(std::istream &in) const;
 
 	// get name of header field and return the index where the delimiting ":" was found in the string
-	long GetNormalizedFieldName(String &line, String &fieldname);
+	long GetNormalizedFieldName(String &line, String &fieldname) const;
 
 	// Detect headers with suspicious content
 	bool AreSuspiciousHeadersPresent() const;
@@ -89,7 +89,7 @@ protected:
 	bool ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields);
 
 	//!split ';' seperated list of key=value pairs into anything
-	Anything SplitLine(const String &line, URLUtils::NormalizeTag shift = URLUtils::eUpshift);
+	Anything SplitLine(const String &line, URLUtils::NormalizeTag shift = URLUtils::eUpshift) const;
 
 	//!find out about a multipart/form-data
 	void CheckMultipartBoundary(const String &contenttype);
@@ -99,7 +99,7 @@ protected:
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
 	// determine the processing mode depending on the config passed to MIMEHeader and the header field name
-	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase);
+	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase) const;
 
 	// Check headerfield value for POST or GET content
 	bool CheckValues(String const& value);

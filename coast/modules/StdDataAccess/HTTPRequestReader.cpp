@@ -24,36 +24,31 @@ HTTPRequestReader::HTTPRequestReader(RequestProcessor *p, MIMEHeader &header)
 	StartTrace(HTTPRequestReader.HTTPRequestReader);
 }
 
-bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, String &line, bool &hadError)
+bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line)
 {
 	StartTrace(HTTPRequestReader.ReadLine);
 	char c;
 	const char eol = '\n';
 	line.Trim(0L);
-	hadError = false;
-	long counter = 0;
-	long maxLineSz = ctx.Lookup("LineSizeLimit", 4096L);
-	Trace("======================= reading line ==================");
-	while ( Ios.get(c).good() /* && !hadError */ ) {
-		// read in characterwise
+	long lineSize = 0;
+	// read in characterwise
+	while ( Ios.get(c).good() ) {
 		line.Append(c);
-		++counter;
-		// error handling
-		if ( ((counter > maxLineSz)) && !CheckReqLineSize(ctx, Ios, line.Length(), line)) {
-			Trace("Error in read line '" << line << "'");
-			hadError = true;
+		++lineSize;
+		++fRequestBufferSize;
+		if ( lineSize > maxLineSz ) {
+			String msg;
+			msg << "LineSizeLimitExceeded: Request line too Large : [" << lineSize << "] (max " << maxLineSz << ")";
+			Trace(msg);
+			DoHandleError(ctx, Ios, 413, msg, line);
 			return false;
 		}
-
-		if ( line == ENDL || c == eol ) {
-			fRequestBufferSize += counter;
-			Trace("fRequestBufferSize:" << fRequestBufferSize << ", maxReqSz:" << ctx.Lookup("RequestSizeLimit", 5120L));
-			bool ret = CheckReqBufferSize(ctx, Ios, fRequestBufferSize, line);
-			hadError = !ret;
-			return ret;
+		if ( line.IsEqual(ENDL) || c == eol ) {
+			return true;
 		}
 	}
-	return false;
+	// be nice and allow empty lines here - let MIMEHeader decide about validity
+	return true;
 }
 
 bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
@@ -63,22 +58,20 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 	Anything anyProcessorName = fProc->GetName();
 	Context::PushPopEntry<Anything> aRPEntry(ctx, "AssignedRequestProcessorName", anyProcessorName, "RequestProcessor");
 
-	String line(ctx.Lookup("LineSizeLimit", 4096L));
-	Trace("======================= reading request ==================");
-	bool hadError = false;
-	if ( !ReadLine(ctx, Ios, line, hadError) ) return false;
+	long const maxLineSz = ctx.Lookup("LineSizeLimit", 4096L);
+	long const maxReqSz = ctx.Lookup("RequestSizeLimit", 5120L);
+	String line(maxLineSz);
+	Trace("======================= reading request line ==================");
+	if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, Ios, maxReqSz, line) ) return false;
 	if ( !HandleFirstLine(ctx, Ios, line) ) return false;
 	Trace("First line: [" << line << "]");
+	Trace("======================= reading headers ==================");
 	bool ret = true;
-	bool doContinue = true;
-	while ( doContinue ) {
-		doContinue = ReadLine(ctx, Ios, line, hadError);
+	while ( true ) {
+		if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, Ios, maxReqSz, line) ) return false;
 		Trace("Next line: [" << line << "]");
-		if (hadError) {
-			return false;
-		}
-		// end of request
-		if (line == ENDL ) {
+		if ( line.Length() == 0L || line.IsEqual(ENDL) ) {
+			// end of request
 			break;
 		}
 		// handle request lines
@@ -100,26 +93,17 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 	return ret;
 }
 
-bool HTTPRequestReader::CheckReqLineSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line)
+bool HTTPRequestReader::RequestSizeLimitExceeded(Context &ctx, std::iostream &Ios, long const maxReqSz, const String &line)
 {
-	StartTrace(HTTPRequestReader.CheckReqLineSize);
-	if (lineLength > ctx.Lookup("LineSizeLimit", 4096L)) {
+	StartTrace1(HTTPRequestReader.RequestSizeLimitExceeded, "fRequestBufferSize:" << fRequestBufferSize << ", maxReqSz:" << maxReqSz);
+	if (fRequestBufferSize > maxReqSz) {
 		String msg;
-		msg << "CheckReqLineSize: Request line too Large : [" << lineLength << "] (max " << ctx.Lookup("LineSizeLimit", 4096L) << ")";
-		return DoHandleError(ctx, Ios, 413, msg, line);
+		msg << "RequestSizeLimitExceeded: Request too large : [" << fRequestBufferSize << "] (max " << maxReqSz << ")";
+		Trace(msg);
+		DoHandleError(ctx, Ios, 413, msg, line);
+		return true;
 	}
-	return true;
-}
-
-bool HTTPRequestReader::CheckReqBufferSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line)
-{
-	StartTrace(HTTPRequestReader.CheckReqBufferSize);
-	if (lineLength > ctx.Lookup("RequestSizeLimit", 5120L)) {
-		String msg;
-		msg << "CheckReqBufferSize: Request too large : [" << lineLength << "] (max " << ctx.Lookup("RequestSizeLimit", 5120L) << ")";
-		return DoHandleError(ctx, Ios, 413, msg, line);
-	}
-	return true;
+	return false;
 }
 
 bool HTTPRequestReader::CheckReqURISize(Context &ctx, std::iostream &Ios, long lineLength, const String &line)

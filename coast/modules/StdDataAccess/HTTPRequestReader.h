@@ -34,18 +34,15 @@ public:
 private:
 	//!read the one input line stream and check it against limits,
 	//! my generate an error reply in case of "attacks"
-	bool ReadLine(Context &ctx, std::iostream &Ios, String &line, bool &hadError);
+	bool ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line);
 	//!handle the the request line by line
 	bool ParseRequest(Context &ctx, std::iostream &Ios, String &line);
 
 	//!handle the first line of a request containing GET/POST
 	bool HandleFirstLine(Context &ctx, std::iostream &Ios, String &line);
 
-	//!check the length of the request, handle error if necessary
-	bool CheckReqLineSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line);
-
 	//!check the length of a single request line, handle error if necessary
-	bool CheckReqBufferSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line);
+	bool RequestSizeLimitExceeded(Context &ctx, std::iostream &Ios, long const maxReqSz, const String &line);
 
 	//!check the size of the request uri
 	bool CheckReqURISize(Context &ctx, std::iostream &Ios, long lineLength, const String &line);

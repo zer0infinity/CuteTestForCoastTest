@@ -26,9 +26,9 @@
 #include "AnyLookupInterfaceAdapter.h"
 
 namespace {
-	const String common = String() << "</head><body bgcolor=\"silver\">\n"
-			<< "<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
-			<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</center>\n</body></html>";
+	const String common = "</head><body bgcolor=\"silver\">\n"
+		"<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
+		"<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</center>\n</body></html>";
 }
 
 //---- HTTPProcessorTest ----------------------------------------------------------------
@@ -62,15 +62,15 @@ void HTTPProcessorTest::DoReadInputWithErrorTest() {
 
 	String
 			uri =
-					"GET /hallo123456 HTTP/1.0\r\n"
-						"Connection: Keep-Alive\r\n"
-						"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)\r\n"
-						"Host: sentosa.hsr.loc:1919\r\n"
-						"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\n"
-						"Accept-Encoding: gzip\r\n"
-						"Accept-Language: en\r\n"
-						"Accept-Charset: iso-8859-1,*,utf-8\r\n"
-						"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601\r\n";
+					"GET /hallo123456 HTTP/1.0" ENDL
+						"Connection: Keep-Alive" ENDL
+						"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" ENDL
+						"Host: sentosa.hsr.loc:1919" ENDL
+						"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" ENDL
+						"Accept-Encoding: gzip" ENDL
+						"Accept-Language: en" ENDL
+						"Accept-Charset: iso-8859-1,*,utf-8" ENDL
+						"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" ENDL ENDL;
 
 	Anything anyParams;
 	anyParams["RequestSizeLimit"] = 5120L;
@@ -81,8 +81,8 @@ void HTTPProcessorTest::DoReadInputWithErrorTest() {
 	anyTmpStore = DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 	assertCompare(true, equal_to, anyRequest.IsDefined("query"));
 
-	expected = String("") << "HTTP/1.1 414 Request-URL Too Large" << ENDL << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-			<< "<html><head>\n<title>414 Request-URL Too Large</title>\n" << common;
+	expected = "HTTP/1.1 414 Request-URL Too Large" ENDL "Connection: close" ENDL "content-type: text/html" ENDL ENDL "<html><head>\n<title>414 Request-URL Too Large</title>\n";
+	expected << common;
 
 	anyParams["RequestSizeLimit"] = 5120L;
 	anyParams["LineSizeLimit"] = 1024L;
@@ -90,8 +90,8 @@ void HTTPProcessorTest::DoReadInputWithErrorTest() {
 	anyTmpStore = DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 	assertCompare(false, equal_to, anyRequest.IsDefined("query"));
 
-	expected = String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL << "Connection: close\r\ncontent-type: text/html" << ENDL
-			<< ENDL << "<html><head>\n<title>413 Request Entity Too Large</title>\n" << common;
+	expected = "HTTP/1.1 413 Request Entity Too Large" ENDL "Connection: close" ENDL "content-type: text/html" ENDL ENDL "<html><head>\n<title>413 Request Entity Too Large</title>\n";
+	expected << common;
 
 	anyParams["RequestSizeLimit"] = 5120L;
 	anyParams["LineSizeLimit"] = 30L;
@@ -99,8 +99,8 @@ void HTTPProcessorTest::DoReadInputWithErrorTest() {
 	anyTmpStore = DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 	assertCompare(false, equal_to, anyRequest.IsDefined("query"));
 
-	expected = String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL << "Connection: close\r\ncontent-type: text/html" << ENDL
-			<< ENDL << "<html><head>\n<title>413 Request Entity Too Large</title>\n" << common;
+	expected = "HTTP/1.1 413 Request Entity Too Large" ENDL "Connection: close" ENDL "content-type: text/html" ENDL ENDL "<html><head>\n<title>413 Request Entity Too Large</title>\n";
+	expected << common;
 
 	anyParams["RequestSizeLimit"] = 5120L;
 	anyParams["LineSizeLimit"] = 20L;
@@ -108,8 +108,8 @@ void HTTPProcessorTest::DoReadInputWithErrorTest() {
 	anyTmpStore = DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 	assertCompare(false, equal_to, anyRequest.IsDefined("query"));
 
-	expected = String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL << "Connection: close\r\ncontent-type: text/html" << ENDL
-			<< ENDL << "<html><head>\n<title>413 Request Entity Too Large</title>\n" << common;
+	expected = "HTTP/1.1 413 Request Entity Too Large" ENDL "Connection: close" ENDL "content-type: text/html" ENDL ENDL "<html><head>\n<title>413 Request Entity Too Large</title>\n";
+	expected << common;
 
 	anyParams["RequestSizeLimit"] = 200L;
 	anyParams["LineSizeLimit"] = 1024L;
@@ -137,15 +137,15 @@ void HTTPProcessorTest::DoReadInputTest() {
 	{
 		String
 				uri =
-						"GET / HTTP/1.0\r\n"
-							"Connection: Keep-Alive\r\n"
-							"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)\r\n"
-							"Host: sentosa.hsr.loc:1919\r\n"
-							"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\n"
-							"Accept-Encoding: gzip\r\n"
-							"Accept-Language: en\r\n"
-							"Accept-Charset: iso-8859-1,*,utf-8\r\n"
-							"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601\r\n";
+						"GET / HTTP/1.0" ENDL
+							"Connection: Keep-Alive" ENDL
+							"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" ENDL
+							"Host: sentosa.hsr.loc:1919" ENDL
+							"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" ENDL
+							"Accept-Encoding: gzip" ENDL
+							"Accept-Language: en" ENDL
+							"Accept-Charset: iso-8859-1,*,utf-8" ENDL
+							"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" ENDL ENDL;
 
 		StringStreamSocket ss(uri);
 		Context ctx(&ss);
@@ -258,31 +258,29 @@ void HTTPProcessorTest::DoReadMinimalInputTest() {
 	StartTrace(HTTPProcessorTest.DoReadMinimalInputTest);
 	// ((errornous) Minimal request, the two blanks after GET are critically
 	RequestProcessor *httpProcessor = HTTPProcessor::FindRequestProcessor("HTTPProcessor");
-	String expected = String() << "HTTP/1.1 400 Bad Request" << ENDL << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-			<< "<html><head>\n<title>400 Bad Request</title>\n" << common;
+	String expected = "HTTP/1.1 400 Bad Request" ENDL "Connection: close" ENDL "content-type: text/html" ENDL ENDL "<html><head>\n<title>400 Bad Request</title>\n";
+	expected.Append(common);
 	Anything anyParams, anyRequest;
 	anyParams["CheckHeaderFields"] = true;
 	anyParams["RejectRequestsWithInvalidHeaders"] = true;
 
 	// Form (post) request containing evil header
-	String uri;
-	uri
-			= "POST /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nkey=value&Content-length: 11\r\n\r\n";
+	String uri = "POST /alibaba HTTP/1.0" ENDL "X-Evil: GET /gaga HTTP/1.0" ENDL "Content-type: application/x-www-form-urlencoded" ENDL "key=value&Content-length: 11" ENDL ENDL;
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 
-	uri = "GET  HTTP/1.0\r\n\r\n";
+	uri = "GET  HTTP/1.0" ENDL ENDL;
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
-	uri = "GET /alibaba HTTP/1.0\r\nX-Evil: POST\r\n\r\n";
+	uri = "GET /alibaba HTTP/1.0" ENDL "X-Evil: POST" ENDL ENDL;
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
-	uri = "GET /alibaba HTTP/1.0\r\nX-Evil: GET\r\n\r\n";
+	uri = "GET /alibaba HTTP/1.0" ENDL "X-Evil: GET" ENDL ENDL;
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
-	uri = "GET /alibaba HTTP/1.0\r\nX-Evil: xGET\r\n\r\n";
+	uri = "GET /alibaba HTTP/1.0" ENDL "X-Evil: xGET" ENDL ENDL;
 	expected.Trim(0L);
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 
 	// Mime (post) request containing evil header
 	uri
-			= "POST /alibaba HTTP/1.0\r\nContent-type: multipart/form-data; boundary=me;\r\nContent-length: 64\r\n\r\n--me\r\nX-Evil: GET /gaga HTTP/1.0\r\nThis is the content.\r\n--me--\r\n";
+			= "POST /alibaba HTTP/1.0" ENDL "Content-type: multipart/form-data; boundary=me;" ENDL "Content-length: 64" ENDL ENDL "--me" ENDL "X-Evil: GET /gaga HTTP/1.0" ENDL "This is the content." ENDL "--me--" ENDL;
 	expected.Trim(0L);
 	Anything tmpStore;
 	tmpStore = DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
@@ -293,7 +291,7 @@ void HTTPProcessorTest::DoReadMinimalInputTest() {
 	// Log header attack only
 	anyParams["CheckHeaderFields"] = true;
 	anyParams["RejectRequestsWithInvalidHeaders"] = false;
-	uri = "GET /alibaba HTTP/1.0\r\nX-Evil: GET\r\n\r\n";
+	uri = "GET /alibaba HTTP/1.0" ENDL "X-Evil: GET" ENDL ENDL;
 	expected.Trim(0L);
 	DoReadMinimalInputTestHelper(httpProcessor, anyParams, uri, expected, anyRequest);
 }
@@ -342,13 +340,13 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyProcessorName, "RequestProcessor");
 	OStringStream os1;
 	httpProcessor->RenderProtocolStatus(os1, ctx);
-	assertCharPtrEqual( "HTTP/1.1 200 OK\r\nConnection: close\r\n", os1.str() );
+	assertCharPtrEqual( "HTTP/1.1 200 OK" ENDL "Connection: close" ENDL, os1.str() );
 
 	Anything tmpStore = ctx.GetTmpStore();
 	tmpStore["HTTPStatus"]["ResponseCode"] = 599L;
 	OStringStream os2;
 	httpProcessor->RenderProtocolStatus(os2, ctx);
-	assertCharPtrEqual( "HTTP/1.1 599 Unknown Error\r\nConnection: close\r\n", os2.str() );
+	assertCharPtrEqual( "HTTP/1.1 599 Unknown Error" ENDL "Connection: close" ENDL, os2.str() );
 
 	tmpStore["HTTPStatus"]["ResponseCode"] = 413L;
 
@@ -356,7 +354,7 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	tmpStore["HTTPStatus"]["ResponseMsg"] = "BlaBla";
 
 	httpProcessor->RenderProtocolStatus(os3, ctx);
-	assertCharPtrEqual( "HTTP/1.1 413 BlaBla\r\nConnection: close\r\n", os3.str() );
+	assertCharPtrEqual( "HTTP/1.1 413 BlaBla" ENDL "Connection: close" ENDL, os3.str() );
 }
 
 void HTTPProcessorTest::KeepConnection() {

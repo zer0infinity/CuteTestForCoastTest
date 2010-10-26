@@ -54,13 +54,13 @@ bool MIMEHeader::DoReadHeader(std::istream &in, long maxlinelen, long maxheaderl
 	return true;
 }
 
-MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase)
+MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase) const
 {
 	StartTrace(MIMEHeader.GetDoSplitHeaderFieldsState);
 	MIMEHeader::ProcessMode splitHeaderFields;
-	if ( fieldNameUpperCase == "SET-COOKIE" ) {
+	if ( fieldNameUpperCase.IsEqual("SET-COOKIE") ) {
 		splitHeaderFields = eDoNotSplitHeaderFields;
-	} else if ( fieldNameUpperCase == "COOKIE" ) {
+	} else if ( fieldNameUpperCase.IsEqual("COOKIE") ) {
 		splitHeaderFields = eDoSplitHeaderFieldsCookie;
 	} else {
 		splitHeaderFields = fSplitHeaderFields;
@@ -79,7 +79,7 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	fieldNameUpperCase.ToUpper();
 	ParseField(line, GetDoSplitHeaderFieldsState(fieldNameUpperCase));
 	Trace("My marker...");
-	if (fieldNameUpperCase == "CONTENT-DISPOSITION" ) {
+	if (fieldNameUpperCase.IsEqual("CONTENT-DISPOSITION") ) {
 		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
 			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr());
 		}
@@ -88,18 +88,16 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	return true;
 }
 
-Anything MIMEHeader::SplitLine(const String &line, URLUtils::NormalizeTag shift)
+Anything MIMEHeader::SplitLine(const String &line, URLUtils::NormalizeTag shift) const
 {
 	StartTrace1(MIMEHeader.SplitLine, "Line: " << line);
 	Anything values;
-
 	URLUtils::Split(line, ';', values, '=', shift);
-
 	TraceAny(values, "values: ");
 	return values;
 }
 
-long MIMEHeader::GetNormalizedFieldName(String &line, String &fieldname)
+long MIMEHeader::GetNormalizedFieldName(String &line, String &fieldname) const
 {
 	StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
 	// following headerfield specification of HTTP/1.1 RFC 2068
