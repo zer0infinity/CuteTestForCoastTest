@@ -144,10 +144,10 @@ void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
 }
 
-Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo,
-		const String &msg, Anything &request, const char *who) {
+Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg,
+		const char *who) {
 	StartTrace(RequestProcessor.LogError);
-	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, clientInfo, msg, request, who);
+	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, msg, who);
 }
 
 void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx) {
@@ -183,8 +183,8 @@ void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
 	// unknown protocol -> no status
 }
 
-Anything RequestProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo,
-		const String &msg, Anything &request, const char *who) {
+Anything RequestProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg,
+		const char *who) {
 	// unknown protocol -> no error logging
 	return Anything();
 }

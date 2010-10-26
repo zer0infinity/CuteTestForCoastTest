@@ -56,14 +56,14 @@ protected:
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
 	//! Log the error to Security.log
-	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
 
 	//! render the protocol specific error msg
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
 private:
 	//!set some client info needed for verification
-	void SetWDClientInfo(Context &ctx);
+	void CopyClientInfoIntoRequest(Context &ctx);
 
 	HTTPProcessor(const HTTPProcessor &);
 	HTTPProcessor &operator=(const HTTPProcessor &);

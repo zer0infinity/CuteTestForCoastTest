@@ -48,7 +48,7 @@ public:
 	static void RenderProtocolStatus(std::ostream &os, Context &ctx);
 
 	//! Log the error to Security.log
-	static Anything LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+	static Anything LogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
 
 	//! render the protocol specific error msg
 	static void Error(std::ostream &reply, const String &msg, Context &ctx);
@@ -80,7 +80,7 @@ protected:
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
 	//! Log the error to Security.log
-	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
 
 	//! render the protocol specific error msg
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);

@@ -47,15 +47,15 @@ void HTTPRequestReaderTest::CleanupRequestLineTest() {
 	while (aEntryIterator.Next(cConfig)) {
 		Anything anyParams = cConfig.DeepClone();
 		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
-		Context ctx;
-		ctx.Push("tempargs", &lia);
 
 		MIMEHeader header;
 		HTTPRequestReader reader(httpProc, header);
 
 		String uri = cConfig["RequestLine"].AsString();
 		StringStreamSocket ss(uri);
-		reader.ReadRequest(ctx, *(ss.GetStream()), ss.ClientInfo());
+		Context ctx(&ss);
+		ctx.Push("tempargs", &lia);
+		reader.ReadRequest(ctx, *(ss.GetStream()));
 		Anything request(reader.GetRequest());
 		TraceAny(request, "request:");
 		ROAnything errors = ctx.Lookup("HTTPRequestReader");
@@ -76,8 +76,6 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 	while (aEntryIterator.Next(cConfig)) {
 		Anything anyParams = cConfig.DeepClone();
 		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
-		Context ctx;
-		ctx.Push("tempargs", &lia);
 
 		MIMEHeader header;
 		HTTPRequestReader reader(httpProc, header);
@@ -85,7 +83,9 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		String uri(cConfig["RequestLine"].AsString());
 		Trace("Request to process [" << uri << "]");
 		StringStreamSocket ss(uri);
-		bool ret(reader.ReadRequest(ctx, *(ss.GetStream()), ss.ClientInfo()));
+		Context ctx(&ss);
+		ctx.Push("tempargs", &lia);
+		bool ret = reader.ReadRequest(ctx, *(ss.GetStream()));
 		t_assertm(cConfig["Expected"]["Return"].AsBool(0) == ret, TString("failed at idx:") << aEntryIterator.Index());
 		Trace("response [" << uri << "]");
 		Anything request(reader.GetRequest());

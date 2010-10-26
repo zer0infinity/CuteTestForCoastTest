@@ -39,7 +39,7 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	HTTPRequestReader reader(this, header);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
-		if (! reader.ReadRequest(ctx, Ios, ctx.GetRequest()["ClientInfo"]) ) {
+		if (! reader.ReadRequest(ctx, Ios) ) {
 			return;    // this was an error that forbids to process any further
 		}
 	}
@@ -51,7 +51,7 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	ctx.PushRequest(args);
 
 	// prepare the environment for the framework
-	SetWDClientInfo(ctx);
+	CopyClientInfoIntoRequest(ctx);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request body", ctx);
 		ReadRequestBody(Ios, request, header, ctx);
@@ -66,12 +66,12 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 		HTTPPostRequestBodyParser sm(header, Ios);
 		sm.Parse();
 		if (ctx.Lookup("CheckHeaderFields", 1L) && header.AreSuspiciousHeadersPresent()) {
-			Anything erreanousRequest(ctx.GetRequest()), anyError;
+			Anything anyError;
 			String strStoreAt("ReadRequestBodyError");
 			strStoreAt.Append('.').Append(pcSubSlotName);
 			anyError = LogError(ctx, 400,
 					"Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
-					erreanousRequest["REQUEST_URI"].AsString(), erreanousRequest["ClientInfo"], "", erreanousRequest, pcSubSlotName);
+					ctx.Lookup("REQUEST_URI", ""), "", pcSubSlotName);
 			StorePutter::Operate(anyError, ctx, "Tmp", strStoreAt);
 		}
 		request["REQUEST_BODY"] = sm.GetContent();
@@ -82,7 +82,7 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 	}
 }
 
-void HTTPProcessor::SetWDClientInfo(Context &ctx)
+void HTTPProcessor::CopyClientInfoIntoRequest(Context &ctx)
 {
 	Anything args(ctx.GetRequest());
 	long sz = args["ClientInfo"].GetSize();
@@ -147,15 +147,14 @@ void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
 	r.RenderAll( os, ctx, ROAnything());
 }
 
-Anything HTTPProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who)
+Anything HTTPProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who)
 {
 	StartTrace(HTTPProcessor.DoLogError);
-	TraceAny(clientInfo, "client info:");
 	// define SecurityLog according to the AppLog rules if you want to see this output.
 	Anything tmp;
-	tmp["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
-	tmp["HTTPS"] = clientInfo["HTTPS"];
-	tmp["Request"] = request;
+	tmp["REMOTE_ADDR"] = ctx.Lookup("ClientInfo.REMOTE_ADDR", "");
+	tmp["HTTPS"] = ctx.Lookup("ClientInfo.HTTPS", "");
+	tmp["Request"] = ctx.GetRequest();
 	tmp["HttpStatusCode"]	=  errcode;
 	tmp["HttpResponseMsg"] = msg;
 	tmp["Reason"] = reason;
