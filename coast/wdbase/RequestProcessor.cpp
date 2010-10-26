@@ -19,7 +19,8 @@
 #include "Dbg.h"
 
 //--- RequestProcessor ----------------------------------------------------------
-RegCacheImpl(RequestProcessor);	// FindRequestProcessor()
+RegCacheImpl(RequestProcessor)
+; // FindRequestProcessor()
 RegisterRequestProcessor(RequestProcessor);
 
 RequestProcessor::RequestProcessor(const char *processorName) :
@@ -32,14 +33,13 @@ void RequestProcessor::Init(Server *server) {
 	fServer = server;
 }
 
-void RequestProcessor::ProcessRequest(Context &ctx)
-{
+void RequestProcessor::ProcessRequest(Context &ctx) {
 	StartTrace(RequestProcessor.ProcessRequest);
 	ctx.SetServer(GetServer());
 	Socket *socket = ctx.GetSocket();
 	std::iostream *Ios = 0;
 
-	if ( socket != (Socket *) NULL ) {
+	if (socket != (Socket *) NULL) {
 		ROAnything timeout;
 		ctx.Lookup("SocketReadTimeout", timeout);
 		socket->SetTimeout(timeout.AsLong(10 * 1000L));
@@ -47,30 +47,34 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 		Ios = socket->GetStream();
 	}
 
-	if ( Ios && socket->IsReadyForReading() ) {
+	if (Ios && socket->IsReadyForReading()) {
 		// disable nagle algorithm
 		socket->SetNoDelay();
 		DoReadInput(*Ios, ctx);
 
-		KeepConnectionAlive(ctx);
-
-		if ( !(*Ios) ) {
+		if (!(*Ios)) {
 			return;
 		}
 
+		KeepConnectionAlive(ctx); //!@FIXME: should not be a feature of a non-HTTP request
+
 		if (socket->IsReadyForWriting()) {
-			// process this arguments and
-			// write the output to the reply
-			DoProcessRequest(*Ios, ctx);
-			//!@FIXME BufferReply mechanism possible
+			if (VerifyRequest(ctx)) {
+				// process this arguments and
+				// write the output to the reply
+				DoProcessRequest(*Ios, ctx);
+				//!@FIXME BufferReply mechanism possible
+			} else {
+				HandleVerifyError(*Ios, ctx);
+			}
 		}
 	} else {
 		String logMsg("No valid stream from socket");
 		SystemLog::eLogLevel level(SystemLog::eWARNING);
-		if ( socket ) {
+		if (socket) {
 			logMsg << ", fd:" << ((socket) ? socket->GetFd() : -1L);
 			logMsg << ", from " << socket->ClientInfo()["REMOTE_ADDR"].AsString() << ':' << socket->ClientInfo()["REMOTE_PORT"].AsString();
-			if ( socket->HadTimeout() ) {
+			if (socket->HadTimeout()) {
 				logMsg << ", had timeout (" << socket->GetTimeout() << "ms)";
 				level = SystemLog::eINFO;
 			}
@@ -87,6 +91,25 @@ namespace {
 				|| (pProc = RequestProcessor::FindRequestProcessor("RequestProcessor")));
 		return pProc;
 	}
+}
+
+bool RequestProcessor::VerifyRequest(Context &ctx) {
+	StartTrace(RequestProcessor.VerifyRequest);
+	return DoVerifyRequest(ctx);
+}
+
+bool RequestProcessor::DoVerifyRequest(Context &ctx) {
+	StartTrace(RequestProcessor.DoVerifyRequest);
+	return true;
+}
+
+void RequestProcessor::HandleVerifyError(std::ostream &reply, Context &ctx) {
+	StartTrace(RequestProcessor.HandleVerifyError);
+	DoHandleVerifyError(reply, ctx);
+}
+
+void RequestProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
+	StartTrace(RequestProcessor.DoHandleVerifyError);
 }
 
 void RequestProcessor::ForceConnectionClose(Context &ctx) {
@@ -121,7 +144,8 @@ void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
 }
 
-Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who) {
+Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo,
+		const String &msg, Anything &request, const char *who) {
 	StartTrace(RequestProcessor.LogError);
 	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, clientInfo, msg, request, who);
 }

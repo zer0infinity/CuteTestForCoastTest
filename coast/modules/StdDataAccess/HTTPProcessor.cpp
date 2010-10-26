@@ -91,6 +91,15 @@ void HTTPProcessor::SetWDClientInfo(Context &ctx)
 	}
 }
 
+bool HTTPProcessor::DoVerifyRequest(Context &ctx) {
+	StartTrace(HTTPProcessor.DoVerifyRequest);
+	return true;
+}
+
+void HTTPProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
+	StartTrace(HTTPProcessor.DoHandleVerifyError);
+}
+
 void HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoProcessRequest);
@@ -124,14 +133,11 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoKeepConnectionAlive);
-
 	String protocol = ctx.Lookup("SERVER_PROTOCOL", "");
 	String connection = ctx.Lookup("header.CONNECTION", "");
-	connection.ToLower();
 	Trace("Protocol [" << protocol << "] connection [" << connection << "]");
-	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.IsEqual("keep-alive");
+	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.ToLower().IsEqual("keep-alive");
 	Trace("Keep connection alive: " << keepAlive ? "Yes" : "No");
-
 	return keepAlive;
 }
 

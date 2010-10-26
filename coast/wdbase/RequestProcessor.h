@@ -33,6 +33,10 @@ public:
 	//!general entry point called by handle request thread
 	virtual void ProcessRequest(Context &ctx);
 
+	bool VerifyRequest(Context &ctx);
+
+	void HandleVerifyError(std::ostream &reply, Context &ctx);
+
 	//! checks if the connection should keep-alive after the request has been processed
 	static bool KeepConnectionAlive(Context &ctx);
 
@@ -58,6 +62,10 @@ public:
 protected:
 	//!read the input arguments from the stream and generate an anything
 	virtual void DoReadInput(std::iostream &ios, Context &ctx);
+
+	virtual bool DoVerifyRequest(Context &ctx);
+
+	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
 
 	//!process the arguments and generate a reply
 	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);

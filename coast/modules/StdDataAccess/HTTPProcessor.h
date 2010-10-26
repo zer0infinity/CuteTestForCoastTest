@@ -42,8 +42,9 @@ protected:
 	//!read the input arguments from the stream and generate an anything
 	virtual void DoReadInput(std::iostream &ios, Context &ctx);
 
-	//!set some client info needed for verification
-	virtual void SetWDClientInfo(Context &ctx);
+	virtual bool DoVerifyRequest(Context &ctx);
+
+	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
 
 	//!process the arguments and generate a reply
 	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
@@ -61,6 +62,9 @@ protected:
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
 private:
+	//!set some client info needed for verification
+	void SetWDClientInfo(Context &ctx);
+
 	HTTPProcessor(const HTTPProcessor &);
 	HTTPProcessor &operator=(const HTTPProcessor &);
 };
