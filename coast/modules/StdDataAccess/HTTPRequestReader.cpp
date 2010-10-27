@@ -26,25 +26,27 @@ HTTPRequestReader::HTTPRequestReader(RequestProcessor *p, MIMEHeader &header)
 
 bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line)
 {
-	StartTrace(HTTPRequestReader.ReadLine);
-	char c;
+	StartTrace1(HTTPRequestReader.ReadLine, "maxLineSz: " << maxLineSz);
 	const char eol = '\n';
 	line.Trim(0L);
-	long lineSize = 0;
-	// read in characterwise
-	while ( Ios.get(c).good() ) {
-		line.Append(c);
-		++lineSize;
-		++fRequestBufferSize;
-		if ( lineSize > maxLineSz ) {
+	if ( Ios.good() ) {
+		// read line up to but not including next eol
+		line.Append(Ios, maxLineSz, eol);
+		Trace("line read [" << line << "] of length: " << line.Length());
+		char c = '\0';
+		if ( Ios.get(c).good() ) {
+			line.Append(c);
+		}
+		fRequestBufferSize += line.Length();
+		if ( line.Length() > maxLineSz ) {
 			String msg;
-			msg << "LineSizeLimitExceeded: Request line too Large : [" << lineSize << "] (max " << maxLineSz << ")";
+			msg << "LineSizeLimitExceeded: Request line too Large : [" << line.Length() << "] (max " << maxLineSz << ")";
 			Trace(msg);
 			DoHandleError(ctx, Ios, 413, msg, line);
 			return false;
 		}
-		if ( line.IsEqual(ENDL) || c == eol ) {
-			return true;
+		if ( c != eol) {
+			//!@FIXME: should notify that line is not conforming, eg. not ending with ENDL
 		}
 	}
 	// be nice and allow empty lines here - let MIMEHeader decide about validity
@@ -77,6 +79,10 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 		// handle request lines
 		fHeader.DoParseHeaderLine(line);
 	}
+	if ( fRequestBufferSize == 0 ) {
+		DoHandleError(ctx, Ios, 400, "Empty request", line);
+		return false;
+	}
 	if ( ctx.Lookup("CheckHeaderFields", 1L) && fHeader.AreSuspiciousHeadersPresent() ) {
 		Trace("detected suspicious HTTP headers");
 		String tmp;
@@ -86,8 +92,6 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 		line.Append(" ");
 		line.Append(tmp);
 		ret = DoHandleError(ctx, Ios, 400, "Possible SSL Renegotiation attack. A header contains a GET/POST request", line, ctx.Lookup("RejectRequestsWithInvalidHeaders", 0L));
-	} else if ( fRequestBufferSize == 0 ) {
-		ret =  DoHandleError(ctx, Ios, 400, "Empty request", line);
 	}
 	TraceAny(fHeader.GetInfo(), "RequestHeader:");
 	return ret;
