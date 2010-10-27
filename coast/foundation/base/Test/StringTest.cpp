@@ -2932,13 +2932,23 @@ void StringTest::appendsWithDelimiter()
 		assertEqual(testinput, result);
 	}
 	{
+		char const eol = '\n';
 		String result;
-		String testinput("0123456789");
+		String expected = "0123456789";
+		String testinput= "0123456789\n";
 		IStringStream iss(testinput);
-		while ( iss.good() ) {
+		while ( iss.good() && iss.peek() != eol) {
 			result.Append(iss, 3, '\n');
 		}
-		assertEqual(testinput, result);
+		assertCharPtrEqual(expected, result);
+	}
+	{
+		String result;
+		String expected = "012";
+		String testinput= "0123456789\n";
+		IStringStream iss(testinput);
+		result.Append(iss, 3, '\n');
+		assertCharPtrEqual(expected, result);
 	}
 	{
 		String result;

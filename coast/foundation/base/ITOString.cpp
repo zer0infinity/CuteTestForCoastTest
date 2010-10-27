@@ -161,15 +161,11 @@ String::String(const String &s, Allocator *a)
 	}
 }
 
-String &String::Append(std::istream &is, long length, char delim)
-// reads at most length chars until delim
-// semantics like istream.get(char *, len, delim)
-{
-	Set(Length(), 0, length);
+String &String::Append(std::istream &is, long length, char delim) {
+	Set(Length(), 0, ++length); //!< marcel: increment length to *really* copy length bytes and not length-1, as this would not be 'natural' for our String class
 	if (!(delim == is.peek())) {
 		is.get(GetContent() + Length(), length, delim); // should do some error checking?
 		long l = is.gcount(); // should be fLength
-
 		Assert(l <= length);
 		IncrementLength(l); // PT: always adjust length now
 		GetContent()[Length()] = '\0';

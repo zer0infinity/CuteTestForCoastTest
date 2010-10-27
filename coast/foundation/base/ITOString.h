@@ -92,8 +92,15 @@ public:
 	//! return value for convenient multi-appends
 	String &Append(std::istream &is, long length);
 
-	//! append string from is,  works like istream::get(char *, len, delim)
-	//! return value for convenient multi-appends
+	//! Append string from is until either len or delim is reached.
+	/*! Our version works *almost* like istream::get(char *, len, delim), the important difference is
+	 * that we really do copy length characters from stream and *not* length-1 as with istream!
+	 * It would be 'unnatural' for our String interface to be sensitive to character sequence terminating characters.
+	 * @param is input stream to read from
+	 * @param length number of characters to copy at most from is
+	 * @delim delimiting character in stream
+	 * @return reference to ourselfes for convenient multi-appends
+	 */
 	String &Append(std::istream &is, long length, char delim);
 
 	//! append integral number as decimal
