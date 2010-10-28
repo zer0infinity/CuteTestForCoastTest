@@ -36,7 +36,7 @@ public:
 	};
 
 	//! represent a mime header
-	MIMEHeader(URLUtils::NormalizeTag normalizeKey = URLUtils::eUpshift, ProcessMode = eDoSplitHeaderFields);
+	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift, ProcessMode = eDoSplitHeaderFields);
 
 	//! read the MIME header from is
 	//! reads MIME header from is withlimit the line size to
@@ -64,9 +64,6 @@ public:
 		return fHeader;
 	}
 
-	//!cut off \\r\\n or only \\r at end of line
-	void TrimEOL(String &line) const;
-
 	//!normalize str according to fNormalizeKey setting
 	void Normalize(String &str) const;
 
@@ -89,7 +86,7 @@ protected:
 	bool ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields);
 
 	//!split ';' seperated list of key=value pairs into anything
-	Anything SplitLine(const String &line, URLUtils::NormalizeTag shift = URLUtils::eUpshift) const;
+	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift = Coast::URLUtils::eUpshift) const;
 
 	//!find out about a multipart/form-data
 	void CheckMultipartBoundary(const String &contenttype);
@@ -110,7 +107,7 @@ protected:
 	//!boundary between different part of multipart/form-data
 	String fBoundary;
 	bool fBoundaryChecked;
-	URLUtils::NormalizeTag fNormalizeKey;
+	Coast::URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
 	bool fAreSuspiciousHeadersPresent;
 

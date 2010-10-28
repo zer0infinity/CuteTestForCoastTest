@@ -93,7 +93,7 @@ void AppBooter::HandleArgs(int argc, const char *argv[], Anything &args )
 {
 	StartTrace(AppBooter.HandleArgs);
 	for (long i = 0; i < argc; ++i) {
-		URLUtils::Pair(argv[i], '=', args);
+		Coast::URLUtils::Pair(argv[i], '=', args);
 	}
 	TraceAny(args, "passed arguments");
 }

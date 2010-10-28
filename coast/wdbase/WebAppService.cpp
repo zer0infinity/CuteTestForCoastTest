@@ -155,9 +155,9 @@ Anything WebAppService::BuildQuery(const String &pathString, const String &query
 	Anything query;
 
 	// prepare query anything
-	URLUtils::Split( pathString, '/', query);
-	URLUtils::Split( queryString, '&', query);
-	URLUtils::DecodeAll(query);
+	Coast::URLUtils::Split( pathString, '/', query);
+	Coast::URLUtils::Split( queryString, '&', query);
+	Coast::URLUtils::DecodeAll(query);
 	TraceAny(query, "built query");
 	return query;
 }

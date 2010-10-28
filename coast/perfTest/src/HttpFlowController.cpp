@@ -368,7 +368,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx)
 		TraceAny(formContentsInitial, "<----MERGED Fields from CONFIG and input FORM" );
 
 		if ( !isMultipartContent ) {
-			tmpStore["CurrentServer"]["formContents"] = URLUtils::EncodeFormContent( formContentsInitial );
+			tmpStore["CurrentServer"]["formContents"] = Coast::URLUtils::EncodeFormContent( formContentsInitial );
 		} else {
 			tmpStore["CurrentServer"]["formContents"] = multipartContents;
 		}
@@ -390,7 +390,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx)
 					if (!resultAnything.IsNull()) {
 						String resultString = resultAnything.AsString(""); // action URI
 						Trace ("Action URI is->" << resultString );
-						URLUtils::HandleURI2( tmpStore["CurrentServer"], resultString, tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
+						Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], resultString, tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
 						TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 						// empty existing any
 						resultAnything = Anything();
@@ -434,7 +434,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx)
 			// LINK
 			Trace( "Link is requested" );
 			tmpStore["CurrentServer"]["Method"] = "GET"; // Method i.e. GET or POST etc.
-			URLUtils::HandleURI2( tmpStore["CurrentServer"], resultAnything.AsString(""), tmpStore["PreviousPage"]["BASE"].AsString("") );
+			Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], resultAnything.AsString(""), tmpStore["PreviousPage"]["BASE"].AsString("") );
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			tmpStore.Remove("Link");
 			return true;
@@ -453,7 +453,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx)
 			// FRAME
 			Trace( "Frame is requested" );
 			tmpStore["CurrentServer"]["Method"] = "GET"; // Method i.e. GET or POST etc.
-			URLUtils::HandleURI2( tmpStore["CurrentServer"], resultAnything.AsString(""), tmpStore["PreviousPage"]["BASE"].AsString("") );
+			Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], resultAnything.AsString(""), tmpStore["PreviousPage"]["BASE"].AsString("") );
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			tmpStore.Remove("Frame");
 			return true;
@@ -821,7 +821,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			absPath.Append("/");
 		}
 		Trace("absPath: " << absPath);
-		URLUtils::HandleURI2( tmpStore["CurrentServer"], absPath, tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
+		Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], absPath, tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
 	} else {
 		bPrepareRequestSucceeded = DoProcessLinksFormsAndFrames(ctx); // no relocations expected here
 	}
@@ -969,7 +969,7 @@ bool HttpFlowController::DoMetaRefreshRelocate(Context &ctx)
 			myString2 = myString1.SubString(Pos + 4, myString1.Length() - Pos - 4); // 4 = "URL="
 			Trace( "String 1 contents are" << myString2 );
 
-			URLUtils::HandleURI2( tmpStore["CurrentServer"], myString2 );
+			Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], myString2 );
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			return true;
 		}
@@ -997,7 +997,7 @@ bool HttpFlowController::DoLocationRelocate(Context &ctx)
 		String refreshURL = refresh.AsString();
 		Trace("Location header is: " << refreshURL);
 		if (refreshURL.Length() > 0 ) {
-			URLUtils::HandleURI2( tmpStore["CurrentServer"], refreshURL );
+			Coast::URLUtils::HandleURI2( tmpStore["CurrentServer"], refreshURL );
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			return true;
 		}

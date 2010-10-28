@@ -103,8 +103,8 @@ void HTTPPostRequestBodyParser::Decode(String str, Anything &result)
 	if (slen >= 2 && '\r' == str[(long)(slen-2)] && '\n' == str[(long)(slen-1)]) {
 		str.Trim(slen - 2);
 	}
-	URLUtils::Split(str, '&', result);
-	URLUtils::DecodeAll(result);
+	Coast::URLUtils::Split(str, '&', result);
+	Coast::URLUtils::DecodeAll(result);
 }
 
 bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, String &body)
@@ -139,14 +139,14 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 					boundaryseen = true;
 					if (body.Length() > 0L) {
 						nextDoubleDash = line.StrChr('-', nextDoubleDash + bound.Length() + 2L);
-						fHeader.TrimEOL(body);
+						Coast::URLUtils::TrimENDL(body);
 
 						Trace("Body in Multipart: <" << body << ">");
 						return ((nextDoubleDash != -1L) && (line[(long)(nextDoubleDash+1L)] == '-'));
 					}
 				}
 				if (boundPos <= nextDoubleDash - bound.Length()) {
-					fHeader.TrimEOL(body);
+					Coast::URLUtils::TrimENDL(body);
 					Trace("Body in Multipart: <" << body << ">");
 					// we are done
 					return true;

@@ -216,32 +216,32 @@ bool HTTPRequestReader::VerifyUrlPath(Context &ctx, std::iostream &Ios, String &
 {
 	StartTrace(HTTPRequestReader.VerifyUrlPath);
 
-	URLUtils::URLCheckStatus eUrlCheckStatus = URLUtils::eOk;
+	Coast::URLUtils::URLCheckStatus eUrlCheckStatus = Coast::URLUtils::eOk;
 	String urlPathOrig = urlPath;
 	// Are all chars which must be URL-encoded really encoded?
-	if (URLUtils::CheckUrlEncoding(urlPath, ctx.Lookup("CheckUrlEncodingOverride", "")) == false) {
+	if (Coast::URLUtils::CheckUrlEncoding(urlPath, ctx.Lookup("CheckUrlEncodingOverride", "")) == false) {
 		return DoHandleError(ctx, Ios, 400, "Not all unsafe chars URL encoded", urlPathOrig);
 	}
 	if (ctx.Lookup("URLExhaustiveDecode", 0L)) {
-		urlPath = URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
+		urlPath = Coast::URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
 	} else {
-		urlPath = URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
+		urlPath = Coast::URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
 	}
-	if (eUrlCheckStatus == URLUtils::eSuspiciousChar) {
+	if (eUrlCheckStatus == Coast::URLUtils::eSuspiciousChar) {
 		// We are done, invalid request
 		return DoHandleError(ctx, Ios, 400, "Encoded char above 0x255 detected", urlPathOrig);
 	}
-	if ( URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, ctx.Lookup("CheckUrlPathContainsUnsafeCharsOverride", ""),
+	if ( Coast::URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, ctx.Lookup("CheckUrlPathContainsUnsafeCharsOverride", ""),
 			ctx.Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", ""),
 			!(ctx.Lookup("CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii", 0L))) ) {
 		return DoHandleError(ctx, Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig);
 	}
 	// "path" part of URL had to be normalized. This may indicate an attack.
-	String normalizedUrl =  URLUtils::CleanUpUriPath(urlPath);
+	String normalizedUrl =  Coast::URLUtils::CleanUpUriPath(urlPath);
 	if ( urlPath.Length() !=  normalizedUrl.Length() ) {
 		if ( ctx.Lookup("FixDirectoryTraversial", 0L) ) {
 			// alter the original url
-			urlPathOrig = URLUtils::urlEncode(normalizedUrl, ctx.Lookup("URLEncodeExclude", "/?"));
+			urlPathOrig = Coast::URLUtils::urlEncode(normalizedUrl, ctx.Lookup("URLEncodeExclude", "/?"));
 			LogError(ctx, 0, "Directory traversial attack detected and normalized. Request not rejected because of config settings",
 					   urlPathOrig, "");
 		} else {
@@ -257,7 +257,7 @@ bool HTTPRequestReader::VerifyUrlArgs(Context &ctx, String &urlArgs)
 {
 	StartTrace(HTTPRequestReader.VerifyUrlArgs);
 	// Are all character which must be URL-encoded really encoded?
-	return URLUtils::CheckUrlArgEncoding(urlArgs, ctx.Lookup("CheckUrlArgEncodingOverride", ""));
+	return Coast::URLUtils::CheckUrlArgEncoding(urlArgs, ctx.Lookup("CheckUrlArgEncodingOverride", ""));
 }
 
 Anything const& HTTPRequestReader::GetRequest()

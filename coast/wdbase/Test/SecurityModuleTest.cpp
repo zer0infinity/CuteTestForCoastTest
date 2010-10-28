@@ -186,8 +186,8 @@ void SecurityModuleTest::EncodeDecodeTest()
 	t_assert( OriginalString == DecodedString );
 
 	// String::IntPrintOn:  05     -> \x05
-	// URLUtils::urlEncode: \x05   -> %5Cx05
-	// URLUtils::urlEncode: %5Cx05 -> %255Cx05
+	// Coast::URLUtils::urlEncode: \x05   -> %5Cx05
+	// Coast::URLUtils::urlEncode: %5Cx05 -> %255Cx05
 	assertCharPtrEqual( "\x05", EncodedString );
 
 	// Only Printable Chars, scrambled

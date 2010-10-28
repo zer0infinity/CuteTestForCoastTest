@@ -10,12 +10,10 @@
 #include "MIMEHeader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Dbg.h"
+#include <iostream>
 
-//--- c-library modules used ---------------------------------------------------
-
-MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields)
+MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields)
 	: fBoundaryChecked(false)
 	, fNormalizeKey(normalizeKey)
 	, fSplitHeaderFields(splitHeaderFields)
@@ -57,13 +55,11 @@ bool MIMEHeader::DoReadHeader(std::istream &in, long maxlinelen, long maxheaderl
 MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase) const
 {
 	StartTrace(MIMEHeader.GetDoSplitHeaderFieldsState);
-	MIMEHeader::ProcessMode splitHeaderFields;
+	MIMEHeader::ProcessMode splitHeaderFields = fSplitHeaderFields;
 	if ( fieldNameUpperCase.IsEqual("SET-COOKIE") ) {
 		splitHeaderFields = eDoNotSplitHeaderFields;
 	} else if ( fieldNameUpperCase.IsEqual("COOKIE") ) {
 		splitHeaderFields = eDoSplitHeaderFieldsCookie;
-	} else {
-		splitHeaderFields = fSplitHeaderFields;
 	}
 	return splitHeaderFields;
 }
@@ -71,7 +67,7 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 bool MIMEHeader::DoParseHeaderLine(String &line)
 {
 	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << ">>");
-	TrimEOL(line);
+	Coast::URLUtils::TrimENDL(line);
 	if ( !line.Length() ) return true;
 	String fieldname;
 	GetNormalizedFieldName(line, fieldname);
@@ -88,11 +84,11 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	return true;
 }
 
-Anything MIMEHeader::SplitLine(const String &line, URLUtils::NormalizeTag shift) const
+Anything MIMEHeader::SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift) const
 {
 	StartTrace1(MIMEHeader.SplitLine, "Line: " << line);
 	Anything values;
-	URLUtils::Split(line, ';', values, '=', shift);
+	Coast::URLUtils::Split(line, ';', values, '=', shift);
 	TraceAny(values, "values: ");
 	return values;
 }
@@ -124,14 +120,14 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 			while (st1.NextToken(fieldvalue)) {
 				Trace("fieldname: [" << fieldname << "] fieldvalue: [" << fieldvalue << "]");
 				if ( fieldvalue.Length() ) {
-					URLUtils::TrimBlanks(fieldvalue);
-					URLUtils::RemoveQuotes(fieldvalue);
+					Coast::URLUtils::TrimBlanks(fieldvalue);
+					Coast::URLUtils::RemoveQuotes(fieldvalue);
 					CheckValues(fieldvalue);
 					if ( splitHeaderFields == eDoSplitHeaderFields ) {
-						URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
+						Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 					} else if ( splitHeaderFields == eDoSplitHeaderFieldsCookie ) {
 						Anything tmp;
-						tmp = SplitLine(fieldvalue, URLUtils::eUntouched);
+						tmp = SplitLine(fieldvalue, Coast::URLUtils::eUntouched);
 						for (int i = 0; i < tmp.GetSize(); i++ ) {
 							fHeader[fieldname][tmp.SlotName(i)] = tmp[i];
 						}
@@ -142,9 +138,9 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 		if ( splitHeaderFields == eDoNotSplitHeaderFields ) {
 			fieldvalue = line.SubString(pos + 1);
 			if ( fieldvalue.Length() ) {
-				URLUtils::TrimBlanks(fieldvalue);
+				Coast::URLUtils::TrimBlanks(fieldvalue);
 				CheckValues(fieldvalue);
-				URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
+				Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 				TraceAny(fHeader, "fHeader");
 			}
 		}
@@ -230,20 +226,9 @@ bool MIMEHeader::ConsumeEOL(std::istream &in) const
 	return false;
 }
 
-void MIMEHeader::TrimEOL(String &line) const
-{
-	// we cut off \r\n at end of line
-	long llen = line.Length();
-	if (line[(long)(llen-2)] == '\r' && line[(long)(llen-1)] == '\n') {
-		line.Trim(llen - 2);
-	} else if (line[(long)(llen-1)] == '\r') {
-		line.Trim(llen - 1);
-	}
-}
-
 void MIMEHeader::Normalize(String &str) const
 {
-	URLUtils::Normalize(str, fNormalizeKey);
+	Coast::URLUtils::Normalize(str, fNormalizeKey);
 }
 
 bool MIMEHeader::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const

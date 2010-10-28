@@ -109,7 +109,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 	}
 	{
-		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -180,7 +180,7 @@ void MIMEHeaderTest::SetCookieTest()
 	anyCookie2.Append("Test6=test_value6; expires=Sat, 06-Jan-2003 03:03:03 GMT; path=/;");
 	result["SET-COOKIE2"] = anyCookie2;
 	{
-		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -369,7 +369,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertAnyEqual(result1, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -385,7 +385,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertAnyEqual(result2, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput1);
 
 		// basic checks of success
