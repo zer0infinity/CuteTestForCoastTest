@@ -31,7 +31,7 @@ namespace Coast {
 				}
 			}
 		}
-		void TrimChars(String &str, bool front, char c) {
+		String& TrimChars(String &str, bool front, char c) {
 			StartTrace(URLUtils.TrimChars);
 			// remove leading blanks
 			long at;
@@ -52,15 +52,16 @@ namespace Coast {
 					str.Trim(at + 1);
 				}
 			}
+			return str;
 		}
 
-		void TrimBlanks(String &str, bool front) {
+		String& TrimBlanks(String &str, bool front) {
 			StartTrace(URLUtils.TrimBlanks);
 			// remove leading blanks
-			TrimChars(str, front);
+			return TrimChars(str, front);
 		}
 
-		void TrimENDL(String &line) {
+		String& TrimENDL(String &line) {
 			// we cut off \r\n at end of line
 			long llen = line.Length();
 			if (line[(long)(llen-2)] == '\r' && line[(long)(llen-1)] == '\n') {
@@ -68,6 +69,7 @@ namespace Coast {
 			} else if (line[(long)(llen-1)] == '\r') {
 				line.Trim(llen - 1);
 			}
+			return line;
 		}
 
 		char DecodeSpecialChars(const String &str, char c, long &lPos, long offset)

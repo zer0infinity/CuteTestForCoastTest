@@ -22,11 +22,11 @@ namespace Coast {
 			eOk, eSuspiciousChar
 		};
 		//! remove \\r\\n or only \\r at end of line
-		void TrimENDL(String &line);
+		String& TrimENDL(String &line);
 		//!removes blanks from start or end
-		void TrimBlanks(String &str, bool front = true);
+		String& TrimBlanks(String &str, bool front = true);
 		//!removes leading chars at front or end
-		void TrimChars(String &str, bool front = true, char c = ' ');
+		String& TrimChars(String &str, bool front = true, char c = ' ');
 
 		//! split key value pair with delimiter "delim" and add to Anything
 		//! sample:
