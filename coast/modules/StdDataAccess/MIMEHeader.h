@@ -82,9 +82,6 @@ protected:
 	//! \param fieldname out the normalized fieldname
 	bool ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields);
 
-	//!split ';' seperated list of key=value pairs into anything
-	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift = Coast::URLUtils::eUpshift) const;
-
 	//!find out about a multipart/form-data
 	void CheckMultipartBoundary(const String &contenttype);
 

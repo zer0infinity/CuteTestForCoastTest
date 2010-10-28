@@ -13,6 +13,18 @@
 #include "Dbg.h"
 #include <iostream>
 
+namespace {
+	char const cookieArgumentsDelimiter = ';';
+	char const headerArgumentsDelimiter = ',';
+	//!split ';' seperated list of key=value pairs into anything
+	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift = Coast::URLUtils::eUpshift) {
+		Anything values;
+		Coast::URLUtils::Split(line, cookieArgumentsDelimiter, values, '=', shift);
+		StatTraceAny(MIMEHeader.SplitLine, values, "input line [" << line << "] split into:", Storage::Current());
+		return values;
+	}
+}
+
 MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields)
 	: fBoundaryChecked(false)
 	, fNormalizeKey(normalizeKey)
@@ -67,8 +79,7 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 bool MIMEHeader::DoParseHeaderLine(String &line)
 {
 	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << ">>");
-	Coast::URLUtils::TrimENDL(line);
-	if ( !line.Length() ) return true;
+	if ( !Coast::URLUtils::TrimENDL(line).Length() ) return true;
 	String fieldname;
 	GetNormalizedFieldName(line, fieldname);
 	String fieldNameUpperCase(fieldname);
@@ -77,20 +88,11 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	Trace("My marker...");
 	if (fieldNameUpperCase.IsEqual("CONTENT-DISPOSITION") ) {
 		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
-			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr());
+			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsString());
 		}
 	}
 	TraceAny(fHeader, "fHeader on exit");
 	return true;
-}
-
-Anything MIMEHeader::SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift) const
-{
-	StartTrace1(MIMEHeader.SplitLine, "Line: " << line);
-	Anything values;
-	Coast::URLUtils::Split(line, ';', values, '=', shift);
-	TraceAny(values, "values: ");
-	return values;
 }
 
 long MIMEHeader::GetNormalizedFieldName(String &line, String &fieldname) const
@@ -116,7 +118,7 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 	if ( pos > 0 ) {
 		String fieldvalue;
 		if ( (splitHeaderFields == eDoSplitHeaderFields) || (splitHeaderFields == eDoSplitHeaderFieldsCookie) ) {
-			StringTokenizer st1(((const char *)line) + pos + 1, (splitHeaderFields == eDoSplitHeaderFields ? ',' : ';'));
+			StringTokenizer st1(((const char *)line) + pos + 1, (splitHeaderFields == eDoSplitHeaderFields ? headerArgumentsDelimiter : cookieArgumentsDelimiter));
 			while (st1.NextToken(fieldvalue)) {
 				Trace("fieldname: [" << fieldname << "] fieldvalue: [" << fieldvalue << "]");
 				if ( fieldvalue.Length() ) {
