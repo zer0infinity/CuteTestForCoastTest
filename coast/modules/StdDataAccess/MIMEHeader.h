@@ -64,9 +64,6 @@ public:
 		return fHeader;
 	}
 
-	//!normalize str according to fNormalizeKey setting
-	void Normalize(String &str) const;
-
 	//!consume \n at end of line if any
 	bool ConsumeEOL(std::istream &in) const;
 

@@ -101,7 +101,7 @@ long MIMEHeader::GetNormalizedFieldName(String &line, String &fieldname) const
 	pos = line.StrChr(':');
 	if (pos > 0) {
 		fieldname = line.SubString(0, pos);
-		Normalize(fieldname);
+		Coast::URLUtils::Normalize(fieldname, fNormalizeKey);
 	}
 	Trace("Fieldname: " << fieldname << " Position of ':' is: " << pos);
 	return pos;
@@ -226,15 +226,10 @@ bool MIMEHeader::ConsumeEOL(std::istream &in) const
 	return false;
 }
 
-void MIMEHeader::Normalize(String &str) const
-{
-	Coast::URLUtils::Normalize(str, fNormalizeKey);
-}
-
 bool MIMEHeader::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(MIMEHeader.DoLookup, "key: <" << NotNull(key) << ">" );
 	String normKey(key);
-	Normalize(normKey);
+	Coast::URLUtils::Normalize(normKey, fNormalizeKey);
 	return ROAnything(fHeader).LookupPath(result, normKey, delim, indexdelim);
 }
