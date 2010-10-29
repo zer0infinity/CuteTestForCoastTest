@@ -17,7 +17,7 @@
 #include "HTTPPostRequestBodyParser.h"
 
 HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input)
-	: fInput(input), fHeader(mainheader)
+	: fIn(&input), fHeader(mainheader)
 {
 	StartTrace(HTTPPostRequestBodyParser.Ctor);
 }
@@ -26,7 +26,6 @@ bool HTTPPostRequestBodyParser::Parse()
 {
 	StartTrace(HTTPPostRequestBodyParser.Parse);
 	TraceAny(fHeader.GetInfo(), "Header: ");
-	fIn = &fInput;
 
 	if (fHeader.IsMultiPart()) {
 		Trace("Multipart detected");

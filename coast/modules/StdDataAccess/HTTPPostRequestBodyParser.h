@@ -52,8 +52,7 @@ protected:
 private:
 	HTTPPostRequestBodyParser();
 	HTTPPostRequestBodyParser(const HTTPPostRequestBodyParser &);
-	std::istream	&fInput;	// to parse from
-	std::istream	*fIn;	// to parse from
+	std::istream *fIn;	// to parse from
 	MIMEHeader &fHeader;
 	Anything fContent;
 	String fUnparsedContent;
