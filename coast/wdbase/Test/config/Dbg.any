@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/LowerBound		0
 	/UpperBound		3400
@@ -437,6 +436,10 @@
 		/EnableAll				33
 	}
 	/RequestProcessor {
+		/MainSwitch				10
+		/EnableAll				33
+	}
+	/HTTPProcessor {
 		/MainSwitch				10
 		/EnableAll				33
 	}

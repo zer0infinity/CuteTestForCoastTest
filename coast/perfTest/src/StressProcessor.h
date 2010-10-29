@@ -31,7 +31,7 @@ public:
 	//!runs the Stresser given in args and streams the result back
 	//! \param args the input should contain /StresserName otherwise the Default Stresser is run.
 	//! \param reply the results gets streamed there
-	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
+	virtual bool DoProcessRequest(std::ostream &reply, Context &ctx);
 
 private:
 	StressProcessor();

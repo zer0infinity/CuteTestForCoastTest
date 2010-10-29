@@ -21,7 +21,7 @@
 RegisterServiceHandler(SimpleDataAccessService);
 
 //---- SimpleDataAccessService ----------------------------------------------------------------
-void SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
+bool SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(SimpleDataAccessService.DoHandleService);
 	if (!!reply ) {
@@ -43,7 +43,6 @@ void SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 				mapinfo["HTTPBody"] = "SimpleDataAccessService::DoHandleService some error occured";
 			}
 		}
-
 		Trace("Creating output.");
 		if (tmpStore.IsDefined("Mapper") && tmpStore["Mapper"].IsDefined("HTTPBody")) {
 			// only create output if the body really is defined, otherwise the
@@ -74,4 +73,5 @@ void SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 		}
 		reply << std::flush;
 	}
+	return true;
 }

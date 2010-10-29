@@ -19,13 +19,14 @@ template < class ContainerType >
 class AnyLookupInterfaceAdapter : public LookupInterface
 {
 public:
-	typedef typename boost_or_tr1::add_reference<boost_or_tr1::remove_const<ContainerType> >::type ContainerTypeRef;
-	typedef const typename boost_or_tr1::remove_const<ContainerType>::type ConstContainerTypeRef;
+	typedef typename boost_or_tr1::remove_reference< typename boost_or_tr1::remove_const<ContainerType>::type>::type PlainType;
+	typedef typename boost_or_tr1::add_reference<typename boost_or_tr1::add_const<PlainType>::type>::type _ParameterType;
+	typedef typename boost_or_tr1::mpl::if_<boost_or_tr1::is_same<PlainType, ROAnything>, ROAnything, _ParameterType>::type ParameterType;
 
 	/*! Constructor for LookupAdapter
 		\param container [RO]Anything to use as underlying data container
 		\param pcBaseKey optional param which specifies the segment name used to emulate nested content in a Lookup. If the lookup-key starts with this name we cut it away before doing a concrete lookup.*/
-	AnyLookupInterfaceAdapter(ConstContainerTypeRef container, const char *pcBaseKey = NULL)
+	explicit AnyLookupInterfaceAdapter(ParameterType container, const char *pcBaseKey = NULL)
 		: fContainer(container)
 		, fstrBaseKey(pcBaseKey)
 	{}

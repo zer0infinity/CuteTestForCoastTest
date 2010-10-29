@@ -27,7 +27,7 @@ void HTTPProcessor::Init(Server *server) {
 	RequestProcessor::Init(server);
 }
 
-void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
+bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
 	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
@@ -40,9 +40,10 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
 		if (! reader.ReadRequest(ctx, Ios) ) {
-			return;    // this was an error that forbids to process any further
+			return false;    // this was an error that forbids to process any further
 		}
 	}
+	// GetRequest() returns values in subslot "header"
 	Anything request(reader.GetRequest());
 
 	Anything args(ctx.GetRequest());
@@ -57,6 +58,7 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 		ReadRequestBody(Ios, request, header, ctx);
 	}
 	SubTraceAny(request, request, "Arguments:");
+	return true;
 }
 
 void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
@@ -100,13 +102,22 @@ void HTTPProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
 	StartTrace(HTTPProcessor.DoHandleVerifyError);
 }
 
-void HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
+void HTTPProcessor::DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+	StartTrace(HTTPProcessor.DoHandleReadInputError);
+}
+
+bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoProcessRequest);
 	if (IsZipEncodingAcceptedByClient(ctx)) {
 		ctx.GetTmpStore()["ClientAcceptsGzipEnc"] = 1L;
 	}
-	RequestProcessor::DoProcessRequest(reply, ctx);
+	return RequestProcessor::DoProcessRequest(reply, ctx);
+}
+
+void HTTPProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+	StartTrace(RequestProcessor.DoHandleReadInputError);
+//	DoError(reply, "Access denied. Lookuptoken: NDA", ctx);
 }
 
 bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)

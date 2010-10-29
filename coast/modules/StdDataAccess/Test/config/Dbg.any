@@ -21,10 +21,14 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-	/Context {
-		/MainSwitch						0
+	/Server {
+		/MainSwitch						10
 		/EnableAll						10
-
+	}
+	/Context {
+		/MainSwitch						10
+		/EnableAll						10
+		/HTMLWDDebug					-10		# some tests will fail if enabled
 	}
 	/LookupInterface {
 		/MainSwitch						0

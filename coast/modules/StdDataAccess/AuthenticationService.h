@@ -26,7 +26,7 @@ public:
 	}
 
 protected:
-	void DoHandleService(std::ostream &os, Context &ctx);
+	bool DoHandleService(std::ostream &os, Context &ctx);
 	bool DoCheck(Context &ctx);
 	void ForwardToMainHandler(std::ostream &os, Context &ctx);
 	bool AuthenticationIsOk(Context &ctx);

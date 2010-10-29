@@ -40,14 +40,14 @@ public:
 	RegCacheDef(ServiceHandler);	// FindServiceHandler()
 
 	//!handles requested service
-	void HandleService(std::ostream &os, Context &ctx);
+	bool HandleService(std::ostream &os, Context &ctx);
 
 	static const char* gpcCategory;
 	static const char* gpcConfigPath;
 
 protected:
 	//!subclass hook to implement service handling
-	virtual void DoHandleService(std::ostream &os, Context &ctx) = 0;
+	virtual bool DoHandleService(std::ostream &os, Context &ctx) = 0;
 
 private:
 	//! block the following default elements of this class because they're not allowed to be used

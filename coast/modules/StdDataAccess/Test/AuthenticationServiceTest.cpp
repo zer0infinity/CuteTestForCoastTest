@@ -20,13 +20,12 @@
 
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
-class AuthTestService : public ServiceHandler
-{
+class AuthTestService: public ServiceHandler {
 public:
 	//:standard named object constructor
-	AuthTestService(const char *serviceHandlerName)
-		: ServiceHandler(serviceHandlerName) { }
-	~AuthTestService() {}
+	AuthTestService(const char *serviceHandlerName) :
+		ServiceHandler(serviceHandlerName) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -35,8 +34,9 @@ public:
 
 protected:
 	//:
-	virtual void DoHandleService(std::ostream &os, Context &ctx) {
+	virtual bool DoHandleService(std::ostream &os, Context &ctx) {
 		os << "test ok";
+		return true;
 	}
 };
 RegisterServiceHandler(AuthTestService);

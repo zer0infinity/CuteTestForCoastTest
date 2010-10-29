@@ -33,10 +33,6 @@ public:
 	//!general entry point called by handle request thread
 	virtual void ProcessRequest(Context &ctx);
 
-	bool VerifyRequest(Context &ctx);
-
-	void HandleVerifyError(std::ostream &reply, Context &ctx);
-
 	//! checks if the connection should keep-alive after the request has been processed
 	static bool KeepConnectionAlive(Context &ctx);
 
@@ -61,20 +57,21 @@ public:
 
 protected:
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(std::iostream &ios, Context &ctx);
+	virtual bool DoReadInput(std::iostream &Ios, Context &ctx);
 
 	virtual bool DoVerifyRequest(Context &ctx);
 
-	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
-
 	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
-
-	//!process the arguments and generate a reply
-	virtual void DoWriteOutput(std::iostream &ios, std::ostream &reply, Context &ctx);
+	virtual bool DoProcessRequest(std::ostream &reply, Context &ctx);
 
 	//! render the protocol specific status
 	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);
+
+	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
+
+	virtual void DoHandleReadInputError(std::ostream &reply, Context &ctx);
+
+	virtual void DoHandleProcessRequestError(std::ostream &reply, Context &ctx);
 
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
@@ -82,10 +79,16 @@ protected:
 	//! Log the error to Security.log
 	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
 
+private:
+	bool ReadInput(std::iostream &Ios, Context &ctx);
+
 	//! render the protocol specific error msg
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
+	bool VerifyRequest(std::iostream &Ios, Context &ctx);
 
-private:
+	//!process the arguments and generate a reply
+	bool IntProcessRequest(std::ostream &Ios, Context &ctx);
+
 	//!the server we use as callback for application functionality
 	Server *fServer;
 

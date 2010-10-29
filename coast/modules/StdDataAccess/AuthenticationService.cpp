@@ -33,16 +33,18 @@ AuthenticationService::~AuthenticationService()
 	StartTrace(AuthenticationService.Dtor);
 }
 
-void AuthenticationService::DoHandleService( std::ostream &os, Context &ctx )
+bool AuthenticationService::DoHandleService( std::ostream &os, Context &ctx )
 {
 	StartTrace(AuthenticationService.DoHandleService);
 	if ( DoCheck(ctx) ) {
 		Trace( "DoCheck succeeded --> Calling ForwardToMainHandler" );
 		ForwardToMainHandler(os, ctx);
+		return true;
 	} else {
 		Trace( "DoCheck failed --> Calling Produce401Response" );
 		Produce401Response( os, ctx );
 	}
+	return false;
 }
 
 bool AuthenticationService::DoCheck( Context &ctx )

@@ -17,10 +17,11 @@
 #include "Server.h"
 #include "URLUtils.h"
 #include "Dbg.h"
+#include "AnythingUtils.h"
 
 RegisterServiceHandler(WebAppService);
 //---- WebAppService ----------------------------------------------------------------
-void WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
+bool WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(WebAppService.DoHandleService);
 
@@ -33,7 +34,7 @@ void WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 		Trace("request verification failed");
 		SystemLog::Info("request verification failed");
 		RequestProcessor::Error(reply, "Access denied. Lookuptoken: VFSF", ctx);
-		return;
+		return false;
 	}
 
 	// second stage: prepare the query and get the session id if any
@@ -53,10 +54,12 @@ void WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 	if (session) {
 		ROAnything roaConfig;
 		roaConfig = Lookup("RenderNextPage");
-		session->RenderNextPage(reply, ctx, roaConfig);
+		return session->RenderNextPage(reply, ctx, roaConfig);
 	} else {
 		RequestProcessor::Error(reply, "Access denied. Lookuptoken: SLR/NSA", ctx);
+		return false;
 	}
+	return true;
 }
 
 void WebAppService::PrepareRequest(Context &ctx)

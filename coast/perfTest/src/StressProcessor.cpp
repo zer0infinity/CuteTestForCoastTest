@@ -25,7 +25,7 @@ StressProcessor::~StressProcessor()
 {
 }
 
-void StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
+bool StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(StressProcessor.DoProcessRequest);
 	TraceAny(ctx.GetRequest(), "Request");
@@ -36,4 +36,5 @@ void StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 	Anything result = Stresser::RunStresser(stresserName);
 	TraceAny(result, "Results");
 	result.PrintOn(reply, false);
+	return true;
 }

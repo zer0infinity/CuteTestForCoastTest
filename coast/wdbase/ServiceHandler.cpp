@@ -28,14 +28,15 @@ ServiceHandler::~ServiceHandler()
 {
 	StartTrace(ServiceHandler.Dtor);
 }
-void ServiceHandler::HandleService(std::ostream &os, Context &ctx)
+bool ServiceHandler::HandleService(std::ostream &os, Context &ctx)
 {
 	StartTrace(ServiceHandler.HandleService);
 	Trace("Service [" << fName << "]");
-	ctx.Push("ServiceHandler", this);
-	DoHandleService(os, ctx);
-	String strKey;
-	ctx.Pop(strKey);
+	String strKey("ServiceHandler");
+	ctx.Push(strKey, this);
+	bool status = DoHandleService(os, ctx);
+	ctx.Pop(strKey); //!@FIXME: use PushPopEntry for LookupInterfaces too
+	return status;
 }
 
 //---- registry interface

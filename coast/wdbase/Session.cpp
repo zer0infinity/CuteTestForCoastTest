@@ -21,8 +21,7 @@
 #include "Renderer.h"
 #include "LocalizationUtils.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "AnythingUtils.h"
 
 class EXPORTDECL_WDBASE AccessTimer
 {
@@ -426,22 +425,24 @@ bool Session::Verify(Context &ctx)
 	return true;
 }
 
-void Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig)
+bool Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig)
 {
 	StartTrace(Session.RenderNextPage);
+	bool status = false;
 	if (fMutex.TryLock()) {
 		TRACE_LOCK_START("RenderNextPage");
 		AccessTimer at(this);
 		at.Use();
 		++fAccessCounter;
-		DoRenderNextPage(reply, ctx);
+		status = DoRenderNextPage(reply, ctx);
 		fMutex.Unlock();
 	} else {
-		DoRenderBusyPage(reply, ctx);
+		status = DoRenderBusyPage(reply, ctx);
 	}
+	return status;
 }
 
-void Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
+bool Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Session.DoRenderNextPage);
 
@@ -457,6 +458,7 @@ void Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
 	if (newPage) {
 		// Now Start a new page...
 		newPage->Start(reply, ctx);
+		return true;
 	} else {
 		String msg("Session::DoRenderNextPage: Page [");
 		msg << currentpage << "] not found.";
@@ -465,23 +467,18 @@ void Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
 		logMsg << " Session::RenderNextPage: newPage == 0";
 		SYSWARNING(logMsg);
 	}
+	return false;
 }
 
-void Session::DoRenderBusyPage(std::ostream &reply, Context &ctx)
+bool Session::DoRenderBusyPage(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Session.RenderBusyPage);
-
-	Anything env(ctx.GetEnvStore());			// get environment
-	Anything query(ctx.GetQuery());		// get query
-	TraceAny(query, "query");
-
-	// this is a trimmed down context object
-	// since you can't use this session and its role
-
 	Page *p = Page::FindPage("BusyPage");
 	if ( p ) {
 		p->Start(reply, ctx);
+		return true;
 	}
+	return false;
 }
 
 //--- auxiliary methods and hooks for RenderNextPage

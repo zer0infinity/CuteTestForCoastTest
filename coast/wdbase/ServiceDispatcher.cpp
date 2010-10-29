@@ -61,10 +61,11 @@ ServiceDispatcher::~ServiceDispatcher()
 	StartTrace(ServiceDispatcher.Dtor);
 }
 
-void ServiceDispatcher::Dispatch2Service(std::ostream &reply, Context &ctx)
+bool ServiceDispatcher::Dispatch2Service(std::ostream &reply, Context &ctx)
 {
 	StartTrace(ServiceDispatcher.Dispatch2Service);
-	ctx.Push("ServiceDispatcher", this);
+	String strKey("ServiceDispatcher");
+	ctx.Push(strKey, this);
 	ServiceHandler *sh = FindServiceHandler(ctx);
 	// if no service handler is found, use DefaultHandler instead
 	if (!sh) {
@@ -72,11 +73,12 @@ void ServiceDispatcher::Dispatch2Service(std::ostream &reply, Context &ctx)
 		Trace("using DefaultHandler [" << def << "]");
 		sh = ServiceHandler::FindServiceHandler(def);
 	}
+	bool status = false;
 	if ( sh ) {
-		sh->HandleService(reply, ctx);
+		status = sh->HandleService(reply, ctx);
 	}
-	String strKey;
-	ctx.Pop(strKey);
+	ctx.Pop(strKey); //!@FIXME: use PushPopEntry for LookupInterfaces too
+	return status;
 }
 
 ServiceHandler *ServiceDispatcher::FindServiceHandler(Context &ctx)

@@ -46,7 +46,7 @@ public:
 	}
 
 	//!dispatches control to a service handler
-	virtual void Dispatch2Service(std::ostream &reply, Context &ctx);
+	virtual bool Dispatch2Service(std::ostream &reply, Context &ctx);
 
 	//!finds service
 	virtual ServiceHandler *FindServiceHandler(Context &ctx);

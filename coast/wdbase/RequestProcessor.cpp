@@ -50,26 +50,21 @@ void RequestProcessor::ProcessRequest(Context &ctx) {
 	if (Ios && socket->IsReadyForReading()) {
 		// disable nagle algorithm
 		socket->SetNoDelay();
-		DoReadInput(*Ios, ctx);
+		if (ReadInput(*Ios, ctx) && !!(*Ios)) {
 
-		if (!(*Ios)) {
-			return;
-		}
+			KeepConnectionAlive(ctx); //!@FIXME: should not be a feature of a non-HTTP request
 
-		KeepConnectionAlive(ctx); //!@FIXME: should not be a feature of a non-HTTP request
-
-		if (socket->IsReadyForWriting()) {
-			if (VerifyRequest(ctx)) {
-				// process this arguments and
-				// write the output to the reply
-				DoProcessRequest(*Ios, ctx);
-				//!@FIXME BufferReply mechanism possible
-			} else {
-				HandleVerifyError(*Ios, ctx);
+			if (socket->IsReadyForWriting()) {
+				if (VerifyRequest(*Ios, ctx)) {
+					// process this arguments and
+					// write the output to the reply
+					IntProcessRequest(*Ios, ctx);
+					//!@FIXME BufferReply mechanism possible
+				}
 			}
 		}
 	} else {
-		String logMsg("No valid stream from socket");
+		String logMsg("Cannot read from client socket");
 		SystemLog::eLogLevel level(SystemLog::eWARNING);
 		if (socket) {
 			logMsg << ", fd:" << ((socket) ? socket->GetFd() : -1L);
@@ -93,23 +88,21 @@ namespace {
 	}
 }
 
-bool RequestProcessor::VerifyRequest(Context &ctx) {
-	StartTrace(RequestProcessor.VerifyRequest);
-	return DoVerifyRequest(ctx);
-}
-
 bool RequestProcessor::DoVerifyRequest(Context &ctx) {
 	StartTrace(RequestProcessor.DoVerifyRequest);
 	return true;
 }
 
-void RequestProcessor::HandleVerifyError(std::ostream &reply, Context &ctx) {
-	StartTrace(RequestProcessor.HandleVerifyError);
-	DoHandleVerifyError(reply, ctx);
-}
-
 void RequestProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoHandleVerifyError);
+}
+
+void RequestProcessor::DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+	StartTrace(RequestProcessor.DoHandleReadInputError);
+}
+
+void RequestProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+	StartTrace(RequestProcessor.DoHandleProcessRequestError);
 }
 
 void RequestProcessor::ForceConnectionClose(Context &ctx) {
@@ -141,7 +134,7 @@ bool RequestProcessor::DoKeepConnectionAlive(Context &ctx) {
 
 void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	StartTrace(RequestProcessor.RenderProtocolStatus);
-	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
+	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx); //!@FIXME: remove as soon as static members are not required anymore
 }
 
 Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg,
@@ -150,33 +143,59 @@ Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &re
 	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, msg, who);
 }
 
+bool RequestProcessor::ReadInput(std::iostream &Ios, Context &ctx) {
+	StartTrace(RequestProcessor.ReadInput);
+	Anything anyValue = "ReadInput.Error";
+	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
+	if ( !DoReadInput(Ios, ctx) ) {
+		DoHandleReadInputError(Ios, ctx);
+		return false;
+	}
+	return true;
+}
+
 void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx) {
 	StartTrace(RequestProcessor.Error);
 	GetCurrentRequestProcessor(ctx)->DoError(reply, msg, ctx);
 }
 
-void RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
+bool RequestProcessor::VerifyRequest(std::iostream &Ios, Context &ctx) {
+	StartTrace(RequestProcessor.VerifyRequest);
+	Anything anyValue = "VerifyRequest.Error";
+	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
+	if ( !DoVerifyRequest(ctx) ) {
+		DoHandleVerifyError(Ios, ctx);
+		return false;
+	}
+	return true;
+}
+
+//!process the arguments and generate a reply
+bool RequestProcessor::IntProcessRequest(std::ostream &Ios, Context &ctx) {
+	StartTrace(RequestProcessor.IntProcessRequest);
+	Anything anyValue = "ProcessRequest.Error";
+	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
+	if ( !DoProcessRequest(Ios, ctx) ) {
+		DoHandleProcessRequestError(Ios, ctx);
+		return false;
+	}
+	return true;
+}
+
+bool RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 	Anything args;
 	args.Import(Ios);
 	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Storage::Current());
 	ctx.PushRequest(args);
+	return true;
 }
 
-void RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
+bool RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoProcessRequest);
 	if (GetServer()) {
-		GetServer()->ProcessRequest(reply, ctx);
+		return GetServer()->ProcessRequest(reply, ctx);
 	}
-}
-
-void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Context &ctx) {
-	StartTrace(RequestProcessor.DoWriteOutput);
-	// dump the reply object onto the
-	// socket stream
-	//reply.PrintOn(Ios);
-	// flush it in case not everything is
-	// already dumped onto the socket
-	Ios.flush();
+	return false;
 }
 
 void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {

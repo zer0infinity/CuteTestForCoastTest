@@ -59,14 +59,14 @@ public:
 	{
 	public:
 		typedef AnyLookupInterfaceAdapter<ContainerType> LookupAdapterType;
-		typedef const typename boost_or_tr1::remove_const<ContainerType>::type ConstContainerTypeRef;
+		typedef typename LookupAdapterType::ParameterType ParameterType;
 
 		/* Constructor of PushPopEntry. An object of this class can be used where some content must be temporarily pushed onto the Contexts lookup stack. The current implementation uses AnyLookupInterfaceAdapter to wrap the given [RO]Anything.
 			\param ctx Context to operate on
 			\param pcStoreName Name used to identify the pushed store for informational purposes. The name is not used as a unique key so duplicates are allowed.
 			\param store [RO]Anything to use as underlying data container
 			\param pcBaseKey optional param which specifies the segment used to emulate nested content in a Lookup. If the lookup-key starts with this name we cut it away before doing a concrete lookup.*/
-		PushPopEntry(Context &ctx, const char *pcStoreName, ConstContainerTypeRef store, const char *pcBaseKey = NULL)
+		PushPopEntry(Context &ctx, const char *pcStoreName, ParameterType store, const char *pcBaseKey = NULL)
 			: fCtx(ctx)
 			, fStoreName(pcStoreName)
 			, fbPushSuccess(false)
@@ -131,12 +131,6 @@ public:
 	/*! Get write count on internal socket if any
 		\return byte-length of last written request on socket; otherwise zero */
 	long GetWriteCount();
-
-	/*! access the stores by name
-		\param key the path to the store
-		\param result the anything representing the store in case of success
-		\return true if the store exists, false otherwise */
-	bool GetStore(const char *key, Anything &result);
 
 	//! process action token
 	bool Process(String &token);
@@ -294,19 +288,6 @@ protected:
 		\param s session to push */
 	void InitSession(Session *s);
 
-	/*! Push the given Anything on top of the lookup stack. This is a very convenient way to pass arguments to subsequent context based operations.
-		\param key Name of passed object. This name does not have to be unique, it is only used for information purpose. This means a Push with the same name does not overwrite an already existing stack element with the same name.
-		\param store An Anything containing specific params/infos.
-		\return true when key is not null, and store was not a Null-Any
-		\note Do not forget to pop the pushed Anything after operation! You should use a PushPopEntry whenever possible instead. */
-	bool Push(const char *key, Anything &store);
-
-	/*! Pop the previously pushed store from the lookup stack.
-		\param key Name of the popped element. Can be used to check if the correct element was popped off the stack.
-		\return true if a store could be popped
-		\note The internal tmp store, stack element 0, can not be popped and remains always on the stack! */
-	bool PopStore(String &key);
-
 	/*! find a configurable object by name
 		\param key Name of the object when it was pushed */
 	LookupInterface *Find(const char *key) const;
@@ -330,6 +311,26 @@ protected:
 
 	/*! reacquire session lock if configuration told me to release it */
 	void LockSession();
+
+private:
+	/*! Push the given Anything on top of the lookup stack. This is a very convenient way to pass arguments to subsequent context based operations.
+		\param key Name of passed object. This name does not have to be unique, it is only used for information purpose. This means a Push with the same name does not overwrite an already existing stack element with the same name.
+		\param store An Anything containing specific params/infos.
+		\return true when key is not null, and store was not a Null-Any
+		\note Do not forget to pop the pushed Anything after operation! You should use a PushPopEntry whenever possible instead. */
+	bool Push(const char *key, Anything &store);
+
+	/*! Pop the previously pushed store from the lookup stack.
+		\param key Name of the popped element. Can be used to check if the correct element was popped off the stack.
+		\return true if a store could be popped
+		\note The internal tmp store, stack element 0, can not be popped and remains always on the stack! */
+	bool PopStore(String &key);
+
+	/*! access the stores by name
+		\param key the path to the store
+		\param result the anything representing the store in case of success
+		\return true if the store exists, false otherwise */
+	bool GetStore(const char *key, Anything &result);
 
 	//! the session of this context
 	Session *fSession;
@@ -368,7 +369,6 @@ protected:
 	/*! if set, make a copy of the session store. This allows concurrent requests using the same session because lookups targeting the session store don't need a lock. */
 	bool fCopySessionStore;
 
-private:
 	Context(const Context &);
 	Context &operator=(const Context &);
 	// due to its changed semantics GetRoleStore() has been
@@ -378,11 +378,8 @@ private:
 	}
 	friend class ContextTest;
 	friend class SessionReleaser;
-	friend class LoopbackProcessor;
 	friend class HttpFlowController;
 	friend class TestSequence;
-	// gcc <= 2.95.[34] needs an explicit friend declaration
-	template< class ContainerType > friend class PushPopEntry;
 };
 
 class EXPORTDECL_WDBASE SessionReleaser

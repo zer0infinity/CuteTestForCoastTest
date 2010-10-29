@@ -19,8 +19,7 @@
 #include "StringStreamSocket.h"
 #include "Server.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "AnythingUtils.h"
 
 //---- RequestProcessorTest ----------------------------------------------------------------
 RequestProcessorTest::RequestProcessorTest(TString tname) : TestCaseType(tname)
@@ -112,19 +111,22 @@ LoopbackProcessor::LoopbackProcessor(const char *processorName)
 	StartTrace(LoopbackProcessor.LoopbackProcessor);
 }
 
-void LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
+bool LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(LoopbackProcessor.DoReadInput);
 	Anything request;
 	request.Import(Ios);
-	ctx.Push("Request", request);
+	StorePutter::Operate(request, ctx, "Tmp", "TestRequest");
+	return true;
 }
 
-void LoopbackProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
+bool LoopbackProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(LoopbackProcessor.DoProcessRequest);
-	Anything request;
-	if ( ctx.GetStore("Request", request) ) {
+	ROAnything request;
+	if ( ctx.Lookup("TestRequest", request) ) {
 		request.PrintOn(reply);
+		return true;
 	}
+	return false;
 }

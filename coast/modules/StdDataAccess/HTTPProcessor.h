@@ -40,14 +40,18 @@ protected:
 	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
 
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(std::iostream &ios, Context &ctx);
+	virtual bool DoReadInput(std::iostream &ios, Context &ctx);
+
+	//!process the arguments and generate a reply
+	virtual bool DoProcessRequest(std::ostream &reply, Context &ctx);
 
 	virtual bool DoVerifyRequest(Context &ctx);
 
 	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
 
-	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
+	virtual void DoHandleReadInputError(std::ostream &reply, Context &ctx);
+
+	virtual void DoHandleProcessRequestError(std::ostream &reply, Context &ctx);
 
 	//! render the protocol specific status
 	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);

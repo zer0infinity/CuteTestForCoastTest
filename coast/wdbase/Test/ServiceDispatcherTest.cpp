@@ -25,13 +25,12 @@
 
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
-class TestService : public ServiceHandler
-{
+class TestService: public ServiceHandler {
 public:
 	//:standard named object constructor
-	TestService(const char *serviceHandlerName);
-	~TestService();
-
+	TestService(const char *serviceHandlerName) :
+		ServiceHandler(serviceHandlerName) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) TestService(fName);
@@ -39,9 +38,13 @@ public:
 
 protected:
 	//:does nothing
-	virtual void DoHandleService(std::ostream &os, Context &ctx);
-
+	virtual bool DoHandleService(std::ostream &os, Context &ctx) {
+		StartTrace(TestService.DoHandleService);
+		return true;
+	}
 };
+
+RegisterServiceHandler(TestService);
 
 //---- ServiceDispatcherTest ----------------------------------------------------------------
 ServiceDispatcherTest::ServiceDispatcherTest(TString tname)
@@ -132,19 +135,4 @@ Test *ServiceDispatcherTest::suite ()
 	ADD_CASE(testSuite, ServiceDispatcherTest, FindTests);
 	ADD_CASE(testSuite, ServiceDispatcherTest, ServiceDispatcherModuleTest);
 	return testSuite;
-}
-
-RegisterServiceHandler(TestService);
-//---- TestService ----------------------------------------------------------------
-TestService::TestService(const char *name) : ServiceHandler(name)
-{
-}
-
-TestService::~TestService()
-{
-}
-
-void TestService::DoHandleService(std::ostream &reply, Context &ctx)
-{
-	StartTrace(TestService.DoHandleService);
 }

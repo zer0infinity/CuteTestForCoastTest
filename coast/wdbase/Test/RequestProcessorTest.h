@@ -43,7 +43,6 @@ class LoopbackProcessor : public RequestProcessor
 public:
 	//!named object shared by all requests
 	LoopbackProcessor(const char *processorName);
-	virtual ~LoopbackProcessor()	{ }
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -52,10 +51,10 @@ public:
 
 protected:
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(std::iostream &Ios, Context &ctx);
+	virtual bool DoReadInput(std::iostream &Ios, Context &ctx);
 
 	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
+	virtual bool DoProcessRequest(std::ostream &reply, Context &ctx);
 
 private:
 	LoopbackProcessor(const LoopbackProcessor &);

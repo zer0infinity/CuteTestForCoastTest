@@ -407,14 +407,13 @@ bool Server::IsReady(bool ready, long timeout)
 
 //---- process a request ---------------------------------------------
 
-void Server::ProcessRequest(std::ostream &reply, Context &ctx)
+bool Server::ProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Server.ProcessRequest);
 	if ( fDispatcher ) {
-		fDispatcher->Dispatch2Service(reply, ctx);
-	} else {
-		RequestProcessor::Error(reply, "Access denied. Lookuptoken: NDA", ctx);
+		return fDispatcher->Dispatch2Service(reply, ctx);
 	}
+	return false;
 }
 
 RequestProcessor *Server::MakeProcessor()

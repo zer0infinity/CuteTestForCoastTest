@@ -35,7 +35,7 @@ public:
 
 protected:
 	//!handles requested service
-	virtual void DoHandleService(std::ostream &os, Context &ctx);
+	virtual bool DoHandleService(std::ostream &os, Context &ctx);
 
 	//!prepares the request before decoding into query and verifying
 	virtual void PrepareRequest(Context &ctx);

@@ -72,10 +72,11 @@ public:
 
 	//!reintialization of the servers Thread Pool for request processing (RequestThreadsManager) and Acceptors (ListenerPool)
 	virtual int ReInit(const ROAnything config);
-	//!service handling in its own thread
-	//! \param reply stream to generate the requests output on
-	//! \param ctx the context of this request, containing the request and all necessary configurable objects
-	virtual void ProcessRequest(std::ostream &reply, Context &ctx);
+	//! service handling in its own thread
+	/*! @param reply stream to generate the requests output on
+		@param ctx the context of this request, containing the request and all necessary configurable objects
+		@return true in case processing was successful */
+	virtual bool ProcessRequest(std::ostream &reply, Context &ctx);
 
 	//---- admin API -------------------
 	void PrepareShutdown(int retCode = 0);

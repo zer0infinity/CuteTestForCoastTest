@@ -40,7 +40,7 @@ public:
 	//! \param reply the way all answers go, usually a socket to a client browser
 	//! \param ctx the Request Context for this call
 	//! \param roaConfig Configuration which might be used by derived classes
-	virtual void RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig);
+	virtual bool RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig);
 	//! check if the preselected request arguments are sane for this session
 	//! \param ctx request Context
 	virtual bool Verify(Context &ctx);
@@ -113,10 +113,10 @@ public:
 
 protected:
 	//! unlocked render nextpage
-	virtual void DoRenderNextPage(std::ostream &reply, Context &context);
+	virtual bool DoRenderNextPage(std::ostream &reply, Context &context);
 	//! prepare the context of the request and initialize transition and the pagename
 	//! reply with a busy page
-	virtual void DoRenderBusyPage(std::ostream &reply, Context &ctx);
+	virtual bool DoRenderBusyPage(std::ostream &reply, Context &ctx);
 	virtual void SetupContext(Context &c, String &transition, String &pagename);
 	//! check if role change is triggered by action and performs it
 	//! uses /RoleChanges in context for lookup. This anything maps actions to role names
