@@ -41,8 +41,8 @@ String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 	Anything anyPrefix = appPref.SlotName(appPref.FindValue(fName));
 
 	String errorMsg(msg);
-	errorMsg << anyPrefix.AsString(fName) << " [";
-	errorMsg << " Server:" << context.Lookup("Backend.Server").AsString("no IP");
+	errorMsg << anyPrefix.AsString(fName) << "[";
+	errorMsg << "Server:" << context.Lookup("Backend.Server").AsString("no IP");
 	errorMsg << " Port:" << context.Lookup("Backend.Port").AsString("no Port");
 	errorMsg << "] failed";
 	return errorMsg;

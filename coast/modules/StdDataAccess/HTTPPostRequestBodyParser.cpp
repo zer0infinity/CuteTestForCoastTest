@@ -112,21 +112,21 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 	if ( !is ) {
 		return true;
 	}
+	char const LF = '\n';
+	char c = '\0';
 	bool newLineFoundLastLine = false;
 	while (is->good()) {
 		bool boundaryseen = false;
 		bool newLineFoundThisLine = false;
 
 		String line;
-		line.Append(*is, 4096L, '\n');
-		Trace("Line: <" << line << "\n>");
-
+		line.Append(*is, 4096L, LF);
 		fUnparsedContent.Append(line);
-		if (fHeader.ConsumeEOL(*is)) {
-			Trace("consumed endline and appending \\n to unparsed content");
-			fUnparsedContent.Append('\n');
+		if ( LF == is->peek() && is->get(c).good() ) {
+			fUnparsedContent.Append(c);
 			newLineFoundThisLine = true;
 		}
+		Trace("Length: " << line.Length() << "\nLineContent: <" << line << ">");
 
 		long nextDoubleDash = line.Contains("--");
 		Trace("nextDoubleDash: " << nextDoubleDash);
@@ -147,14 +147,13 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 				if (boundPos <= nextDoubleDash - bound.Length()) {
 					Coast::URLUtils::TrimENDL(body);
 					Trace("Body in Multipart: <" << body << ">");
-					// we are done
 					return true;
 				}
 			}
 		}
 		if (!boundaryseen) {
 			if (newLineFoundLastLine && body.Length()) {
-				body << '\n'; //!@FIXME could be wrong, if last line > 4k
+				body << LF; //!@FIXME could be wrong, if last line > 4k
 			}
 			body << line;
 		}
@@ -162,7 +161,7 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 	}
 	Trace("Body in Multipart: <" << body << ">");
 	Assert(!is->good());
-	return false; // was return true
+	return false;
 }
 
 bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)

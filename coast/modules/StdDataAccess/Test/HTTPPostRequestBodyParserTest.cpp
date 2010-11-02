@@ -179,7 +179,7 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTest()
 		}
 	}
 
-	StartTrace(HTTPPostRequestBodyParserTest.ReadMultiPartPost);
+	StartTrace(HTTPPostRequestBodyParserTest.ReadToBoundaryTest);
 	String testinput, testinput1;
 	String testboundary("980");
 	String result;

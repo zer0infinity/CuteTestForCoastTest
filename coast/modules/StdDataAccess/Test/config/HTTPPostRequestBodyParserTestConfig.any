@@ -12,30 +12,30 @@
 
 	/ReadToBoundaryTest
 	{
-#		/Empty
-#		{
-#			/Input			""
-#			/Boundary		980
-#			/ExpectedEndReached		1
-#			/ExpectedResult	""
-#			/ExpectedUnparsedContent	""
-#		}
-#		/NormalWithEndMarker
-#		{
-#			/Input			"--980\r\nsome content\r\n--980--"
-#			/Boundary		980
-#			/ExpectedEndReached	1
-#			/ExpectedResult	"some content"
-#			/ExpectedUnparsedContent	"--980\r\nsome content\r\n--980--"
-#		}
-#		/NormalWithoutEndMarker
-#		{
-#			/Input			"--980\r\nsome content\r\n--980"
-#			/Boundary		980
-#			/ExpectedEndReached	0
-#			/ExpectedResult	"some content"
-#			/ExpectedUnparsedContent	"--980\r\nsome content\r\n--980"
-#		}
+		/Empty
+		{
+			/Input			""
+			/Boundary		980
+			/ExpectedEndReached		0
+			/ExpectedResult	""
+			/ExpectedUnparsedContent	""
+		}
+		/NormalWithEndMarker
+		{
+			/Input			"--980\r\nsome content\r\n--980--"
+			/Boundary		980
+			/ExpectedEndReached	1
+			/ExpectedResult	"some content"
+			/ExpectedUnparsedContent	"--980\r\nsome content\r\n--980--"
+		}
+		/NormalWithoutEndMarker
+		{
+			/Input			"--980\r\nsome content\r\n--980"
+			/Boundary		980
+			/ExpectedEndReached	0
+			/ExpectedResult	"some content"
+			/ExpectedUnparsedContent	"--980\r\nsome content\r\n--980"
+		}
 		/BigWithEndMarker
 		{
 			/Input			{ "--980\r\n" %BigInput5K "\r\n--980--" }
@@ -94,7 +94,7 @@
 		  /CONTENT-TYPE "text/html"
 		}
 		/body {
-		  "<html>test& -- Rest</html>\n"
+		  "<html>test& -- Rest</html>\r\n"
 		}
 	  }
 	  {
@@ -133,7 +133,7 @@
 		  /CONTENT-TYPE "text/plain"
 		}
 		/body {
-		  "EventType;ExternalId;Language1;Title1;Info1;FromDate;ToDate;SportType1;Category1;EventCountryCode;EventPostalCode;EventCity;EventAddrURL;OrgFirstName;OrgLastName;OrgAdditionalName;OrgStreet;OrgPostalCode;OrgCity;OrgCountryCode;OrgAddrURL\n1;196;D;ENOC: European Youth Olympic Days;\"Boys: 87 - 88  --  Girls: 89 - 90\";29.07.03;04.08.03;Schwimmen;;FRA;;Paris;;;;;;;;;"
+		  "EventType;ExternalId;Language1;Title1;Info1;FromDate;ToDate;SportType1;Category1;EventCountryCode;EventPostalCode;EventCity;EventAddrURL;OrgFirstName;OrgLastName;OrgAdditionalName;OrgStreet;OrgPostalCode;OrgCity;OrgCountryCode;OrgAddrURL\r\n1;196;D;ENOC: European Youth Olympic Days;\"Boys: 87 - 88  --  Girls: 89 - 90\";29.07.03;04.08.03;Schwimmen;;FRA;;Paris;;;;;;;;;"
 		}
 	  }
 	  {

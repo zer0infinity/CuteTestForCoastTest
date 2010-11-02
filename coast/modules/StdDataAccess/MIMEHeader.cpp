@@ -34,31 +34,30 @@ MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::P
 	StartTrace(MIMEHeader.Ctor);
 }
 
-bool MIMEHeader::DoReadHeader(std::istream &in, long maxlinelen, long maxheaderlen)
+bool MIMEHeader::DoReadHeader(std::istream &in, long const maxlinelen, long const maxheaderlen)
 {
 	StartTrace(MIMEHeader.DoReadHeader);
+	char const LF = '\n';
 	String line(maxlinelen);
 	long headerlength = 0;
-
+	char c = '\0';
 	while (in.good()) {
 		// reset line
 		line.Trim(0L);
-		// read line up to but not including next \n
-		line.Append(in, maxlinelen + 2, '\n');
-		Trace("Line [" << line.Length() << "] maxlinelen [" << maxlinelen << "]\nLineContent: <" << line << "\n>");
-		headerlength += line.Length();
-		Trace("headerlength [" << headerlength << "]  [maxheaderlen] " << maxheaderlen);
-		if ((line.Length() > maxlinelen) 	||
-			(headerlength > maxheaderlen)   ||
-			(!ConsumeEOL(in)) 				||
-			((line != "\r") &&  (!DoParseHeaderLine(line)) )) {
-			// bail out we got an error
+		// read line up to but not including next LF
+		line.Append(in, maxlinelen, LF);
+		if ( !in.get(c).good() || c != LF ) {
 			return false;
 		}
-
-		// we are done with the header
-		if (line == "\r" || line.Length() == 0L ) {
-			return true;
+		Trace("Line length: " << line.Length() << " maxlinelen: " << maxlinelen << "\n" << line.DumpAsHex());
+		headerlength += line.Length();
+		Trace("headerlength: " << headerlength << ", maxheaderlen: " << maxheaderlen);
+		if ( not Coast::URLUtils::TrimENDL(line).Length() ) return true;
+		if (line.Length() > maxlinelen || headerlength > maxheaderlen) {
+			return false;
+		}
+		if (not DoParseHeaderLine(line)) {
+			return false;
 		}
 	}
 	return true;
@@ -79,7 +78,6 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 bool MIMEHeader::DoParseHeaderLine(String &line)
 {
 	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << ">>");
-	if ( !Coast::URLUtils::TrimENDL(line).Length() ) return true;
 	String fieldname;
 	GetNormalizedFieldName(line, fieldname);
 	String fieldNameUpperCase(fieldname);
@@ -213,19 +211,6 @@ long MIMEHeader::GetContentLength() const
 	StatTrace(MIMEHeader.GetContentLength, "length: " << ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1), Storage::Current());
 	// inhibit side-effect if not set
 	return ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1);
-}
-
-bool MIMEHeader::ConsumeEOL(std::istream &in) const
-{
-	StartTrace(MIMEHeader.ConsumeEOL);
-
-	if ((in.peek() == '\n') && in.good()) {
-		in.get();
-		Trace("leaving with true");
-		return true;
-	}
-	Trace("leaving with false");
-	return false;
 }
 
 bool MIMEHeader::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
