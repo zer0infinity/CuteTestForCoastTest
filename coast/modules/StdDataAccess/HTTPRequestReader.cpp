@@ -10,18 +10,33 @@
 #include "HTTPRequestReader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "HTTPProcessor.h"
 #include "MIMEHeader.h"
 #include "Context.h"
 #include "Dbg.h"
-#include "StringStream.h"
 #include "AnythingUtils.h"
+#include "HTTPProtocolReplyRenderer.h"
 
 //---- HTTPRequestReader -----------------------------------------------------------
-HTTPRequestReader::HTTPRequestReader(RequestProcessor *p, MIMEHeader &header)
-	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true)
+HTTPRequestReader::HTTPRequestReader(MIMEHeader &header)
+	: fHeader(header), fRequestBufferSize(0)
 {
 	StartTrace(HTTPRequestReader.HTTPRequestReader);
+}
+
+namespace {
+	String const strGET("GET", Storage::Global());
+	String const strPOST("POST", Storage::Global());
+	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
+		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
+		Anything anyMessage;
+		anyMessage["Component"] = "HTTPRequestReader";
+		anyMessage["ResponseCode"] = errorcode;
+		anyMessage["ResponseMsg"] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage["ErrorMessage"] = msg;
+		anyMessage["FaultyContent"] = content;
+		TraceAny(anyMessage, "generated error message");
+		StorePutter::Operate(anyMessage, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "HTTPRequestReader.Error"), true);
+	}
 }
 
 bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line)
@@ -40,9 +55,8 @@ bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const ma
 		fRequestBufferSize += line.Length();
 		if ( line.Length() > maxLineSz ) {
 			String msg;
-			msg << "LineSizeLimitExceeded: Request line too Large : [" << line.Length() << "] (max " << maxLineSz << ")";
-			Trace(msg);
-			DoHandleError(ctx, Ios, 413, msg, line);
+			msg << "Request line too long: >" << line.Length() << ", max: " << maxLineSz << " => check setting of [LineSizeLimit]";
+			PutErrorMessageIntoContext(ctx, 413, msg, line);
 			return false;
 		}
 		if ( c != eol) {
@@ -56,241 +70,115 @@ bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const ma
 bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 {
 	StartTrace(HTTPRequestReader.ReadRequest);
-	// store name of assigned requestprocessor into context to correctly handle error processing
-	Anything anyProcessorName = fProc->GetName();
-	Context::PushPopEntry<Anything> aRPEntry(ctx, "AssignedRequestProcessorName", anyProcessorName, "RequestProcessor");
 
 	long const maxLineSz = ctx.Lookup("LineSizeLimit", 4096L);
 	long const maxReqSz = ctx.Lookup("RequestSizeLimit", 5120L);
 	String line(maxLineSz);
 	Trace("======================= reading request line ==================");
-	if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, Ios, maxReqSz, line) ) return false;
-	if ( !HandleFirstLine(ctx, Ios, line) ) return false;
+	if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, maxReqSz, line) ) return false;
+	if ( !HandleFirstLine(ctx, line) ) return false;
 	Trace("First line: [" << line << "]");
 	Trace("======================= reading headers ==================");
-	bool ret = true;
 	while ( true ) {
-		if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, Ios, maxReqSz, line) ) return false;
+		if ( !ReadLine(ctx, Ios, maxLineSz, line) || RequestSizeLimitExceeded(ctx, maxReqSz, line) ) return false;
 		Trace("Next line: [" << line << "]");
-		if ( line.Length() == 0L || line.IsEqual(ENDL) ) {
-			// end of request
-			break;
-		}
+		if ( not Coast::URLUtils::TrimENDL(line).Length() ) break;
 		// handle request lines
 		fHeader.DoParseHeaderLine(line);
 	}
 	if ( fRequestBufferSize == 0 ) {
-		DoHandleError(ctx, Ios, 400, "Empty request", line);
+		PutErrorMessageIntoContext(ctx, 400, "Empty request", line);
 		return false;
 	}
-	if ( ctx.Lookup("CheckHeaderFields", 1L) && fHeader.AreSuspiciousHeadersPresent() ) {
-		Trace("detected suspicious HTTP headers");
-		String tmp;
-		OStringStream oss(tmp);
-		fHeader.GetInfo().PrintOn(oss, false);
-		oss.flush();
-		line.Append(" ");
-		line.Append(tmp);
-		ret = DoHandleError(ctx, Ios, 400, "Possible SSL Renegotiation attack. A header contains a GET/POST request", line, ctx.Lookup("RejectRequestsWithInvalidHeaders", 0L));
-	}
 	TraceAny(fHeader.GetInfo(), "RequestHeader:");
-	return ret;
+	return true;
 }
 
-bool HTTPRequestReader::RequestSizeLimitExceeded(Context &ctx, std::iostream &Ios, long const maxReqSz, const String &line)
+bool HTTPRequestReader::RequestSizeLimitExceeded(Context &ctx, long const maxReqSz, const String &line) const
 {
 	StartTrace1(HTTPRequestReader.RequestSizeLimitExceeded, "fRequestBufferSize:" << fRequestBufferSize << ", maxReqSz:" << maxReqSz);
 	if (fRequestBufferSize > maxReqSz) {
 		String msg;
-		msg << "RequestSizeLimitExceeded: Request too large : [" << fRequestBufferSize << "] (max " << maxReqSz << ")";
-		Trace(msg);
-		DoHandleError(ctx, Ios, 413, msg, line);
+		msg << "Request too large: >" << fRequestBufferSize << ", max: " << maxReqSz << " => check setting of [RequestSizeLimit]";
+		PutErrorMessageIntoContext(ctx, 413, msg, line);
 		return true;
 	}
 	return false;
 }
 
-bool HTTPRequestReader::CheckReqURISize(Context &ctx, std::iostream &Ios, long lineLength, const String &line)
+bool HTTPRequestReader::CheckReqURISize(Context &ctx, long lineLength, const String &line) const
 {
 	StartTrace(HTTPRequestReader.CheckReqURISize);
-	if (lineLength > ctx.Lookup("URISizeLimit", 512L)) {
-		String msg("Request-URI Too Long [");
-		msg << lineLength << "], max:" << ctx.Lookup("URISizeLimit", 512L);
-		return DoHandleError(ctx, Ios, 414, msg, line);
+	long const uriSize = ctx.Lookup("URISizeLimit", 512L);
+	if (lineLength > uriSize) {
+		String msg;
+		msg << "Request-URI too long: >" << lineLength << ", max: " << uriSize << " => check setting of [URISizeLimit]";
+		PutErrorMessageIntoContext(ctx, 414, msg, line);
+		return false;
 	}
 	return true;
 }
 
-bool HTTPRequestReader::HandleFirstLine(Context &ctx, std::iostream &Ios, String &line)
+bool HTTPRequestReader::HandleFirstLine(Context &ctx, String &line)
 {
 	StartTrace(HTTPRequestReader.HandleFirstLine);
 	long llen = line.Length();
-	if (line == ENDL || !(line[long(llen-2)] == '\r' && line[long(llen-1)] == '\n')) {
-		return DoHandleError(ctx, Ios, 400, "No request header/body", line);
-	} else {
-		line.Trim(llen - 2); // cut off ENDL
-	}
-	if (!CheckReqURISize(ctx, Ios, line.Length(), line)) {
+	if ( not Coast::URLUtils::TrimENDL(line).Length() ) {
+		PutErrorMessageIntoContext(ctx, 400, "Empty request line", line);
 		return false;
 	}
-	if (!ParseRequest(ctx, Ios, line)) {
+	if ( line.Length() > llen-2L ) {
+		PutErrorMessageIntoContext(ctx, 400, "Invalid request line termination", line);
+		return false;
+	}
+	if (!ParseRequest(ctx, line)) {
 		return false;
 	}
 	return true;
 }
 
-bool HTTPRequestReader::ParseRequest(Context &ctx, std::iostream &Ios, String &line)
+bool HTTPRequestReader::ParseRequest(Context &ctx, String &line)
 {
 	StartTrace(HTTPRequestReader.ParseRequest);
 	Trace("Line:<" << line << ">");
 	StringTokenizer st(line, ' ');
 	String tok;
-
 	if ( st.NextToken(tok) ) {
 		// request type
 		tok.ToUpper();
-		if ( tok == "GET" || tok == "POST" ) { //!@FIXME allow more methods..., make it configurable?
+		if ( strGET.IsEqual(tok) || strPOST.IsEqual(tok) ) { //!@FIXME allow more methods..., make it configurable?
 			fRequest["REQUEST_METHOD"] = tok;
 		} else {
-			return DoHandleError(ctx, Ios, 405, "Method Not Allowed", line);
+			PutErrorMessageIntoContext(ctx, 405, "Method Not Allowed", line);
+			return false;
 		}
 	} else {
-		return DoHandleError(ctx, Ios, 405, "Method Not Allowed", line);
+		PutErrorMessageIntoContext(ctx, 400, "Request delimiter not present", line);
+		return false;
 	}
-	String cleanUrl;
-	String url;
 	if ( st.NextToken(tok) ) {
-		// extract request url path, without trailing ? or;
-
-		long argDelimPos = tok.FirstCharOf("?;");
-		if (argDelimPos != -1) {
-			char argDelim = tok[argDelimPos];
-			String urlPath(tok.SubString(0, argDelimPos));
-			Trace("UrlPath: argDelimPos: " << argDelimPos << " argDelim: " << argDelim << "urlPath: " << urlPath);
-			if (!VerifyUrlPath(ctx, Ios, urlPath)) {
-				return false;
-			}
-			String urlArgs;
-			// Do we have any args in original, unchanged request?
-			bool hasArgs(argDelimPos != tok.Length() - 1);
-			if ( hasArgs ) {
-				urlArgs = tok.SubString(argDelimPos + 1, tok.Length());
-				Trace("UrlArgs: argDelimPos: " << argDelimPos << " urlArgs: " << urlArgs);
-				cleanUrl << urlPath << argDelim <<  urlArgs;
-				if ( !VerifyUrlArgs(ctx, urlArgs) ) {
-					String reason("Argument string (after ");
-					reason << argDelim << ") was not correctly encoded. Request not rejected.";
-					LogError(ctx, 0, reason, cleanUrl, "");
-				}
-			} else {
-				cleanUrl << urlPath;
-			}
-		} else {
-			if (tok == "") {
-				return DoHandleError(ctx, Ios, 400, "No URL in request.", line);
-			}
-			// No arguments supplied
-			url = tok;
-			Trace("urlPath: " << url);
-			if (!VerifyUrlPath(ctx, Ios, url)) {
-				return false;
-			}
-			cleanUrl = url;
+		if (!CheckReqURISize(ctx, tok.Length(), line)) {
+			return false;
 		}
-		fRequest["REQUEST_URI"] = cleanUrl;
-		Trace("Resulting Url " << cleanUrl);
+		fRequest["REQUEST_URI"] = tok;
+		Trace("Resulting Url [" << tok << "]");
 	} else {
-		return DoHandleError(ctx, Ios, 405, "Method Not Allowed", line);
+		PutErrorMessageIntoContext(ctx, 400, "Bad request structure", line);
+		return false;
 	}
 	if ( st.NextToken(tok) ) {
 		// request protocol
 		fRequest["SERVER_PROTOCOL"] = tok;
 	} else {
-		return DoHandleError(ctx, Ios, 405, "Method Not Allowed", line);
+		PutErrorMessageIntoContext(ctx, 400, "Bad request structure", line);
+		return false;
 	}
 	TraceAny(fRequest, "Request: ParseRequest returning true");
 	return true;
-}
-
-bool HTTPRequestReader::VerifyUrlPath(Context &ctx, std::iostream &Ios, String &urlPath)
-{
-	StartTrace(HTTPRequestReader.VerifyUrlPath);
-
-	Coast::URLUtils::URLCheckStatus eUrlCheckStatus = Coast::URLUtils::eOk;
-	String urlPathOrig = urlPath;
-	// Are all chars which must be URL-encoded really encoded?
-	if (Coast::URLUtils::CheckUrlEncoding(urlPath, ctx.Lookup("CheckUrlEncodingOverride", "")) == false) {
-		return DoHandleError(ctx, Ios, 400, "Not all unsafe chars URL encoded", urlPathOrig);
-	}
-	if (ctx.Lookup("URLExhaustiveDecode", 0L)) {
-		urlPath = Coast::URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
-	} else {
-		urlPath = Coast::URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
-	}
-	if (eUrlCheckStatus == Coast::URLUtils::eSuspiciousChar) {
-		// We are done, invalid request
-		return DoHandleError(ctx, Ios, 400, "Encoded char above 0x255 detected", urlPathOrig);
-	}
-	if ( Coast::URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, ctx.Lookup("CheckUrlPathContainsUnsafeCharsOverride", ""),
-			ctx.Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", ""),
-			!(ctx.Lookup("CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii", 0L))) ) {
-		return DoHandleError(ctx, Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig);
-	}
-	// "path" part of URL had to be normalized. This may indicate an attack.
-	String normalizedUrl =  Coast::URLUtils::CleanUpUriPath(urlPath);
-	if ( urlPath.Length() !=  normalizedUrl.Length() ) {
-		if ( ctx.Lookup("FixDirectoryTraversial", 0L) ) {
-			// alter the original url
-			urlPathOrig = Coast::URLUtils::urlEncode(normalizedUrl, ctx.Lookup("URLEncodeExclude", "/?"));
-			LogError(ctx, 0, "Directory traversial attack detected and normalized. Request not rejected because of config settings",
-					   urlPathOrig, "");
-		} else {
-			return DoHandleError(ctx, Ios, 400, "Directory traversial attack", urlPathOrig);
-		}
-	}
-	urlPath = urlPathOrig;
-
-	return true;
-}
-
-bool HTTPRequestReader::VerifyUrlArgs(Context &ctx, String &urlArgs)
-{
-	StartTrace(HTTPRequestReader.VerifyUrlArgs);
-	// Are all character which must be URL-encoded really encoded?
-	return Coast::URLUtils::CheckUrlArgEncoding(urlArgs, ctx.Lookup("CheckUrlArgEncodingOverride", ""));
 }
 
 Anything const& HTTPRequestReader::GetRequest()
 {
 	fRequest["header"] = fHeader.GetInfo();
 	return fRequest;
-}
-
-// handle error
-bool HTTPRequestReader::DoHandleError(Context &ctx, std::iostream &Ios, long errcode, const String &reason, const String &line, bool reject, const String &msg)
-{
-	StartTrace(HTTPRequestReader.DoHandleError);
-	Trace("Errcode: [" << errcode << "] Message: [" << msg << "] Faulty line: [" << line << "] reject: [" << reject << "]");
-	if ( reject ) {
-		if ( !!Ios ) {
-			Anything anyErrCode = errcode;
-			StorePutter::Operate(anyErrCode, ctx, "Tmp", "HTTPStatus.ResponseCode");
-			fProc->Error(Ios, msg, ctx);
-			Ios << ENDL;
-			Ios.flush();
-			Ios.clear(std::ios::badbit);
-		} else {
-			Trace("Can not send error msg.");
-		}
-	}
-	LogError(ctx, errcode, reason, line, msg);
-	// If we do only logging, the request must be valid for further processing to be successful.
-	bool ret = !reject;
-	Trace("Returning: " << ret);
-	return ret;
-}
-
-void HTTPRequestReader::LogError(Context &ctx, long errcode, const String &reason, const String &line, const String &msg) {
-	StartTrace(HTTPRequestReader.LogError);
-	fProc->LogError(ctx, errcode, reason, line, msg, "HTTPRequestReader");
 }

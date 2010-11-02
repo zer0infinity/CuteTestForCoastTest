@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/Modules {
 		DataAccessImplsModule
@@ -17,91 +16,125 @@
 	}
 	/DataAccessImpls {}
 
-	/ReadMinimalInputTest
-	{
-
-		{
+	/ReadMinimalInputTest {
+		/ValidRequestWithSuspiciousHeaderField {
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 0
-			/Expected
-			{
-				/FirstResponseLine "GET /alibaba HTTP/1.0"
+			/Expected {
 				/Return			1
+				/Request {
+					/REQUEST_METHOD		GET
+					/REQUEST_URI		"/alibaba"
+					/SERVER_PROTOCOL	"HTTP/1.0"
+					/header {
+						/X-EVIL "GET /gaga HTTP/1.0"
+					}
+				}
 			}
 		}
-		{
-			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
-			/URISizeLimit		271
-			/LineSizeLimit		4096
-			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
-				/Return			0
-			}
-		}
-		{
-			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: POST\r\n\r\n"
-			/URISizeLimit		271
-			/LineSizeLimit		4096
-			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
-				/Return			0
-			}
-		}
-		{
+		/ValidRequestWithNonSuspiciousHeaderField {
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"GET /alibaba HTTP/1.0"
+			/Expected {
 				/Return			1
+				/Request {
+					/REQUEST_METHOD		GET
+					/REQUEST_URI		"/alibaba"
+					/SERVER_PROTOCOL	"HTTP/1.0"
+					/header {
+						/X-EVIL "vGET"
+					}
+				}
 			}
 		}
-		{
+		/ExtendedHeaderField {
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET /gaga HTTP1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"GET /alibaba HTTP/1.0"
+			/Expected {
 				/Return			1
+				/Request {
+					/REQUEST_METHOD		GET
+					/REQUEST_URI		"/alibaba"
+					/SERVER_PROTOCOL	"HTTP/1.0"
+					/header {
+						/X-EVIL "vGET /gaga HTTP1.0"
+					}
+				}
 			}
 		}
-		{
-			/RequestLine "\r\n\r\n"
+		/InvalidRequestLineTermination {
+			/RequestLine 	"GET /alibaba HTTP/1.0\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
+			/URISizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/Expected {
+				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 400
+								/ErrorMessage "Invalid request line termination"
+								/FaultyContent "GET /alibaba HTTP/1.0\n"
+							}
+						}
+					}
+				}
+			}
+		}
+		/EmptyFirstLine {
+			/RequestLine "\r\nBla: 123\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5121
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
+			/Expected {
 				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 400
+								/ErrorMessage "Empty request line"
+								/FaultyContent ""
+							}
+						}
+					}
+				}
+			}
+		}
+		/EmptyRequest {
+			/RequestLine ""
+			/URISizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5121
+			/Expected {
+				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 400
+								/ErrorMessage "Empty request line"
+								/FaultyContent ""
+							}
+						}
+					}
+				}
 			}
 		}
 		{
@@ -109,27 +142,14 @@
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/REQUEST_METHOD	"GET"
-				/Return			0
-			}
-		}
-		{
-			/RequestLine "GET  HTTP/1.0\r\n\r\n"
-			/URISizeLimit		8
-			/LineSizeLimit		4096
-			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 414 Request-URL Too Large"
-				/Return			0
+			/Expected {
+				/Return			1
+				/Request {
+					/REQUEST_METHOD		GET
+					/REQUEST_URI		""
+					/SERVER_PROTOCOL	"HTTP/1.0"
+					/header *
+				}
 			}
 		}
 		{
@@ -137,13 +157,46 @@
 			/URISizeLimit		271
 			/LineSizeLimit		8
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
+			/Expected {
 				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 413
+								/ErrorMessage "Request line too long: >9, max: 8 => check setting of [LineSizeLimit]"
+								/FaultyContent "GET  HTTP"
+							}
+						}
+					}
+				}
+			}
+		}
+		{
+			/RequestLine "GET /23456789 HTTP/1.0\r\n\r\n"
+			/URISizeLimit		8
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/Expected {
+				/Return			0
+				/Request {
+					/REQUEST_METHOD		GET
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 414
+								/ErrorMessage "Request-URI too long: >9, max: 8 => check setting of [URISizeLimit]"
+								/FaultyContent "GET /23456789 HTTP/1.0"
+							}
+						}
+					}
+				}
 			}
 		}
 		{
@@ -151,13 +204,22 @@
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	8
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected
-			{
-				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
+			/Expected {
 				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 413
+								/ErrorMessage "Request too large: >15, max: 8 => check setting of [RequestSizeLimit]"
+								/FaultyContent "GET  HTTP/1.0\r\n"
+							}
+						}
+					}
+				}
 			}
 		}
 		{
@@ -165,873 +227,24 @@
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
 			/Expected
-			{
-				/FirstResponseLine "HTTP/1.1 405 Method Not Allowed"
+			/Expected {
 				/Return			0
+				/Request {
+					/header *
+				}
+				/TmpStore {
+					/HTTPRequestReader {
+						/Error {
+							{
+								/ResponseCode 405
+								/ErrorMessage "Method Not Allowed"
+								/FaultyContent "xxGET  HTTP/1.0"
+							}
+						}
+					}
+				}
 			}
-		}
-	}
-
-	/CleanupRequestLineTest
-	{
-		# 0
-		{
-				/RequestLine 	"GET ?bar HTTP/1.0\r\n"
-				/ExpectedRequest		"?bar"
-
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 1
-		{
-				/RequestLine 	"GET / HTTP/1.0\r\n"
-				/ExpectedRequest		"/"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 2
-		{
-				/RequestLine 	"GET %2F HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2F"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 3
-		{
-				/RequestLine 	"GET /ftimage/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 4
-		{
-				/RequestLine 	"GET %2Fftimage%2Fimage.gif HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2Fftimage%2Fimage.gif"
-				/WrongUrlArgsEncoding 0
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 5
-		# Above hex FF
-		{
-				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP%2F1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			1
-				/Reason			"Encoded char above 0x255 detected"
-		}
-		# 6 # currently same as 5
-		{
-				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP%2F1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			1
-				/Reason			"Encoded char above 0x255 detected"
-		}
-		# 7
-		{
-				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-
-		}
-		# 8
-		{
-				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 9
-		{
-				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 10
-		{
-				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 11
-		{
-				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 12
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 13
-		# Arguments are not unescaped!
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
-				/ExpectedRequest		"%2Fftimage%2Ffoo?fobaz%2F%u002F&..&..&X"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 14
-		# Request with terminating ? ( Must be removed, since a URI with terminating ? is not likely to be found )
-		{
-				/RequestLine 	"GET /kimdojo? HTTP/1.1\r\n"
-				/ExpectedRequest		"/kimdojo"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 15
-		{
-				/RequestLine 	"GET %2Fkimdojo? HTTP/1.1\r\n"
-				/ExpectedRequest		"%2Fkimdojo"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 16
-		{
-				/RequestLine 	"GET ? HTTP/1.1\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 17
-		{
-				/RequestLine 	"GET /? HTTP/1.1\r\n"
-				/ExpectedRequest		"/"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 18
-		# Directory traversial cleanup, more elaborate cases
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 19
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/ExpectedRequest		 ""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 20
-		# Argument checking
-		{
-				/RequestLine 	"GET ?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"?bar=%4B%69%6D-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 21
-		{
-				/RequestLine 	"GET /?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"/?bar=%4B%69%6D-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 22
-		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-~dojo& HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2F?bar=%4B%69%6D-~dojo&"
-				/HasErrors			 1
-				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
-		}
-		# 23
-		# Override ~{} in argument check
-		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-~{dojo}& HTTP%2F1.0\r\n"
-				/CheckUrlArgEncodingOverride	"%=-~{}&"
-				/ExpectedRequest		"%2F?bar=%4B%69%6D-~{dojo}&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 24
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image.gif?bar=%4B%69%6D-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 25
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u004B%u0069%u006D-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image.gif?bar=%u004B%u0069%u006D-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 26
-		{
-				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~& HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~&"
-				/HasErrors			 1
-				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
-		}
-		# 27
-		# args above hex FF
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image.gif?bar=%u01FF-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 28
-		# Wrong path encodings, 4 cases basing on same url
-		{
-				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Not all unsafe chars URL encoded"
-		}
-		# 29
-		# Same, without url-decoding
-		{
-				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Not all unsafe chars URL encoded"
-		}
-		# 30
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage%21/image.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 31
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage%21/image.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 32
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image.gif?bar=%u01FF-dojo&"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 33
-		# Same, without url-decoding
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage%21/image.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 34
-		# not encoded blanks trigger end of path parsing
-		{
-				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 35
-		{
-				/RequestLine 	"GET /ftimage/image%20withblank.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image%20withblank.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 36
-		# this does not correspond to the rfc, blank should be encoded
-		{
-				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/image"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 37
-		# \ is not allowed
-		{
-				/RequestLine 	"GET /ftimage\image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Not all unsafe chars URL encoded"
-		}
-		# 38
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%255Cimage/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 39
-		# %25%35%63 evaluates to \ which is not valid
-		{
-				/RequestLine 	"GET /ftimage%25%35%63../image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-
-		# 40
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%255C../ HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-
-		# 41
-		# %%35c evaluates to \
-		{
-				/RequestLine 	"GET /ftimage%%35c../image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-
-		# 42
-		# this are encoded chars > ascii 127 (//), thus invalid
-		{
-				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 43
-		# unicode encoded .. sequence
-		{
-				/RequestLine 	"GET /ftimage/%u002e%u002e/image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 44
-		# %255C evaluates to \
-		{
-				/RequestLine 	"GET /ftimage%255C../image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 45
-		# after one-time url decoding there are no more escaped squences, but invalid chars (same as 41)
-		{
-				/RequestLine 	"GET /ftimage%255C..%255C..%255C../image/my.gif HTTP/1.0\r\n"
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 46 "old traversial attack tests"
-		{
-				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		 "/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 47
-		{
-				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		 "/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 48
-		{
-				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		 "/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 49
-		{
-				/RequestLine 	"GET /ftimage/../../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest	 	"/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 50
-		{
-				/RequestLine 	"GET %2Fftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest	 	"/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 51
-		{
-				/RequestLine 	"GET %2Fftimage%u002F%u002E%2E/%2E%2E%2F.%2E/etc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest	 	"/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 52
-		{
-				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest	 	"/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 53
-		{
-				/RequestLine 	"GET %2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest	 	"/etc/shadow"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 54
-		{
-				/RequestLine 	"GET /ftimage/../../.. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 55
-		{
-				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 56
-		{
-				/RequestLine 	"GET /ftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 57
-		{
-				/RequestLine 	"GET /ftimage/../../../ HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 58
-		{
-				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%u002E%2E%2F HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 59
-		{
-				/RequestLine 	"GET /. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 60
-		{
-				/RequestLine 	"GET %2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 61
-		{
-				/RequestLine	"GET /./. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 62
-		{
-				/RequestLine	"GET %2F%2E%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 63
-		{
-				/RequestLine	"GET /ftimage/./ HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 64
-		{
-				/RequestLine	"GET %2Fftimage%2F%2E%2F HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage/"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 65
-		{
-				/RequestLine	"GET /ftimage/./. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 66
-		{
-				/RequestLine	"GET %2Fftimage%2F%2E%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 67
-		{
-				/RequestLine	 "GET /ftimage/. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 68
-		{
-				/RequestLine	 "GET %2Fftimage%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 69
-		{
-				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage?fobaz&..&..&X"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 70
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage?fobaz&..&..&X"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# Arguments are not unescaped!
-		# 71
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/ftimage?fobaz%2F%u002F&..&..&X"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# Directory traversial cleanup, more elaborate cases
-		# 72
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/aa/bb/cc/dd/ee/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 73
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/aa/bb/cc/dd/ee/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 74
-		{
-				/RequestLine 	"GET /../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 75
-		{
-				/RequestLine 	"GET %2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 76
-		{
-				/RequestLine 	"GET ../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 77
-		{
-				/RequestLine 	"GET %2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 78
-		{
-				/RequestLine 	"GET /etc%2f%2e%2fpasswd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 79
-		{
-				/RequestLine 	"GET /etc/./././passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 80
-		{
-				/RequestLine 	"GET /etc/./passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 81
-		{
-				/RequestLine 	"GET /etc%2f%2e%2f%2f%2e%2f%2f%2e%2fpasswd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 82
-		{
-				/RequestLine 	"GET ./etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 83
-		{
-				/RequestLine 	"GET %2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 84
-		{
-				/RequestLine 	"GET %2e%2f%2e%2f%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 85
-		{
-				/RequestLine 	"GET ./././etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 86
-		# Url with blank
-		{
-				/RequestLine 	"GET ./././etc/passwd/my%20blank.gif HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd/my%20blank.gif"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 87
-		# URLEncodeExclude set to ("/?=")
-		{
-				/RequestLine 	"GET ./././etc/passwd/my%3Dequals.gif HTTP/1.1\r\n"
-				/URLEncodeExclude  "/?="
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"etc/passwd/my=equals.gif"
-				/HasErrors 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 88
-		#  multiple encodings.
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%252Fimage/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	0
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 89
-		# multiple encodings. Only with FixDirectoryTraversial the modified request will be seen
-		# and only if there had something to be fixed in the directory structure
-		{
-				/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/image/my.gif"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 90
-		# multiple encodings.No FixDirectoryTraversial given
-		{
-				/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Directory traversial attack"
-		}
-		# 91
-		# %%%25%25%32%35%25%25%37%35002%%%u0075004%u0035 evaluates to a .
-		{
-				/RequestLine 	"GET /ftimage%252F.%%%25%25%32%35%25%25%37%35002%%%u0075004%u0035/image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		"/image/my.gif"
-				/HasErrors			 1
-				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
-		}
-		# 92
-		# Char above hex 255  (unicode)
-		{
-				/RequestLine 	"GET /ftimage/%u0900/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/ExpectedRequest		""
-				/HasErrors			 1
-				/Reason				"Encoded char above 0x255 detected"
-		}
-		# 93
-		# We accept $-_.+/?%= as unencoded chars in a URL
-		# Now we allow ] to be unencoded
-		{
-				/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n"
-				/CheckUrlEncodingOverride	"]"
-				/ExpectedRequest		"/ftimage/my=equals.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 94
-		# but with ] the request is invalid
-		{
-				/RequestLine 	"GET /ftimage/my]equals.gif HTTP/1.0\r\n"
-				/ExpectedRequest	""
-				/HasErrors			 1
-				/Reason				"Not all unsafe chars URL encoded"
-		}
-		# 95
-		# Not allowed chars in URL-path, default is "<>\"#%{}|\\^~[]`" ( after decoding )
-		# x84=пїЅ is extended ascii
-		{
-				/RequestLine 	"GET /ftimage/%u0084umlaut.gif HTTP/1.0\r\n"
-				/ExpectedRequest	""
-				/HasErrors			 1
-				/Reason				"Decoded URL path contains unsafe char"
-		}
-		# 96
-		# Now allow  0xe4=д 0xf6=ц
-		{
-				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
-				/ExpectedRequest	"/ftimage/%u00e4%f6umlaut.gif"
-				/CheckUrlPathContainsUnsafeCharsAsciiOverride "дц"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 97
-		# Now allow  0xe4=пїЅ 0xf6=пїЅ, given in \x notation
-		{
-				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
-				/ExpectedRequest	"/ftimage/%u00e4%f6umlaut.gif"
-				/CheckUrlPathContainsUnsafeCharsAsciiOverride "\xe4\xf6"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 98
-		# Override the default set of allowed chars in URL-path ( after decoding ) < = 0x3c
-		# by removing it from the list
-		{
-				/RequestLine 	"GET /ftimage/%3csmaller.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsOverride ">\"#%{}|\\^~[]`"
-				/ExpectedRequest	"/ftimage/%3csmaller.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 99
-		# this are encoded chars > ascii 127 (//), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
-		{
-				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii 1
-				/ExpectedRequest		"/ftimage%C0%AF%C0%AF/image/my.gif"
-				/HasErrors			 0
-				/Reason				""
-		}
-		# 100
-		# this request contains ; as delimiter
-		{
-				/RequestLine 	"GET /ftimage/my.gif;ali=baba&gu^gus=da^da& HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/my.gif;ali=baba&gu^gus=da^da&"
-				/HasErrors			 1
-				/Reason				"Argument string (after ;) was not correctly encoded. Request not rejected."
-		}
-		# 101
-		# this request contains ; as url encoded (3B) delimiter
-		{
-				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage/my.gif%3Bali%3Dbaba"
-				/HasErrors			 0
-		}
-		# 102
-		# this request contains ; as url encoded (3B) delimiter, exhaustive decoding
-		{
-				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
-				/URLEncodeExclude  "/?="
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial 1
-				/ExpectedRequest		"/ftimage/my.gif%3Bali%3Dbaba"
-				/HasErrors			 0
-		}
-		# 103
-		# this request contains ? as url encoded (3F) delimiter, exhaustive decoding
-		{
-				/RequestLine 	"GET /ftimage/my.gif%3Fali%3Dbaba HTTP/1.0\r\n"
-				/URLEncodeExclude  "/?="
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial 1
-				/ExpectedRequest		"/ftimage/my.gif%3Fali%3Dbaba"
-				/HasErrors			 0
-		}
-		# 104
-		# this request is derived from the production environment
-		{
-			/RequestLine "GET /HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1 HTTP/1.0\r\n"
-			/CheckUrlEncodingOverride	"$-_.+/?%;="
-			/URISizeLimit			2048
-			/URLEncodeExclude			"/?;"
-			/ExpectedRequest		"/HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1"
 		}
 	}
 }

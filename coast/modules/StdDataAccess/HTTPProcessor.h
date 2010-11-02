@@ -59,12 +59,6 @@ protected:
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
-	//! Log the error to Security.log
-	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
-
-	//! render the protocol specific error msg
-	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
-
 private:
 	//!set some client info needed for verification
 	void CopyClientInfoIntoRequest(Context &ctx);

@@ -70,7 +70,6 @@ protected:
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
-
 private:
 	bool ReadInput(std::iostream &Ios, Context &ctx);
 

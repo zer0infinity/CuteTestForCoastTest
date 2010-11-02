@@ -28,7 +28,7 @@
 		}
 		/ProcessFail {
 			/RequestLine	"ProcessFail\n"
-			/Expected		"{/Location \"WebAppService::VerifyRequest\"/Cause \"request doesn't contain header.REMOTE_ADDR field\"}"
+			/Expected		"{/Component \"WebAppService::VerifyRequest\"/ResponseCode 400/ErrorMessage \"request doesn't contain header.REMOTE_ADDR field\"}"
 		}
 	}
 }

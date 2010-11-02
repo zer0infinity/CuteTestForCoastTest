@@ -67,12 +67,6 @@ public:
 	// get name of header field and return the index where the delimiting ":" was found in the string
 	long GetNormalizedFieldName(String &line, String &fieldname) const;
 
-	// Detect headers with suspicious content
-	bool AreSuspiciousHeadersPresent() const;
-
-	// Set the flag externally, ussed for main MIMEHeader and "Inner" MIMEHeaders (multipart mime headers)
-	void SetSuspiciousHeadersPresent(bool newValue);
-
 protected:
 	//! parse a line with fieldname ": " value
 	//! stores value as string in fHeader[Normalize(fieldname)]
@@ -89,9 +83,6 @@ protected:
 	// determine the processing mode depending on the config passed to MIMEHeader and the header field name
 	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase) const;
 
-	// Check headerfield value for POST or GET content
-	bool CheckValues(String const& value);
-
 	//!contains the request/reply header
 	Anything fHeader;
 
@@ -100,7 +91,6 @@ protected:
 	bool fBoundaryChecked;
 	Coast::URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
-	bool fAreSuspiciousHeadersPresent;
 
 private:
 	MIMEHeader(const MIMEHeader &);

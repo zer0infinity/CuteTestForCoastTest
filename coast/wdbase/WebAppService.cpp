@@ -55,8 +55,9 @@ bool WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 		return session->RenderNextPage(reply, ctx, roaConfig);
 	} else {
 		Anything anyError;
-		anyError["Location"] = "WebAppService::DoHandleService";
-		anyError["Cause"] = String( isBusy ? "Session is busy" : "No valid Session").Append(", id <").Append(sessionId).Append('>');
+		anyError["Component"] = "WebAppService::DoHandleService";
+		anyError["ResponseCode"] = 406L;
+		anyError["ErrorMessage"] = String( isBusy ? "Session is busy" : "No valid Session").Append(", id <").Append(sessionId).Append('>');
 		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
@@ -76,19 +77,20 @@ bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
 {
 	StartTrace(WebAppService.VerifyRequest);
 	Anything anyError;
-	anyError["Location"] = "WebAppService::VerifyRequest";
+	anyError["Component"] = "WebAppService::VerifyRequest";
+	anyError["ResponseCode"] = 400L;
 	if ( ctx.GetRequest().IsNull() ) {
-		anyError["Cause"] = "got no valid request";
+		anyError["ErrorMessage"] = "got no valid request";
 		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	if ( ctx.GetEnvStore().IsNull() ) {
-		anyError["Cause"] = "got no valid env from request";
+		anyError["ErrorMessage"] = "got no valid env from request";
 		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	if ( ctx.Lookup("header.REMOTE_ADDR").IsNull() ) {
-		anyError["Cause"] = "request doesn't contain header.REMOTE_ADDR field";
+		anyError["ErrorMessage"] = "request doesn't contain header.REMOTE_ADDR field";
 		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}

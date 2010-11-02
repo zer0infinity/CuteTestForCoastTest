@@ -21,12 +21,24 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/HierarchyInstaller {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/Server {
 		/MainSwitch						10
 		/EnableAll						10
 	}
-	/Context {
+	/TestServer {
 		/MainSwitch						10
+		/EnableAll						10
+	}
+	/ServersModule {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/Context {
+		/MainSwitch						0
 		/EnableAll						10
 		/HTMLWDDebug					-10		# some tests will fail if enabled
 	}
@@ -139,6 +151,14 @@
 		/EnableAll						320
 	}
 	/HTTPProcessorTest {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/HTTPProcessorWithChecks {
+		/MainSwitch						310
+		/EnableAll						320
+	}
+	/HTTPProcessorWithChecksTest {
 		/MainSwitch						10
 		/EnableAll						20
 	}

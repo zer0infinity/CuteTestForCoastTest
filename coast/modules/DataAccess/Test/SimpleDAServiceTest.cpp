@@ -80,8 +80,9 @@ void SimpleDAServiceTest::FailedServiceCall()
 		String strInOut = caseConfig["RequestLine"].AsString();
 		StringStreamSocket ss(strInOut);
 		Context ctx(&ss);
+		ctx.Push("tempargs", &lia);
 		Anything anyValue = "TestHTTPProcessor";
-		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyValue);
+		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyValue, "RequestProcessor");
 		httpProcessor->ProcessRequest(ctx);
 		assertCharPtrEqualm(caseConfig["Expected"].AsString(), strInOut, caseName);
 	}

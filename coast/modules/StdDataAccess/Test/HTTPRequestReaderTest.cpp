@@ -23,6 +23,7 @@
 #include "StringStream.h"
 #include "StringStreamSocket.h"
 #include "AnyIterators.h"
+#include "AnyUtils.h"
 
 //---- HTTPRequestReaderTest ----------------------------------------------------------------
 HTTPRequestReaderTest::HTTPRequestReaderTest(TString tstrName) :
@@ -38,47 +39,20 @@ HTTPRequestReaderTest::~HTTPRequestReaderTest() {
 	StartTrace(HTTPRequestReaderTest.Dtor);
 }
 
-void HTTPRequestReaderTest::CleanupRequestLineTest() {
-	StartTrace(HTTPRequestReaderTest.CleanupRequestLineTest);
-
-	ROAnything cConfig;
-	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
-	RequestProcessor *httpProc = HTTPProcessor::FindRequestProcessor("HTTPProcessor");
-	while (aEntryIterator.Next(cConfig)) {
-		Anything anyParams = cConfig.DeepClone();
-		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
-
-		MIMEHeader header;
-		HTTPRequestReader reader(httpProc, header);
-
-		String uri = cConfig["RequestLine"].AsString();
-		StringStreamSocket ss(uri);
-		Context ctx(&ss);
-		ctx.Push("tempargs", &lia);
-		reader.ReadRequest(ctx, *(ss.GetStream()));
-		Anything request(reader.GetRequest());
-		TraceAny(request, "request:");
-		ROAnything errors = ctx.Lookup("HTTPRequestReader");
-		long hasErrors = errors.GetSize() ? 1L : 0L;
-		assertEqualm(cConfig["HasErrors"].AsLong(0), hasErrors, TString("failed at idx:") << aEntryIterator.Index());
-		assertEqualm(cConfig["Reason"].AsString(), errors["Reason"].AsString(""), TString("failed at idx:") << aEntryIterator.Index());
-		assertEqualm(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString(), TString("failed at idx:") << aEntryIterator.Index());
-		Trace("Resulting REQUEST_URI: " << request["REQUEST_URI"].AsString());
-	}
-}
-
 void HTTPRequestReaderTest::ReadMinimalInputTest() {
 	StartTrace(HTTPRequestReaderTest.ReadMinimalInputTest);
 
 	ROAnything cConfig;
-	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
-	RequestProcessor *httpProc = HTTPProcessor::FindRequestProcessor("HTTPProcessor");
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
 	while (aEntryIterator.Next(cConfig)) {
 		Anything anyParams = cConfig.DeepClone();
 		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
+		TString caseName;
+		aEntryIterator.SlotName(caseName);
+		if ( not caseName.Length() ) caseName.Append("failed at idx:").Append(aEntryIterator.Index());
 
 		MIMEHeader header;
-		HTTPRequestReader reader(httpProc, header);
+		HTTPRequestReader reader(header);
 
 		String uri(cConfig["RequestLine"].AsString());
 		Trace("Request to process [" << uri << "]");
@@ -86,20 +60,13 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		Context ctx(&ss);
 		ctx.Push("tempargs", &lia);
 		bool ret = reader.ReadRequest(ctx, *(ss.GetStream()));
-		t_assertm(cConfig["Expected"]["Return"].AsBool(0) == ret, TString("failed at idx:") << aEntryIterator.Index());
-		Trace("response [" << uri << "]");
-		Anything request(reader.GetRequest());
-
-		if (cConfig["Expected"].IsDefined("REQUEST_METHOD")) {
-			assertEqualm(cConfig["Expected"]["REQUEST_METHOD"].AsString(), request["REQUEST_METHOD"].AsString(), TString("At index: ") << aEntryIterator.Index());
-		}
-
-		if (cConfig["Expected"].IsDefined("FirstResponseLine")) {
-			StringTokenizer2 st(uri, "\r\n");
-			String tok;
-			st.NextToken(tok);
-			Trace("tok: [" << tok << "]");
-			assertEqualm(cConfig["Expected"]["FirstResponseLine"].AsString(), tok, TString("At index: ") << aEntryIterator.Index());
+		assertComparem(cConfig["Expected"]["Return"].AsBool(false), equal_to, ret, caseName);
+		assertAnyEqualm(cConfig["Expected"]["Request"], reader.GetRequest(), caseName);
+		OStringStream oss;
+		ctx.DebugStores("bla", oss, true);
+		Trace(oss.str());
+		if (cConfig["Expected"].IsDefined("TmpStore") ) {
+			assertAnyCompareEqual(cConfig["Expected"]["TmpStore"], ctx.GetTmpStore(), caseName, '.', ':');
 		}
 	}
 }
@@ -108,6 +75,5 @@ Test *HTTPRequestReaderTest::suite() {
 	StartTrace(HTTPRequestReaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, HTTPRequestReaderTest, ReadMinimalInputTest);
-	ADD_CASE(testSuite, HTTPRequestReaderTest, CleanupRequestLineTest);
 	return testSuite;
 }

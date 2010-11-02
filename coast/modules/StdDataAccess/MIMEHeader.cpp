@@ -29,7 +29,6 @@ MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::P
 	: fBoundaryChecked(false)
 	, fNormalizeKey(normalizeKey)
 	, fSplitHeaderFields(splitHeaderFields)
-	, fAreSuspiciousHeadersPresent(false)
 {
 	StartTrace(MIMEHeader.Ctor);
 }
@@ -122,7 +121,6 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 				if ( fieldvalue.Length() ) {
 					Coast::URLUtils::TrimBlanks(fieldvalue);
 					Coast::URLUtils::RemoveQuotes(fieldvalue);
-					CheckValues(fieldvalue);
 					if ( splitHeaderFields == eDoSplitHeaderFields ) {
 						Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 					} else if ( splitHeaderFields == eDoSplitHeaderFieldsCookie ) {
@@ -139,7 +137,6 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 			fieldvalue = line.SubString(pos + 1);
 			if ( fieldvalue.Length() ) {
 				Coast::URLUtils::TrimBlanks(fieldvalue);
-				CheckValues(fieldvalue);
 				Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 				TraceAny(fHeader, "fHeader");
 			}
@@ -149,31 +146,6 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 	}
 
 	return (fieldname.Length() > 0);
-}
-
-bool MIMEHeader::CheckValues(String const &value)
-{
-	StartTrace1(MIMEHeader.CheckValues, "value [" << value << "]");
-	String work(value);
-	work.ToUpper();
-	bool postOrGetValue = work.StartsWith("GET") || work.StartsWith("POST");
-	if (postOrGetValue) {
-		Trace("value starts with either POST or GET which is suspicious");
-		SetSuspiciousHeadersPresent(true);
-	}
-	return postOrGetValue;
-}
-
-bool MIMEHeader::AreSuspiciousHeadersPresent() const
-{
-	StatTrace(MIMEHeader.AreSuspiciousHeadersPresent, (fAreSuspiciousHeadersPresent ? "true":"false"), Storage::Current());
-	return fAreSuspiciousHeadersPresent;
-}
-
-void MIMEHeader::SetSuspiciousHeadersPresent(bool newValue)
-{
-	StatTrace(MIMEHeader.SetSuspiciousHeadersPresent, newValue ? "true":"false", Storage::Current());
-	fAreSuspiciousHeadersPresent = newValue;
 }
 
 bool MIMEHeader::IsMultiPart()

@@ -5,8 +5,221 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
+	/Modules {
+		CacheHandlerModule
+		MappersModule
+		ServiceHandlersModule
+		ServiceDispatchersModule
+		SessionListManager
+		ServersModule
+	}
+	/Mappers {}
+	/ServiceHandlers {}
+	/ServiceDispatchers {}
+	/SessionListManager {}
+	/DataAccessImpls {}
+	/Servers { /Server * }
+
+	/NoPoolManager	1
+
+	/DoReadInputWithErrorTest {
+		/ValidRequestButPageNotFound {
+			/RequestLine {
+				"GET /hallo123456 HTTP/1.0" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:1919" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" "\r\n" "\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		1024
+			/RequestSizeLimit	5120
+			/Expected {
+				/Reply			"HTTP/1.1 404 Not Found"
+				/Request {
+					/env {
+						/REQUEST_METHOD		GET
+						/REQUEST_URI		"/hallo123456"
+						/SERVER_PROTOCOL	"HTTP/1.0"
+					}
+					/query ignore
+				}
+			}
+		}
+		/URLTooLong {
+			/RequestLine {
+				"GET /hallo123456 HTTP/1.0" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:1919" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" "\r\n" "\r\n"
+			}
+			/URISizeLimit		10
+			/LineSizeLimit		1024
+			/RequestSizeLimit	5120
+			/Expected {
+				/Reply			"HTTP/1.1 414 Request-URL Too Large"
+				/Request {
+				}
+				/TmpStore {
+				}
+			}
+		}
+		/LineTooLong {
+			/RequestLine {
+				"GET /hallo123456 HTTP/1.0" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:1919" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" "\r\n" "\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		30
+			/RequestSizeLimit	5120
+			/Expected {
+				/Reply			"HTTP/1.1 413 Request Entity Too Large"
+				/Request {
+				}
+				/TmpStore {
+				}
+			}
+		}
+		/RequestTooLarge {
+			/RequestLine {
+				"GET /hallo123456 HTTP/1.0" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:1919" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" "\r\n" "\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		1024
+			/RequestSizeLimit	300
+			/Expected {
+				/Reply			"HTTP/1.1 413 Request Entity Too Large"
+				/Request {
+				}
+				/TmpStore {
+				}
+			}
+		}
+		/SuccessfulReadingButErrorPage {
+			/RequestLine {
+				"GET / HTTP/1.0" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:1919" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=; FINXSCUSTNO=CH10601" "\r\n" "\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		1024
+			/RequestSizeLimit	5120
+			/Expected {
+				/Reply			"HTTP/1.1 404 Not Found"
+				/Request {
+					/env {
+						/REQUEST_METHOD	GET
+						/REQUEST_URI "/"
+						/SERVER_PROTOCOL "HTTP/1.0"
+						/header {
+							/CONNECTION "Keep-Alive"
+							/USER-AGENT "Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)"
+							/HOST "sentosa.hsr.loc:1919"
+							/COOKIE {
+								/FDState	"b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM="
+								/FINXSCUSTNO "CH10601"
+							}
+							/REMOTE_ADDR "localhost"
+							/CONTENT-LENGTH 0
+						}
+					}
+				}
+				/TmpStore {
+				}
+			}
+		}
+		/SuccessfulReadingWithBodyButErrorPage {
+			/RequestLine {
+				"POST /fda?X=b64:YnMwOjnX7XfCfhsxQ-zGeo9l3FXutcXQmypVV$bIM77lo2Bpm$jxzXT5U0Acg2XkIxFwcBwS8KFKsAhIZC45Uow9Zexx8gNV8o7HyTyaGXRKL4ql HTTP/1.0" "\r\n"
+				"Referer: https://sentosa.hsr.loc:2020/"
+				"fda?X=b64:YnMwOpZ1bi1lgJb0S3c54qaMZfApOdV9RnF4HfbIM77lo2Bpm$"
+				"jxzXT5U0Acg2XkIxFwcBwS8KFKsAhIZC45Uow9Zexx8gNV8o7HyaK5$RoW8E"
+				"2vZ1QqXEF$MQRiDd6g4Qb107gGPNEy6vr3pYZtdXBnJpc=" "\r\n"
+				"Connection: Keep-Alive" "\r\n"
+				"User-Agent: Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)" "\r\n"
+				"Host: sentosa.hsr.loc:2020" "\r\n"
+				"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*" "\r\n"
+				"Accept-Encoding: gzip" "\r\n"
+				"Accept-Language: en" "\r\n"
+				"Accept-Charset: iso-8859-1,*,utf-8" "\r\n"
+				"Cookie: FDState=b64:YnMwOsbP70f8fX3Gai-aMy5tiaAwtnNHIKR82hcTT9-m55"
+				"gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7f8QLITZy6d7UUYDrQsGR80QK21q8f"
+				"vV1Of9UjJG52ELWawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM=" "\r\n"
+				"Content-type: application/x-www-form-urlencoded" "\r\n"
+				"Content-length: 148" "\r\n" "\r\n"
+				"fld_TKCountryCode=CH&fld_TKCustNumber=10601"
+				"&fld_TKUserID=tk+bul&fld_TKPassword=gaef"
+				"&b_DoLoginAction=Login&fld_origSessionId=none&fld_origDelayedIn=0" "\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		1024
+			/RequestSizeLimit	5120
+			/Expected {
+				/Reply			"HTTP/1.1 404 Not Found"
+				/Request {
+					/env {
+						/REQUEST_METHOD	POST
+						/REQUEST_URI "/fda?X=b64:YnMwOjnX7XfCfhsxQ-zGeo9l3FXutcXQmypVV$bIM77lo2Bpm$jxzXT5U0Acg2XkIxFwcBwS8KFKsAhIZC45Uow9Zexx8gNV8o7HyTyaGXRKL4ql"
+						/SERVER_PROTOCOL "HTTP/1.0"
+						/header {
+							/CONNECTION "Keep-Alive"
+							/USER-AGENT "Mozilla/4.06 [en] (X11; U; SunOS 5.6 sun4u)"
+							/REFERER "https://sentosa.hsr.loc:2020/fda?X=b64:YnMwOpZ1bi1lgJb0S3c54qaMZfApOdV9RnF4HfbIM77lo2Bpm$jxzXT5U0Acg2XkIxFwcBwS8KFKsAhIZC45Uow9Zexx8gNV8o7HyaK5$RoW8E2vZ1QqXEF$MQRiDd6g4Qb107gGPNEy6vr3pYZtdXBnJpc="
+							/COOKIE {
+								/FDState	"b64:YnMwOsbP70f8fX3Gai-aMy5tiaAwtnNHIKR82hcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7f8QLITZy6d7UUYDrQsGR80QK21q8fvV1Of9UjJG52ELWawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM="
+							}
+							/REMOTE_ADDR "localhost"
+							/HTTPS	0
+							/CONTENT-LENGTH 148
+						}
+						/REQUEST_BODY {
+							/fld_TKCountryCode "CH"
+							/fld_TKCustNumber "10601"
+							/fld_TKUserID "tk bul"
+							/fld_TKPassword	"gaef"
+							/b_DoLoginAction "Login"
+							/fld_origSessionId "none"
+							/fld_origDelayedIn "0"
+						}
+						/WHOLE_REQUEST_BODY "fld_TKCountryCode=CH&fld_TKCustNumber=10601&fld_TKUserID=tk+bul&fld_TKPassword=gaef&b_DoLoginAction=Login&fld_origSessionId=none&fld_origDelayedIn=0"
+					}
+				}
+				/TmpStore {
+				}
+			}
+		}
+	}
 
 	/FileUploadTest {
 		/Request "POST / HTTP/1.0\r\nCONTENT-TYPE: multipart/form-data; boundary=---------------------------28804130528140\r\nContent-Length: 330\r\n\r\n-----------------------------28804130528140\r\nContent-Disposition: form-data; name=\"fld_TheFile\"; filename=\"C:\\test.txt\"\r\nContent-Type: text/plain\r\n\r\nInhalt;\x00&+ =;\r\n\r\n-----------------------------28804130528140\r\nContent-Length: 4\r\nContent-Disposition: form-data; name=\"b_Ok\"\r\n\r\nSend\r\n-----------------------------28804130528140--\r\n"
@@ -39,7 +252,6 @@
 			}
 		}
 	}
-
 	/IsZipEncodingAcceptedByClientTest {
 		/NotAcceptingRequest {
 			/Request {

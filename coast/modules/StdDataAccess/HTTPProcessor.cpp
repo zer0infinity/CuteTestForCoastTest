@@ -22,6 +22,22 @@
 
 RegisterRequestProcessor(HTTPProcessor);
 
+namespace {
+	String const strGET("GET", Storage::Global());
+	String const strPOST("POST", Storage::Global());
+
+	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
+		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
+		Anything anyMessage;
+		anyMessage["ResponseCode"] = errorcode;
+		anyMessage["ResponseMsg"] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage["ErrorMessage"] = msg;
+		anyMessage["FaultyContent"] = content;
+		TraceAny(anyMessage, "generated error message");
+		StorePutter::Operate(anyMessage, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "HTTPProcessor.Error"), true);
+	}
+}
+
 // configure request processor with server object
 void HTTPProcessor::Init(Server *server) {
 	RequestProcessor::Init(server);
@@ -32,21 +48,18 @@ bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	StartTrace(HTTPProcessor.DoReadInput);
 	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 
-	Anything anyProcessorName = GetName();
-	Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyProcessorName, "RequestProcessor");
-
 	MIMEHeader header;
-	HTTPRequestReader reader(this, header);
+	HTTPRequestReader reader(header);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
-		if (! reader.ReadRequest(ctx, Ios) ) {
-			return false;    // this was an error that forbids to process any further
+		if ( not reader.ReadRequest(ctx, Ios) ) {
+			return false;
 		}
 	}
 	// GetRequest() returns values in subslot "header"
 	Anything request(reader.GetRequest());
 
-	Anything args(ctx.GetRequest());
+	Anything args(ctx.GetRequest());	//!@FIXME: replace with reference
 	args["env"] = request;
 	args["query"] = Anything(Anything::ArrayMarker());
 	ctx.PushRequest(args);
@@ -63,19 +76,9 @@ bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 
 void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
 	StartTrace(HTTPProcessor.ReadRequestBody);
-	if (request["REQUEST_METHOD"] == "POST") {
-		const char *pcSubSlotName = "HTTPPostRequestBodyParser";
+	if ( strPOST.IsEqual(request["REQUEST_METHOD"].AsCharPtr()) ) {
 		HTTPPostRequestBodyParser sm(header, Ios);
 		sm.Parse();
-		if (ctx.Lookup("CheckHeaderFields", 1L) && header.AreSuspiciousHeadersPresent()) {
-			Anything anyError;
-			String strStoreAt("ReadRequestBodyError");
-			strStoreAt.Append('.').Append(pcSubSlotName);
-			anyError = LogError(ctx, 400,
-					"Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
-					ctx.Lookup("REQUEST_URI", ""), "", pcSubSlotName);
-			StorePutter::Operate(anyError, ctx, "Tmp", strStoreAt);
-		}
 		request["REQUEST_BODY"] = sm.GetContent();
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
 		TraceAny(request["REQUEST_BODY"], "Body"); TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
@@ -98,12 +101,67 @@ bool HTTPProcessor::DoVerifyRequest(Context &ctx) {
 	return true;
 }
 
-void HTTPProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
-	StartTrace(HTTPProcessor.DoHandleVerifyError);
+namespace {
+	void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
+		StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
+		Renderer *pRenderer = Renderer::FindRenderer(ctx.Lookup("ProtocolReplyRenderer", "HTTPProtocolReplyRenderer"));
+		if (pRenderer)
+			pRenderer->RenderAll(os, ctx, ROAnything());
+	}
+
+	void ErrorReply(std::ostream &reply, const String &msg, Context &ctx) {
+		StartTrace1(HTTPProcessor.ErrorReply, "message [" << msg << "]");
+		long errorCode = ctx.Lookup("HTTPStatus.ResponseCode", 400L);
+		String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
+		RenderHTTPProtocolStatus(reply, ctx);
+		reply << "content-type: text/html" << ENDL << ENDL;
+		reply << "<html><head>\n";
+		reply << "<title>" << errorCode << " " << errorMsg << "</title>\n";
+		reply << "</head><body bgcolor=\"silver\">\n";
+		reply << "<center>\n";
+		reply << "<h1>" << msg << "</h1>\n";
+		reply << "Press the back button to return to the previous page!<br><br>\n";
+		reply << "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n";
+		reply << "</center>\n";
+		ctx.HTMLDebugStores(reply);
+		reply << "</body></html>\n";
+		reply << std::flush;
+	}
+
+	void LogError(Context& ctx) {
+		StartTrace(HTTPProcessor.LogError);
+		AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
+	}
+
+	void GenericRequestProcessorErrorHandler(std::ostream &reply, Context &ctx) {
+		StartTrace(HTTPProcessor.GenericRequestProcessorErrorHandler);
+		OStringStream ostr;
+		ctx.DebugStores("Stores after error", ostr, true);
+		Trace(ostr.str());
+		ROAnything roaErrorMessages;
+		if ( ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot","NonExistingSlotname"), roaErrorMessages) ) {
+			LogError(ctx);
+			//!@FIXME: maybe we should log all of them?
+			Anything anyErrCode = roaErrorMessages[0L]["ResponseCode"].DeepClone();
+			StorePutter::Operate(anyErrCode, ctx, "Tmp", "HTTPStatus.ResponseCode");
+			ErrorReply(reply, roaErrorMessages[0L]["ErrorMessage"].AsString(), ctx);
+		}
+	}
 }
 
 void HTTPProcessor::DoHandleReadInputError(std::ostream &reply, Context &ctx) {
 	StartTrace(HTTPProcessor.DoHandleReadInputError);
+	GenericRequestProcessorErrorHandler(reply, ctx);
+}
+
+void HTTPProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
+	StartTrace(HTTPProcessor.DoHandleVerifyError);
+	GenericRequestProcessorErrorHandler(reply, ctx);
+}
+
+void HTTPProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+	StartTrace(HTTPProcessor.DoHandleProcessRequestError);
+	GenericRequestProcessorErrorHandler(reply, ctx);
 }
 
 bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
@@ -115,9 +173,8 @@ bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 	return RequestProcessor::DoProcessRequest(reply, ctx);
 }
 
-void HTTPProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
-	StartTrace(RequestProcessor.DoHandleReadInputError);
-	DoError(reply, "Access denied. Lookuptoken: NDA", ctx);
+void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
+	RenderHTTPProtocolStatus(os, ctx);
 }
 
 bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
@@ -131,8 +188,7 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 		ROAnything roaCurrAny;
 		while (iter.Next(roaCurrAny)) {
 			String enc = roaCurrAny.AsString("---");
-			enc.ToLower();
-			if (enc.IsEqual("gzip")) {
+			if (enc.ToLower().IsEqual("gzip")) {
 				Trace("accepting gzip");
 				return true;
 			}
@@ -150,48 +206,4 @@ bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.ToLower().IsEqual("keep-alive");
 	Trace("Keep connection alive: " << keepAlive ? "Yes" : "No");
 	return keepAlive;
-}
-
-void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
-{
-	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
-	r.RenderAll( os, ctx, ROAnything());
-}
-
-Anything HTTPProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who)
-{
-	StartTrace(HTTPProcessor.DoLogError);
-	// define SecurityLog according to the AppLog rules if you want to see this output.
-	Anything tmp;
-	tmp["REMOTE_ADDR"] = ctx.Lookup("ClientInfo.REMOTE_ADDR", "");
-	tmp["HTTPS"] = ctx.Lookup("ClientInfo.HTTPS", "");
-	tmp["Request"] = ctx.GetRequest();
-	tmp["HttpStatusCode"]	=  errcode;
-	tmp["HttpResponseMsg"] = msg;
-	tmp["Reason"] = reason;
-	tmp["FaultyRequestLine"] = line;
-	StorePutter::Operate(tmp, ctx, "Tmp", who);
-	AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
-	return tmp;
-}
-
-//! render the protocol specific error msg
-void HTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
-{
-	StartTrace1(HTTPProcessor.DoError, "message [" << msg << "]");
-	ROAnything httpStatus = ctx.Lookup("HTTPStatus");
-	long errorCode(httpStatus["ResponseCode"].AsLong(400L));
-	String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
-	DoRenderProtocolStatus(reply, ctx);
-	reply << "content-type: text/html" << ENDL << ENDL;
-	reply << "<html><head>\n";
-	reply << "<title>" << errorCode << " " << errorMsg << "</title>\n";
-	reply << "</head><body bgcolor=\"silver\">\n";
-	reply << "<center>\n";
-	reply << "<h1>" << msg << "</h1>\n";
-	reply << "Press the back button to return to the previous page!<br><br>\n";
-	reply << "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n";
-	reply << "</center>\n";
-	ctx.HTMLDebugStores(reply);
-	reply << "</body></html>\n";
 }

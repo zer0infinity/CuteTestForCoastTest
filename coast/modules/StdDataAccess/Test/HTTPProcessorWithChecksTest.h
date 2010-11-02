@@ -6,23 +6,23 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _HTTPRequestReaderTest_H
-#define _HTTPRequestReaderTest_H
+#ifndef _HTTPProcessorWithChecksTest_H
+#define _HTTPProcessorWithChecksTest_H
 
 //---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
-//---- HTTPRequestReaderTest ----------------------------------------------------
-class HTTPRequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+//---- HTTPProcessorWithChecksTest ----------------------------------------------------
+class HTTPProcessorWithChecksTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	//--- constructors
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPRequestReaderTest(TString tstrName);
+	HTTPProcessorWithChecksTest(TString tstrName);
 
 	//! destroys the test case
-	~HTTPRequestReaderTest();
+	~HTTPProcessorWithChecksTest();
 
 	//--- public api
 
@@ -32,7 +32,7 @@ public:
 	TString getConfigFileName();
 
 	//! describe this testcase
-	void ReadMinimalInputTest();
+	void CheckFaultyHeadersTest();
 };
 
 #endif
