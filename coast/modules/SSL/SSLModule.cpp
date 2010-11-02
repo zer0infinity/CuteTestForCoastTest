@@ -261,6 +261,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 	StartTrace(SSLModule.SetOwnCertificateAndKey);
 	if ( object->Lookup("NoCertAndPrivateKey", 0L) == 1L ) {
 		SSL *ssl = SSL_new(ctx);
+		(void)ssl;
 		Assert(ssl);
 		return ctx;
 	}
