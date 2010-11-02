@@ -460,10 +460,12 @@ bool Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
 		newPage->Start(reply, ctx);
 		return true;
 	} else {
-		String msg("Session::DoRenderNextPage: Page [");
-		msg << currentpage << "] not found.";
-		RequestProcessor::Error(reply, msg, ctx);
-		String logMsg(fId);
+		Anything anyError;
+		anyError["Location"] = "Session::DoRenderNextPage";
+		anyError["SessionId"] = GetId();
+		anyError["Cause"] = String("Page [").Append(currentpage).Append("] not found.");
+		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "Session.Error"), true);
+		String logMsg(GetId());
 		logMsg << " Session::RenderNextPage: newPage == 0";
 		SYSWARNING(logMsg);
 	}

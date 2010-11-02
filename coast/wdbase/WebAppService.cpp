@@ -32,8 +32,6 @@ bool WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 	// first stage: verify the request
 	if (!VerifyRequest(reply, ctx)) {
 		Trace("request verification failed");
-		SystemLog::Info("request verification failed");
-		RequestProcessor::Error(reply, "Access denied. Lookuptoken: VFSF", ctx);
 		return false;
 	}
 
@@ -56,7 +54,10 @@ bool WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 		roaConfig = Lookup("RenderNextPage");
 		return session->RenderNextPage(reply, ctx, roaConfig);
 	} else {
-		RequestProcessor::Error(reply, "Access denied. Lookuptoken: SLR/NSA", ctx);
+		Anything anyError;
+		anyError["Location"] = "WebAppService::DoHandleService";
+		anyError["Cause"] = String( isBusy ? "Session is busy" : "No valid Session").Append(", id <").Append(sessionId).Append('>');
+		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	return true;
@@ -73,16 +74,21 @@ void WebAppService::PrepareRequest(Context &ctx)
 
 bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
 {
+	Anything anyError;
+	anyError["Location"] = "WebAppService::VerifyRequest";
 	if ( ctx.GetRequest().IsNull() ) {
-		SystemLog::Info("got no valid request");
+		anyError["Cause"] = "got no valid request";
+		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	if ( ctx.GetEnvStore().IsNull() ) {
-		SystemLog::Info("got no valid env from request");
+		anyError["Cause"] = "got no valid env from request";
+		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	if ( ctx.Lookup("header.REMOTE_ADDR").IsNull() ) {
-		SystemLog::Info("request doesn't contain header.REMOTE_ADDR field");
+		anyError["Cause"] = "request doesn't contain header.REMOTE_ADDR field";
+		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "WebAppService.Error"), true);
 		return false;
 	}
 	return true;

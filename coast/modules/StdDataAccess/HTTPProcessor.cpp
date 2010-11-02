@@ -117,7 +117,7 @@ bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 
 void HTTPProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoHandleReadInputError);
-//	DoError(reply, "Access denied. Lookuptoken: NDA", ctx);
+	DoError(reply, "Access denied. Lookuptoken: NDA", ctx);
 }
 
 bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)

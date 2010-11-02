@@ -43,12 +43,6 @@ public:
 	//! render the protocol specific status
 	static void RenderProtocolStatus(std::ostream &os, Context &ctx);
 
-	//! Log the error to Security.log
-	static Anything LogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
-
-	//! render the protocol specific error msg
-	static void Error(std::ostream &reply, const String &msg, Context &ctx);
-
 	Server* GetServer() {
 		return fServer;
 	}
@@ -76,14 +70,10 @@ protected:
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
-	//! Log the error to Security.log
-	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg, const char *who);
 
 private:
 	bool ReadInput(std::iostream &Ios, Context &ctx);
 
-	//! render the protocol specific error msg
-	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 	bool VerifyRequest(std::iostream &Ios, Context &ctx);
 
 	//!process the arguments and generate a reply

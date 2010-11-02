@@ -137,12 +137,6 @@ void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx); //!@FIXME: remove as soon as static members are not required anymore
 }
 
-Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg,
-		const char *who) {
-	StartTrace(RequestProcessor.LogError);
-	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, msg, who);
-}
-
 bool RequestProcessor::ReadInput(std::iostream &Ios, Context &ctx) {
 	StartTrace(RequestProcessor.ReadInput);
 	Anything anyValue = "ReadInput.Error";
@@ -152,11 +146,6 @@ bool RequestProcessor::ReadInput(std::iostream &Ios, Context &ctx) {
 		return false;
 	}
 	return true;
-}
-
-void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx) {
-	StartTrace(RequestProcessor.Error);
-	GetCurrentRequestProcessor(ctx)->DoError(reply, msg, ctx);
 }
 
 bool RequestProcessor::VerifyRequest(std::iostream &Ios, Context &ctx) {
@@ -200,14 +189,4 @@ bool RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 
 void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
 	// unknown protocol -> no status
-}
-
-Anything RequestProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const String &msg,
-		const char *who) {
-	// unknown protocol -> no error logging
-	return Anything();
-}
-
-void RequestProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx) {
-	// unknown protocol -> no error msg
 }
