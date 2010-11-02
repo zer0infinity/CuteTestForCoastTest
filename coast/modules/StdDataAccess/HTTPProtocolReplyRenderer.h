@@ -39,14 +39,6 @@ public:
 	//! \param status http status code
 	//! \return default reason phrase for a given http status code
 	static const char *DefaultReasonPhrase(long status);
-
-private:
-	//! Stuff that does not belong here but is probably relied on in obscure places
-	static void EvilSideEffects(Context &ctx, ROAnything &realConfig,
-								const String &httpVersion, String statusStr, long status, std::ostream &reply);
-
-	static Anything InitStatusCodeMap();
-	static Anything fgStatusCodeMap;
 };
 
 #endif
