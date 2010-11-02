@@ -11,8 +11,9 @@
 	/DumpAnythings  1		# print full Anythings
 
 	/Context {
-		/MainSwitch 0
-		/EnableAll	10
+		/MainSwitch 10
+		/EnableAll	0
+		/HTMLWDDebug 10
 	}
 	/LookupInterface {
 		/MainSwitch 10
@@ -117,6 +118,10 @@
 		/MainSwitch 10
 		/EnableAll	10
 	}
+	/ServiceHandler {
+		/MainSwitch 10
+		/EnableAll	10
+	}
 	/FileDAImpl {
 		/MainSwitch 10
 		/EnableAll	10
@@ -140,6 +145,10 @@
 	/AnyUtils {
 		/MainSwitch	11
 		/EnableAll	0
+	}
+	/AnyLookupInterfaceAdapter {
+		/MainSwitch	11
+		/EnableAll	11
 	}
 	/ConfiguredActionTest {
 		/MainSwitch		1100
@@ -197,6 +206,10 @@
 		/EnableAll		1100
 	}
 	/RequestProcessor {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/TestHTTPProcessor {
 		/MainSwitch 11
 		/EnableAll 11
 	}

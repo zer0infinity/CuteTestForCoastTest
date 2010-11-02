@@ -74,6 +74,7 @@ void WebAppService::PrepareRequest(Context &ctx)
 
 bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
 {
+	StartTrace(WebAppService.VerifyRequest);
 	Anything anyError;
 	anyError["Location"] = "WebAppService::VerifyRequest";
 	if ( ctx.GetRequest().IsNull() ) {

@@ -20,8 +20,8 @@
 #include "ServiceDispatcher.h"
 #include "RequestProcessor.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "StringStreamSocket.h"
+#include "AnyIterators.h"
 
 //---- SimpleDAServiceTest ----------------------------------------------------------------
 SimpleDAServiceTest::SimpleDAServiceTest(TString tname)
@@ -67,22 +67,24 @@ void SimpleDAServiceTest::SimpleServiceCall()
 void SimpleDAServiceTest::FailedServiceCall()
 {
 	StartTrace(SimpleDAServiceTest.FailedServiceCall);
-	Anything dummy;
-	Anything loopBackDATestCtx;
-
-	Anything config;
-
-	config["RequestProcessor"] = "TestHTTPProcessor";
-
-	Context ctx(config);
-
-	ServiceDispatcher sd("TestSimpleDAService");
-	// do not initialize this one, this is the tests intent!! // sd.Initialize("ServiceDispatcher");
-	ctx.Push("TestSimpleDAService", &sd);
-
-	OStringStream reply;
-	sd.Dispatch2Service(reply, ctx);
-	assertCharPtrEqual("HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n<html><head><title>Error</title></head><body><h1>Error</h1>Access denied. Lookuptoken: VFSF</body></html>", reply.str());
+	RequestProcessor *httpProcessor = RequestProcessor::FindRequestProcessor("TestHTTPProcessor");
+	Anything anyTmpStore, anyRequest, env;
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while (aEntryIterator.Next(caseConfig)) {
+		TString caseName;
+		if ( !aEntryIterator.SlotName(caseName) ) {
+			caseName << "At index: " << aEntryIterator.Index();
+		}
+		AnyLookupInterfaceAdapter<ROAnything> lia(caseConfig);
+		String strInOut = caseConfig["RequestLine"].AsString();
+		StringStreamSocket ss(strInOut);
+		Context ctx(&ss);
+		Anything anyValue = "TestHTTPProcessor";
+		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyValue);
+		httpProcessor->ProcessRequest(ctx);
+		assertCharPtrEqualm(caseConfig["Expected"].AsString(), strInOut, caseName);
+	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -90,38 +92,63 @@ Test *SimpleDAServiceTest::suite ()
 {
 	StartTrace(SimpleDAServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SimpleDAServiceTest, SimpleDispatch);
 	ADD_CASE(testSuite, SimpleDAServiceTest, SimpleServiceCall);
 	ADD_CASE(testSuite, SimpleDAServiceTest, FailedServiceCall);
-
 	return testSuite;
 }
 
-class TestHTTPProcessor : public RequestProcessor
-{
+class TestHTTPProcessor: public RequestProcessor {
 public:
 	//!named object shared by all requests
-	TestHTTPProcessor(const char *processorName)
-		: RequestProcessor(processorName)
-	{ }
+	TestHTTPProcessor(const char *processorName) :
+		RequestProcessor(processorName) {
+		StartTrace(TestHTTPProcessor.ctor);
+	}
+
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		StartTrace(TestHTTPProcessor.Clone);
+		return new (a) TestHTTPProcessor(fName);
+	}
 
 protected:
+	bool DoVerifyRequest(Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoVerifyRequest);
+		return !ctx.GetRequest().AsString().IsEqual("VerifyFail");
+	}
+	bool DoReadInput(std::iostream &Ios, Context &ctx) {
+		Anything args;
+		bool status = args.Import(Ios);
+		StatTraceAny(TestHTTPProcessor.DoReadInput, args, "request arguments " << (status ? "success" : "failure"), Storage::Current());
+		ctx.PushRequest(args);
+		return status;
+	}
+	bool DoProcessRequest(std::ostream &reply, Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoProcessRequest);
+		ServiceDispatcher sd("TestSimpleDAService");
+		ctx.Push("TestSimpleDAService", &sd);
+		return sd.Dispatch2Service(reply, ctx);
+	}
 
 	//! render the protocol specific error msg
-	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
+	void DoHandleVerifyError(std::ostream &reply, Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoHandleVerifyError);
+		reply << "TestHTTPProcessor::DoHandleVerifyError" << std::flush;
+	}
+	void DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoHandleReadInputError);
+		reply << "TestHTTPProcessor::DoHandleReadInputError" << std::flush;
+	}
+
+	void DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoHandleProcessRequestError);
+		ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot", "SlotNotFound!"))[0L].PrintOn(reply, false);
+		OStringStream ostr;
+		ctx.DebugStores("blabla", ostr, true);
+		Trace(ostr.str());
+	}
 };
 
 //--- TestHTTPProcessor ----------------------------------------------------------
 RegisterRequestProcessor(TestHTTPProcessor);
-
-void TestHTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
-{
-	reply << "HTTP/1.1 200 OK" << ENDL;
-	reply << "Content-type: text/html" << ENDL << ENDL;
-	reply << "<html>";
-	reply << "<head><title>Error</title></head>";
-	reply << "<body>" << "<h1>Error</h1>" << msg << "</body></html>";
-
-	ctx.HTMLDebugStores(reply);
-}

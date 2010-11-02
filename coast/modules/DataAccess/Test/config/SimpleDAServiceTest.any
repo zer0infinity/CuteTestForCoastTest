@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/Modules {
 		CacheHandlerModule
@@ -17,4 +16,19 @@
 	/ServiceHandlers {}
 	/ServiceDispatchers { }
 	/DataAccessImpls {}
+
+	/FailedServiceCall {
+		/ReadLineFail {
+			/RequestLine	"}ReadLineFail"
+			/Expected		"TestHTTPProcessor::DoHandleReadInputError"
+		}
+		/VerifyFail {
+			/RequestLine	"VerifyFail\n"
+			/Expected		"TestHTTPProcessor::DoHandleVerifyError"
+		}
+		/ProcessFail {
+			/RequestLine	"ProcessFail\n"
+			/Expected		"{/Location \"WebAppService::VerifyRequest\"/Cause \"request doesn't contain header.REMOTE_ADDR field\"}"
+		}
+	}
 }
