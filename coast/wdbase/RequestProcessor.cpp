@@ -181,8 +181,9 @@ bool RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 
 bool RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoProcessRequest);
-	if (GetServer()) {
-		return GetServer()->ProcessRequest(reply, ctx);
+	Server *pServer = 0;
+	if ( ( pServer = GetServer()) || ( pServer = ctx.GetServer() ) ) {
+		return pServer->ProcessRequest(reply, ctx);
 	}
 	return false;
 }
