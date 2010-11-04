@@ -302,7 +302,11 @@ int Server::DoInit()
 			}
 		}
 	} else {
-		return 0;
+		Trace("not using PoolManager");
+		if ( SetupDispatcher() == 0 ) {
+			SystemLog::Info(String("Server init with NoPoolManager of [") << strServerName << "] OK.");
+			return 0;
+		}
 	}
 	SYSERROR("Server init of [" << strServerName << "] FAILED.");
 	return -1;
