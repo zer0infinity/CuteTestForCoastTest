@@ -69,19 +69,17 @@
 					/Reply "GET %2Fftimage%2Fimage.gif HTTP/1.0"
 				}
 		}
-	} { #//FIXME: correct Server protocol checking
 		/IllegalServerProtocolFormat {
 				/RequestLine 	"GET %2F HTTP%2F1.0\r\n"
 				/Expected {
 					/Request {
 						/env {
-							/REQUEST_URI "%2F"
-							/SERVER_PROTOCOL "HTTP%2F1.0"
 						}
 					}
-					/Reply "wrong protocol string"
+					/Reply "HTTP/1.1 400 Bad Request"
 				}
 		}
+	} { #//FIXME: implement checking code in HTTPProcessorWithChecks
 		/AbovehexFFfail {
 				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP/1.0\r\n"
 				/Expected {

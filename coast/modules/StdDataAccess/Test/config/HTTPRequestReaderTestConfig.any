@@ -68,6 +68,20 @@
 				}
 			}
 		}
+		/IllegalServerProtocolFormat {
+			/RequestLine 	"GET %2F HTTP%2F1.0\r\n"
+			/URISizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/Expected {
+				/Return			0
+				/Request {
+					/REQUEST_METHOD		GET
+					/REQUEST_URI "%2F"
+					/header *
+				}
+			}
+		}
 		/InvalidRequestLineTermination {
 			/RequestLine 	"GET /alibaba HTTP/1.0\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271

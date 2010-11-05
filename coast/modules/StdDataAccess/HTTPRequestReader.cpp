@@ -141,38 +141,36 @@ bool HTTPRequestReader::ParseRequest(Context &ctx, String &line)
 {
 	StartTrace(HTTPRequestReader.ParseRequest);
 	Trace("Line:<" << line << ">");
+	Anything anyRequest;
 	StringTokenizer st(line, ' ');
 	String tok;
-	if ( st.NextToken(tok) ) {
-		// request type
-		tok.ToUpper();
-		if ( strGET.IsEqual(tok) || strPOST.IsEqual(tok) ) { //!@FIXME allow more methods..., make it configurable?
-			fRequest["REQUEST_METHOD"] = tok;
-		} else {
-			PutErrorMessageIntoContext(ctx, 405, "Method Not Allowed", line);
-			return false;
-		}
-	} else {
-		PutErrorMessageIntoContext(ctx, 400, "Request delimiter not present", line);
+	while (st.NextToken(tok)) {
+		anyRequest.Append(tok);
+	}
+	if ( anyRequest.GetSize() != 3L ) {
+		PutErrorMessageIntoContext(ctx, 400, "Bad request structure or simple HTTP/0.9 request", line);
 		return false;
 	}
-	if ( st.NextToken(tok) ) {
-		if (!CheckReqURISize(ctx, tok.Length(), line)) {
-			return false;
-		}
-		fRequest["REQUEST_URI"] = tok;
-		Trace("Resulting Url [" << tok << "]");
+	tok = anyRequest[0L].AsString().ToUpper();
+	if ( strGET.IsEqual(tok) || strPOST.IsEqual(tok) ) { //!@FIXME allow more methods..., make it configurable?
+		fRequest["REQUEST_METHOD"] = tok;
 	} else {
-		PutErrorMessageIntoContext(ctx, 400, "Bad request structure", line);
+		PutErrorMessageIntoContext(ctx, 405, "Method Not Allowed", line);
 		return false;
 	}
-	if ( st.NextToken(tok) ) {
-		// request protocol
-		fRequest["SERVER_PROTOCOL"] = tok;
-	} else {
-		PutErrorMessageIntoContext(ctx, 400, "Bad request structure", line);
+	tok = anyRequest[1L].AsString();
+	if (!CheckReqURISize(ctx, tok.Length(), line)) {
 		return false;
 	}
+	fRequest["REQUEST_URI"] = tok;
+	Trace("Resulting Url [" << tok << "]");
+	tok = anyRequest[2L].AsString();
+	// request protocol, check for validity
+	if ( !tok.StartsWith("HTTP/") ) {
+		PutErrorMessageIntoContext(ctx, 400, "server protocol invalid", line);
+		return false;
+	}
+	fRequest["SERVER_PROTOCOL"] = tok;
 	TraceAny(fRequest, "Request: ParseRequest returning true");
 	return true;
 }
