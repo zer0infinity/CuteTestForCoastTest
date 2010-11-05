@@ -66,7 +66,7 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 {
 	StartTrace(MIMEHeader.GetDoSplitHeaderFieldsState);
 	MIMEHeader::ProcessMode splitHeaderFields = fSplitHeaderFields;
-	if ( fieldNameUpperCase.IsEqual("SET-COOKIE") ) {
+	if ( fieldNameUpperCase.IsEqual("SET-COOKIE") || fieldNameUpperCase.IsEqual("USER-AGENT") ) {
 		splitHeaderFields = eDoNotSplitHeaderFields;
 	} else if ( fieldNameUpperCase.IsEqual("COOKIE") ) {
 		splitHeaderFields = eDoSplitHeaderFieldsCookie;

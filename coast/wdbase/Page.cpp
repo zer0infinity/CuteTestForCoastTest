@@ -171,20 +171,18 @@ void Page::Render(std::ostream &reply, Context &ctx)
 	ProcessToken(token, ctx);
 }
 
-void Page::RenderProtocolStatus(std::ostream &reply, Context &ctx)
-{
+void Page::RenderProtocolStatus(std::ostream &reply, Context &ctx) {
 	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
 	RequestProcessor::RenderProtocolStatus(reply, ctx);
 }
 
-void Page::RenderProtocolHeader(std::ostream &reply, Context &ctx)
-{
-	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
+void Page::RenderProtocolHeader(std::ostream &reply, Context &ctx) {
+	StartTrace1(Page.RenderProtocolHeader, "<" << fName << ">");
 
 	// this part is optional
 	ROAnything httpHeader(ctx.Lookup("HTTPHeader"));
 
-	if (! httpHeader.IsNull()) {
+	if (!httpHeader.IsNull()) {
 		Renderer::Render(reply, ctx, httpHeader);
 	} else {
 		// legacy
@@ -192,8 +190,7 @@ void Page::RenderProtocolHeader(std::ostream &reply, Context &ctx)
 	}
 }
 
-void Page::RenderProtocolBody(std::ostream &reply, Context &ctx)
-{
+void Page::RenderProtocolBody(std::ostream &reply, Context &ctx) {
 	StartTrace1(Page.RenderProtocolBody, "<" << fName << ">");
 
 	ROAnything pagelayout(ctx.Lookup("PageLayout"));
