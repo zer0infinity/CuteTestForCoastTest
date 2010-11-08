@@ -59,7 +59,7 @@ namespace {
 		long lMainSwitch = anySection[fgMainSwitchName].AsLong(lParentMainSwitch);
 		long lEnableAll = anySection[fgEnableAllName].AsLong(-1L);
 		EnablingMode myMode = parentMode;
-		if ( lMainSwitch < 0L ) { // disable this level and all levels below
+		if ( lMainSwitch <= 0L || parentMode == eDisableAll ) { // disable this level and all levels below
 			myMode = eDisableAll;
 		} else if (lMainSwitch >= fgLowerBound && lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
 			myMode = eEnableAll;
@@ -113,7 +113,7 @@ namespace {
 					fgLowerBound = anyDebugContext[fgLowerBoundName].AsLong(0);
 					fgUpperBound = anyDebugContext[fgUpperBoundName].AsLong(0);
 					fgDumpAnythings = anyDebugContext[fgDumpAnythingsName].AsBool(true);
-					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll, 0);
+					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll, fgLowerBound);
 					fgROTriggerMap = fgTriggerMap;
 					String strbuf(4096L);
 					{ StringStream stream(strbuf); fgTriggerMap.PrintOn(stream) << "\n"; }
