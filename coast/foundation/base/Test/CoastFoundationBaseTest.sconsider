@@ -16,6 +16,10 @@ def SystemTestMakeDirectoryExtendCleanup(env):
     if os.path.isdir(basepath):
         shutil.rmtree(basepath, ignore_errors=True)
 
+def setUp(target, source, env):
+#    env['ENV']['COAST_LOGONCERR'] = '1'
+    pass
+
 def tearDown(target, source, env):
     # delete generated files
     SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst'], matchfiles=['include.any']))
@@ -31,6 +35,7 @@ buildSettings = {
             (SConsider.listFiles(['config/*.tst', 'config/*.txt', 'tmp/*']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
         'runConfig'        : {
+            'setUp'     : setUp,
             'tearDown'     : tearDown,
         },
     },
