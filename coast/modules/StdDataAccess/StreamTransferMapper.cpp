@@ -18,10 +18,37 @@
 //---- StreamTransferMapper ------------------------------------------------------------------
 RegisterResultMapper(StreamTransferMapper);
 
-bool StreamTransferMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config)
-{
-	StartTrace(StreamTransferMapper.DoPutStream);
+namespace {
+	void PutResponseLineAndHeader(std::ostream &os, Context &ctx) {
+		StartTrace(StreamTransferMapper.PutResponseLineAndHeader);
+		Anything tmpStore(ctx.GetTmpStore());
+		Anything mapinfo;
+		if (tmpStore.IsDefined("Mapper")) {
+			mapinfo = tmpStore["Mapper"];
+		}
 
+		if (mapinfo.IsDefined("HTTPStatus")) {
+			// only create output if the body really is defined, otherwise the
+			// data access already took care, if this is ok has to be determined
+			Context::PushPopEntry<Anything> aEntry(ctx, "TmpHTTPStatus", mapinfo);
+			RequestProcessor::RenderProtocolStatus(os, ctx);
+			mapinfo.Remove("HTTPStatus");
+		} else {
+			Trace("no HTTPStatus");
+			os << "HTTP/1.1 200 Ok" << ENDL;
+		}
+		if (mapinfo.IsDefined("HTTPHeader")) {
+			Renderer::Render(os, ctx, mapinfo["HTTPHeader"]);
+			mapinfo.Remove("HTTPHeader");
+		} else {
+			Trace("no HTTPHeader");
+		}
+		os << ENDL; // mark the end of the header
+	}
+}
+
+bool StreamTransferMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config) {
+	StartTrace(StreamTransferMapper.DoPutStream);
 	String cmp("HTTPBody");
 	if (cmp == key) {
 		std::iostream *os = ctx.GetStream();
@@ -30,39 +57,8 @@ bool StreamTransferMapper::DoPutStream(const char *key, std::istream &is, Contex
 			(*os) << is.rdbuf();
 			return true;
 		}
-
 		Trace("cannot pass stream");
 		return false;
 	}
 	return ResultMapper::DoPutStream(key, is, ctx, config);
-}
-
-void StreamTransferMapper::PutResponseLineAndHeader(std::ostream &os, Context &ctx)
-{
-	StartTrace(StreamTransferMapper.PutResponseLineAndHeader);
-	Anything tmpStore(ctx.GetTmpStore());
-	Anything mapinfo;
-	if (tmpStore.IsDefined("Mapper")) {
-		mapinfo = tmpStore["Mapper"];
-	}
-
-	if (mapinfo.IsDefined("HTTPStatus")) {
-		// only create output if the body really is defined, otherwise the
-		// data access already took care, if this is ok has to be determined
-		Context::PushPopEntry<Anything> aEntry(ctx, "TmpHTTPStatus", mapinfo);
-		RequestProcessor::RenderProtocolStatus(os, ctx);
-		mapinfo.Remove("HTTPStatus");
-	} else {
-		Trace("no HTTPStatus");
-		os << "HTTP/1.1 200 Ok" << ENDL;
-	}
-	if (mapinfo.IsDefined("HTTPHeader")) {
-		Renderer::Render(os, ctx, mapinfo["HTTPHeader"]);
-		mapinfo.Remove("HTTPHeader");
-	} else {
-		Trace("no HTTPHeader");
-		// do nothing
-	}
-	os << ENDL; // mark the end of the header
-
 }

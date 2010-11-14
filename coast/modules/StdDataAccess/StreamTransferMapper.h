@@ -26,24 +26,8 @@ public:
 		return new (a) StreamTransferMapper(fName);
 	};
 
-	//! \param key the name defines kind of input for the value
-	//! \param is the stream to be mapped
-	//! \param ctx the thread context of the invocation
-	//! \param config ignored
-	//! \return returns true if the mapping was successful otherwise false
+	/*! @copydoc ResultMapper::DoPutStream(const char *, std::istream &, Context &, ROAnything) */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
-
-protected:
-	//!immediately output a valid HTTP response line and header
-	//! synthesizes response line to OK if no indication
-	//! is given in context
-	void PutResponseLineAndHeader(std::ostream &os, Context &ctx);
-
-private:
-	StreamTransferMapper();
-	StreamTransferMapper(const StreamTransferMapper &);
-	StreamTransferMapper &operator=(const StreamTransferMapper &);
-
 };
 
 #endif
