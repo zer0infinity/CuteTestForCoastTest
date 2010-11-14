@@ -423,9 +423,9 @@ String RE::Subst(const String &substituteIn, const String &substitution, bool re
 	Trace("input:" << substituteIn);
 	Trace("Subst:" << substitution);
 
-	String ret;
-	int pos = 0;
 	long len = substituteIn.Length();
+	String ret(len);
+	int pos = 0;
 
 	while (pos < len && ContainedIn(substituteIn, pos)) {
 		ret.Append(substituteIn.SubString(pos, GetStartRegister(0) - pos));

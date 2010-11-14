@@ -14,7 +14,8 @@
 
 //---- ContainsStringRenderer ----------------------------------------------------------
 //! Search string within another string.
-/*!
+/*! Search \c /Contains within \c /String and either render the position where the \c /Contains string was found within \c /String or render \c /True or \c /False spec if given.
+ * In case of empty \c /Contains and/or  \c /String slots, render \c /Error contents.
  * @section cosr1 Renderer configuration
 \code
 {
@@ -66,21 +67,22 @@ Renders : "8"
 
 Renders : "Oops!"
 */
-class ContainsStringRenderer : public Renderer
-{
+class ContainsStringRenderer : public Renderer {
 	ContainsStringRenderer();
 public:
 	/*! Default constructor for NamedObject
 	 * @param name defines the name of the Renderer */
-	ContainsStringRenderer(const char *name);
-	~ContainsStringRenderer();
+	ContainsStringRenderer(const char *name) :
+		Renderer(name) {
+	}
 
+protected:
 	/*! Renders the corresponding result based on a String::Contains() check
 	 * @param reply stream to generate output on
-	 * @param c Context used for output generation
+	 * @param ctx Context used for output generation
 	 * @param config configuration which drives the output generation
 	 */
-	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

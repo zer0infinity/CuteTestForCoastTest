@@ -5,9 +5,7 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
 	/DLL {}
 	/Modules {
 		ServersModule
@@ -1123,6 +1121,68 @@
 				}
 			}
 			/Expected	"46810"
+		}
+		/RegExpReplaceRendererOneReplacementTest {
+			/Env {
+			}
+			/Renderer {
+				{ /RegExpReplaceRenderer {
+					/Text	"Try to match anything within this string"
+					/Expressions {
+						/Pattern		"any"
+						/Replacement	"some"
+					}
+				} }
+			}
+			/Expected	"Try to match something within this string"
+		}
+		/RegExpReplaceRendererOneReplacement2Test {
+			/Env {
+				/blub	anything
+				/replacewith some
+			}
+			/Renderer {
+				{ /RegExpReplaceRenderer {
+					/Text {
+						"Try to match "
+						/Lookup blub
+						" within this string"
+					}
+					/Expressions {
+						{
+							/Pattern		"any"
+							/Replacement { /Lookup replacewith }
+						}
+					}
+				} }
+			}
+			/Expected	"Try to match something within this string"
+		}
+		/RegExpReplaceRendererMultipleReplacementTest {
+			/Env {
+				/blub	anything
+				/replacewith some
+			}
+			/Renderer {
+				{ /RegExpReplaceRenderer {
+					/Text {
+						"Try to match "
+						/Lookup blub
+						" within this string"
+					}
+					/Expressions {
+						{
+							/Pattern		"any"
+							/Replacement { /Lookup replacewith }
+						}
+						{
+							/Pattern		"something"
+							/Replacement 	"whatever"
+						}
+					}
+				} }
+			}
+			/Expected	"Try to match whatever within this string"
 		}
 	}
 }

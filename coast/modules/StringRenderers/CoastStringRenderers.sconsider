@@ -5,7 +5,7 @@ Import('*')
 
 buildSettings = {
     packagename : {
-        'linkDependencies' : ['CoastWDBase'],
+        'linkDependencies' : ['CoastWDBase', 'CoastRegex'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
         'public' : {

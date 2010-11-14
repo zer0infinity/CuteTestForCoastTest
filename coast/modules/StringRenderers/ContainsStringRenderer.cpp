@@ -15,30 +15,21 @@
 //---- ContainsStringRenderer ---------------------------------------------------------------
 RegisterRenderer(ContainsStringRenderer);
 
-ContainsStringRenderer::ContainsStringRenderer(const char *name)
-	: Renderer(name)
-{
-}
-
-ContainsStringRenderer::~ContainsStringRenderer()
-{
-}
-
-void ContainsStringRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
+void ContainsStringRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ContainsStringRenderer.RenderAll);
 	TraceAny(config, "config");
 	String strSource, strContained, strResult;
-	strResult = RenderToString(c, config["Error"]);
-	RenderOnString(strSource, c, config["String"]);
-	RenderOnString(strContained, c, config["Contains"]);
+	strResult = RenderToString(ctx, config["Error"]);
+	RenderOnString(strSource, ctx, config["String"]);
+	RenderOnString(strContained, ctx, config["Contains"]);
 	if ( strSource.Length() && strContained.Length() ) {
 		long lIdx = strSource.Contains(strContained);
 		Trace("contains idx: " << lIdx);
 		if ( lIdx >= 0 ) {
-			strResult = RenderToStringWithDefault(c, config["True"], Anything(lIdx));
+			strResult = RenderToStringWithDefault(ctx, config["True"], Anything(lIdx));
 		} else {
-			strResult = RenderToStringWithDefault(c, config["False"], Anything(lIdx));
+			strResult = RenderToStringWithDefault(ctx, config["False"], Anything(lIdx));
 		}
 	}
 	Trace("returning [" << strResult << "]");

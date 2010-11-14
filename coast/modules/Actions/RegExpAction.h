@@ -20,8 +20,7 @@
  * If groups are present, the whole match is stored at index 0 and each subsequent group will be stored at its index beginning at 1.
  * @section regexpactionconfig Action Configuration
  * @par \c Text
- * \b mandatory, the string to which the regular expression pattern will be applied, can also be a Renderer specification\n
- * To optimize for non-rendered slots, set \c DoRender flag to 0
+ * \b mandatory, the string to which the regular expression pattern will be applied, can also be a Renderer specification
  * @par \c Pattern
  * \b mandatory, the regular expression pattern to search within string of \c Text slot.
  * @par \c MatchFlags
