@@ -116,7 +116,7 @@ protected:
 	 * @param ctx The context to put values into
 	 * @param script current mapper configuration as ROAnything
 	 * @return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 	//! Looks up the Anything at key in Context using SlotFinder
 	/*!	\param key the key usually defines the associated kind of output-value

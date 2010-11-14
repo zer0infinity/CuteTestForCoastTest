@@ -41,7 +41,7 @@ protected:
 		\param ctx the context of the invocation
 		\param script current mapper configuration as ROAnything
 		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 private:
 	LoggingMapper();

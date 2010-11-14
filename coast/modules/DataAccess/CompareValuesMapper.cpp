@@ -32,7 +32,7 @@ IFAObject *CompareValuesMapper::Clone(Allocator *a) const
 	return new (a) CompareValuesMapper(fName);
 }
 
-bool CompareValuesMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
+bool CompareValuesMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
 {
 	StartTrace1(CompareValuesMapper.DoPutAny, NotNull(key));
 	ROAnything roaRightValue, roaLeftValue, roaOperator;

@@ -59,66 +59,66 @@ public:
 	static const char* gpcConfigPath;
 
 	//! Pulls out an int according to key. Clients use this method to pull out an int value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, int &value, Context &ctx);
 
 #if !defined(BOOL_NOT_SUPPORTED)
 	//! Pulls out an bool according to key. Clients use this method to pull out an bool value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, bool &value, Context &ctx);
 #endif
 	//! Pulls out an long according to key. Clients use this method to pull out an long value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, long &value, Context &ctx);
 
 	//! Pulls out an float according to key. Clients use this method to pull out an float value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, float &value, Context &ctx);
 
 	//! Pulls out an double according to key. Clients use this method to pull out an double value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, double &value, Context &ctx);
 
 	//! Pulls out an String according to key. Clients use this method to pull out an String value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, String &value, Context &ctx);
 
 	//! Pulls out an Anything according to key. Clients use this method to pull out an Anything value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, Anything &value, Context &ctx);
 
 	//! Pulls out an Anything according to key. Clients use this method to pull out an Anything value with name key from the Mapper
-	/*! \param key the name defines kind of value to get
-		\param ctx the thread context of the invocation
-		\return mapped value as Anything, will be Null-Anything if not found or mapping failure */
+	/*! @param key the name defines kind of value to get
+		@param ctx the thread context of the invocation
+		@return mapped value as Anything, will be Null-Anything if not found or mapping failure */
 	Anything Get(const char *key, Context &ctx);
 
 	//! Write to the ostream os values according to key. Clients use this method to write to the stream values associated with the key
-	/*! \param key the name defines kind of values to write
-		\param os the stream to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of values to write
+		@param os the stream to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, std::ostream &os, Context &ctx);
 
 	//! Get mapper script for the given key if any. Subclasses can overwrite DoSelectScript() to avoid scripting (recursion) or tailor to their needs.
@@ -171,19 +171,19 @@ public:
 
 protected:
 	//! Major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of value to get or the slot in the script to use
-		\param value collects data within script
-		\param ctx the thread context of the invocation
-		\param script to be interpreted if any, for subclasses this is the config to use
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of value to get or the slot in the script to use
+		@param value collects data within script
+		@param ctx the thread context of the invocation
+		@param script to be interpreted if any, for subclasses this is the config to use
+		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 	//! Major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of values to get or the slot in the script to use
-		\param os The stream to map values onto
-		\param ctx the thread context of the invocation
-		\param script to be interpreted if any, for subclasses this is the config to use
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of values to get or the slot in the script to use
+		@param os The stream to map values onto
+		@param ctx the thread context of the invocation
+		@param script to be interpreted if any, for subclasses this is the config to use
+		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything script);
 
 	//! Hook for recursion stopper in Mapper script interpretation returning an Anything value.
@@ -279,66 +279,66 @@ public:
 	static const char* gpcConfigPath;
 
 	//! Takes an int for mapping according to key. Clients use this method to push an int value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, int value, Context &ctx);
 
 #if !defined(BOOL_NOT_SUPPORTED)
 	//! Takes an bool for mapping according to key. Clients use this method to push an bool value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, bool value, Context &ctx);
 #endif
 
 	//! Takes an long for mapping according to key. Clients use this method to push an long value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, long value, Context &ctx);
 
 	//! Takes an float for mapping according to key. Clients use this method to push an float value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, float value, Context &ctx);
 
 	//! Takes an double for mapping according to key. Clients use this method to push an double value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, double value, Context &ctx);
 
 	//! Takes an String for mapping according to key. Clients use this method to push an String value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, String value, Context &ctx);
 
 	//! Takes an const Anything & for mapping according to key. Clients use this method to push an const Anything & value with name key into the Mapper
-	/*! \param key the name defines kind of input for the value
-		\param value the value to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param value the value to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, Anything value, Context &ctx);
 
 	//! Reads from istream is values according to key. Clients use this method to let the mapper read values associated with the key directly from a istream
-	/*! \param key the name defines kind of input for the value
-		\param is the stream to be mapped
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the name defines kind of input for the value
+		@param is the stream to be mapped
+		@param ctx the thread context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, std::istream &is, Context &ctx);
 
 	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
-		\param ctx the context in which to look for the destination slot
-		\return the name of the slot for later lookup or the empty string */
+		@param ctx the context in which to look for the destination slot
+		@return the name of the slot for later lookup or the empty string */
 	String GetDestinationSlot(Context &ctx);
 
 	//! Get mapper script for the given key if any. Subclasses can overwrite DoSelectScript() to avoid scripting (recursion) or tailor to their needs.
@@ -373,54 +373,54 @@ public:
 
 protected:
 	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+	/*! @param key the key usually defines the associated kind of output-value
+		@param value the value to be mapped
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 	//! Almost the same as DoPutAny but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not Mappers.
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\param slotname new key to use for further processing
-		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname);
+	/*! @param key the key usually defines the associated kind of output-value
+		@param value the value to be mapped
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything script, const char *slotname);
 
 	//! Reads from istream and puts its content according to key. Default behavior is to read in the content of the stream into an anything an call the DoPutAny() method. Clients use this method to let the mapper read values associated with the key directly from a istream.
-	/*! \param key the key usually defines the associated kind of output-value
-		\param is stream whose content will be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the key usually defines the associated kind of output-value
+		@param is stream whose content will be mapped
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 
 	/*! Hook for breaking recursion in mapper script interpretation. Store the value in tmpstore under tmp.slot.key, where slot is retrieved with GetDestinationSlot(). if slot == "", then value is stored under tmp.key directly key may NOT be empty (fails otherwise).
-		\param key name used to distinguish kind of output
-		\param value value to store
-		\param ctx the context in which to store the value
-		\return true in case we could store away the value */
-	virtual bool DoFinalPutAny(const char *key, Anything value, Context &ctx);
+		@param key name used to distinguish kind of output
+		@param value value to store
+		@param ctx the context in which to store the value
+		@return true in case we could store away the value */
+	virtual bool DoFinalPutAny(const char *key, Anything &value, Context &ctx);
 
 	//! Hook for breaking recursion in mapper script interpretation. Stores everything readable from the stream as a String using DoFinalPutAny.
-	/*! \param key the key usually defines the associated kind of output-value
-		\param is stream whose content will be mapped
-		\param ctx the context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+	/*! @param key the key usually defines the associated kind of output-value
+		@param is stream whose content will be mapped
+		@param ctx the context of the invocation
+		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoFinalPutStream(const char *key, std::istream &is, Context &ctx);
 
 	//! Defines the base name space where to put values into tmpstore, default is "Mapper". May return a "."-separated path, such as x.y.z. If empty string, tmpstore will be used as base.
-	/*!	\param ctx the context in which to look for the destination slot
-		\param pcDefault default value to return if we could not find a name either within mappers config or within context
-		\return the name of the slot for later lookup or the empty string */
+	/*!	@param ctx the context in which to look for the destination slot
+		@param pcDefault default value to return if we could not find a name either within mappers config or within context
+		@return the name of the slot for later lookup or the empty string */
 	virtual String DoGetDestinationSlot(Context &ctx, const char *pcDefault);
 
 	//! Looks up the Anything at key in Context using Slotfinder
-	/*!	\param key the key usually defines the associated kind of output-value
-		\param targetAny Anything reference into TmpStore to finally put values at. It uses DestinationSlot and key to get the correct location in Context.
-		\param ctx the context of the invocation */
+	/*!	@param key the key usually defines the associated kind of output-value
+		@param targetAny Anything reference into TmpStore to finally put values at. It uses DestinationSlot and key to get the correct location in Context.
+		@param ctx the context of the invocation */
 	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
 
 	//! Generate the config file name (without extension, which is assumed to be any) out of category and objName. The default implementation just takes the objName.

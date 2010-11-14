@@ -25,7 +25,7 @@ IFAObject *NameUsingOutputMapper::Clone(Allocator *a) const
 	return new (a) NameUsingOutputMapper(fName);
 }
 
-bool NameUsingOutputMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config)
+bool NameUsingOutputMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything config)
 {
 	StartTrace(NameUsingOutputMapper.DoPutAny);
 	Anything dest = GetDestination(ctx, config);
@@ -41,7 +41,8 @@ bool NameUsingOutputMapper::DoPutStream(const char *key, std::istream &is, Conte
 		OStringStream input(strBuf);
 		input << is.rdbuf();
 	}
-	return DoPutAny(key, strBuf, ctx, config);
+	Anything anyVal(strBuf);
+	return DoPutAny(key, anyVal, ctx, config);
 }
 
 Anything NameUsingOutputMapper::GetDestination(Context &ctx, ROAnything config)

@@ -11,8 +11,7 @@
 
 //---- Mapper include -------------------------------------------------
 #include "Mapper.h"
-
-//---- forward declaration -----------------------------------------------
+#include "AnythingLookupPathResultMapper.h"
 
 //---- StreamToAnythingMapper ----------------------------------------------------------
 //! converts a stream into an Anythings and puts it into the context using an optional mapper script
@@ -54,35 +53,21 @@ Example output of pseudo-configuration from above assuming we got the following 
 
 Note that the slot \b ResultsInNoOutput does not exist because the LookupPath of \b NonExistingSlot resulted in a Null-Anything and therefore no output slot will be created!
  */
-class StreamToAnythingMapper : public ResultMapper
-{
+class StreamToAnythingMapper : public AnythingLookupPathResultMapper {
 public:
-	/*! constructor
-		\param name name to register object with */
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	StreamToAnythingMapper(const char *name)
-		: ResultMapper(name) {}
-	//! empty dtor
-	~StreamToAnythingMapper() {}
+		: AnythingLookupPathResultMapper(name) {}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) StreamToAnythingMapper(fName);
 	}
 
-	/*! reads from istream an Anything and puts it according to key
-		\param key the name defines the slotname under with the Anything is stored in the context's TmpStore
-		\param is the stream to be mapped
-		\param ctx the thread context of the invocation
-		\param script specifies what to do
-		\return true if the Anything could be read successful and put into ctx */
+protected:
+	//! reads an Anything from istream and puts it according to key
+	/*! @copydoc ResultMapper::DoPutStream() */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
-
-	virtual bool DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname);
-
-private:
-	StreamToAnythingMapper();
-	StreamToAnythingMapper(const StreamToAnythingMapper &);
-	StreamToAnythingMapper &operator=(const StreamToAnythingMapper &);
 };
 
 //---- AnythingToStreamMapper ----------------------------------------------------------
@@ -93,31 +78,21 @@ looks up 'key' in context and streams it on the client provided stream
 class AnythingToStreamMapper : public ParameterMapper
 {
 public:
-	/*! constructor
-		\param name name to register object with */
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	AnythingToStreamMapper(const char *name)
 		: ParameterMapper(name) {}
-	//! empty dtor
-	~AnythingToStreamMapper() {}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) AnythingToStreamMapper(fName);
 	}
 
-	/*! write to the ostream os an Anything according to key
-		The key is looked up in the context and the Anything found is streamed to os
+protected:
+	//! serialize an Anything retrieved from key to the output stream
+	/*! The key is looked up in the context and the Anything found is streamed to os
 		Clients use this method to write to the stream anythings associated with the key
-		Key may be of the form Foo.Bar.Sequence (i.e. a path)
-		\param key the name defines the Path to the Anything which is to be written to the stream
-		\param os the stream to write the Anything to
-		\param ctx the thread context of the invocation
-		\return returns true if the mapping was successful otherwise false */
+		Key may be of the form Foo.Bar.Sequence (i.e. a path) */
+	/*! @copydoc ResultMapper::DoPutAnyWithSlotname() */
 	virtual bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
-
-private:
-	AnythingToStreamMapper();
-	AnythingToStreamMapper(const AnythingToStreamMapper &);
-	AnythingToStreamMapper &operator=(const AnythingToStreamMapper &);
 };
 #endif

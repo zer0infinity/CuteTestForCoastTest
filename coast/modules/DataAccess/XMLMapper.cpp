@@ -29,7 +29,7 @@ IFAObject *XMLMapper::Clone(Allocator *a) const
 }
 
 // ignores its config altogether, operates on the fConfig
-bool XMLMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything)
+bool XMLMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything)
 {
 	StartTrace1(XMLMapper.DoPutAny, NotNull(key));
 	String pathSoFar;

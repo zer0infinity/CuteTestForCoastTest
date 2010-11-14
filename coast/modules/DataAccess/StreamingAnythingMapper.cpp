@@ -15,8 +15,6 @@
 #include "Timers.h"
 #include "SystemLog.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- AnythingToStreamMapper ----------------------------------------------------------------
 RegisterParameterMapper(AnythingToStreamMapper);
 
@@ -60,18 +58,4 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, std::istream &is, Cont
 		SYSWARNING("importing Anything from stream failed!");
 	}
 	return importok;
-}
-
-bool StreamToAnythingMapper::DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname)
-{
-	StartTrace1(StreamToAnythingMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
-	Trace("Using slotname [" << slotname << "] as Lookup path in value");
-	bool bRet = true;	// do not fail when lookup fails!
-	Anything anyValue;
-	if ( value.LookupPath(anyValue, slotname) ) {
-		TraceAny(anyValue, "Calling myself again with Anything looked up at [" << slotname << "]");
-		bRet = DoPutAny(key, anyValue, ctx, roaScript);
-		Trace("RetCode of DoPutAny:" << (bRet ? "true" : "false"));
-	}
-	return bRet;
 }

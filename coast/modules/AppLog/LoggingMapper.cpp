@@ -31,7 +31,7 @@ IFAObject *LoggingMapper::Clone(Allocator *a) const
 	return new (a) LoggingMapper(fName);
 }
 
-bool LoggingMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
+bool LoggingMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
 {
 	StartTrace1(LoggingMapper.DoPutAny, NotNull(key));
 	String channel( Lookup("Channel", "") );

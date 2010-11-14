@@ -15,35 +15,25 @@
 //! DataAccess for calling programs via CGI (common gateway interface)
 //! expects the input mapper to provide the following keys
 //! "program"
-class CgiCaller: public HTTPFileLoader
-{
-	friend class CgiCallerTest;
-
+class CgiCaller: public HTTPFileLoader {
 public:
-	CgiCaller(const char *name);
-	~CgiCaller();
+	CgiCaller(const char *name) :
+		HTTPFileLoader(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) CgiCaller(fName);
+	}
 
-protected:
-	virtual bool GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out);
-	//! executes the file
-	//! \param filename full pathname of the file to be executed
-	//! \param c The context of the transaction
-	//! \param input the input mapper, assumes functionality of CgiParams
-	//! \param output the output mapper, assumes functionality of StreamTransferMapper
-	virtual bool ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
-
-private:
-	//constructor
-	CgiCaller();
-	CgiCaller(const CgiCaller &);
-	//assignement
-	CgiCaller &operator=(const CgiCaller &);
 	static void SplitPath(const String &fullPath, String &path, String &file);
-	static void SplitRChar(const String &full, char sep, String &before, String &after);
-	static String GetFileExtension(const String &file);
+protected:
+	//! do not use parents header processing
+	/*! @copydoc HTTPFileLoader::GenReplyHeader() */
+	virtual bool GenReplyHeader(Context &ctx, ParameterMapper *input, ResultMapper *output);
+	//! executes the file
+	/*! @copydoc HTTPFileLoader::ProcessFile() */
+	virtual bool ProcessFile(const String &filename, Context &ctx, ParameterMapper *input, ResultMapper *output);
 };
 
-#endif		//not defined _CgiCaller_H
+#endif

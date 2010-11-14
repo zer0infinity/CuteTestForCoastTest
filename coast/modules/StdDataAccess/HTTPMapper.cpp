@@ -163,11 +163,10 @@ bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, std::istream &is, C
 {
 	StartTrace(HTTPBodyResultMapper.DoFinalPutStream);
 	DAAccessTimer(HTTPBodyResultMapper.DoFinalPutStream, "", ctx);
-
 	String body;
-
 	ReadBody(body, is, ctx);
-	return DoFinalPutAny(key, body, ctx);
+	Anything anyVal(body);
+	return DoFinalPutAny(key, anyVal, ctx);
 }
 
 void HTTPBodyResultMapper::ReadBody(String &body, std::istream &is, Context &ctx)

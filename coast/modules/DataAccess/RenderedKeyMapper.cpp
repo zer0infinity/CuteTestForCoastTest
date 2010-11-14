@@ -27,7 +27,7 @@ IFAObject *RenderedKeyMapper::Clone(Allocator *a) const
 	return new (a) RenderedKeyMapper(fName);
 }
 
-bool RenderedKeyMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
+bool RenderedKeyMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
 {
 	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
 	String strKey(key);

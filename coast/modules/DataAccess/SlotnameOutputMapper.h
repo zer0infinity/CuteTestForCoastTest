@@ -123,7 +123,7 @@ public:
 		return new (a) SlotnameOutputMapper(fName);
 	};
 
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config);
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything config);
 
 private:
 	SlotnameOutputMapper();

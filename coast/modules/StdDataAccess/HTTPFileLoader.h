@@ -13,14 +13,16 @@
 #include "ReadFileDAImpl.h"
 
 //! FIXME: DataAccess to be refactored soon, do not stray HTTP knowledge around everywhere...
-class HTTPFileLoader: public ReadFileDAImpl
-{
+class HTTPFileLoader: public ReadFileDAImpl {
 public:
-	HTTPFileLoader(const char *name);
-	~HTTPFileLoader();
+	HTTPFileLoader(const char *name) :
+		ReadFileDAImpl(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPFileLoader(fName);
+	}
 
 	//! executes the transaction
 	//! \param c The context of the transaction
@@ -28,25 +30,32 @@ public:
 
 protected:
 	//! loads the file
-	//! \param filename full pathname of the file to be loaded
-	//! \param c The context of the transaction
-	//! \param input the input mapper, assumes functionality of CgiParams
-	//! \param output the output mapper, assumes functionality of StreamTransferMapper
-	virtual bool ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
+	/*! @param filename full pathname of the file to be loaded
+	 * @param ctx The context in which the transaction takes place
+	 * @param input ParameterMapper object that is mapping data from the client space to the data access object on request
+	 * @param output ResultMapper object that maps the result of the access back into client space */
+	virtual bool ProcessFile(const String &filename, Context &ctx, ParameterMapper *input, ResultMapper *output);
 
 	//! produces an error reply according to HTTPError in context
-	//! \param filename full pathname of the file
-	virtual void ProduceErrorReply(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
-	virtual bool GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out);
-	virtual bool GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out);
+	/*! @param filename of the file which was requested
+	 * @param ctx The context in which the transaction takes place
+	 * @param input ParameterMapper object that is mapping data from the client space to the data access object on request
+	 * @param output ResultMapper object that maps the result of the access back into client space */
+	virtual void ProduceErrorReply(const String &filename, Context &ctx, ParameterMapper *input, ResultMapper *output);
+
+	//! generate HTTP Status line
+	/*! @param ctx The context in which the transaction takes place
+	 * @param input ParameterMapper object that is mapping data from the client space to the data access object on request
+	 * @param output ResultMapper object that maps the result of the access back into client space */
+	virtual bool GenReplyStatus(Context &ctx, ParameterMapper *input, ResultMapper *output);
+
+	//! generate HTTP header
+	/*! @param ctx The context in which the transaction takes place
+	 * @param input ParameterMapper object that is mapping data from the client space to the data access object on request
+	 * @param output ResultMapper object that maps the result of the access back into client space */
+	virtual bool GenReplyHeader(Context &ctx, ParameterMapper *input, ResultMapper *output);
 
 private:
-	//constructor
-	HTTPFileLoader();
-	HTTPFileLoader(const HTTPFileLoader &);
-	//assignement
-	HTTPFileLoader &operator=(const HTTPFileLoader &);
-
 	friend class HTTPFileLoaderTest;
 };
 

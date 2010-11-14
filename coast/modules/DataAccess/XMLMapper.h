@@ -45,7 +45,7 @@ public:
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
 	// ignores the SelectScript-Hook, operates directly on fConfig (FIXME?)
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything);
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything);
 
 protected:
 	bool Iterate(Anything currentAny, String pathSoFar, long slotIndex, String slotName, bool bFound, Anything &result);

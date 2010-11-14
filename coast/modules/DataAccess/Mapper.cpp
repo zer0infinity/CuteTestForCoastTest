@@ -525,7 +525,7 @@ bool ResultMapper::Put(const char *key, std::istream &is, Context &ctx)
 	return DoPutStream(key, is, ctx, SelectScript(key, fConfig, ctx));
 }
 
-bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
+bool ResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
 {
 	StartTrace1(ResultMapper.DoPutAny, NotNull(key));
 	bool retval = true;
@@ -576,7 +576,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 	return retval;
 }
 
-bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname)
+bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname)
 {
 	StartTrace1(ResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
 	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
@@ -650,7 +650,7 @@ void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Con
 	}
 }
 
-bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
+bool ResultMapper::DoFinalPutAny(const char *key, Anything &value, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoFinalPutAny, "fName [" << fName << "] key: <" << NotNull(key) << ">");
 
@@ -689,14 +689,14 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 bool ResultMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoFinalPutStream, NotNull(key));
-
 	String strBuf;
 	{
 		OStringStream input(strBuf);
 		input << is.rdbuf();
 	}
 	Trace(strBuf);
-	return DoFinalPutAny(key, strBuf, ctx);
+	Anything anyVal(strBuf);
+	return DoFinalPutAny(key, anyVal, ctx);
 }
 
 String ResultMapper::GetDestinationSlot(Context &ctx)

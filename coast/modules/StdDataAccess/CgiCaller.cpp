@@ -6,6 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "CgiCaller.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
@@ -13,25 +16,29 @@
 #include "Context.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "CgiCaller.h"
-
 //--- CgiCaller -----------------------------------------------------
 RegisterDataAccessImpl(CgiCaller);
 
-CgiCaller::CgiCaller(const char *name) : HTTPFileLoader(name)
-{
+namespace {
+	void SplitRChar(const String &full, char sep, String &before, String &after) {
+		StartTrace(CgiCaller.SplitRChar);
 
-}
+		long pos = full.StrRChr(sep);
+		if (pos < 0) {
+			before = "";
+			after = full;
+		} else if (pos >= 0) {
+			before = full.SubString(0, pos + 1);
+			after = full.SubString(pos + 1);
+		}
+	}
+	String GetFileExtension(const String &file) {
+		StartTrace(CgiCaller.GetFileExtension);
+		String dummy, ext;
+		SplitRChar(file, '.', dummy, ext);
+		return ext;
+	}
 
-CgiCaller::~CgiCaller()
-{
-
-}
-
-IFAObject *CgiCaller::Clone(Allocator *a) const
-{
-	return new (a) CgiCaller(fName);
 }
 
 bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)
@@ -46,32 +53,10 @@ bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapp
 	return out->Put("HTTPHeader", headerSpec, context);
 }
 
-void CgiCaller::SplitRChar(const String &full, char sep, String &before, String &after)
-{
-	StartTrace(CgiCaller.SplitRChar);
-
-	long pos = full.StrRChr(sep);
-	if (pos < 0) {
-		before = "";
-		after = full;
-	} else if (pos >= 0) {
-		before = full.SubString(0, pos + 1);
-		after = full.SubString(pos + 1);
-	}
-}
-
 void CgiCaller::SplitPath(const String &fullPath, String &path, String &file)
 {
 	StartTrace1(CgiCaller.SplitPath, "Filename: >" << fullPath << "<");
 	SplitRChar(fullPath, '/', path, file);
-}
-
-String CgiCaller::GetFileExtension(const String &file)
-{
-	StartTrace(CgiCaller.GetFileExtension);
-	String dummy, ext;
-	SplitRChar(file, '.', dummy, ext);
-	return ext;
 }
 
 bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)

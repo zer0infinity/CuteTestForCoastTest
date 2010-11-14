@@ -17,7 +17,7 @@
 //---- SlotnameOutputMapper ------------------------------------------------------------------
 RegisterResultMapper(SlotnameOutputMapper);
 
-bool SlotnameOutputMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config)
+bool SlotnameOutputMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything config)
 {
 	StartTrace1(SlotnameOutputMapper.DoPutAny, "Key: " << NotNull(key));
 

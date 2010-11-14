@@ -18,19 +18,6 @@
 //--- HTTPFileLoader -----------------------------------------------------
 RegisterDataAccessImpl(HTTPFileLoader);
 
-HTTPFileLoader::HTTPFileLoader(const char *name) : ReadFileDAImpl(name)
-{
-}
-
-HTTPFileLoader::~HTTPFileLoader()
-{
-}
-
-IFAObject *HTTPFileLoader::Clone(Allocator *a) const
-{
-	return new (a) HTTPFileLoader(fName);
-}
-
 bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPFileLoader.GenReplyHeader);

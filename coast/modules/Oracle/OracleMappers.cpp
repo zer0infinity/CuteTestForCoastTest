@@ -53,7 +53,7 @@ IFAObject *OracleResultMapper::Clone(Allocator *a) const
 	return new (a) OracleResultMapper( fName );
 }
 
-bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx, ROAnything script )
+bool OracleResultMapper::DoPutAny( const char *key, Anything &value, Context &ctx, ROAnything script )
 {
 	StartTrace1(OracleResultMapper.DoPutAny, NotNull(key));
 	String strKey( key );
