@@ -11,6 +11,12 @@
 
 #include "Anything.h"
 
+namespace Coast {
+	namespace HTTP {
+		String const contentTypeAnything("application/x-coast-anything", Storage::Global());
+	}
+}
+
 class MIMEHeader;
 
 //!decode a mime body, even multipart. special treatment for POST requests

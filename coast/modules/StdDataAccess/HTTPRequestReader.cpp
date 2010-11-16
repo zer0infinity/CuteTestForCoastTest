@@ -42,29 +42,16 @@ namespace {
 bool HTTPRequestReader::ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line)
 {
 	StartTrace1(HTTPRequestReader.ReadLine, "maxLineSz: " << maxLineSz);
-	const char eol = '\n';
-	line.Trim(0L);
-	if ( Ios.good() ) {
-		// read line up to but not including next eol
-		line.Append(Ios, maxLineSz, eol);
-		Trace("line read [" << line << "] of length: " << line.Length());
-		char c = '\0';
-		if ( Ios.get(c).good() ) {
-			line.Append(c);
-		}
+	if ( Coast::StreamUtils::getLineFromStream(Ios, line, maxLineSz) ) {
 		fRequestBufferSize += line.Length();
-		if ( line.Length() > maxLineSz ) {
-			String msg;
-			msg << "Request line too long: >" << line.Length() << ", max: " << maxLineSz << " => check setting of [LineSizeLimit]";
-			PutErrorMessageIntoContext(ctx, 413, msg, line);
-			return false;
+		if ( line.Length() <= maxLineSz ) {
+			return true;
 		}
-		if ( c != eol) {
-			//!@FIXME: should notify that line is not conforming, eg. not ending with ENDL
-		}
+		String msg;
+		msg << "Request line too long: >" << line.Length() << ", max: " << maxLineSz << " => check setting of [LineSizeLimit]";
+		PutErrorMessageIntoContext(ctx, 413, msg, line);
 	}
-	// be nice and allow empty lines here - let MIMEHeader decide about validity
-	return true;
+	return false;
 }
 
 bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
@@ -84,7 +71,7 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios)
 		Trace("Next line: [" << line << "]");
 		if ( not Coast::URLUtils::TrimENDL(line).Length() ) break;
 		// handle request lines
-		fHeader.DoParseHeaderLine(line);
+		fHeader.ParseHeaderLine(line);
 	}
 	if ( fRequestBufferSize == 0 ) {
 		PutErrorMessageIntoContext(ctx, 400, "Empty request", line);
@@ -131,10 +118,7 @@ bool HTTPRequestReader::HandleFirstLine(Context &ctx, String &line)
 		PutErrorMessageIntoContext(ctx, 400, "Invalid request line termination", line);
 		return false;
 	}
-	if (!ParseRequest(ctx, line)) {
-		return false;
-	}
-	return true;
+	return ParseRequest(ctx, line);
 }
 
 bool HTTPRequestReader::ParseRequest(Context &ctx, String &line)

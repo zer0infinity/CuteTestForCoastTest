@@ -40,11 +40,11 @@ public:
 	//! read the MIME header from is
 	//! reads MIME header from is withlimit the line size to
 	//! detect misuse of server
-	bool DoReadHeader(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
+	bool ParseHeaders(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
 
 	//! trim the line end and parse it according to the MIME Header rules
 	//! appends contents to fHeader
-	bool DoParseHeaderLine(String &line);
+	bool ParseHeaderLine(String &line);
 
 	//! answer if we are a header of a multipart MIME message
 	bool IsMultiPart();
@@ -63,25 +63,17 @@ public:
 		return fHeader;
 	}
 
-	// get name of header field and return the index where the delimiting ":" was found in the string
-	long GetNormalizedFieldName(String &line, String &fieldname) const;
-
 protected:
 	//! parse a line with fieldname ": " value
 	//! stores value as string in fHeader[Normalize(fieldname)]
 	//! \param fieldname out the normalized fieldname
-	bool ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields);
-
-	//!find out about a multipart/form-data
-	void CheckMultipartBoundary(const String &contenttype);
+	bool ParseField(String const &line, Coast::URLUtils::NormalizeTag const normTag);
 
 	// method to subclass if the lookup behaviour shall deviate from the standard
 	// implementation (i.e. allow more Anys to be searched, hierarchical, etc)
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
-	// determine the processing mode depending on the config passed to MIMEHeader and the header field name
-	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase) const;
-
+private:
 	//!contains the request/reply header
 	Anything fHeader;
 
@@ -91,8 +83,15 @@ protected:
 	Coast::URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
 
-private:
 	MIMEHeader(const MIMEHeader &);
 };
+
+namespace Coast {
+	namespace StreamUtils {
+		char const LF = '\n';
+		char const CR = '\r';
+		bool getLineFromStream(std::istream &in, String &line, long const maxlinelen);
+	}
+}
 
 #endif

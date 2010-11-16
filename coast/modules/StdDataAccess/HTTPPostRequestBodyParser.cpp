@@ -6,15 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "HTTPPostRequestBodyParser.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "URLUtils.h"
 #include "MIMEHeader.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
-#include "HTTPPostRequestBodyParser.h"
 
 HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input)
 	: fIn(&input), fHeader(mainheader)
@@ -36,32 +36,26 @@ bool HTTPPostRequestBodyParser::Parse()
 	}
 }
 
-bool HTTPPostRequestBodyParser::ParseBody()
-{
+bool HTTPPostRequestBodyParser::ParseBody() {
 	StartTrace(HTTPPostRequestBodyParser.ParseBody);
-	long contentLength = fHeader.GetContentLength();
-	String bodyStr;
 	ROAnything contenttype;
 	if (!fHeader.Lookup("CONTENT-TYPE", contenttype)) {
 		return false;
 	}
-	if (contenttype == "application/x-ifa-anything") {
-		// there must be exactly one anything in the body
-		// handle our special format more efficient than
-		// the standard cases
+	if ( contenttype.Contains(Coast::HTTP::contentTypeAnything) ) {
+		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
-		if (a.Import(*fIn) && !a.IsNull()) {
-			TraceAny(a, "Content-type: application/x-ifa-anything");
-			fContent.Append(a);
-			return true;
-		} // if
-		else {
-			Trace("application/x-ifa-anything - syntax error");
+		if (not a.Import(*fIn) || a.IsNull()) {
+			Trace("" << Coast::HTTP::contentTypeAnything << " - syntax error");
 			return false;
 		}
+		TraceAny(a, "Content-type: " << contenttype.AsString());
+		fContent.Append(a);
+		return true;
 	}
 	// 2 cases: content length defined, or everything
 	bool readSuccess = false;
+	long contentLength = fHeader.GetContentLength();
 	if (contentLength >= 0) {
 		fUnparsedContent.Append(*fIn, contentLength);
 		readSuccess = (fUnparsedContent.Length() == contentLength);
@@ -74,32 +68,24 @@ bool HTTPPostRequestBodyParser::ParseBody()
 	}
 	Trace("Body: <" << fUnparsedContent << ">");
 	ROAnything contentdisp;
-	if ( fHeader.Lookup("CONTENT-DISPOSITION", contentdisp) && contentdisp[0L] == "form-data" ) {
-		String name( contentdisp["NAME"].AsCharPtr() );
-		String filename( contentdisp["FILENAME"].AsCharPtr() );
-		// it's a userfile upload
-		if ( name.Length() > 0 && filename.Length() > 0 ) {
-			fContent.Append(fUnparsedContent);
-		} else if (name.Length() > 0 || fUnparsedContent != "") {
-			Decode(fUnparsedContent, fContent);
-		}
-	} else {
-		if (fUnparsedContent != "") {
-			// this is the fucking billy browser case
-			// they are not able to supply a reasonable
-			// mime type
-			Decode(fUnparsedContent, fContent);
-		}
+	String name, filename;
+	if (fHeader.Lookup("CONTENT-DISPOSITION", contentdisp) && contentdisp.Contains("form-data")) {
+		name = contentdisp["NAME"].AsString();
+		filename = contentdisp["FILENAME"].AsString();
+	}
+	if (name.Length() && filename.Length()) {
+		fContent.Append(fUnparsedContent);
+	} else if (fUnparsedContent.Length()) {
+		Decode(fUnparsedContent, fContent);
 	}
 	return readSuccess;
 }
 
-void HTTPPostRequestBodyParser::Decode(String str, Anything &result)
-{
+void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
 	StartTrace(HTTPPostRequestBodyParser.Decode);
 	// add a sanity check and remove trailing \r\n in case
 	long slen = str.Length();
-	if (slen >= 2 && '\r' == str[(long)(slen-2)] && '\n' == str[(long)(slen-1)]) {
+	if (slen >= 2 && '\r' == str[(long) (slen - 2)] && '\n' == str[(long) (slen - 1)]) {
 		str.Trim(slen - 2);
 	}
 	Coast::URLUtils::Split(str, '&', result);
@@ -112,7 +98,6 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 	if ( !is ) {
 		return true;
 	}
-	char const LF = '\n';
 	char c = '\0';
 	bool newLineFoundLastLine = false;
 	while (is->good()) {
@@ -120,9 +105,9 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 		bool newLineFoundThisLine = false;
 
 		String line;
-		line.Append(*is, 4096L, LF);
+		line.Append(*is, 4096L, Coast::StreamUtils::LF);
 		fUnparsedContent.Append(line);
-		if ( LF == is->peek() && is->get(c).good() ) {
+		if ( Coast::StreamUtils::LF == is->peek() && is->get(c).good() ) {
 			fUnparsedContent.Append(c);
 			newLineFoundThisLine = true;
 		}
@@ -153,7 +138,7 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 		}
 		if (!boundaryseen) {
 			if (newLineFoundLastLine && body.Length()) {
-				body << LF; //!@FIXME could be wrong, if last line > 4k
+				body << Coast::StreamUtils::LF; //!@FIXME could be wrong, if last line > 4k
 			}
 			body << line;
 		}
@@ -179,7 +164,7 @@ bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &b
 		if ( body.Length() ) {
 			IStringStream innerpart(body);
 			MIMEHeader hinner;
-			if (hinner.DoReadHeader(innerpart)) {
+			if (hinner.ParseHeaders(innerpart)) {
 				Anything partInfo;
 				if (!hinner.GetInfo().IsDefined("CONTENT-TYPE") ) {
 					hinner.GetInfo()["CONTENT-TYPE"] = "multipart/part";

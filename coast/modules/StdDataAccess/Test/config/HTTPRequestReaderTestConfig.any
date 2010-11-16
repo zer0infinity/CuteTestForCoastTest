@@ -96,7 +96,9 @@
 					/HTTPRequestReader {
 						/Error {
 							{
-								/ResponseCode 400
+							    /Component "HTTPRequestReader"
+							    /ResponseCode 400
+							    /ResponseMsg "Bad Request"
 								/ErrorMessage "Invalid request line termination"
 								/FaultyContent "GET /alibaba HTTP/1.0\n"
 							}
@@ -241,7 +243,6 @@
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/Expected
 			/Expected {
 				/Return			0
 				/Request {

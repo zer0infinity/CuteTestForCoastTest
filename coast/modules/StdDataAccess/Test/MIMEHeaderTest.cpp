@@ -46,7 +46,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(!mh.DoReadHeader(is), "expected header parsing to fail");
+		t_assertm(!mh.ParseHeaders(is), "expected header parsing to fail");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
@@ -97,7 +97,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
@@ -111,7 +111,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
@@ -159,7 +159,7 @@ void MIMEHeaderTest::SetCookieTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
@@ -179,7 +179,7 @@ void MIMEHeaderTest::SetCookieTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
@@ -334,7 +334,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
@@ -350,7 +350,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		StringStream is(testinput1);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
@@ -365,7 +365,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
@@ -380,7 +380,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		StringStream is(testinput1);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
@@ -418,7 +418,7 @@ void MIMEHeaderTest::PartHeaderTest()
 		StringStream is(testinput);
 
 		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
 
 		// sanity checks
 		t_assertm(mh.IsMultiPart() == false, "expected not to be multipart");

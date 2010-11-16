@@ -51,7 +51,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	t_assertm(is != 0, "expected 'MultiPartBody.txt' to be there");
 	if ( is ) {
 		MIMEHeader mh;
-		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
+		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
 
 		HTTPPostRequestBodyParser sm(mh, *is);
 		t_assert(sm.Parse());
@@ -72,7 +72,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	is =  System::OpenStream("MultiPartBody.txt", 0);
 	if ( is ) {
 		MIMEHeader mh;
-		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
+		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
 
 		HTTPPostRequestBodyParser sm(mh, *is);
 		t_assert(sm.Parse());

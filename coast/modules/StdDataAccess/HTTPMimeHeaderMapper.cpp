@@ -40,7 +40,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 		eProcMode = MIMEHeader::eDoNotSplitHeaderFields;
 	}
 	MIMEHeader mh(Coast::URLUtils::eDownshift, eProcMode);
-	bool result = mh.DoReadHeader(is);
+	bool result = mh.ParseHeaders(is);
 
 	if (result && is.good()) {
 		Anything header(mh.GetInfo());

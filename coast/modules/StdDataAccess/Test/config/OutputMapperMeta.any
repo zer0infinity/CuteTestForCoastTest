@@ -9,6 +9,7 @@
 {
 	/useSSL {	#mapper for test purposes
 		/Output {
+			/HTTPResponseMapper *
 			/HTTPMimeHeaderMapper	*
 			/HTTPBody {
 				/HTTPBodyMapper *
