@@ -23,7 +23,8 @@
 		/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
 								putting it using ResultMapper->Put to store it at ToSlot
 		/FromSlot2	ToSlot2		...
-		...
+		{ /FromSlot ToSlot1 }	alternate form when wanting to use the same get key multiple times
+		{ /FromSlot ToSlot2 }
 	}
 	/DataType					optional, default String, specifies the Get/Put methods used
 								String: 	use Get(FromSlot, String, Context), Put(ToSlot, String, Context)
@@ -37,25 +38,22 @@
 }
 @endcode
  */
-class MapperTestDAImpl : public DataAccessImpl
-{
+class MapperTestDAImpl: public DataAccessImpl {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	MapperTestDAImpl(const char *name);
+	MapperTestDAImpl(const char *name) :
+		DataAccessImpl(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MapperTestDAImpl(fName);
+	}
 
+protected:
 	//! Loopback like implementation of the data access
 	/*! @copydetails DataAccessImpl::Exec() */
 	virtual bool Exec(Context &ctx, ParameterMapper *input, ResultMapper *output);
-
-private:
-	//constructor
-	MapperTestDAImpl();
-	MapperTestDAImpl(const MapperTestDAImpl &);
-	//assignement
-	MapperTestDAImpl &operator=(const MapperTestDAImpl &);
 };
 
 #endif

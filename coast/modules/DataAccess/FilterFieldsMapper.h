@@ -9,7 +9,6 @@
 #ifndef _FilterFieldsMapper_H
 #define _FilterFieldsMapper_H
 
-//---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- FilterFieldsMapper ----------------------------------------------------------
@@ -21,31 +20,26 @@
 	/FieldList	{				optional, default all slots, define subset of slots to put with mapper
 		...			String
 	}
+	/Filters {
+
+	}
 }
 \endcode
-
 */
-class FilterFieldsMapper : public ResultMapper
-{
+class FilterFieldsMapper: public ResultMapper {
 public:
-	//--- constructors
-	FilterFieldsMapper(const char *name);
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	FilterFieldsMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) FilterFieldsMapper(fName);
+	}
 
 protected:
-	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
+	/*! @copydoc ResultMapper::DoPutAny(const char *, Anything &, Context &, ROAnything) */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
-
-private:
-	FilterFieldsMapper();
-	FilterFieldsMapper(const FilterFieldsMapper &);
-	FilterFieldsMapper &operator=(const FilterFieldsMapper &);
 };
 
 #endif

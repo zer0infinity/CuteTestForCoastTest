@@ -430,8 +430,7 @@ protected:
 	virtual bool DoLoadConfig(const char *category);
 
 	//! Subclass hook which can be overridden for special behavior
-	/*! @copydetails SelectScript()
-	 */
+	/*! @copydetails SelectScript() */
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 
 private:

@@ -15,15 +15,6 @@
 
 RegisterDataAccessImpl(MapperTestDAImpl);
 
-MapperTestDAImpl::MapperTestDAImpl(const char *name) : DataAccessImpl(name)
-{
-}
-
-IFAObject *MapperTestDAImpl::Clone(Allocator *a) const
-{
-	return new (a) MapperTestDAImpl(fName);
-}
-
 bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMapper *output)
 {
 	StartTrace1(MapperTestDAImpl.Exec, fName);
@@ -39,71 +30,79 @@ bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMap
 
 	if ( input->Get("transfer", config, context) ) {
 		TraceAny(config, "Config: ");
-		for (long i = 0; i < config.GetSize(); i++) {
-			const char *slotname = config.SlotName(i);
-			if (slotname) {
+		for (long i = 0, sz=config.GetSize(); i < sz; i++) {
+			String strGetKey, strPutKey;
+			Anything anyEntry = config[i];
+			strGetKey = config.SlotName(i);
+			if ( anyEntry.GetType() == AnyArrayType ) { //<! assume unnamed configuration entries { /getKey putKey }
+				strGetKey = anyEntry.SlotName(0L);
+				anyEntry = anyEntry[0L];
+			}
+			strPutKey = anyEntry.AsString();
+			Trace("get key [" << strGetKey << "] put key [" << strPutKey << "]");
+			if (strGetKey.Length()) {
 				String inputStr(128L);
 				bool bGetCode, bPutCode = false;
 				if (strMode.Compare("int") == 0) {
 					int iTestVal = 0;
-					bGetCode = input->Get(slotname, iTestVal, context);
+					bGetCode = input->Get(strGetKey, iTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), iTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << (long)iTestVal << "]");
+						bPutCode = output->Put(strPutKey, iTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << (long)iTestVal << "]");
 					}
 				} else if (strMode.Compare("long") == 0) {
 					long lTestVal = 0L;
-					bGetCode = input->Get(slotname, lTestVal, context);
+					bGetCode = input->Get(strGetKey, lTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), lTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << lTestVal << "]");
+						bPutCode = output->Put(strPutKey, lTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << lTestVal << "]");
 					}
 				} else if (strMode.Compare("bool") == 0) {
 					bool bTestVal = false;
-					bGetCode = input->Get(slotname, bTestVal, context);
+					bGetCode = input->Get(strGetKey, bTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), bTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << (bTestVal ? "true" : "false") << "]");
+						bPutCode = output->Put(strPutKey, bTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << (bTestVal ? "true" : "false") << "]");
 					}
 				} else if (strMode.Compare("float") == 0) {
 					float fTestVal = 0.0F;
-					bGetCode = input->Get(slotname, fTestVal, context);
+					bGetCode = input->Get(strGetKey, fTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), fTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << fTestVal << "]");
+						bPutCode = output->Put(strPutKey, fTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << fTestVal << "]");
 					}
 				} else if (strMode.Compare("double") == 0) {
 					double dTestVal = 0.0;
-					bGetCode = input->Get(slotname, dTestVal, context);
+					bGetCode = input->Get(strGetKey, dTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), dTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << dTestVal << "]");
+						bPutCode = output->Put(strPutKey, dTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << dTestVal << "]");
 					}
 				} else if (strMode.Compare("Anything") == 0) {
 					Anything aTestVal;
-					bGetCode = input->Get(slotname, aTestVal, context);
+					bGetCode = input->Get(strGetKey, aTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), aTestVal, context);
+						bPutCode = output->Put(strPutKey, aTestVal, context);
 						StringStream Ios(inputStr);
 						aTestVal.PrintOn(Ios);
 						Ios << std::flush;
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << inputStr << "]");
 					}
 				} else if (strMode.Compare("StringStream") == 0) {
 					StringStream Ios(inputStr);
-					bGetCode = input->Get(slotname, Ios, context);
+					bGetCode = input->Get(strGetKey, Ios, context);
 					Ios << std::flush;
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), Ios, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
+						bPutCode = output->Put(strPutKey, Ios, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << inputStr << "]");
 					}
 				} else {
 					// default is String mode
 					String sTestVal = "";
-					bGetCode = input->Get(slotname, sTestVal, context);
+					bGetCode = input->Get(strGetKey, sTestVal, context);
 					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), sTestVal, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << sTestVal << "]");
+						bPutCode = output->Put(strPutKey, sTestVal, context);
+						Trace("From [" << strGetKey << "] to [" << strPutKey << "]: [" << sTestVal << "]");
 					}
 				}
 				Trace("GetCode: " << (bGetCode ? "true" : "false") << " PutCode: " << (bPutCode ? "true" : "false"));

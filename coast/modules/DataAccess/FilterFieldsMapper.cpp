@@ -15,17 +15,6 @@
 //---- FilterFieldsMapper ------------------------------------------------------------------
 RegisterResultMapper(FilterFieldsMapper);
 
-FilterFieldsMapper::FilterFieldsMapper(const char *name)
-	: ResultMapper(name)
-{
-	StartTrace(FilterFieldsMapper.Ctor);
-}
-
-IFAObject *FilterFieldsMapper::Clone(Allocator *a) const
-{
-	return new (a) FilterFieldsMapper(fName);
-}
-
 bool FilterFieldsMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
 {
 	StartTrace1(FilterFieldsMapper.DoPutAny, NotNull(key));

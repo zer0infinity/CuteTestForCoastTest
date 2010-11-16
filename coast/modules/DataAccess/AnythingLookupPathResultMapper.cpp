@@ -10,10 +10,7 @@
 #include "AnythingLookupPathResultMapper.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Dbg.h"
-#include "Timers.h"
-#include "SystemLog.h"
 
 //---- AnythingLookupPathResultMapper ----------------------------------------------------------------
 RegisterResultMapper(AnythingLookupPathResultMapper);
