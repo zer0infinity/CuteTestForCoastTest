@@ -232,4 +232,8 @@
 			/Final			10
 		}
 	}
+	/RegExpFilterFieldsResultMapper {
+		/MainSwitch 11
+		/EnableAll 11
+	}
 }

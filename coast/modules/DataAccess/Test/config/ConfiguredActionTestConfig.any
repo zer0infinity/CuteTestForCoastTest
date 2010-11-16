@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/DLL {
 	}
@@ -56,6 +55,7 @@
 			TestRenderedKeyParameterMapperDA
 			TmpStoreResultMapperDA
 			SessionStoreResultMapperDA
+			RegExpFilterFieldsResultMapperDA
 		}
 		/ReadFileDAImpl {
 			SimpleFileReadTest
@@ -107,6 +107,7 @@
 				TestRenderedKeyParameterMapperDA
 				TmpStoreResultMapperDA
 				SessionStoreResultMapperDA
+				RegExpFilterFieldsResultMapperDA
 			}
 			/RenderedKeyParameterMapper {
 				BlubRenderedKeyParameterMapper
@@ -145,6 +146,9 @@
 				SessionStoreResultMapperDA
 				TestRenderedKeyParameterMapperDA
 			}
+			/RootMapper {
+				RegExpFilterFieldsResultMapperDA
+			}
 			/SlotnameOutputMapper {
 				SlotnameOutputMapperListings
 			}
@@ -160,6 +164,15 @@
 				TestFileXMLReadDAImplXMLMapperTwo
 				TestFileXMLReadDAImplXMLMapperThree
 				TestFileXMLReadDAImplXMLMapperFour
+			}
+			/RegExpFilterFieldsResultMapper {
+				/RegexFieldsMapperCodeExample *
+				/RegexFieldsMapperPositiveWithCase *
+				/RegexFieldsMapperPositiveCaseless *
+				/RegexFieldsMapperExplicitNoRecursionTest *
+				/RegexFieldsMapperAll *
+				/RegexFieldsMapperNone *
+				/RegexFieldsMapperAllWithoutSome *
 			}
 		}
 	}
@@ -1315,6 +1328,135 @@
 			/Result {
 				/SessionStore {
 					/Out	"blabla"
+				}
+			}
+		}
+		/RegexFieldsMapperTest {
+			/TmpStore {
+				/HTTPHeader {
+					/connection "close"
+					/date "Thu, 11 Nov 2010 08:30:36 GMT"
+					/server "Microsoft-IIS/6.0"
+					/x-powered-by "ASP.NET"
+					/x-aspnet-version "2.0.50727"
+					/set-cookie "ASP.NET_SessionId=csjgcsewg42bva45tsexdu45; path=/; HttpOnly"
+					/cache-control "private"
+					/content-type "text/html; charset=utf-8"
+					/content-length "4611"
+					/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
+					/CONTENT-LENGTH "4611; uppercase"
+				}
+				/ExampleInput {
+					/connection "close"
+					/date "Thu, 11 Nov 2010 08:30:36 GMT"
+					/server "Microsoft-IIS/6.0"
+					/x-powered-by "ASP.NET"
+					/x-aspnet-version "2.0.50727"
+					/cache-control "private"
+					/content-type "text/html; charset=utf-8"
+					/content-length "4611"
+				}
+			}
+			/TheAction {
+				/CallDataAccessAction	RegExpFilterFieldsResultMapperDA
+			}
+			/ExpectedResult 1
+			/NotResult {
+				/TmpStore {
+					/PositiveWithCase {
+						/connection *
+						/date *
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
+						/set-cookie *
+						/cache-control *
+						/CONTENT-TYPE *
+						/CONTENT-LENGTH *
+					}
+					/PositiveCaseless {
+						/connection *
+						/date *
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
+						/set-cookie *
+						/cache-control *
+					}
+					/ExplicitNoRecursionTest {
+						/connection *
+						/date *
+						/x-powered-by *
+						/x-aspnet-version *
+						/set-cookie *
+						/cache-control *
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+						/CONTENT-TYPE *
+						/CONTENT-LENGTH *
+					}
+					/AllWithoutSome {
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
+					}
+					/None *
+					/SomeWhere {
+						/CodeExample {
+							/server "Microsoft-IIS/6.0"
+							/content-type "text/html; charset=utf-8"
+							/content-length "4611"
+						}
+					}
+					/CodeExample {
+						/connection "close"
+						/date "Thu, 11 Nov 2010 08:30:36 GMT"
+						/server "Microsoft-IIS/6.0"
+						/x-powered-by "ASP.NET"
+						/x-aspnet-version "2.0.50727"
+						/cache-control "private"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/PositiveWithCase {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+					}
+					/PositiveCaseless {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
+						/CONTENT-LENGTH "4611; uppercase"
+					}
+					/ExplicitNoRecursionTest {
+						/server "Microsoft-IIS/6.0"
+					}
+					/All %TestCases.RegexFieldsMapperTest.TmpStore.HTTPHeader
+					/AllWithoutSome {
+						/connection "close"
+						/date "Thu, 11 Nov 2010 08:30:36 GMT"
+						/set-cookie "ASP.NET_SessionId=csjgcsewg42bva45tsexdu45; path=/; HttpOnly"
+						/cache-control "private"
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
+						/CONTENT-LENGTH "4611; uppercase"
+					}
+					/SomeWhere {
+						/CodeExample {
+							/connection "close"
+							/date "Thu, 11 Nov 2010 08:30:36 GMT"
+							/x-powered-by "ASP.NET"
+							/x-aspnet-version "2.0.50727"
+							/cache-control "private"
+						}
+					}
+					/CodeExample {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+					}
 				}
 			}
 		}
