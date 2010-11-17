@@ -142,9 +142,7 @@ public:
 	static void *operator new(size_t size, Allocator *a);
 	//!delete object with optimized allocator strategy
 	static void operator delete(void *d);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-	static void operator delete(void *d, Allocator *a);
-#endif
+
 	SocketStreamBuf *rdbuf()  {
 		return &fSocketBuf;
 	}

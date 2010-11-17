@@ -103,22 +103,31 @@ protected:
 	class EXPORTDECL_FOUNDATION CgiEnv
 	{
 	public:
-		CgiEnv(Anything &env, Allocator &a);
+		CgiEnv(const Anything &env, Allocator *a);
 		~CgiEnv();
-		char **GetEnv();
+#if defined(WIN32)
+		void* GetEnv(int &length);
+#else
+		char** GetEnv();
+#endif
 	private:
-		Allocator	&fAlloc;
-		char **fEnv;
+		Allocator *fAlloc;
+#if defined(WIN32)
+		String fEnv;
+#else
+		Anything fEnv;
+		char** fEnvPtrs;
+#endif
 	};
 
 	class EXPORTDECL_FOUNDATION CgiParam
 	{
 	public:
-		CgiParam(Anything param, Allocator &a);
+		CgiParam(Anything param, Allocator *a);
 		~CgiParam();
 		char **GetParams();
 	private:
-		Allocator	&fAlloc;
+		Allocator *fAlloc;
 		char **fParams;
 	};
 };

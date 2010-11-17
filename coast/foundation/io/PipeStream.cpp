@@ -111,11 +111,7 @@ int PipeStreamBuf::overflow( int c )
 	}
 
 	if (c != EOF && (pptr() < epptr())) // guard against recursion
-#if defined(__GNUG__) && __GNUG__ < 3 /* only gnu defined xput_char() std uses sputc() */
-		xput_char(c);	// without check
-#else
 		sputc(c);
-#endif
 	return 0L;  // return 0 if successful
 }
 

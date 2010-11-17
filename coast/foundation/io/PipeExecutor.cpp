@@ -175,42 +175,58 @@ bool PipeExecutor::ParseParam(String cmd, Anything &param)
 	return true;
 }
 
-PipeExecutor::CgiEnv::CgiEnv(Anything &env, Allocator &a)
+PipeExecutor::CgiEnv::CgiEnv(const Anything &env, Allocator *a)
 	: fAlloc(a)
-	, fEnv(0)
+	, fEnv(a)
+#if !defined(WIN32)
+	, fEnvPtrs(0)
+#endif
 {
+#if defined(WIN32)
+	long i = 0;
+	for (long sz = env.GetSize(); i < sz; ++i) {
+		fEnv.Append(env.SlotName(i)).Append("=").Append(env[i].AsString()).Append('\0');
+	}
+	fEnv.Append('\0');
+#else
 	// tracing not fork-safe
-	Anything tmp;
-	fEnv = static_cast<char **>(fAlloc.Calloc(env.GetSize() + 1, sizeof(char *)));
-	if (fEnv) {
+	fEnvPtrs = static_cast<char **>(fAlloc->Calloc(env.GetSize() + 1, sizeof(char *)));
+	if (fEnvPtrs) {
 		long i = 0;
 		for (long sz = env.GetSize(); i < sz; ++i) {
 			String s = env.SlotName(i);
 			s << "=" << env[i].AsCharPtr();
-			tmp[i] = s;
-			fEnv[i] = (char *)tmp[i].AsCharPtr(0);
+			fEnv[i] = s;
+			fEnvPtrs[i] = (char *)fEnv[i].AsCharPtr(0);
 		}
-		fEnv[i] = 0;
+		fEnvPtrs[i] = 0;
 	}
-	env = tmp;
+#endif
 }
 
-PipeExecutor::CgiEnv::~CgiEnv()
-{
-	fAlloc.Free(fEnv);
+PipeExecutor::CgiEnv::~CgiEnv() {
+#if !defined(WIN32)
+	fAlloc->Free(fEnvPtrs);
+#endif
 }
 
-char **PipeExecutor::CgiEnv::GetEnv()
-{
-	return fEnv;
+#if defined(WIN32)
+void *PipeExecutor::CgiEnv::GetEnv(int &length) {
+	length = fEnv.Length();
+	return reinterpret_cast<void*>(const_cast<char*>(fEnv.cstr()));
 }
+#else
+char **PipeExecutor::CgiEnv::GetEnv() {
+	return fEnvPtrs;
+}
+#endif
 
-PipeExecutor::CgiParam::CgiParam(Anything param, Allocator &a)
+PipeExecutor::CgiParam::CgiParam(Anything param, Allocator *a)
 	: fAlloc(a)
 	, fParams(0)
 {
 	// tracing not fork-safe
-	fParams = static_cast<char **>(fAlloc.Calloc(param.GetSize() + 1, sizeof(char *)));
+	fParams = static_cast<char **>(fAlloc->Calloc(param.GetSize() + 1, sizeof(char *)));
 	if (fParams) {
 		long i = 0;
 		for (long sz = param.GetSize(); i < sz; ++i) {
@@ -222,7 +238,7 @@ PipeExecutor::CgiParam::CgiParam(Anything param, Allocator &a)
 
 PipeExecutor::CgiParam::~CgiParam()
 {
-	fAlloc.Free(fParams);
+	fAlloc->Free(fParams);
 }
 
 char **PipeExecutor::CgiParam::GetParams()
@@ -270,8 +286,10 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 			}
 
 			Allocator *alloc = Storage::Current();
-			CgiEnv cgiEnv(env, *alloc);
-			CgiParam cgiParams(parm, *alloc);
+			TraceAny(env, "env");
+			CgiEnv cgiEnv(env, alloc);
+			TraceAny(parm, "parm");
+			CgiParam cgiParams(parm, alloc);
 
 #if !defined(WIN32)
 			// now fork, and clean up
@@ -324,19 +342,20 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				BOOL fRet;
 				LPCSTR lpApplicationName = NULL;
 				LPTSTR lpCommandLine;
-				DWORD  dwCreationFlags;
+				DWORD dwCreationFlags = NORMAL_PRIORITY_CLASS;
 				STARTUPINFO aStartupInfo;
-				PROCESS_INFORMATION     aProcessInformation;
+				PROCESS_INFORMATION aProcessInformation;
 				SECURITY_ATTRIBUTES sa;
 
-				sa.nLength              = sizeof (SECURITY_ATTRIBUTES);
+				sa.nLength = sizeof (SECURITY_ATTRIBUTES);
 				sa.lpSecurityDescriptor = NULL;
-				sa.bInheritHandle       = FALSE;
+				sa.bInheritHandle = false;
+
+				memset(&aProcessInformation, 0, sizeof (PROCESS_INFORMATION));
 
 				memset(&aStartupInfo, 0, sizeof (STARTUPINFO));
-				memset(&aProcessInformation, 0, sizeof (PROCESS_INFORMATION));
 				aStartupInfo.cb = sizeof (STARTUPINFO);
-				aStartupInfo.dwFlags    = STARTF_USESTDHANDLES;
+				aStartupInfo.dwFlags = STARTF_USESTDHANDLES;
 
 				// we use only writing side for the executing process
 				aStartupInfo.hStdInput  = (void *)inp.GetReadFd();
@@ -347,22 +366,18 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 					aStartupInfo.hStdError  = GetStdHandle(STD_ERROR_HANDLE);
 				}
 
-				dwCreationFlags = (NORMAL_PRIORITY_CLASS);
-////				if (NtHasRedirection(cmd) || isInternalCmd(cmd)) {
-////				  lpApplicationName = getenv("COMSPEC");
-////				  lpCmd2 = xmalloc(strlen(lpApplicationName) + 1 + strlen(cmd) + sizeof (" /c "));
-////				  sprintf(lpCmd2, "%s %s%s", lpApplicationName, " /c ", cmd);
-////				  lpCommandLine = lpCmd2;
-////				}
-
-//				lpCommandLine = (char*)(const char*)fCommand;
-				lpCommandLine = *cgiParams.GetParams();
-				char **lpEnv = cgiEnv.GetEnv();
+				lpCommandLine = const_cast<char*>(fCommand.cstr());
+				int length = 0;
 				fRet = CreateProcess(lpApplicationName, lpCommandLine, &sa, &sa,
-									 TRUE, dwCreationFlags, lpEnv, (const char *)fWorkingDir, &aStartupInfo, &aProcessInformation);
+						true, dwCreationFlags, cgiEnv.GetEnv(length), (const char *)fWorkingDir, &aStartupInfo, &aProcessInformation);
 				if (fRet) {
 					CloseHandle(aProcessInformation.hThread);
 					fChildPid = (int)aProcessInformation.hProcess;
+				} else {
+					SystemLog::Error(String("PipeExecutor failed, error number: ")
+									 << System::GetSystemError()
+									 << " <" << SystemLog::LastSysError()
+									 << "> return code " << fRet);
 				}
 			}
 			inp.ShutDownReading(); // we write to it

@@ -34,6 +34,9 @@ using namespace Coast;
 #endif
 
 #define socklen_type socklen_t
+#if defined(WIN32)
+#define socklen_t int
+#endif
 
 #if !defined(INADDR_NONE)
 #define INADDR_NONE ((unsigned long)-1)
@@ -123,30 +126,11 @@ void *Socket::operator new(size_t size, Allocator *a)
 	}
 }
 
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-void Socket::operator delete(void *d, Allocator *a)
-{
-	StartTrace(Socket.operatordelete);
-	if (d) {
-		if (a) {
-			Trace("deleting with allocator:[" << (long)a << "]");
-			a->Free(d);
-		} else {
-			Trace("deleting with global delete");
-			::operator delete(d);
-		}
-	}
-}
-#endif
-
 void Socket::operator delete(void *d)
 {
 	StartTrace(Socket.operatordelete);
 	if (d) {
 		Allocator *a = ((Socket *)d)->fAllocator;
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		Socket::operator delete(d, a);
-#else
 		if (a) {
 			Trace("deleting with allocator:[" << (long)a << "]");
 			a->Free(d);
@@ -154,7 +138,6 @@ void Socket::operator delete(void *d)
 			Trace("deleting with global delete");
 			::operator delete(d);
 		}
-#endif
 	}
 }
 
@@ -284,47 +267,6 @@ long Socket::GetWriteCount() const
 	}
 	return 0L;
 }
-
-#if defined(WIN32)
-void Socket::InitWSock()
-{
-	static bool once = false;
-	if (!once) {
-		once = true;
-		WORD wVersionRequested;
-		WSADATA wsaData = { 0, 0, 0, 0, 0, 0, 0 };
-		int err;
-
-		wVersionRequested = MAKEWORD( 2, 0 );
-
-		err = WSAStartup( wVersionRequested, &wsaData );
-		if ( err != 0 ) {
-			/* Tell the user that we couldn't find a useable */
-			/* WinSock DLL.                                  */
-			return;
-		}
-
-		/* Confirm that the WinSock DLL supports 2.0.*/
-		/* Note that if the DLL supports versions greater    */
-		/* than 2.0 in addition to 2.0, it will still return */
-		/* 2.0 in wVersion since that is the version we      */
-		/* requested.                                        */
-
-		if ( LOBYTE( wsaData.wVersion ) != 2 ||
-			 HIBYTE( wsaData.wVersion ) != 0 ) {
-			/* Tell the user that we couldn't find a useable */
-			/* WinSock DLL.                                  */
-			WSACleanup( );
-			return;
-		}
-	}
-}
-
-void Socket::CleanupWSock()
-{
-	WSACleanup();
-}
-#endif
 
 int Socket::read(int fd, char *buf, int len, int flags)
 {
@@ -479,7 +421,12 @@ void EndPoint::LogError(const char *contextmessage, int sockerrno)
 bool EndPoint::CreateSocket()
 {
 	StartTrace(EndPoint.CreateSocket);
+#if defined(WIN32)
+	// creates socket for non-overlapped I/O (aka synchronous) to get handles which are compatible to file handles
+	if ((fSockFd = WSASocket(AF_INET,SOCK_STREAM,IPPROTO_TCP,0,0,0)) < 0) {
+#else
 	if ((fSockFd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+#endif
 		LogError("socket()");
 		return false;
 	}

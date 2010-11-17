@@ -20,7 +20,7 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-
+//#include <iostream>
 //---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)
@@ -56,11 +56,12 @@ void PipeExecutorTest::EchoEnvTest()
 		t_assertm(!!(*os), "Execute env failed");
 		t_assertm(!!(*is), "Execute env failed");
 		Execute.ShutDownWriting();
-		while (!is->eof()) {
-			String s1;
-			// may be we need to close it here...
-			(*is) >> s1;
-		}
+		String s1;
+		OStringStream s1Stream(s1);
+		long bytes;
+		NSStringStream::PlainCopyStream2Stream(is, s1Stream, bytes);
+		Trace("ENV: " << s1);
+		t_assertm((s1.Contains("HALLO=Peter") != -1), "exported env variable not contained");
 	}
 }
 
@@ -147,7 +148,7 @@ void PipeExecutorTest::CatWorkingDirTest()
 	}
 	assertEqual(0, Execute.TerminateChild()); // everything is over
 }
-
+#include "SystemLog.h"
 void PipeExecutorTest::EchoCatTest()
 {
 	StartTrace(PipeExecutorTest.EchoCatTest);
@@ -165,7 +166,6 @@ void PipeExecutorTest::EchoCatTest()
 	t_assertm(os != NULL, "Execute cat failed");
 	std::istream *is = Execute.GetStream();
 	t_assertm(is != NULL, "Execute cat failed");
-
 	if (is && os) {
 		t_assertm(!!(*os), "Execute cat failed");
 		t_assertm(!!(*is), "Execute cat failed");
@@ -236,7 +236,7 @@ void PipeExecutorTest::PrepareParamTest()
 	PipeExecutor Execute;
 	Anything pm;
 	Execute.ParseParam("/bin/cat /etc/passwd", pm);
-	PipeExecutor::CgiParam cgiParams(pm, *Storage::Current());
+	PipeExecutor::CgiParam cgiParams(pm, Storage::Current());
 	char **p = cgiParams.GetParams();
 	assertCharPtrEqual("/bin/cat", p[0]);
 	assertCharPtrEqual("/etc/passwd", p[1]);
@@ -249,11 +249,21 @@ void PipeExecutorTest::PrepareEnvTest()
 	PipeExecutor Execute;
 	Anything pm;
 	pm["Hallo"] = "Peter";
-	PipeExecutor::CgiEnv cgiEnv(pm, *Storage::Current());
+	pm["Servus"] = "Marcel";
+	PipeExecutor::CgiEnv cgiEnv(pm, Storage::Current());
+#if defined(WIN32)
+	String expected("Hallo=Peter");
+	expected.Append('\0').Append("Servus=Marcel").Append('\0').Append('\0');
+	int length = 0;
+	void *p = cgiEnv.GetEnv(length);
+	assertEqual(expected.Length(), length);
+	t_assertm(expected == String(p, length), "blocks not equal");
+#else
 	char **p = cgiEnv.GetEnv();
-	assertCharPtrEqual(pm[0L].AsCharPtr(), p[0]);
 	assertCharPtrEqual("Hallo=Peter", p[0]);
-	assertEqual(0, p[1]);
+	assertCharPtrEqual("Servus=Marcel", p[1]);
+	assertEqual(0, p[2]);
+#endif
 }
 
 void PipeExecutorTest::DummyKillTest()
@@ -283,11 +293,11 @@ void PipeExecutorTest::ShellInvocationTest()
 			}
 		}
 		TraceAny(env, "environment to use:");
-		String fullname, toExec = roaParams["Executable"].AsString();
+		String fullname;
 #if defined(WIN32)
-		System::FindFile(fullname, toExec);
+		System::FindFile(fullname, roaParams["ExecutableWin"].AsString());
 #else
-		fullname << toExec;
+		fullname << roaParams["Executable"].AsString();
 #endif
 		Trace("Executable [" << fullname << "]");
 		bool bUseStderr = roaParams["UseStderr"].AsBool(false);

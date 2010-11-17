@@ -175,7 +175,10 @@ bool SocketTest::IsNonBlocking(int fd)
 void SocketTest::SetToNonBlockingTest()
 {
 #if defined(WIN32)
-	t_assertm(false, "set to non blocking only possible for sockets - ignore");
+	// set to non blocking only possible for sockets and because there is no way to query blocking/non-blocking
+	// mode we would have to create a socket and call recv to check whether it blocks or not. Unfortunately we
+	// would have to set a timeout which is only possible before binding which is not easy possible with the
+	// current implementation of our socket classes.
 #else
 	// invalid fd
 	t_assert(!Socket::SetToNonBlocking(-1));

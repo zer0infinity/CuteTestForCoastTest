@@ -120,7 +120,7 @@ bool Pipe::IsReady(bool forreading, long timeout)
 	if (res < 0) {
 		String logMsg;
 		SystemLog::Error(logMsg
-						 << "Pipe, select failed, error number: " << (long) errno
+						 << "Pipe, select failed, error number: " << System::GetSystemError()
 						 << " <" << SystemLog::LastSysError()
 						 << "> return code " << res);
 	}

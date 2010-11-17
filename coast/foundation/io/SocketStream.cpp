@@ -36,30 +36,11 @@ void *iosITOSocket::operator new(size_t size, Allocator *a)
 	}
 }
 
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-void iosITOSocket::operator delete(void *d, Allocator *a)
-{
-	StartTrace(iosITOSocket.operatordelete);
-	if (d) {
-		if (a) {
-			Trace("deleting with allocator:[" << (long)a << "]");
-			a->Free(d);
-		} else {
-			Trace("deleting with global delete");
-			::operator delete(d);
-		}
-	}
-}
-#endif
-
 void iosITOSocket::operator delete(void *d)
 {
 	StartTrace(iosITOSocket.operatordelete);
 	if (d) {
 		Allocator *a = ((iosITOSocket *)d)->fAllocator;
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		iosITOSocket::operator delete(d, a);
-#else
 		if (a) {
 			Trace("deleting with allocator:[" << (long)a << "]");
 			a->Free(d);
@@ -67,7 +48,6 @@ void iosITOSocket::operator delete(void *d)
 			Trace("deleting with global delete");
 			::operator delete(d);
 		}
-#endif
 	}
 }
 
