@@ -273,85 +273,77 @@ void AnythingParserTest::parseSimpleTypeDouble ()
 	String input1 = "1.0123456789E+300";
 	IStringStream is1(input1);
 	anyTest.Import( is1 );
-
 	t_assert( anyTest.AsDouble() == 1.0123456789E+300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input3 = "-1.0123456789E+300";
-	IStringStream is3(input3);
-	anyTest.Import( is3 );
-
+	String input2 = "-1.0123456789E+300";
+	IStringStream is2(input2);
+	anyTest.Import( is2 );
 	t_assert( anyTest.AsDouble() == -1.0123456789E+300 );
-
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input4 		= "1.0123456789E-300";
-	IStringStream is4(input4);
-	anyTest.Import( is4 );
-
+	String input3 = "1.0123456789E-300";
+	IStringStream is3(input3);
+	anyTest.Import( is3 );
 	t_assert( anyTest.AsDouble() == 1.0123456789E-300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input5 		= "-1.0123456789E-300";
-	IStringStream is5(input5);
-	anyTest.Import( is5 );
-
+	String input4 = "-1.0123456789E-300";
+	IStringStream is4(input4);
+	anyTest.Import( is4 );
 	t_assert( anyTest.AsDouble() == -1.0123456789E-300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input6 		= "-1.0123456789E-350";
+	String input5 = "-1.0123456789E-350";
+	IStringStream is5(input5);
+	anyTest.Import( is5 );
+	t_assert( anyTest.AsDouble() == 0 );
+	t_assert( anyTest.GetType() == AnyDoubleType );
+	t_assert( anyTest.GetSize() == 1 );
+
+	String input6 = "1.0123456789E-350";
 	IStringStream is6(input6);
 	anyTest.Import( is6 );
 	t_assert( anyTest.AsDouble() == 0 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input7 		= "1.0123456789E-350";
+	String input7 = "1.0123456789E+350";
 	IStringStream is7(input7);
 	anyTest.Import( is7 );
-	t_assert( anyTest.AsDouble() == 0 );
-	t_assert( anyTest.GetType() == AnyDoubleType );
-	t_assert( anyTest.GetSize() == 1 );
-
-	String input8 		= "1.0123456789E+350";
-	IStringStream is8(input8);
-	anyTest.Import( is8 );
 	if ( anyTest.AsCharPtr() ) {
 		String tt = anyTest.AsString();
-		//assertCharPtrEqual( anyTest.AsCharPtr(), "Infinity" );
-#if defined(WIN32)
-		t_assert((tt == "1.#INF") ); // Inf vs Infinity for operator<<(double)
-#else
 		tt.Trim(3);
 		tt.ToLower();
 		tt.ReplaceAt(0, "i", 1); // the last one is for SunC++5.0
 		assertEqual("inf", tt);
 		//t_assert((tt=="Infinity") || (tt=="infinity") || (tt=="Inf")); // Inf vs Infinity for operator<<(double)
-#endif
 	}
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-	String input9 		= "-1.0123456789E+350";
-	IStringStream is9(input9);
-	anyTest.Import( is9 );
+	String input8 = "-1.0123456789E+350";
+	IStringStream is8(input8);
+	anyTest.Import( is8 );
 	if ( anyTest.AsCharPtr() ) {
 		String tt = anyTest.AsString();
-
-#if defined(WIN32)
-		t_assert((tt == "-1.#INF") ); // Inf vs Infinity for operator<<(double)
-#else
 		tt.Trim(4);
 		tt.ToLower();
 		tt.ReplaceAt(1, "i", 1); // the last one is for SunC++5.0
 		assertEqual("-inf", tt);
-#endif
-
 	}
+	t_assert( anyTest.GetType() == AnyDoubleType );
+	t_assert( anyTest.GetSize() == 1 );
+
+	// test import of win32 3-digit exponent representation (printf %.e)
+	String input9 = "1.0123456789E+020";
+	IStringStream is9(input9);
+	anyTest.Import( is9 );
+	t_assert( anyTest.AsDouble() == 1.0123456789E+20 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 }

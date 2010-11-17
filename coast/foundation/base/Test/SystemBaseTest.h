@@ -26,7 +26,9 @@ public:
 
 	void GetProcessEnvironmentTest();
 
+#if !defined(WIN32)
 	void LockFileTest();
+#endif
 
 	void DoSingleSelectTest();
 	void MicroSleepTest();

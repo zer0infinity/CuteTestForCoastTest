@@ -1,4 +1,4 @@
-import os
+import os, tempfile
 import SConsider
 from stat import *
 
@@ -6,8 +6,8 @@ Import('*')
 
 searchReplace = {
     'DIREXTENDBASEDIR': lambda env: os.path.join(env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath, 'makedirextendtest', 'test'),
-    'TMPDIR': lambda env: 'c:/temp' if str(env['PLATFORM']) == 'cygwin' else '/tmp',
-    'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) == 'cygwin' else '/',
+    'TMPDIR': lambda env: tempfile.gettempdir() if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/tmp',
+    'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/',
 }
 
 def SystemTestMakeDirectoryExtendCleanup(env):

@@ -10,89 +10,94 @@
 #include "config_foundation.h"
 
 //--- standard modules used ----------------------------------------------------
-#if defined(WIN32)
-#include "Socket.h"
-#endif
 #include "Dbg.h"
 #include "SystemLog.h"
 #include "InitFinisManagerFoundation.h"
 
-static void Init()
-{
-	InitFinisManager::IFMTrace(">> foundation::Init\n");
-	// initialize syslog channel
-	SystemLog::Init("Coast");
-	// initialize InitFinisManagerFoundation relative components
-	if ( InitFinisManagerFoundation::Instance() != NULL ) {
-		InitFinisManagerFoundation::Instance()->Init();
-	}
-#if defined(WIN32)
-	Socket::InitWSock();
-#endif
-	InitFinisManager::IFMTrace("<< foundation::Init\n");
-}
+namespace {
+	#if defined(WIN32)
+	void InitWSock()
+	{
+		static bool once = false;
+		if (!once) {
+			once = true;
+			WORD wVersionRequested;
+			WSADATA wsaData = { 0, 0, {0}, {0}, 0, 0, 0 };
+			int err;
 
-static void Finis()
-{
-	InitFinisManager::IFMTrace(">> foundation::Finis\n");
-#if defined(WIN32)
-	Socket::CleanupWSock();
-#endif
-	// finalize InitFinisManagerFoundation relative components
-	if ( InitFinisManagerFoundation::Instance() != NULL ) {
-		InitFinisManagerFoundation::Instance()->Finis();
-		delete InitFinisManagerFoundation::Instance();
-	}
-	SystemLog::Terminate();
-	InitFinisManager::IFMTrace("<< foundation::Finis\n");
-}
+			wVersionRequested = MAKEWORD( 2, 0 );
 
-#if defined(WIN32)
-#ifdef _DLL
-// DllMain() is the entry-point function for this DLL.
-BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
-					DWORD fdwReason,                    // reason called
-					LPVOID lpvReserved)                 // reserved
-{
-	switch (fdwReason) {
+			err = WSAStartup( wVersionRequested, &wsaData );
+			if ( err != 0 ) {
+				/* Tell the user that we couldn't find a useable */
+				/* WinSock DLL.                                  */
+				return;
+			}
 
-			// The DLL is loading due to process
-			// initialization or a call to LoadLibrary.
-		case DLL_PROCESS_ATTACH:
-			Init();
-			break;
+			/* Confirm that the WinSock DLL supports 2.0.*/
+			/* Note that if the DLL supports versions greater    */
+			/* than 2.0 in addition to 2.0, it will still return */
+			/* 2.0 in wVersion since that is the version we      */
+			/* requested.                                        */
 
-			// The attached process creates a new thread.
-		case DLL_THREAD_ATTACH:
-			break;
-
-			// The thread of the attached process terminates.
-		case DLL_THREAD_DETACH:
-			break;
-
-			// The DLL unloading due to process termination or call to FreeLibrary.
-		case DLL_PROCESS_DETACH:
-			Finis();
-			break;
-
-		default:
-			break;
+			if ( LOBYTE( wsaData.wVersion ) != 2 ||
+				 HIBYTE( wsaData.wVersion ) != 0 ) {
+				/* Tell the user that we couldn't find a useable */
+				/* WinSock DLL.                                  */
+				WSACleanup( );
+				return;
+			}
+		}
 	}
 
-	return true;
-	UNREFERENCED_PARAMETER(hinstDLL);
-	UNREFERENCED_PARAMETER(lpvReserved);
+	void CleanupWSock()
+	{
+		WSACleanup();
+	}
+	#endif
+
+	void Init()
+	{
+		InitFinisManager::IFMTrace(">> foundation::Init\n");
+		// initialize syslog channel
+		SystemLog::Init("Coast");
+
+	#if defined(WIN32)
+		InitWSock();
+	#endif
+
+		// initialize InitFinisManagerFoundation relative components
+		if ( InitFinisManagerFoundation::Instance() != NULL ) {
+			InitFinisManagerFoundation::Instance()->Init();
+		}
+		InitFinisManager::IFMTrace("<< foundation::Init\n");
+	}
+
+	void Finis()
+	{
+		InitFinisManager::IFMTrace(">> foundation::Finis\n");
+
+	#if defined(WIN32)
+		CleanupWSock();
+	#endif
+
+		// finalize InitFinisManagerFoundation relative components
+		if ( InitFinisManagerFoundation::Instance() != NULL ) {
+			InitFinisManagerFoundation::Instance()->Finis();
+			delete InitFinisManagerFoundation::Instance();
+		}
+		SystemLog::Terminate();
+		InitFinisManager::IFMTrace("<< foundation::Finis\n");
+	}
 }
-#endif	// _DLL
-#else
+
 #if defined(__GNUG__)
-extern "C" void __attribute__ ((constructor)) foundation_init()
+extern "C" void __attribute__((constructor)) foundation_init()
 {
 	Init();
 }
-extern "C" void __attribute__ ((destructor)) foundation_fini()
+extern "C" void __attribute__((destructor)) foundation_fini()
 {
 	Finis();
 }
 #endif
-#endif	// WIN32

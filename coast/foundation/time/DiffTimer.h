@@ -9,23 +9,24 @@
 #ifndef _DiffTimer_H
 #define _DiffTimer_H
 
+#include "foundation.h" // for definition of l_long
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include <ctime>
 #include <cmath>
 
 #if defined(WIN32)
-typedef __int64 HRTIME;
-#define GetHRTIME()		GetTickCount()
+typedef l_long HRTIME;
+#define GetHRTIME()	GetTickCount()
 #elif defined(__sun)
 #include <sys/times.h>
-typedef hrtime_t 		HRTIME;
-#define GetHRTIME()		gethrtime()
+typedef hrtime_t HRTIME;
+#define GetHRTIME() gethrtime()
 #else
 #include <time.h>
 #include <sys/times.h>
-typedef clock_t			HRTIME;
-extern "C" HRTIME 		gettimes();
-#define GetHRTIME()		gettimes()
+typedef clock_t HRTIME;
+extern "C" HRTIME gettimes();
+#define GetHRTIME() gettimes()
 #endif
 
 //---- DiffTimer ----------------------------------------------------------

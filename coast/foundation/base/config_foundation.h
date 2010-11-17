@@ -9,20 +9,10 @@
 #ifndef _CONFIG_FOUNDATION_H
 #define _CONFIG_FOUNDATION_H
 
-//! DLL specific settings for Windows NT
+#define EXPORTDECL_FOUNDATION
+
 #if defined(WIN32)
-#ifdef _DLL
 #include <windows.h>
-#ifdef FOUNDATION_IMPL
-#define EXPORTDECL_FOUNDATION	__declspec(dllexport)
-#else
-#define EXPORTDECL_FOUNDATION	__declspec(dllimport)
-#endif
-#else
-#define EXPORTDECL_FOUNDATION
-#endif
-#else
-#define EXPORTDECL_FOUNDATION
 #endif
 
 #endif

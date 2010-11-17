@@ -101,6 +101,9 @@ namespace Coast {
 		//! returns the path of a file found using the search path or the relpath parameter
 		String GetFilePathOrInput(const String &relpath);
 
+		//! returns the system/user temp path
+		String GetTempPath();
+
 		//! returns directory entries as anything, entries are filtered by extension filter
 		Anything DirFileList(const char *dir, const char *extension = "html");
 
@@ -245,11 +248,13 @@ namespace Coast {
 			\return System::eSuccess if directory was removed */
 		DirStatusCode RemoveDirectory(String &path, bool bRecurse = false);
 
+#if !defined(WIN32)
 		//! create new directory with given permissions, works for relative or absolute path names and also
 		/*! \param filename absolute directory or filename to link to
 			\param symlinkname absolute name of link
 			\return System::eSuccess if new symbolic link was created */
 		DirStatusCode CreateSymbolicLink(const char *filename, const char *symlinkname);
+#endif
 
 		//! return number of possible hardlinks (directories) within a directory
 		/*! \param path relative or absolute path of directory

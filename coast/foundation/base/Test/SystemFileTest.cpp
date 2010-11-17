@@ -104,6 +104,7 @@ void SystemFileTest::statTests()
 	t_assertm(System::IsRegularFile("config/Test.any"), "expected 'Test.any' to be a file");
 	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
 	String strLinkToPrjRunTest("aLinkToTestAny");
+#if !defined(WIN32)
 	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("config/Test.any", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" ) ) {
 		t_assertm(System::IsSymbolicLink(strLinkToPrjRunTest), "expected link to be valid");
 		t_assertm(!System::IsDirectory(strLinkToPrjRunTest), "expected link not to be a directory");
@@ -117,6 +118,7 @@ void SystemFileTest::statTests()
 		t_assertm(!System::IsRegularFile(strLinkToDirectory), "expected link not to be a regular file");
 		assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkToDirectory) , "expected removal of symbolic link to succeed" );
 	}
+#endif
 }
 
 void SystemFileTest::pathListTest()
@@ -619,18 +621,32 @@ void SystemFileTest::testGetFilePath(boost::function<String ()> func, const Stri
 	System::ResolvePath(subPath);
 	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
 
-	System::Chmod(subPath, 0000); // set it to no access
+
 #if defined(WIN32)
-	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
+	// because NT lacks easy hiding of files or directories the file is renamed
+	String hiddenSubPath;
+	long filenamePos = subPath.StrRChr( Coast::System::Sep() );
+	if (filenamePos > -1) {
+		hiddenSubPath = subPath.SubString(0L, filenamePos+1).Append(".").Append(subPath.SubString(filenamePos+2));
+	} else {
+		hiddenSubPath = subPath;
+	}
+
+	int status = System::IO::rename(subPath, hiddenSubPath);
+#else
+	System::Chmod(subPath, 0000); // set it to no access
 #endif
 
 	path = func();
 	// should fail now.... therefore path is equal
 
-#if !defined(WIN32)
 	assertEqual(notFoundResult, path);
+
+#if defined(WIN32)
+	System::IO::rename(hiddenSubPath, subPath); //clean up to make it usable again
+#else
+	System::Chmod(subPath, 0640); // clean up to make it usable again
 #endif
-	System::Chmod(subPath, 0640); //clean up to make it usable again
 
 	path = func();
 	subPath = "./Dbg.any";
@@ -1284,12 +1300,15 @@ void SystemFileTest::MakeRemoveDirectoryTest()
 		String strSaveParam(strTmpDir);
 		// one level tests
 		assertComparem( System::eExists, equal_to, System::MakeDirectory(strTmpDir, 0755, false) , "expected creation of directory to fail");
+		System::ResolvePath(strSaveParam);
 		assertCharPtrEqual(strSaveParam, strTmpDir);
 		strSaveParam = str1Level;
 		if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str1Level, 0755, false) , "expected creation of directory to succeed") ) {
+			System::ResolvePath(strSaveParam);
 			assertCharPtrEqual(strSaveParam, str1Level);
 			t_assertm( System::IsDirectory(str1Level), "expected an accessible directory" );
 			assertComparem( System::eExists, equal_to, System::MakeDirectory(str1Level, 0755, false) , "expected creation of existing directory to fail");
+			System::ResolvePath(strSaveParam);
 			assertCharPtrEqual(strSaveParam, str1Level);
 			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of directory to succeed");
 			t_assertm( !System::IsDirectory(str1Level), "expected directory to be deleted" );
@@ -1300,6 +1319,7 @@ void SystemFileTest::MakeRemoveDirectoryTest()
 		assertCharPtrEqual(str1Level, str2Level);
 		str2Level = strSaveParam;
 		if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str2Level, 0755, true) , "expected creation of multiple directory levels at once to succeed") ) {
+			System::ResolvePath(strSaveParam);
 			assertCharPtrEqual(strSaveParam, str2Level);
 			t_assertm( System::IsDirectory(str2Level), "expected an accessible directory tree" );
 			assertComparem( System::eRecurseDeleteNotAllowed, equal_to, System::RemoveDirectory(str2Level, true), "expected deletion of multiple absolute dir levels to fail" );
@@ -1457,6 +1477,7 @@ void SystemFileTest::MakeDirectoryExtendTest()
 	}
 }
 
+#if !defined(WIN32)
 void SystemFileTest::SymbolicLinkTest()
 {
 	StartTrace(SystemFileTest.SymbolicLinkTest);
@@ -1505,6 +1526,7 @@ void SystemFileTest::SymbolicLinkTest()
 		}
 	}
 }
+#endif
 
 void SystemFileTest::GetFileSizeTest()
 {
@@ -1562,7 +1584,9 @@ Test *SystemFileTest::suite ()
 	ADD_CASE(testSuite, SystemFileTest, MkRmDirTest);
 	ADD_CASE(testSuite, SystemFileTest, MakeRemoveDirectoryTest);
 	ADD_CASE(testSuite, SystemFileTest, MakeDirectoryTest);
+#if !defined(WIN32)
 	ADD_CASE(testSuite, SystemFileTest, SymbolicLinkTest);
+#endif
 	ADD_CASE(testSuite, SystemFileTest, MakeDirectoryExtendTest);
 	ADD_CASE(testSuite, SystemFileTest, GetFileSizeTest);
 	ADD_CASE(testSuite, SystemFileTest, BlocksLeftOnFSTest);

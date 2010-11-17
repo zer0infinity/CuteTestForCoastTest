@@ -15,30 +15,36 @@ class Anything;
 
 #include <time.h> // for LocalTime parameters struct tm
 #if defined(WIN32)
-#include <sys/types.h>
+	#include <sys/types.h>
 #endif
 #include <sys/stat.h>
 
 #if defined(WIN32)
-typedef long pid_t;
-typedef long uid_t;
-// following values were taken from linux <bits/poll.h> file
-#define POLLIN		0x001
-#define POLLPRI		0x002
-#define POLLOUT 	0x004
-#define POLLERR		0x008
-#define POLLHUP		0x010
-#define POLLNVAL	0x020
-// following macro is for compatibility reasons, it is ignored in WIN32 select call
-#define FD_SETSIZE	0
+	typedef long uid_t;
+	// following values were taken from linux <bits/poll.h> file
+	#define POLLIN		0x001
+	#define POLLPRI		0x002
+	#define POLLOUT 	0x004
+	#define POLLERR		0x008
+	#define POLLHUP		0x010
+	#define POLLNVAL	0x020
+	// the following don't exist on windows
+	#define	S_IXGRP		_S_IEXEC
+	#define	S_IWGRP		_S_IWRITE
+	#define	S_IRGRP		_S_IREAD
+	#define	S_IXOTH		_S_IEXEC
+	#define	S_IWOTH		_S_IWRITE
+	#define	S_IROTH		_S_IREAD
 #else
-#include <unistd.h>
+	#include <unistd.h>
 #endif
 
 namespace Coast {
 	namespace System {
 		//! access errno in a portable way, wraps WSAxxerror on windows instead
-		int GetSystemError() ;
+		/*! \return error code which should not be used to compare with error constants
+		            because on windows the values from errno and GetLastError are overlapping. */
+		int GetSystemError();
 
 		//! determine if system call returned because of a signal interrupt and should be tried again
 		bool SyscallWasInterrupted();
@@ -103,10 +109,12 @@ namespace Coast {
 		/*! \return user id of current process */
 		uid_t getuid();
 
+#if !defined(WIN32)
 		//! Get the state of the lock file.
 		/*! \param lockFileName file name to get lock state of
 			\return false=not locked, true=locked. If there was an error, the file is considered to be locked! You must remove the lockfile with Coast::System::unlink(lockFileName) after you're done. */
 		bool GetLockFileState(const char *lockFileName);
+#endif
 	}
 }
 #endif /* _SYSTEMBASE_H */

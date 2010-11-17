@@ -24,6 +24,7 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
+#include <unistd.h>
 
 //---- SystemBaseTest --------------------------------------------------------
 SystemBaseTest::SystemBaseTest(TString tname)
@@ -38,12 +39,19 @@ SystemBaseTest::~SystemBaseTest()
 void SystemBaseTest::DoSingleSelectTest()
 {
 	StartTrace(SystemBaseTest.DoSingleSelectTest);
+#if !defined(WIN32) // select not possible on non-socket handles on WIN32
 	// assume writability of stdout
-	assertEqual(1L, System::DoSingleSelect(1, 100, false, true));
+	int result = System::DoSingleSelect(STDOUT_FILENO, 100, false, true);
+	assertEqual(1L, result);
+	if ( result < 0 ) {
+		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
+	}
+
 	// just wait 100ms
 	const long waittime = 1000L;
 	DiffTimer dt(DiffTimer::eMilliseconds);//1ms accuracy
-	int iSSRet = System::DoSingleSelect(0, waittime, false, false);
+	// wait for stdin
+	int iSSRet = System::DoSingleSelect(STDIN_FILENO, waittime, false, false);
 	long difft = dt.Diff();
 	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
 	difft -= waittime;
@@ -56,6 +64,7 @@ void SystemBaseTest::DoSingleSelectTest()
 	t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
 	t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
 	// sanity check negative value
+#endif
 	t_assert(System::DoSingleSelect(-1, 0, true, false) < 0);
 	// timeout tested indirectly in socket test cases
 	// cannot think of case forcing select really fail, i.e. return -1
@@ -105,15 +114,17 @@ void SystemBaseTest::TimeTest ()
 	assertEqual(agmtime.tm_min, alocaltime.tm_min);
 }
 
+#if !defined(WIN32)
 void SystemBaseTest::LockFileTest()
 {
 	StartTrace(SystemBaseTest.GetFileSizeTest);
-	String lockFile("/tmp/LockFileTest.lck");
+	String lockFile(System::GetTempPath().Append(System::Sep()).Append("LockFileTest.lck"));
 	bool ret = System::GetLockFileState(lockFile);
 	t_assertm(false == ret, "expected Lockfile to be unlocked");
 	t_assertm(true == System::GetLockFileState(lockFile), "expected LockFile to be locked");
 	t_assertm(false == System::IO::unlink(lockFile), "expected unlinking LockFile to succeed.");
 }
+#endif
 
 Test *SystemBaseTest::suite ()
 {
@@ -123,6 +134,8 @@ Test *SystemBaseTest::suite ()
 	ADD_CASE(testSuite, SystemBaseTest, allocFreeTests);
 	ADD_CASE(testSuite, SystemBaseTest, MicroSleepTest);
 	ADD_CASE(testSuite, SystemBaseTest, TimeTest);
+#if !defined(WIN32)
 	ADD_CASE(testSuite, SystemBaseTest, LockFileTest);
+#endif
 	return testSuite;
 }

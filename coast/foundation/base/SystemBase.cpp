@@ -17,12 +17,12 @@
 //--- c-library modules used ---------------------------------------------------
 #include <errno.h>
 #include <cstring>
+#include <fcntl.h>
 
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>
 #else
-#include <fcntl.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
@@ -30,22 +30,17 @@
 
 //---- System --------------------------------------------------------------------------
 
+namespace {
+
+}
+
 namespace Coast {
 	namespace System {
-
-		bool SyscallWasInterrupted()
-		{
-		#if defined(WIN32)
-			return ( WSAGetLastError () == WSAEINTR );
-		#else
-			return ( errno == EINTR ) || (errno == EAGAIN);
-		#endif
-		}
 
 		// avoid that fd is shared by forked processes
 		void SetCloseOnExec(int fd)
 		{
-		#if !defined WIN32
+		#if !defined(WIN32)
 			if (fd >= 0 ) {
 				int options = fcntl(fd, F_GETFD);
 				if (options >= 0) {
@@ -112,8 +107,6 @@ namespace Coast {
 		{
 		#if defined(WIN32)
 			Sleep(sleepTime / 1000L);
-			// might work: WaitForMultipleObjects(0,0,true,sleepTime);
-			// select won't work on Windows, according to WinSock2 documentation
 			return true;
 		#else
 			// alternative is to use Posix's nanosleep(struct timespec*,struct timespec*)
@@ -128,17 +121,29 @@ namespace Coast {
 		int GetSystemError()
 		{
 		#if defined(WIN32)
-			// either it was a regular system error or a windows socket error
+			// either it was a regular system error or a windows socket error, sometimes errno is set
+			// too, but we can't rely on that...
 			if (GetLastError()) {
 				return GetLastError();
 			}
 			if (WSAGetLastError()) {
 				return WSAGetLastError();
 			}
-			return errno;
-		#else
-			return errno;
 		#endif
+			return errno;
+		}
+
+		bool SyscallWasInterrupted()
+		{
+		#if defined(WIN32)
+			if (GetLastError() == ERROR_INVALID_AT_INTERRUPT_TIME) { // according to cygwin error code mapping
+				return true;
+			}
+			if (WSAGetLastError () == WSAEINTR) {
+				return true;
+			}
+		#endif
+			return ( errno == EINTR ) || (errno == EAGAIN);
 		}
 
 		struct tm *LocalTime( const time_t *timer, struct tm *res ) {
@@ -371,6 +376,9 @@ namespace Coast {
 		#endif
 		}
 
+#if !defined(WIN32)
+		// locking would actually work on WIN32 but unlocking is not as easy because open files can't
+		// be deleted. cygwin remembers the fd to close the file before unlinking.
 		bool GetLockFileState(const char *lockFileName)
 		{
 			StartTrace(System.CreateLockFile);
@@ -389,22 +397,16 @@ namespace Coast {
 			// if we got here, we own the lock or had an error
 			return false;
 		}
-
+#endif
 	}
 }
 
 void Coast::System::GetProcessEnvironment(Anything &anyEnv)
 {
 	StartTrace(System.GetProcessEnvironment);
-#if defined(WIN32)
-	extern char **_environ;
-	for (long i = 0; _environ && _environ[i] ; ++i) {
-		String entry(_environ[i]);
-#else
 	extern char **environ;
 	for (long i = 0; environ && environ[i] ; ++i) {
 		String entry(environ[i]);
-#endif
 		Trace("entry = <" << entry << ">");
 		long equalsign = entry.StrChr('=');
 		if (equalsign >= 0) {

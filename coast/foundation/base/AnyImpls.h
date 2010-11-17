@@ -320,9 +320,6 @@ public:
 
 	static void *operator new(size_t size, Allocator *a);
 	static void operator delete(void *d);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-	static void operator delete(void *d, Allocator *a);
-#endif
 
 protected:
 	void InitTable(long cap);
@@ -350,9 +347,6 @@ public:
 	void Remove(long slot);
 
 	static void *operator new(size_t size, Allocator *a);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-	static void operator delete(void *d, Allocator *a);
-#endif
 	static void operator delete(void *d);
 	void Swap(long l, long r);
 	void SetIndex(long slot, long index);

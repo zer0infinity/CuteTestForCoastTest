@@ -23,8 +23,6 @@
 
 #if defined(__GNUG__)
 #define COAST_COMPILER		"GCC_"  __VERSION__
-#elif defined(WIN32) && defined(_MSC_VER)
-#define COAST_COMPILER		"MSC_" _MSC_VER
 #else
 #define COAST_COMPILER		"CompilerUnknown"
 #endif
@@ -55,22 +53,10 @@ typedef unsigned long u_long;
 
 // handle l_long and ul_long as type
 // also define macros to correctly declare literals
-#if defined(WIN32)		// already defined above!
-typedef __int64 l_long;
-typedef unsigned __int64 ul_long;
-#define UINT64_LITERAL(n) n ## ui64
-#define INT64_LITERAL(n) n ## i64
-#else /* assume everybody else supports long long */
 typedef long long l_long;
 typedef unsigned long long ul_long;
 #define UINT64_LITERAL(n) n ## ull
 #define INT64_LITERAL(n) n ## ll
-#endif
-#if defined(WIN32) || ( defined(__linux__) && defined(__GNUG__) && __GNUG__ < 4 )
-#define LLONG_MAX	INT64_LITERAL(9223372036854775807)
-#define LLONG_MIN	(-LLONG_MAX-1)
-#define ULLONG_MAX	UINT64_LITERAL(18446744073709551615)
-#endif
 
 // write correct end of line sequence for http
 // without flushing the stream

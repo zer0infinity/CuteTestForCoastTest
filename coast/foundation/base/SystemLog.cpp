@@ -8,9 +8,6 @@
 
 //--- interface include --------------------------------------------------------
 #include "SystemLog.h"
-#if defined(WIN32)
-#define IOSTREAM_IS_THREADSAFE
-#endif
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
@@ -21,7 +18,10 @@ using namespace Coast;
 #include <errno.h>
 #include <cstdio>
 #include <cstring>
-#if !defined(WIN32)
+#if defined(WIN32)
+#define IOSTREAM_IS_THREADSAFE
+#include <iostream>
+#else
 #include <syslog.h>
 #endif
 
@@ -146,9 +146,9 @@ bool SystemLog::InitOnce()
 String SystemLog::SysErrorMsg(long errnum)
 {
 #if defined(WIN32)
-	LPVOID lpMsgBuf;
+	LPTSTR lpMsgBuf = 0;
 
-	FormatMessage(
+	DWORD len = FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		errnum,
@@ -158,12 +158,12 @@ String SystemLog::SysErrorMsg(long errnum)
 		NULL
 	);
 
-	String msg((const char *)lpMsgBuf, strlen(lpMsgBuf), Storage::Global());
+	String msg(static_cast<const char *>(lpMsgBuf), len);
 	// Free the buffer.
 	LocalFree( lpMsgBuf );
 	return msg;
 #else
-	String theError(Storage::Global());
+	String theError;
 	if (errnum == EMFILE) {
 		theError = "[No more filehandles in Process.] ";
 	}
@@ -220,7 +220,7 @@ void SystemLog::WriteToStderr(const char *msg, long length)
 			sLen = strlen(msg);
 		}
 #ifdef IOSTREAM_IS_THREADSAFE
-		cerr.write(msg, sLen).flush();
+		std::cerr.write(msg, sLen).flush();
 #else
 		::write(2, msg, sLen);
 #endif
@@ -245,7 +245,7 @@ void SystemLog::WriteToStdout(const char *msg, long length)
 			sLen = strlen(msg);
 		}
 #ifdef IOSTREAM_IS_THREADSAFE
-		cout.write(msg, sLen).flush();
+		std::cout.write(msg, sLen).flush();
 #else
 		::write(1, msg, sLen);
 #endif
@@ -308,7 +308,7 @@ void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg)
 #if defined(WIN32)
 Win32SysLog::Win32SysLog(const char *appId)
 {
-	fLogHandle =	::RegisterEventSource(0, appId);
+	fLogHandle = ::RegisterEventSource(0, appId);
 }
 
 Win32SysLog::~Win32SysLog()

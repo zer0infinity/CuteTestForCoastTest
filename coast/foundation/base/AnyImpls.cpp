@@ -467,32 +467,15 @@ void *AnyKeyTable::operator new(size_t size, Allocator *a)
 	}
 }
 
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-void AnyKeyTable::operator delete(void *d, Allocator *a)
-{
-	if (d) {
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
-}
-#endif
-
 void AnyKeyTable::operator delete(void *d)
 {
 	if (d) {
 		Allocator *a = reinterpret_cast<AnyKeyTable *>(d)->fAllocator;
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		AnyKeyTable::operator delete(d, a);
-#else
 		if (a) {
 			a->Free(d);
 		} else {
 			::operator delete(d);
 		}
-#endif
 	}
 }
 
@@ -671,32 +654,15 @@ void *AnyIndTable::operator new(size_t size, Allocator *a)
 	}
 }
 
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-void AnyIndTable::operator delete(void *d, Allocator *a)
-{
-	if (d) {
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
-}
-#endif
-
 void AnyIndTable::operator delete(void *d)
 {
 	if (d) {
 		Allocator *a = static_cast<AnyIndTable *>(d)->fAllocator;
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		AnyIndTable::operator delete(d, a);
-#else
 		if (a) {
 			a->Free(d);
 		} else {
 			::operator delete(d);
 		}
-#endif
 	}
 }
 

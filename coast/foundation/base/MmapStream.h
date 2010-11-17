@@ -9,8 +9,7 @@
 #ifndef _MmapStream_H
 #define _MmapStream_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-
+#if !defined(WIN32)
 #include <sys/mman.h>
 
 #include <cstdio>
@@ -232,4 +231,5 @@ public:
 	virtual ~MmapStream() { }
 }; // MmapStream
 
+#endif
 #endif

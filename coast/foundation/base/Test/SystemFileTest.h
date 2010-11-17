@@ -45,7 +45,9 @@ public:
 	void MkRmDirTest();
 	void MakeRemoveDirectoryTest();
 	void MakeDirectoryTest();
+#if !defined(WIN32)
 	void SymbolicLinkTest();
+#endif
 	void MakeDirectoryExtendTest();
 	void GetFileSizeTest();
 	void BlocksLeftOnFSTest();

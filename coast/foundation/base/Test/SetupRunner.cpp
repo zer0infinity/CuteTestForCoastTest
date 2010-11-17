@@ -36,7 +36,6 @@
 #include "TypeTraitsTest.h"
 #include "AnythingIteratorTest.h"
 #include "AnythingSTLTest.h"
-
 #if !defined(WIN32)
 #include "MmapTest.h"
 #endif
@@ -57,7 +56,9 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, AnythingParserSemanticTest);
 	ADD_SUITE(runner, AnythingParserTest);
 	ADD_SUITE(runner, StrSpecialTest);
+#if !defined(WIN32)
 	ADD_SUITE(runner, MmapTest);
+#endif
 	ADD_SUITE(runner, StringStreamTest);
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);

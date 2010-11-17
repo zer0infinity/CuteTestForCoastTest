@@ -16,41 +16,6 @@
 
 #define SS_TRACE(msg)
 
-#if defined(WIN32)
-inline std::ostream &operator<< (std::ostream &os, __int64 value)
-{
-	char buf[22] = { '\0' };
-	os << _i64toa( value, buf, 10 );
-	return os;
-}
-inline std::ostream &operator<< (std::ostream &os, unsigned __int64 value)
-{
-	char buf[22] = { '\0' };
-	os << _ui64toa( value, buf, 10 );
-	return os;
-}
-inline std::istream &operator>> (std::istream &is, __int64 &value)
-{
-	String strBuf;
-	// read up to next whitespace
-	is >> strBuf;
-	// check for string sanity, format: [sign]digits
-	if ( strBuf.Length() && ( isdigit(strBuf.At(0)) || ( (strBuf.At(0) == '+' || strBuf.At(0) == '-') && (strBuf.Length() > 1 && isdigit(strBuf.At(1))) ) ) ) {
-		__int64 llVal = _atoi64( (const char *)strBuf );
-		// converter returns 0 in case of a failure
-		value = llVal;
-	}
-	return is;
-}
-inline std::istream &operator>> (std::istream &is, unsigned __int64 &value)
-{
-	__int64 llVal = (__int64)value;
-	is >> llVal;
-	value = (unsigned __int64)llVal;
-	return is;
-}
-#endif
-
 #include "StringStreamBuf.h"
 
 

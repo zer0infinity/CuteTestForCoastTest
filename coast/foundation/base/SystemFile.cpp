@@ -31,13 +31,10 @@
 #endif
 
 namespace {
-	//!contains the systems path seperator
+	//!contains the systems path separator
 	const char cSep = '/';
 
 	//!defines maximal size of path
-	#if defined(WIN32) && !defined(_POSIX_)
-	#define PATH_MAX	512
-	#endif
 	#if defined(_POSIX_)
 	const long cPATH_MAX = _POSIX_PATH_MAX;
 	#else
@@ -78,6 +75,9 @@ namespace {
 	{
 		StartTrace(System.CheckPath);
 		bool result = false;
+#if defined(WIN32) //!@TODO: symlinks seem to be supported since vista
+		bIsSymbolicLink = false;
+#else
 		while ( !(result = (lstat(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
 			String msg("OOPS, lstat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
@@ -88,6 +88,7 @@ namespace {
 		if ( result ) {
 			Trace("mode field value of lstat: " << (long)stbuf->st_mode);
 		}
+#endif
 		while ( !(result = (stat(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
 			String msg("OOPS, stat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
@@ -113,7 +114,20 @@ namespace {
 			mode |= std::ios::out;
 		}
 
+#if defined(WIN32)
+		// std::in is needed in win32 to force std::ate to do what it was meant to do
+		if ( mode & std::ios::ate ) {
+			mode |= std::ios::in;
+		}
+#endif
+
 		if ( Coast::System::IsRegularFile(path) || (mode & std::ios::out) ) {
+			// ios::ate is special, it should only work on existing files according to standard
+			// so must set the out flag here and not earlier
+			if ( mode & std::ios::ate ) {
+				mode |= std::ios::out;
+			}
+#if !defined(WIN32)
 			static bool bUseMmapStreams = ( Coast::System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 			if ( bUseMmapStreams ) {
 				MmapStream *fp = new MmapStream(path, mode);
@@ -123,13 +137,16 @@ namespace {
 				Trace("failed to open MmapStream, file [" << path << "]");
 				delete fp;
 			} else {
+#endif
 				std::fstream *fp = new std::fstream(path, (Coast::System::openmode)mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
 					return fp;
 				}
 				Trace("failed to open fstream. file [" << path << "]");
 				delete fp;
+#if !defined(WIN32)
 			}
+#endif
 		} else {
 			if (log) {
 				SYSWARNING(String("file [") << path << "] does not exist or is not accessible");
@@ -207,6 +224,7 @@ namespace {
 		return filename;
 	}
 
+#if !defined(WIN32)
 	//! internal method to extend a directory with given permissions by creating 'extension' directories and softlinks
 	/*!	\param path relative or absolute path to create new directory
 		\param pmode permission of new directory, octal number
@@ -258,6 +276,7 @@ namespace {
 		}
 		return aDirStatus;
 	}
+#endif
 
 	//! internal method to create new directory with given permissions, works for relative or absolute path names and also recursive if specified.
 	/*! \note Unless bRecurse is true, the parent directory must already exist and only one directory level will be created
@@ -298,18 +317,20 @@ namespace {
 		if ( aDirStatus == Coast::System::eSuccess || aDirStatus == Coast::System::eExists ) {
 			// make new directory
 			if ( Coast::System::IO::mkdir(path, pmode) != 0L ) {
-				switch ( Coast::System::GetSystemError() ) {
+				switch ( errno ) { // errno needs to be used in comparisons
 						// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
 					case EEXIST: {
 						SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
 						aDirStatus = Coast::System::eExists;
 						break;
 					}
+#if !defined(WIN32)
 					case EDQUOT: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 						aDirStatus = Coast::System::eQuotaExceeded;
 						break;
 					}
+#endif
 					case ENOSPC: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] -> check for free inodes using $>df -F ufs -o i <FS>");
 						aDirStatus = Coast::System::eNoSpaceLeft;
@@ -343,10 +364,12 @@ namespace {
 					case EMLINK: {
 						SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
 						aDirStatus = Coast::System::eNoMoreHardlinks;
+#if !defined(WIN32)
 						if ( bExtendByLinks ) {
 							// if no more directories can be created, we use 'extension' links instead
 							aDirStatus = IntExtendDir(path, pmode);
 						}
+#endif
 						break;
 					}
 					default: {
@@ -387,7 +410,7 @@ namespace {
 			}
 		} else {
 			SYSERROR("rmdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-			switch ( Coast::System::GetSystemError() ) {
+			switch ( errno ) { // errno needs to be used in comparisons
 				case EEXIST:
 				case ENOTEMPTY:
 					aDirStatus = Coast::System::eExists;
@@ -709,7 +732,7 @@ namespace Coast {
 				return resultPath;
 			}
 
-			if (Coast::System::IsAbsolutePath(relpath)) {
+			if (IsAbsolutePath(relpath)) {
 				Trace("absolute path given [" << relpath << "]");
 				resultPath = relpath;
 			} else {
@@ -724,7 +747,7 @@ namespace Coast {
 				Trace("couldn't find file [" << relpath << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
 			}
 
-			Coast::System::ResolvePath(resultPath);
+			ResolvePath(resultPath);
 			return resultPath;
 		}
 
@@ -735,6 +758,20 @@ namespace Coast {
 				return foundpath;
 			}
 			return relpath;
+		}
+
+		String GetTempPath() {
+#if defined(WIN32)
+			TCHAR lpTempPathBuffer[MAX_PATH];
+			DWORD dwRetVal = 0;
+			dwRetVal = ::GetTempPath(MAX_PATH, lpTempPathBuffer);
+			if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
+				//error
+			}
+			return String(lpTempPathBuffer);
+#else
+			return "/tmp";
+#endif
 		}
 
 		bool FindFile(String &fullPathName, const char *file, const char *path)
@@ -910,12 +947,13 @@ namespace Coast {
 				const char *fName = FileData.cFileName;
 				list.Append(Anything(fName, strlen(fName) - truncext)); // PS: warum die extension abschneiden?
 
-				if (!FindNextFile(hSearch, &FileData))
+				if (!FindNextFile(hSearch, &FileData)) {
 					if (GetLastError() == ERROR_NO_MORE_FILES) {
 						fFinished = true;
 					} else {
 						SYSWARNING("couldn't find file");
 					}
+				}
 			}
 			// Close the search handle.
 			FindClose(hSearch);
@@ -1041,6 +1079,7 @@ namespace Coast {
 			return mystat.st_nlink;
 		}
 
+#if !defined(WIN32) //!@TODO:symlinks are supported since vista
 		DirStatusCode CreateSymbolicLink(const char *filename, const char *symlinkname)
 		{
 			StartTrace1(System.CreateSymbolicLink, "directory [" << NotNull(filename) << "] link [" << NotNull(symlinkname) << "]");
@@ -1051,6 +1090,7 @@ namespace Coast {
 			// success
 			return eSuccess;
 		}
+#endif
 
 		bool LoadConfigFile(Anything &config, const char *name, const char *ext, String &realfilename)
 		{
