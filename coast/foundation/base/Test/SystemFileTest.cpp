@@ -1531,18 +1531,16 @@ void SystemFileTest::SymbolicLinkTest()
 void SystemFileTest::GetFileSizeTest()
 {
 	StartTrace(SystemFileTest.GetFileSizeTest);
-	String path(System::GetFilePath("len5", "tst"));
-	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
-		ul_long ulSize = 0;
-		if ( t_assert(System::GetFileSize(path, ulSize)) ) {
-			assertEqualm(5UL, ulSize, "expected same size");
-		}
-	}
-	path = System::GetFilePath("AnythingTest", "any");
-	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
-		ul_long ulSize = 0;
-		if ( t_assert(System::GetFileSize(path, ulSize)) ) {
-			assertEqualm(10701UL, ulSize, "expected same size");
+
+	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
+	ROAnything roaConfig;
+	while ( aIterator(roaConfig) ) {
+		String path(System::GetFilePath( roaConfig["File"].AsString() ));
+		if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
+			ul_long ulSize = 0;
+			if ( t_assert(System::GetFileSize(path, ulSize)) ) {
+				assertEqualm(roaConfig["ExpectedSize"].AsLong(), ulSize, "expected same size");
+			}
 		}
 	}
 }

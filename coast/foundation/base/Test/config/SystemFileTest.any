@@ -23,6 +23,16 @@
 			/Link				"TestLink1"
 		}
 	}
+	/GetFileSizeTest {
+		{
+			/File				"len5.tst"
+			/ExpectedSize		##FILESIZE_len5.tst##
+		}
+		{
+			/File				"AnythingTest.any"
+			/ExpectedSize		##FILESIZE_AnythingTest.any##
+		}
+	}
 	/MakeDirectoryExtendTest {
 		# enabling BaseDir slot activates directory extension test, empty value disables
 		# note: on file systems like ext3 and above, zfs etc. it will probably not work...

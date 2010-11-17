@@ -1,5 +1,5 @@
 import os, tempfile
-import SConsider
+import SConsider, SCons
 from stat import *
 
 Import('*')
@@ -8,6 +8,8 @@ searchReplace = {
     'DIREXTENDBASEDIR': lambda env: os.path.join(env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath, 'makedirextendtest', 'test'),
     'TMPDIR': lambda env: tempfile.gettempdir() if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/tmp',
     'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/',
+    'FILESIZE_len5.tst': SCons.Script.File('config/len5.tst').get_size(),
+    'FILESIZE_AnythingTest.any': SCons.Script.File('config/AnythingTest.any').get_size(),
 }
 
 def SystemTestMakeDirectoryExtendCleanup(env):
