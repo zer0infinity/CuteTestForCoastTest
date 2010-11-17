@@ -65,6 +65,7 @@ Test *StringTest::suite()
 	ADD_CASE(testSuite, StringTest, TestLastCharOf);
 	ADD_CASE(testSuite, StringTest, TestContainsCharAbove);
 	ADD_CASE(testSuite, StringTest, prependWith);
+	ADD_CASE(testSuite, StringTest, DoubleToStringTest);
 	return testSuite;
 }
 
@@ -3070,4 +3071,98 @@ void StringTest::TestLastCharOf()
 	// String on which method is executed is empty
 	String empty;
 	assertEqual(-1L, empty.LastCharOf("0123456789"));
+}
+
+void StringTest::DoubleToStringTest()
+{
+	StartTrace(StringTest.DoubleToStringTest);
+	{
+		String strBuf;
+		double dValue = 1.0;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "1.0", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 1000000;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "1000000.0", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 1.23456789;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "1.23456789", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 0.0;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "0.0", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 0.056;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "0.056", strBuf);
+	}
+	{
+		// string will be cut 15 decimals after decimal point
+		String strBuf;
+		double dValue = (1.0 / 3.0);
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "0.333333333333333", strBuf);
+	}
+	{
+		// string will be cut 15 decimals after decimal point
+		String strBuf;
+		double dValue = (100.0 / 3.0);
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "33.333333333333336", strBuf);
+	}
+	{
+		// string will be cut 15 decimals after decimal point
+		String strBuf;
+		double dValue = 27.16;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "27.16", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 1e15 + 0.123456789;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "1000000000000000.125", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 1e14 + 0.123456789;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "100000000000000.125", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = 1e12 + 0.123456789;
+		String::DoubleToString(dValue, strBuf);
+		assertCharPtrEqual( "1000000000000.1234130859375", strBuf);
+	}
+	{
+		String strBuf;
+		double dValue = (1e+20) + 0.22134;
+		String::DoubleToString(dValue, strBuf);
+#if defined(WIN32)
+		assertCharPtrEqual( "1e+020", strBuf);
+#else
+		assertCharPtrEqual( "1e+20", strBuf);
+#endif
+	}
+	{
+		String strBuf;
+		double dValue = 1e+30;
+		String::DoubleToString(dValue, strBuf);
+#if defined(WIN32)
+		assertCharPtrEqual( "1e+030", strBuf);
+#else
+		assertCharPtrEqual( "1e+30", strBuf);
+#endif
+	}
 }

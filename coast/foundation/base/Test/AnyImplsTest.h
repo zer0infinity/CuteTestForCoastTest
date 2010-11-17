@@ -35,7 +35,6 @@ public:
 	static Test *suite ();
 
 	//! describe this testcase
-	void DoubleToStringTest();
 	void ThisToHexTest();
 };
 

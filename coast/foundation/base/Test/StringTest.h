@@ -152,6 +152,8 @@ public:
 	void EmptyAllocatorTest();
 	void ReplaceTest();
 	void IntReplaceTest(String orig, const String &prefix, const String &nStr, bool exp, const String expStr);
+
+	void DoubleToStringTest();
 };
 
 #endif
