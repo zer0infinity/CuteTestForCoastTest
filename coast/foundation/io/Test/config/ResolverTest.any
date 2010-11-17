@@ -7,18 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/simpleDNS2IPTest {
-		/localhost {
-			/name	!Defaults.any?LocalHostName
-			/ip		!Defaults.any?LocalHostIp
-		}
-		/thisHost {
-			/name	!Defaults.any?HostName
-			/ip		!Defaults.any?HostNameIp
-		}
-		/thisHostFqdn {
-			/name	!Defaults.any?FullQualifiedDomainName
-			/ip		!Defaults.any?HostNameIp
-		}
 		/resolvableHost {
 			/name	!Defaults.any?ResolvableHostFqdn
 			/ip		!Defaults.any?ResolvableHostIp
@@ -29,14 +17,9 @@
 		}
 	}
 	/simpleIP2DNSTest {
-		/localhost {
-			/name	!Defaults.any?LocalHostName
-			/fqdn	!Defaults.any?FullQualifiedDomainName
-			/ip		!Defaults.any?LocalHostIp
-		}
-		/thisHost {
-			/name	!Defaults.any?FullQualifiedDomainName
-			/ip		!Defaults.any?HostNameIp
+		/resolvableHost {
+			/name	!Defaults.any?ResolvableHostFqdn
+			/ip		!Defaults.any?ResolvableHostIp
 		}
 	}
 }

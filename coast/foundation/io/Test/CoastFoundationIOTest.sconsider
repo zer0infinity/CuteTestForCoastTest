@@ -1,10 +1,11 @@
 import os, socket, shutil, pdb
 import threading
-import SConsider
+import SCons, SConsider, Anything
 from stat import *
 from SocketServer import BaseServer, TCPServer, BaseRequestHandler
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
+
 
 Import('*')
 
@@ -50,10 +51,12 @@ except:
 faultyfqdn='nonexisting.server.loc'
 localhostname='localhost'
 localhostip=socket.gethostbyname(localhostname)
-hosttoresolvename='www.hsr.ch'
+
+hosttoresolvename = 'www.hsr.ch'
 try:
-    hosttoresolveip=socket.gethostbyname(hosttoresolvename)
-except:
+    hosttoresolveip = socket.gethostbyname(hosttoresolvename)
+    hosttoresolvename = socket.gethostbyaddr(hosttoresolveip)[0]
+except IOError as e:
     hosttoresolvename=localhostname
     hosttoresolveip=localhostip
 
