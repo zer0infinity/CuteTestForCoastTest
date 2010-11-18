@@ -51,7 +51,7 @@ public:
 
 	//! return the cached boundary string that separate multipart MIME messages
 	//! is only useful if Content-Type is multipart/form-data
-	const String &GetBoundary() const;
+	String GetBoundary() const;
 
 	//! special case for the canonical "content-length" header field
 	//! only valid if set
@@ -77,9 +77,6 @@ private:
 	//!contains the request/reply header
 	Anything fHeader;
 
-	//!boundary between different part of multipart/form-data
-	String fBoundary;
-	bool fBoundaryChecked;
 	Coast::URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
 

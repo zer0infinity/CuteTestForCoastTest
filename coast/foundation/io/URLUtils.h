@@ -97,6 +97,9 @@ namespace Coast {
 		//!up or downshift str according to normKey in case of eUntouched it is a no op
 		void Normalize(String &str, Coast::URLUtils::NormalizeTag normKey);
 
+		//!up or downshift str according to normKey in case of eUntouched it is a no op
+		String Normalize(String const &str, Coast::URLUtils::NormalizeTag normKey);
+
 		//!appends value to any under the tag key if key.Length>0; it appends to key if key already has a value
 		void AppendValueTo(Anything &any, const String &key, const char *value);
 

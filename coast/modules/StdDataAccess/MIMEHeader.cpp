@@ -14,7 +14,7 @@
 #include <iostream>
 
 MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields) :
-	fBoundaryChecked(false), fNormalizeKey(normalizeKey), fSplitHeaderFields(splitHeaderFields) {
+	fNormalizeKey(normalizeKey), fSplitHeaderFields(splitHeaderFields) {
 	StartTrace(MIMEHeader.Ctor);
 }
 
@@ -43,8 +43,11 @@ namespace {
 	char const cookieArgumentsDelimiter = ';';
 	char const headerArgumentsDelimiter = ',';
 	char const headerNamedDelimiter = ':';
+	String shiftedHeaderKey(String const &key, Coast::URLUtils::NormalizeTag const shiftFlag) {
+		return Coast::URLUtils::Normalize(key, shiftFlag);
+	}
 	//!split ';' seperated list of key=value pairs into anything
-	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag shift = Coast::URLUtils::eUpshift) {
+	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag const shift = Coast::URLUtils::eUpshift) {
 		Anything values;
 		Coast::URLUtils::Split(line, cookieArgumentsDelimiter, values, '=', shift);
 		StatTraceAny(MIMEHeader.SplitLine, values, "input line [" << line << "] split into:", Storage::Current());
@@ -55,8 +58,7 @@ namespace {
 		// following headerfield specification of HTTP/1.1 RFC 2068
 		long pos = line.StrChr(headerNamedDelimiter);
 		if (pos > 0) {
-			fieldname = line.SubString(0, pos);
-			Coast::URLUtils::Normalize(fieldname, normTag);
+			fieldname = shiftedHeaderKey(line.SubString(0, pos), normTag);
 		}
 		Trace("Fieldname: " << fieldname << " Position of " << headerNamedDelimiter << " is: " << pos);
 		return pos;
@@ -86,14 +88,35 @@ bool MIMEHeader::ParseHeaderLine(String &line) {
 }
 
 namespace {
-	MIMEHeader::ProcessMode GetSplitState(String fieldname, MIMEHeader::ProcessMode splitHeaderFields) {
+	char const *boundarySlotname = "BOUNDARY";
+	char const *contentDispositionSlotname = "CONTENT-DISPOSITION";
+	char const *contentLengthSlotname = "CONTENT-LENGTH";
+	char const *contentTypeSlotname = "CONTENT-TYPE";
+	char const *cookieSlotname = "COOKIE";
+	char const *setCookieSlotname = "SET-COOKIE";
+	char const *userAgentSlotname = "USER-AGENT";
+	String const boundaryToken("boundary=", Storage::Global());
+
+	MIMEHeader::ProcessMode GetSplitState(String const &fieldname, MIMEHeader::ProcessMode splitHeaderFields, Coast::URLUtils::NormalizeTag const shiftFlag) {
 		StartTrace(MIMEHeader.GetSplitState);
-		if (fieldname.ToUpper().IsEqual("SET-COOKIE") || fieldname.IsEqual("USER-AGENT")) {
+		if (fieldname.IsEqual(shiftedHeaderKey(setCookieSlotname, shiftFlag)) || fieldname.IsEqual(shiftedHeaderKey(userAgentSlotname, shiftFlag))) {
 			splitHeaderFields = MIMEHeader::eDoNotSplitHeaderFields;
-		} else if (fieldname.IsEqual("COOKIE")) {
+		} else if (fieldname.IsEqual(shiftedHeaderKey(cookieSlotname, shiftFlag))) {
 			splitHeaderFields = MIMEHeader::eDoSplitHeaderFieldsCookie;
 		}
 		return splitHeaderFields;
+	}
+
+	void CheckMultipartBoundary(String const &contenttype, Anything &header, Coast::URLUtils::NormalizeTag const shiftFlag) {
+		StartTrace1(MIMEHeader.CheckMultipartBoundary, "Content-type: <" << contenttype << ">");
+		if ((contenttype.Length() >= 9) && (contenttype.Contains("multipart") != -1)) {
+			long index = contenttype.Contains(boundaryToken.cstr());
+			if (index > 0) {
+				String strBoundary = contenttype.SubString(index + boundaryToken.Length());
+				header[shiftedHeaderKey(boundarySlotname, shiftFlag)] = strBoundary;
+				Trace("Multipart boundary found: <" << strBoundary << ">");
+			}
+		}
 	}
 }
 
@@ -105,7 +128,7 @@ bool MIMEHeader::ParseField(String const &line, Coast::URLUtils::NormalizeTag co
 	long pos = GetNormalizedFieldName(line, fieldname, normTag);
 	if ( pos > 0 ) {
 		String fieldvalue;
-		MIMEHeader::ProcessMode splitHeaderFields = GetSplitState(fieldname, fSplitHeaderFields);
+		MIMEHeader::ProcessMode splitHeaderFields = GetSplitState(fieldname, fSplitHeaderFields, normTag);
 		if ( (splitHeaderFields == eDoSplitHeaderFields) || (splitHeaderFields == eDoSplitHeaderFieldsCookie) ) {
 			StringTokenizer st1(((const char *)line) + pos + 1, (splitHeaderFields == eDoSplitHeaderFields ? headerArgumentsDelimiter : cookieArgumentsDelimiter));
 			while (st1.NextToken(fieldvalue)) {
@@ -114,7 +137,7 @@ bool MIMEHeader::ParseField(String const &line, Coast::URLUtils::NormalizeTag co
 					Coast::URLUtils::TrimBlanks(fieldvalue);
 					Coast::URLUtils::RemoveQuotes(fieldvalue);
 					if ( splitHeaderFields == eDoSplitHeaderFields ) {
-						if (String(fieldname).ToUpper().IsEqual("CONTENT-DISPOSITION")) {
+						if (fieldname.IsEqual(shiftedHeaderKey(contentDispositionSlotname, normTag))) {
 							fHeader[fieldname] = SplitLine(fieldvalue);
 						} else {
 							Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
@@ -136,6 +159,9 @@ bool MIMEHeader::ParseField(String const &line, Coast::URLUtils::NormalizeTag co
 				Coast::URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 			}
 		}
+		if ( fieldname.IsEqual(shiftedHeaderKey(contentTypeSlotname, normTag) ) ) {
+			CheckMultipartBoundary(Lookup(contentTypeSlotname, ""), fHeader, normTag);
+		}
 		TraceAny(fHeader, "fHeader on exit");
 		return true;
 	}
@@ -144,48 +170,24 @@ bool MIMEHeader::ParseField(String const &line, Coast::URLUtils::NormalizeTag co
 
 //================= multipart specific section
 
-namespace {
-	const char *boundaryTag = "BOUNDARY";
-	void CheckMultipartBoundary(const String &contenttype, String &boundary, Anything &header) {
-		StartTrace1(MIMEHeader.CheckMultipartBoundary, "Content-type: <" << contenttype << ">");
-		if ((contenttype.Length() >= 9) && (contenttype.Contains("multipart") != -1)) {
-			long index = contenttype.Contains("boundary=");
-			if (index > 0) {
-				boundary = contenttype.SubString(index + 9);
-				header[boundaryTag] = boundary;
-				Trace("Multipart boundary found: <" << boundary << ">");
-			}
-		}
-	}
-}
-
-bool MIMEHeader::IsMultiPart()
-{
+bool MIMEHeader::IsMultiPart() {
 	StartTrace(MIMEHeader.IsMultiPart);
-	if (!fBoundaryChecked) {
-		CheckMultipartBoundary(Lookup("CONTENT-TYPE", ""), fBoundary, fHeader);
-		fBoundaryChecked = true;
-	}
-	return (fBoundary.Length() > 0);
+	return (Lookup(boundarySlotname).AsString().Length() > 0);
 }
 
-const String &MIMEHeader::GetBoundary() const
-{
-	StartTrace(MIMEHeader.GetBoundary);
-	return fBoundary;
+String MIMEHeader::GetBoundary() const {
+	String boundary = Lookup(boundarySlotname).AsString();
+	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, Storage::Current());
+	return boundary;
 }
 
-long MIMEHeader::GetContentLength() const
-{
-	StatTrace(MIMEHeader.GetContentLength, "length: " << ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1), Storage::Current());
-	// inhibit side-effect if not set
-	return ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1);
+long MIMEHeader::GetContentLength() const {
+	long contentLength = Lookup(contentLengthSlotname).AsLong(-1L);
+	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, Storage::Current());
+	return contentLength;
 }
 
-bool MIMEHeader::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool MIMEHeader::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(MIMEHeader.DoLookup, "key: <" << NotNull(key) << ">" );
-	String normKey(key);
-	Coast::URLUtils::Normalize(normKey, fNormalizeKey);
-	return ROAnything(fHeader).LookupPath(result, normKey, delim, indexdelim);
+	return ROAnything(fHeader).LookupPath(result, shiftedHeaderKey(key, fNormalizeKey), delim, indexdelim);
 }

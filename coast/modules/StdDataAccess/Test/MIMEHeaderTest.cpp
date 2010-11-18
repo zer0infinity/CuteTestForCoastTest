@@ -260,8 +260,8 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result["COOKIE"]["sk"] = "209243665E644DFB";
 	result["COOKIE"]["Cookie3"] = "Value3";
 	result["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result["CONTENT-LENGTH"] = "542";
 	result["BOUNDARY"] = "---------------------------61400283883149348477195787";
+	result["CONTENT-LENGTH"] = "542";
 
 	result1["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
 	result1["CONNECTION"] = "Keep-Alive";
@@ -289,8 +289,8 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result1["COOKIE"]["sk"] = "209243665E644DFB";
 	result1["COOKIE"]["Cookie3"] = "Value3";
 	result1["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result1["CONTENT-LENGTH"] = "542";
 	result1["BOUNDARY"] = "---------------------------61400283883149348477195787";
+	result1["CONTENT-LENGTH"] = "542";
 
 	result2["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
 	result2["CONNECTION"] = "Keep-Alive";
@@ -307,8 +307,8 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result2["COOKIE"]["sk"] = "209243665E644DFB";
 	result2["COOKIE"]["Cookie3"] = "Value3";
 	result2["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result2["CONTENT-LENGTH"] = "542";
 	result2["BOUNDARY"] = "---------------------------61400283883149348477195787";
+	result2["CONTENT-LENGTH"] = "542";
 
 	result3["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
 	result3["CONNECTION"] = "Keep-Alive";
@@ -326,8 +326,8 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result3["COOKIE"]["sk"] = "209243665E644DFB";
 	result3["COOKIE"]["Cookie3"] = "Value3";
 	result3["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result3["CONTENT-LENGTH"] = "542";
 	result3["BOUNDARY"] = "---------------------------61400283883149348477195787";
+	result3["CONTENT-LENGTH"] = "542";
 
 	{
 		MIMEHeader mh;

@@ -331,8 +331,7 @@ namespace Coast {
 			}
 		}
 
-		void Normalize(String &str, NormalizeTag normKey)
-		{
+		void Normalize(String &str, NormalizeTag normKey) {
 			StartTrace(URLUtils.Normalize);
 			switch (normKey) {
 				case eUpshift:
@@ -346,6 +345,12 @@ namespace Coast {
 				default:
 					break;
 			}
+		}
+
+		String Normalize(String const &str, NormalizeTag normKey) {
+			String strKey(str);
+			Normalize(strKey, normKey);
+			return strKey;
 		}
 
 		void Split(const char *buf, char delim, Anything &out, char delim2, NormalizeTag norm)
