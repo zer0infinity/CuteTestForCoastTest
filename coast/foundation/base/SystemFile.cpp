@@ -47,7 +47,7 @@ namespace {
 	//!contains a search path list that is ':' delimited, it is used to search for files
 	String fgPathList(0L, Storage::Global());
 
-	class EXPORTDECL_FOUNDATION PathInitializer : public InitFinisManagerFoundation
+	class PathInitializer : public InitFinisManagerFoundation
 	{
 	public:
 		PathInitializer(unsigned int uiPriority)

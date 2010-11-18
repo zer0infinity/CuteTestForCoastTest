@@ -9,7 +9,6 @@
 #ifndef _ANYSORTER_H
 #define _ANYSORTER_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "AnyComparers.h"
 
 //!---- Forward declarations ---------------------------------------------------------
@@ -18,7 +17,7 @@ class Anything;
 
 //---- AnySorter ---------------------------------------------------------------------
 //! Sorts Array-Anything
-class EXPORTDECL_FOUNDATION AnySorter
+class AnySorter
 {
 public:
 	enum EMode { asc, desc };

@@ -14,19 +14,19 @@
 
 //---- AnyComparers ----------------------------------------------------------
 //! convenience classes implementing the AnyCompare interface
-//class EXPORTDECL_FOUNDATION AnyComparer {
+//class AnyComparer {
 //public:
 //	virtual int Compare(const Anything &left,const Anything &right)const=0;
 //};
 
-class EXPORTDECL_FOUNDATION AnyStringValueComparer: public AnyComparer
+class AnyStringValueComparer: public AnyComparer
 {
 public:
 	int Compare(const Anything &left, const Anything &right)const {
 		return left.AsString().Compare(right.AsString());
 	}
 };
-class EXPORTDECL_FOUNDATION AnyReverseComparer: public AnyComparer
+class AnyReverseComparer: public AnyComparer
 {
 	const AnyComparer &ac;
 public:
@@ -37,7 +37,7 @@ public:
 	}
 };
 
-class EXPORTDECL_FOUNDATION AnyLongValueComparer: public AnyComparer
+class AnyLongValueComparer: public AnyComparer
 {
 public:
 	int Compare(const Anything &left, const Anything &right)const {
@@ -52,7 +52,7 @@ public:
 		return 0;
 	}
 };
-class EXPORTDECL_FOUNDATION AnyDoubleValueComparer: public AnyComparer
+class AnyDoubleValueComparer: public AnyComparer
 {
 public:
 	int Compare(const Anything &left, const Anything &right)const {
@@ -68,7 +68,7 @@ public:
 	}
 };
 
-class EXPORTDECL_FOUNDATION AnyLookupValueComparer: public AnyComparer
+class AnyLookupValueComparer: public AnyComparer
 {
 protected:
 	String lookup;

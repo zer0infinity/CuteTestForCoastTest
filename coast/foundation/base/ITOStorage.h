@@ -9,20 +9,19 @@
 #ifndef _ITOStorage_H
 #define _ITOStorage_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "foundation.h"			// for definition of own types
 #include <sys/types.h>
 #include <iosfwd>
 #include <cstdlib>
 #include <deque>
 
-class EXPORTDECL_FOUNDATION MemoryHeader;
+class MemoryHeader;
 
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
-class EXPORTDECL_FOUNDATION MemTracker
+class MemTracker
 {
-	friend class EXPORTDECL_FOUNDATION MemoryHeader;
+	friend class MemoryHeader;
 	friend class MemTrackerTest;
 public:
 	typedef std::deque<MemoryHeader *> UsedListType;
@@ -92,7 +91,7 @@ private:
 };
 
 //!helper class to check for memory leaks
-class EXPORTDECL_FOUNDATION MemChecker
+class MemChecker
 {
 	MemChecker(const MemChecker &);
 	MemChecker &operator=(const MemChecker &);
@@ -129,7 +128,7 @@ protected:
 #define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TriggerEnabled(trigger) ) { pAlloc->PrintStatistic(level); }
 
 //! Base class for memory allocation policies
-class EXPORTDECL_FOUNDATION Allocator
+class Allocator
 {
 public:
 	Allocator(long allocatorid);
@@ -214,7 +213,7 @@ protected:
 };
 
 //!manages storage using the builtin c api and does some statistic
-class EXPORTDECL_FOUNDATION GlobalAllocator: public Allocator
+class GlobalAllocator: public Allocator
 {
 	GlobalAllocator(const GlobalAllocator &);
 	GlobalAllocator &operator=(const GlobalAllocator &);
@@ -252,7 +251,7 @@ protected:
 };
 
 //!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
-class EXPORTDECL_FOUNDATION StorageHooks
+class StorageHooks
 {
 	StorageHooks(const StorageHooks &);
 	StorageHooks &operator=(const StorageHooks &);
@@ -294,7 +293,7 @@ private:
 
 //! a wrapper for memory allocations and deallocations that allows to dispatch memory management to allocator policies
 //!a wrapper for basic memory management functions. This allows dispatching of memory management to specialized allocator objects.
-class EXPORTDECL_FOUNDATION Storage
+class Storage
 {
 public:
 	//!initalize memory management depending on memory management strategy set
@@ -368,7 +367,7 @@ protected:
 	static Allocator *fgGlobalPool;
 };
 
-class EXPORTDECL_FOUNDATION TestStorageHooks : public StorageHooks
+class TestStorageHooks : public StorageHooks
 {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);

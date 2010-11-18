@@ -9,7 +9,6 @@
 #ifndef _Pipe_H
 #define _Pipe_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 #include "PipeStream.h"
 
@@ -17,7 +16,7 @@
 /*! represents a read/write pipe end point that is connected
 It is a <B>communication end point</B> for read/write (anonymous) pipes.
 It has an api that allows the manipulation of the pipe and the generation of an iostream which is a PipeStream. */
-class EXPORTDECL_FOUNDATION Pipe
+class Pipe
 {
 public:
 	/*! constructor sets the variables

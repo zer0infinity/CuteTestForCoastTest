@@ -9,7 +9,6 @@
 #ifndef _ANYUTILS_H
 #define _ANYUTILS_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "Anything.h"
 
 //---- AnyUtils ----------------------------------------------------------------------
@@ -106,7 +105,7 @@ modified anyMaster
 \endcode
 \note For more realistic examples see AnyMergeTest.any in Test/config directory
 */
-class EXPORTDECL_FOUNDATION AnyUtils
+class AnyUtils
 {
 public:
 	//! Compare two anythings at content match level. Only compare the slots given in masterAny.
@@ -161,7 +160,7 @@ protected:
 /*!
 Defines a recorder api to read in and write out an anything containing activities for testruns
 */
-class EXPORTDECL_FOUNDATION Recording
+class Recording
 {
 public:
 	//! used to read recordings of activities for use as input for subsequent test runs

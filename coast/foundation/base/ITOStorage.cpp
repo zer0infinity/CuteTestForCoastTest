@@ -203,7 +203,7 @@ StorageHooks *Storage::fgHooks = 0; // exchange this object when MT_Storage is u
 bool Storage::fgForceGlobal = false;
 long Storage::fglStatisticLevel = 0L;
 
-class EXPORTDECL_FOUNDATION StorageInitializer : public InitFinisManagerFoundation
+class StorageInitializer : public InitFinisManagerFoundation
 {
 public:
 	StorageInitializer(unsigned int uiPriority)

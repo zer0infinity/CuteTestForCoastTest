@@ -49,7 +49,7 @@ public:
 static SomeInitializer *psgSomeInitializer = new SomeInitializer(0);
 </pre>
 */
-class EXPORTDECL_FOUNDATION InitFinisManagerFoundation : public InitFinisManager
+class InitFinisManagerFoundation : public InitFinisManager
 {
 public:
 	/*! Base constructor, pass a priority number greater than 0 to control Init/Finis sequence

@@ -10,7 +10,6 @@
 #define _Resolver_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
 //---- forward declaration -----------------------------------------------
 #include "ITOString.h"
@@ -23,7 +22,7 @@ namespace {
 //!dns to ip adress and vice versa resolver
 //!api wrapper to resolver library;
 //!converts DNS names to ip addresses
-class EXPORTDECL_FOUNDATION Resolver
+class Resolver
 {
 public:
 	//!resolve the dns name to an ip address using the resolver lib

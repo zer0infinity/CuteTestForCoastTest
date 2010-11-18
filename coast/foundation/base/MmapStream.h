@@ -17,7 +17,7 @@
 #include <iomanip>
 
 //!helper class to manage dependencies between ios flags and c-api mmap flags
-class EXPORTDECL_FOUNDATION MmapMagicFlags
+class MmapMagicFlags
 {
 public:
 	MmapMagicFlags(int omode, int syncflag);
@@ -72,7 +72,7 @@ private:
 };
 
 //! streambuf class implementing mmap based file access on platforms supporting it
-class EXPORTDECL_FOUNDATION MmapStreamBuf : public std::streambuf
+class MmapStreamBuf : public std::streambuf
 {
 	friend class MmapStreambase;
 public:
@@ -158,7 +158,7 @@ private:
 
 //! adapts ios to a Mmap buffer --> THIS CLASS IS NOT TO BE INSTANTIATED
 //! may be unsafe_ios
-class EXPORTDECL_FOUNDATION MmapStreambase : virtual public std::ios
+class MmapStreambase : virtual public std::ios
 {
 public:
 	//! constructor of empty stream
@@ -194,7 +194,7 @@ protected:
 }; // MmapStreambase
 
 //!implementation of istream with mmap
-class  EXPORTDECL_FOUNDATION IMmapStream : public MmapStreambase, public std::istream
+class IMmapStream : public MmapStreambase, public std::istream
 {
 public:
 	//!constrcutor to use for read-only streams
@@ -205,7 +205,7 @@ public:
 }; // IMmapStream
 
 //!implementation of ostream with mmap
-class  EXPORTDECL_FOUNDATION OMmapStream : public MmapStreambase, public std::ostream
+class OMmapStream : public MmapStreambase, public std::ostream
 {
 public:
 	//! constructor for output streams opening a file
@@ -219,7 +219,7 @@ public:
 }; // OMmapStream
 
 //!implementation of iostream with mmap
-class  EXPORTDECL_FOUNDATION MmapStream : public MmapStreambase, public std::iostream
+class MmapStream : public MmapStreambase, public std::iostream
 {
 public:
 	//! constructor for intput/output streams opening a file

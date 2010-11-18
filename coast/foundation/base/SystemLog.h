@@ -9,8 +9,11 @@
 #ifndef _SystemLog_H
 #define _SystemLog_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+
+#if defined(WIN32)
+#include <windows.h>
+#endif
 
 //--- SystemLog ----------------------------------------------------------
 /*! <b>API for syslog access</b>
@@ -28,7 +31,7 @@ The loggers behavior is to write ALERT messages into syslog and to log ERROR and
 
 The flag <tt>COAST_TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
 */
-class EXPORTDECL_FOUNDATION SystemLog
+class SystemLog
 {
 public:
 	//! module initialization
@@ -152,7 +155,7 @@ private:
 
 #if defined(WIN32)
 //! implementation of SystemLog api for WIN32
-class EXPORTDECL_FOUNDATION Win32SysLog : public SystemLog
+class Win32SysLog : public SystemLog
 {
 public:
 	Win32SysLog(const char *appId);

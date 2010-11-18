@@ -17,7 +17,7 @@
 /*!
 Subclasses can define initialize/clean up code in DoInit() / DoFinis() methods. Objects are automatically added to the cleanup list
 using the given priority to set the sequence of initialization and destruction. */
-class EXPORTDECL_FOUNDATION InitFinisManager
+class InitFinisManager
 {
 public:
 	/*! Base constructor, pass a priority number greater than 0 to control Init/Finis sequence

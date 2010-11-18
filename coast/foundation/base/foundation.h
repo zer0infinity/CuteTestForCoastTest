@@ -38,7 +38,7 @@
 #ifdef DEBUG
 #if defined(WIN32)
 #include "config_foundation.h"
-EXPORTDECL_FOUNDATION int syslog_assert(const char *, long, const char *);
+int syslog_assert(const char *, long, const char *);
 #else
 extern int syslog_assert(const char *, long, const char *);
 #endif
@@ -63,7 +63,7 @@ typedef unsigned long long ul_long;
 // use it instead of endl especially in case of socket streams
 #define ENDL "\r\n"
 
-#define ZAPEOF(x)       (x < 0 ? -x : x)   /* for MSC70 == zapeof(x) */
+#define ZAPEOF(x)       (x < 0 ? -x : x)
 
 // Macro for safer use of typecasts
 #define SafeCast(objname, objtype) (dynamic_cast<objtype*>(objname))

@@ -18,7 +18,7 @@ typedef std::random_access_iterator<class Anything, ptrdiff_t> IteratorBase;
 typedef std::iterator<std::random_access_iterator_tag, class Anything> IteratorBase;
 #endif
 
-class EXPORTDECL_FOUNDATION Anything_iterator : public IteratorBase
+class Anything_iterator : public IteratorBase
 {
 	friend class Anything;
 	friend class Anything_const_iterator;
@@ -76,7 +76,7 @@ typedef std::iterator<std::random_access_iterator_tag, class Anything, ptrdiff_t
 #endif
 
 // no direct support for const_iterators, need to spell out std::iterator template parameters
-class EXPORTDECL_FOUNDATION Anything_const_iterator : public ConstIteratorBase
+class Anything_const_iterator : public ConstIteratorBase
 {
 	friend class Anything;
 protected:

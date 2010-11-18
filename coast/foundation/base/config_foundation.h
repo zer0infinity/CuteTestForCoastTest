@@ -9,10 +9,4 @@
 #ifndef _CONFIG_FOUNDATION_H
 #define _CONFIG_FOUNDATION_H
 
-#define EXPORTDECL_FOUNDATION
-
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
 #endif

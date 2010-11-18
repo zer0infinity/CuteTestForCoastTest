@@ -9,7 +9,6 @@
 #ifndef _StringStreamBuf_H
 #define _StringStreamBuf_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include <cstdio>
 //! StringStreamBuf adapts String objects to the iostream framework
 /*! the underlying string is used directly as the buffer to save copying overhead */
@@ -25,7 +24,7 @@ template
 typename BufferType,
 		 typename IoDirType
 		 >
-class EXPORTDECL_FOUNDATION StringStreamBuf : public streambuf
+class StringStreamBuf : public streambuf
 {
 	StringStreamBuf(const StringStreamBuf &);
 	StringStreamBuf &operator=(const StringStreamBuf &);
@@ -376,7 +375,7 @@ template
 typename BufferType,
 		 typename IoDirType
 		 >
-class EXPORTDECL_FOUNDATION StringStreambase : virtual public std::ios
+class StringStreambase : virtual public std::ios
 {
 public:
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;

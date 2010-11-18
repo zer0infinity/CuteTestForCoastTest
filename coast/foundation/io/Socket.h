@@ -17,17 +17,17 @@
 #include "Anything.h"
 
 //--- forward declarations ------------------------------------------------------------
-class EXPORTDECL_FOUNDATION AcceptorCallBack;
+class AcceptorCallBack;
 
 struct 	 sockaddr_in;
-int EXPORTDECL_FOUNDATION closeSocket(int sd);
+int closeSocket(int sd);
 
 //--- Socket --------------------------------------------------------------------------
 //!represents a read/write socket end point that is connected
 //! it is a <B>communication end point</B> for read/write sockets.
 //! it has an api that allows the manipulation of the socket and
 //! the generation of an iostream which is a SocketStream.
-class EXPORTDECL_FOUNDATION Socket
+class Socket
 {
 public:
 	//! constructor sets the variables
@@ -252,7 +252,7 @@ private:
 };
 
 //! common features of Connector and Acceptor
-class EXPORTDECL_FOUNDATION EndPoint
+class EndPoint
 {
 public:
 	//!constructor with ip adress, port
@@ -340,7 +340,7 @@ protected:
 //! This class  unlike ConnectorParameters does not "hold" or "take" a Context, which is crucial
 //! for independent project structures.
 //! This class supports assignment and copy construction.
-class EXPORTDECL_FOUNDATION ConnectorArgs
+class ConnectorArgs
 {
 public:
 	ConnectorArgs(const String &ipAddr, long port, long connectTimeout = 0L);
@@ -367,7 +367,7 @@ private:
 //!defines the active side socket factory that establishes a socket connection
 //! It holds an active end point specification for a socket
 //! It connects to the server on the other side creating a socket connection that's read/writeable
-class EXPORTDECL_FOUNDATION Connector: public EndPoint
+class Connector: public EndPoint
 {
 public:
 	//! Constructor with ip adress, port and socketoptions, holds specification to create socket object on demand
@@ -455,7 +455,7 @@ private:
 //!represents a listener socket end point that listens on a server port for incoming connections
 //! it implements the socket protocol for listener sockets and runs the accept loop
 //! it is usually started in its own thread
-class EXPORTDECL_FOUNDATION Acceptor : public EndPoint
+class Acceptor : public EndPoint
 {
 public:
 	//!constructor with listener port, backlog and callback object
@@ -538,7 +538,7 @@ private:
 
 //--- CallBackFactory ---------------------------------------------------------------------------
 //!factory object that creates AcceptorCallbacks on demand
-class EXPORTDECL_FOUNDATION CallBackFactory
+class CallBackFactory
 {
 public:
 
@@ -568,7 +568,7 @@ private:
 //!this class is abstract and must be subclassed to provide request handling functionality
 //!CallBack provides the Socket object resulting from the accepted connection
 //!it has also a locking protocol for MT Safe usage
-class EXPORTDECL_FOUNDATION AcceptorCallBack
+class AcceptorCallBack
 {
 public:
 

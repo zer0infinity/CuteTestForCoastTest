@@ -743,7 +743,7 @@ ConnectStat::~ConnectStat()
 #endif
 
 //---- Acceptor ---------------------------------------------------------
-class EXPORTDECL_FOUNDATION CallBackLocker
+class CallBackLocker
 {
 public:
 	CallBackLocker(AcceptorCallBack *ac) : fCallBack(ac) {
@@ -762,7 +762,7 @@ protected:
 	AcceptorCallBack *fCallBack;
 };
 
-class EXPORTDECL_FOUNDATION RevCallBackLocker
+class RevCallBackLocker
 {
 public:
 	RevCallBackLocker(AcceptorCallBack *ac) : fCallBack(ac) {
@@ -781,7 +781,7 @@ protected:
 	AcceptorCallBack *fCallBack;
 };
 
-class EXPORTDECL_FOUNDATION CallBackSynchronizer
+class CallBackSynchronizer
 {
 public:
 	CallBackSynchronizer(AcceptorCallBack *ac) : fCallBack(ac) { }

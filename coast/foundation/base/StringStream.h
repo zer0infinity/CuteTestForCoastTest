@@ -9,8 +9,6 @@
 #ifndef _STRINGSTREAM_H
 #define _STRINGSTREAM_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-
 #include "ITOTypeTraits.h"
 #include "ITOString.h"
 
@@ -24,7 +22,7 @@ template
 <
 typename BufferType
 >
-class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eIn> > , public std::istream
+class IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eIn> > , public std::istream
 {
 public:
 	typedef IStringStreamTmpl<BufferType> ThisClassType;
@@ -90,7 +88,7 @@ template
 <
 typename BufferType
 >
-class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eOut> > , public std::ostream
+class OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eOut> > , public std::ostream
 {
 public:
 	typedef OStringStreamTmpl<BufferType> ThisClassType;
@@ -141,7 +139,7 @@ template
 <
 typename BufferType
 >
-class EXPORTDECL_FOUNDATION StringStreamTmpl
+class StringStreamTmpl
 	: public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> >
 	, public std::iostream
 {
@@ -206,7 +204,7 @@ namespace NSStringStream
 		\param copiedBytes number of bytes copied during this call, depending on lBytes2Copy subsequent calls might be needed to copy everything from source to destination
 		\param lBytes2Copy number of bytes to copy per call
 		\return true if copying was successful. If copiedBytes is lower than lBytes2Copy and the call returned true everything was read from streamSrc (eof) and copied into streamDest. If copiedBytes is equal to lBytes2Copy and the call returned true the function should be called again to consume remaining bytes from streamSrc. False indicates either an error condition on streamSrc or streamDest. */
-	bool EXPORTDECL_FOUNDATION PlainCopyStream2Stream(std::istream *streamSrc, std::ostream &streamDest, long &copiedBytes, long lBytes2Copy = 2048L);
+	bool PlainCopyStream2Stream(std::istream *streamSrc, std::ostream &streamDest, long &copiedBytes, long lBytes2Copy = 2048L);
 };
 
 #endif

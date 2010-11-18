@@ -13,7 +13,7 @@
 #include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
-class EXPORTDECL_FOUNDATION Pipe;
+class Pipe;
 
 //---- PipeExecutor ----------------------------------------------------------
 //!execute a program and connect its stdio to iostreams
@@ -22,7 +22,7 @@ to existing programs.
 CAUTION: many programs wait until stdin is closed before producing their
 complete output, therfore use ShutDownWriting() to ensure the corresponding
 pipe is closed. */
-class EXPORTDECL_FOUNDATION PipeExecutor
+class PipeExecutor
 {
 public:
 	//--- constructors
@@ -100,7 +100,7 @@ protected:
 	Pipe *fStderr;
 	long fTimeout;
 
-	class EXPORTDECL_FOUNDATION CgiEnv
+	class CgiEnv
 	{
 	public:
 		CgiEnv(const Anything &env, Allocator *a);
@@ -120,7 +120,7 @@ protected:
 #endif
 	};
 
-	class EXPORTDECL_FOUNDATION CgiParam
+	class CgiParam
 	{
 	public:
 		CgiParam(Anything param, Allocator *a);

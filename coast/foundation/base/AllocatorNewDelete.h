@@ -9,7 +9,6 @@
 #ifndef ALLOCATORNEWDELETE_H_
 #define ALLOCATORNEWDELETE_H_
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOStorage.h"
 #include <new>
 #include <cassert>
@@ -17,7 +16,7 @@
 namespace Coast
 {
 
-	class EXPORTDECL_FOUNDATION AllocatorNewDelete
+	class AllocatorNewDelete
 	{
 	public:
 		//! force creation of vtable to allow for dynamic_cast

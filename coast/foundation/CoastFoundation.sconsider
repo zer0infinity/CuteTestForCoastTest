@@ -17,7 +17,6 @@ buildSettings = {
         'linkDependencies' : ['loki.include', 'boost.include'],
         'sourceFiles'      : SConsider.listFiles(['base/*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['FOUNDATION_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['base/*.h','base/*.hpp']),
             'includeSubdir': 'base',

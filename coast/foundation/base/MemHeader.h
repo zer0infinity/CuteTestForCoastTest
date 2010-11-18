@@ -9,11 +9,14 @@
 #ifndef _MemHeader_H
 #define _MemHeader_H
 
-#include "config_foundation.h" // for definition of u_long EXPORTDECL_FOUNDATION
 #include <sys/types.h>
+#if defined(WIN32)
+#include <windows.h>
+#endif
+
 //!handling headers for memory management
 //!supports custom memory management by easing handling of header information
-class EXPORTDECL_FOUNDATION MemoryHeader
+class MemoryHeader
 {
 public:
 	//!the states a chunk of memory can be in

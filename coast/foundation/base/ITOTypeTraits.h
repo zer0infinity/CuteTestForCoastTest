@@ -10,8 +10,6 @@
 #define _ITOTypeTraits_H
 
 //---- standard-module include ----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-
 #if defined(USE_TR1)
 #include <tr1/type_traits>
 namespace boost_or_tr1 = std::tr1;

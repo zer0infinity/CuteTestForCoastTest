@@ -9,17 +9,16 @@
 #ifndef _ANYTHING_H
 #define _ANYTHING_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 #include "AnyImplTypes.h"
 #include "AnythingIterator.h" // new version of STL compliant iterators
 #include <iterator>
 
-class EXPORTDECL_FOUNDATION AnyImpl;
-class EXPORTDECL_FOUNDATION ROAnything;
-class EXPORTDECL_FOUNDATION IFAObject;
-class EXPORTDECL_FOUNDATION AnyVisitor;
-class EXPORTDECL_FOUNDATION AnyComparer;
+class AnyImpl;
+class ROAnything;
+class IFAObject;
+class AnyVisitor;
+class AnyComparer;
 
 //---- Anything --------------------------------------------------------------
 /*! Flexible data container that can store any basic data type and combines hashtable and array behaviour
@@ -52,7 +51,7 @@ will use a copy of the source Anything but not of a reference to the source Anyt
 returned Anythings. For documentation purposes instead of a regular Anything a TrickyThing should
 be used.
 */
-class EXPORTDECL_FOUNDATION Anything
+class Anything
 {
 public:
 	//! Type information, can be retrieved with GetType().
@@ -134,13 +133,13 @@ public:
 	//! comparison of this Anything.AsCharPtr("") against other
 	bool IsEqual(const char *other) const;
 
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const Anything &a1, const Anything &a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const Anything &a1, const Anything &a2);
+	friend inline bool operator== (const Anything &a1, const Anything &a2);
+	friend inline bool operator!= (const Anything &a1, const Anything &a2);
 
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const Anything &a1, const char *a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const Anything &a1, const char *a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const char *a1, const Anything &a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const char *a1, const Anything &a2);
+	friend inline bool operator== (const Anything &a1, const char *a2);
+	friend inline bool operator!= (const Anything &a1, const char *a2);
+	friend inline bool operator== (const char *a1, const Anything &a2);
+	friend inline bool operator!= (const char *a1, const Anything &a2);
 
 	/*! Checks if the string <I>k</I> is stored in this Anything.
 		A <I>strcmp</I> with k and the slots content AsCharPtr() is performed for all slots, until
@@ -267,8 +266,8 @@ public:
 		\param os ostream to write to
 		\param pretty if true creates output with newlines */
 	std::ostream &PrintOn(std::ostream &os, bool pretty = true) const;
-	friend EXPORTDECL_FOUNDATION inline std::ostream &operator<< (std::ostream &os, const Anything &a);
-	friend EXPORTDECL_FOUNDATION inline std::istream &operator>> (std::istream &is, Anything &a);
+	friend inline std::ostream &operator<< (std::ostream &os, const Anything &a);
+	friend inline std::istream &operator>> (std::istream &is, Anything &a);
 
 	/*! serialize content to ostream in external format
 		\param os ostream to write to
@@ -520,7 +519,7 @@ protected:
 	friend class AnythingTest;
 };
 
-EXPORTDECL_FOUNDATION long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0');
+long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0');
 
 //---- SlotFinder -----------------------------------------------------------
 /*! Use this class to get a slot from an Anything according to configuration
@@ -537,7 +536,7 @@ The config Anything should have the form
 You can specify the Slotname as a dot/colon separated list of names to retrieve slots from any
 hierarchy level (e.g fields.System).
 */
-class EXPORTDECL_FOUNDATION SlotFinder
+class SlotFinder
 {
 public:
 	/*! looks up the slot in the given Anything, creates it if not found.
@@ -586,7 +585,7 @@ You can specify the Slotname as a dot separated list of names to retrieve slots 
 hierarchy level (e.g fields.System).
 If /Slot contains an empty string ("") nothing will happen
 */
-class EXPORTDECL_FOUNDATION SlotPutter
+class SlotPutter
 {
 public:
 	/*! puts the Anything source into dest using a <I>LookupPath</I>-like slot specification in config /Slot
@@ -628,7 +627,7 @@ You can specify the Slotname as a dot separated list of names to retrieve slots 
 hierarchy level (e.g fields.System).
 If /Slot contains an empty string ("") nothing will happen
 */
-class EXPORTDECL_FOUNDATION SlotCleaner
+class SlotCleaner
 {
 public:
 	/*! removes the Anything from dest using a <I>LookupPath</I>-like slot specification in config /Slot
@@ -666,7 +665,7 @@ it is copied into dest[DestinationSlotName].<BR>
 Note, you can specify SourceSlotName as a dot/colon separated list of slotnames to retrieve slots from any
 hierarchy level (e.g fields.System). The result is always copied into toplevel slot of dest.
 */
-class EXPORTDECL_FOUNDATION SlotCopier
+class SlotCopier
 {
 public:
 	/*! Copies slots from source to dest accoring to config
@@ -689,7 +688,7 @@ public:
 /*! Interface for comparing Anythings. Subclasses may be used to sort Any-Arrays by value
  * see AnyComparers.h
  */
-class EXPORTDECL_FOUNDATION AnyComparer
+class AnyComparer
 {
 public:
 	//! compare left and right, return <0 when left is smaller, >0 when left is greater, 0 on equality
@@ -701,7 +700,7 @@ public:
 //---- SlotnameSorter -----------------------------------------------------------
 //!Sorts the slots of an Anything by Slotname, legacy (SOP)
 /*! bad api design, should better use bool for reverse */
-class EXPORTDECL_FOUNDATION SlotnameSorter
+class SlotnameSorter
 {
 public:
 	enum EMode { asc, desc };
@@ -746,7 +745,7 @@ public:
 	tt["baz"] = t["bar"]; // no deep copy
 </pre>
  */
-class EXPORTDECL_FOUNDATION TrickyThing : public Anything
+class TrickyThing : public Anything
 {
 public:
 	/*! constructor used for tricky member variables of long-lived classes
@@ -768,7 +767,7 @@ public:
 	threads. It is read only and prohibits writing. An ROAnything is empty or has
 	an underlying Anything that manages the memory
  */
-class EXPORTDECL_FOUNDATION ROAnything
+class ROAnything
 {
 public:
 	ROAnything();
@@ -799,13 +798,13 @@ public:
 	bool IsEqual(const Anything &other) const;
 	bool IsEqual(const char *other) const;
 
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const ROAnything &a1, const ROAnything &a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const ROAnything &a1, const ROAnything &a2);
+	friend inline bool operator== (const ROAnything &a1, const ROAnything &a2);
+	friend inline bool operator!= (const ROAnything &a1, const ROAnything &a2);
 
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const ROAnything &a1, const char *a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const ROAnything &a1, const char *a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator== (const char *a1, const ROAnything &a2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!= (const char *a1, const ROAnything &a2);
+	friend inline bool operator== (const ROAnything &a1, const char *a2);
+	friend inline bool operator!= (const ROAnything &a1, const char *a2);
+	friend inline bool operator== (const char *a1, const ROAnything &a2);
+	friend inline bool operator!= (const char *a1, const ROAnything &a2);
 
 	/*! Checks if the string <I>k</I> is stored in this Anything.
 		A <I>strcmp</I> with k and the slots content AsCharPtr() is performed for all slots, until
@@ -854,7 +853,7 @@ public:
 
 	// output only
 	std::ostream &PrintOn(std::ostream &os, bool pretty = true) const;
-	friend EXPORTDECL_FOUNDATION inline std::ostream &operator<< (std::ostream &os, const ROAnything &a);
+	friend inline std::ostream &operator<< (std::ostream &os, const ROAnything &a);
 
 	void Export(std::ostream &fp, int level = 0) const;
 

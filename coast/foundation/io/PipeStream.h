@@ -21,7 +21,7 @@ class Pipe;
 const int cPipeStreamBufferSize = 8024;
 //---- PipeStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
-class EXPORTDECL_FOUNDATION PipeStreamBuf : public std::streambuf
+class PipeStreamBuf : public std::streambuf
 {
 public:
 	/*! constructor takes socket object and timeout
@@ -48,7 +48,7 @@ public:
 	}
 
 	//! canonical output operator for PipeStreamBufs
-	friend EXPORTDECL_FOUNDATION std::ostream &operator<<(std::ostream &os, PipeStreamBuf *ssbuf);
+	friend std::ostream &operator<<(std::ostream &os, PipeStreamBuf *ssbuf);
 
 protected: // seekxxx are protected in the std..
 	typedef std::streambuf::pos_type pos_type;
@@ -130,7 +130,7 @@ protected: // seekxxx are protected in the std..
 
 //---- iosCoastPipe -------------------------------------------------------------------
 //! adapts ios to a Pipe Stream buffer
-class EXPORTDECL_FOUNDATION iosCoastPipe : virtual public std::ios
+class iosCoastPipe : virtual public std::ios
 {
 public:
 	iosCoastPipe(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = std::ios::in | std::ios::out )
@@ -153,7 +153,7 @@ protected:
 
 //---- IPipeStream -------------------------------------------------------------------
 //! istream for sockets
-class  EXPORTDECL_FOUNDATION IPipeStream : public iosCoastPipe, public std::istream
+class IPipeStream : public iosCoastPipe, public std::istream
 {
 public:
 	/*! constructor creates iosCoastPipe
@@ -175,7 +175,7 @@ private:
 
 //---- OPipeStream -------------------------------------------------------------------
 //! ostream for sockets
-class  EXPORTDECL_FOUNDATION OPipeStream : public iosCoastPipe, public std::ostream
+class OPipeStream : public iosCoastPipe, public std::ostream
 {
 public:
 	/*! constructor creates iosCoastPipe
@@ -198,7 +198,7 @@ private:
 
 //---- PipeStream -------------------------------------------------------------------
 //! iostream for sockets
-class  EXPORTDECL_FOUNDATION PipeStream : public iosCoastPipe, public std::iostream
+class PipeStream : public iosCoastPipe, public std::iostream
 {
 public:
 	/*! constructor creates iosCoastPipe
@@ -218,7 +218,7 @@ private:
 
 //---- PipeTimeoutModifier -------------------------------------------------------------------
 //! temporarily changes the timeout used by a PipeStream
-class  EXPORTDECL_FOUNDATION PipeTimeoutModifier
+class PipeTimeoutModifier
 {
 public:
 	/*! constructor modifies the timeout parameter of the given PipeStream object

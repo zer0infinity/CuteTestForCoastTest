@@ -15,7 +15,6 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "Anything.h"
 //---- forward declaration -----------------------------------------------
 
@@ -23,7 +22,7 @@ this may contain <B>HTML-Tags</B>
 /*!
 construct an anything representation of DOM parsing the XML
 */
-class EXPORTDECL_FOUNDATION GenericXMLParser
+class GenericXMLParser
 {
 public:
 	GenericXMLParser() {}
@@ -75,7 +74,7 @@ protected:
 	long	fLine;
 };
 
-class EXPORTDECL_FOUNDATION GenericXMLPrinter
+class GenericXMLPrinter
 {
 public:
 	static void PrintXml(std::ostream &os, ROAnything domany);

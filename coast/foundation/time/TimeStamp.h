@@ -18,7 +18,7 @@
 /*!
 The external representation is "%Y%m%d%H%M%S" relative to timezone GMT.
 */
-class EXPORTDECL_FOUNDATION TimeStamp
+class TimeStamp
 {
 	friend class TimeStampTest;
 public:
@@ -195,7 +195,7 @@ public:
 	static const long DAY;
 
 protected:
-	struct EXPORTDECL_FOUNDATION intTimeRep {
+	struct intTimeRep {
 		enum eItemPositions {
 			eCent = 0,
 			eYear = 1,

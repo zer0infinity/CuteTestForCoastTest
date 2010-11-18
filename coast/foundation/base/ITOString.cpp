@@ -40,7 +40,7 @@ static char gpcFmtLow[giFmtSize] = { 0 };
 static char gpcFmtHi[] = "%.e";
 #endif
 
-class EXPORTDECL_FOUNDATION StringInitializer : public InitFinisManagerFoundation
+class StringInitializer : public InitFinisManagerFoundation
 {
 public:
 	StringInitializer(unsigned int uiPriority)

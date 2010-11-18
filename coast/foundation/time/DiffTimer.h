@@ -10,9 +10,11 @@
 #define _DiffTimer_H
 
 #include "foundation.h" // for definition of l_long
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include <ctime>
 #include <cmath>
+#if defined(WIN32)
+#include <windows.h>
+#endif
 
 #if defined(WIN32)
 typedef l_long HRTIME;
@@ -33,7 +35,7 @@ extern "C" HRTIME gettimes();
 //! Timer infrastructure to measure elapsed time in program scopes.
 /*! The Timer can be setup to return a scaled result based on the resolution specified when constructing it.
 \note The accurracy depends on the system timer used for measurement. Therefor you should not expect more precise results than the appropriate platform default. */
-class EXPORTDECL_FOUNDATION DiffTimer
+class DiffTimer
 {
 public:
 	typedef HRTIME tTimeType;

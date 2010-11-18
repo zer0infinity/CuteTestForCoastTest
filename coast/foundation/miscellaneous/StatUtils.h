@@ -9,13 +9,12 @@
 #ifndef _STATUTILS_H
 #define _STATUTILS_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION String;
-class EXPORTDECL_FOUNDATION Anything;
+class String;
+class Anything;
 
 //--- StatEvtHandler -----------------------------------------------
 //!event handler for gathering statistic data
-class EXPORTDECL_FOUNDATION StatEvtHandler
+class StatEvtHandler
 {
 public:
 	StatEvtHandler();
@@ -49,7 +48,7 @@ private:
 //--- StatGatherer -----------------------------------------------
 
 //!gathering statistic data
-class EXPORTDECL_FOUNDATION StatGatherer
+class StatGatherer
 {
 public:
 	StatGatherer();
@@ -74,7 +73,7 @@ private:
 //--- StatObserver -----------------------------------------------
 
 //!observing statistic data
-class EXPORTDECL_FOUNDATION StatObserver
+class StatObserver
 {
 public:
 	StatObserver();

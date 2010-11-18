@@ -9,15 +9,14 @@
 #ifndef _Dbg_H
 #define _Dbg_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 
 //---- Tracer --------------------------------------------------------------------------
 #ifdef COAST_TRACE
 
-class EXPORTDECL_FOUNDATION Allocator;
-class EXPORTDECL_FOUNDATION Anything;
-class EXPORTDECL_FOUNDATION ROAnything;
+class Allocator;
+class Anything;
+class ROAnything;
 
 //! Macros to simplify the task of printing out messages to the console together with full control of what to print.
 /*! \file
@@ -83,7 +82,7 @@ The following macros help keep the coding expense for inserting trace statements
 
 //! class and macros, that provide tracing support
 /*! Detailed description of how tracing works can be found in \b Dbg.h */
-class EXPORTDECL_FOUNDATION Tracer
+class Tracer
 {
 	Tracer(const Tracer &);
 	Tracer &operator=(const Tracer &);

@@ -21,9 +21,6 @@
 #include <cstring>
 
 extern void *operator new(size_t size, void *vp);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-extern void operator delete(void *ptr, void *vp);
-#endif
 extern void operator delete(void *ptr);
 
 //! smallest size of allocation unit: 16UL for the usable memory block

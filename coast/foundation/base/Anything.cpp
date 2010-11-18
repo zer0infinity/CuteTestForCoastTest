@@ -65,7 +65,7 @@ long IFAHash(const char *key, long &len, char stop1, char stop2)
 }
 
 //---- InputContext -------------------------------------------------------------
-class EXPORTDECL_FOUNDATION InputContext
+class InputContext
 {
 public:
 	// constructor
@@ -115,7 +115,7 @@ private:
 //---- the following class is used for lexical analysis of
 //---- any-files or input. It will represent the next
 //---- character or symbol read from the stream
-class EXPORTDECL_FOUNDATION AnythingToken
+class AnythingToken
 {
 public:
 	enum Tok { eNullSym = 256, // this means no valid stuff found or eof
@@ -640,7 +640,7 @@ namespace {
 	}
 }
 
-class  EXPORTDECL_FOUNDATION AnyXrefHandler
+class AnyXrefHandler
 {
 	Anything fParseLevel;
 protected:
@@ -742,7 +742,7 @@ public:
 	}
 };
 
-class EXPORTDECL_FOUNDATION AnythingParser
+class AnythingParser
 {
 	// really implement the grammar of Anythings
 	// needs to be friend of Anything to set Anything's internals

@@ -10,7 +10,6 @@
 #define _SOCKETSTREAM_H
 
 //--- module used in the interface
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "Socket.h"
 
 #include <cstdio>
@@ -21,7 +20,7 @@ const int cSocketStreamBufferSize = 8024;
 
 //---- SocketStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
-class EXPORTDECL_FOUNDATION SocketStreamBuf : public std::streambuf
+class SocketStreamBuf : public std::streambuf
 {
 public:
 	//! constructor takes socket object and timeout
@@ -51,7 +50,7 @@ public:
 	}
 
 	//! canonical output operator for SocketStreamBufs
-	friend EXPORTDECL_FOUNDATION std::ostream &operator<<(std::ostream &os, SocketStreamBuf *ssbuf);
+	friend std::ostream &operator<<(std::ostream &os, SocketStreamBuf *ssbuf);
 
 protected: // seekxxx are protected in the std..
 	typedef std::streambuf::pos_type pos_type;
@@ -131,7 +130,7 @@ protected: // seekxxx are protected in the std..
 
 //---- iosITOSocket -------------------------------------------------------------------
 //! adapts ios to a Socket Stream buffer
-class EXPORTDECL_FOUNDATION iosITOSocket : virtual public std::ios
+class iosITOSocket : virtual public std::ios
 {
 public:
 	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::in | std::ios::out );
@@ -158,7 +157,7 @@ protected:
 
 //---- ISocketStream -------------------------------------------------------------------
 //! istream for sockets
-class  EXPORTDECL_FOUNDATION ISocketStream : public iosITOSocket, public std::istream
+class ISocketStream : public iosITOSocket, public std::istream
 {
 public:
 	//! constructor creates iosITOSocket
@@ -180,7 +179,7 @@ private:
 
 //---- ISocketStream -------------------------------------------------------------------
 //! ostream for sockets
-class  EXPORTDECL_FOUNDATION OSocketStream : public iosITOSocket, public std::ostream
+class OSocketStream : public iosITOSocket, public std::ostream
 {
 public:
 	//! constructor creates iosITOSocket
@@ -203,7 +202,7 @@ private:
 
 //---- SocketStream -------------------------------------------------------------------
 //! iostream for sockets
-class  EXPORTDECL_FOUNDATION SocketStream : public iosITOSocket, public std::iostream
+class SocketStream : public iosITOSocket, public std::iostream
 {
 public:
 	//! constructor creates iosITOSocket
@@ -223,7 +222,7 @@ private:
 
 //---- TimeoutModifier -------------------------------------------------------------------
 //! modifies the timeout used by a SocketStream for a scope
-class  EXPORTDECL_FOUNDATION TimeoutModifier
+class TimeoutModifier
 {
 public:
 	//!modifies timeout of the SocketStream with timeout; it stores away the original value

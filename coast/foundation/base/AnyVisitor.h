@@ -19,7 +19,7 @@
 apply the visitor pattern and externalize algorithms traversing anythings.
 means to get rid of manually dispatching using GetType()
 */
-class EXPORTDECL_FOUNDATION AnyVisitor
+class AnyVisitor
 {
 public:
 //!provide virtual destructor for subclasses with data

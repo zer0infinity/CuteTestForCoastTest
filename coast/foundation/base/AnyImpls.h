@@ -10,17 +10,16 @@
 #define _AnyImpls_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 #include "AnyImplTypes.h"
 #include "IFAObject.h"
 
 //---- forward declaration -----------------------------------------------
-class EXPORTDECL_FOUNDATION Anything;
-class EXPORTDECL_FOUNDATION AnyVisitor;
+class Anything;
+class AnyVisitor;
 
 //---- AnyImpl --------------------------------------------------------------
-class EXPORTDECL_FOUNDATION AnyImpl: public IFAObject {
+class AnyImpl: public IFAObject {
 public:
 	AnyImpl(Allocator *a) :
 		fRefCount(1), fAllocator((a) ? a : Storage::Current()) {
@@ -296,9 +295,9 @@ protected:
 
 };
 
-class EXPORTDECL_FOUNDATION AnyArrayImpl;
+class AnyArrayImpl;
 //---- AnyKeyTable --------------------------------------------------
-class EXPORTDECL_FOUNDATION AnyKeyTable
+class AnyKeyTable
 {
 public:
 	enum {
@@ -336,7 +335,7 @@ private:
 };
 
 //---- AnyIndTable --------------------------------------------------
-class EXPORTDECL_FOUNDATION AnyIndTable
+class AnyIndTable
 {
 public:
 	AnyIndTable(long initCapacity, Allocator *a);
@@ -371,9 +370,9 @@ private:
 };
 
 class AnyKeyAssoc;
-class EXPORTDECL_FOUNDATION AnyComparer;
+class AnyComparer;
 //---- AnyArrayImpl -----------------------------------------------------------------
-class EXPORTDECL_FOUNDATION AnyArrayImpl : public AnyImpl
+class AnyArrayImpl : public AnyImpl
 {
 	AnyKeyAssoc **fContents;
 	AnyKeyTable *fKeys;
@@ -492,7 +491,7 @@ public:
 	const String &IntKey(long at) const;
 
 	//!interface for internal comparing during sort
-	class EXPORTDECL_FOUNDATION AnyIntCompare
+	class AnyIntCompare
 	{
 	public:
 		virtual int Compare(AnyArrayImpl &that, long leftInt, long rightInt) const {

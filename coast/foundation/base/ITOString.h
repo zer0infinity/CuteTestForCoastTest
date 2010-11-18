@@ -9,7 +9,6 @@
 #ifndef _ITOString_H
 #define _ITOString_H
 
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOStorage.h"
 
 #include <iosfwd>
@@ -17,7 +16,7 @@
 //---- String --------------------------------------------------------------
 //! simple mt-safe string handling class
 /*! class that eases use of strings and its memory management, a notorious source of errors in c and c++ */
-class EXPORTDECL_FOUNDATION String
+class String
 {
 	//! factor out mem alloc for ctors and Set()
 	//! allocation bottleneck, writes to Syslog if memory exhausted
@@ -266,14 +265,14 @@ public:
 	char operator[] (long ix) const;
 	char operator[] (int ix) const;
 
-	friend EXPORTDECL_FOUNDATION inline bool operator==(const String &s1, const String &s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator==(const char *s1, const String &s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator==(const String &s1, const char *s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!=(const String &s1, const String &s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!=(const char *s1, const String &s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator!=(const String &s1, const char *s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator<(const String &s1, const char *s2);
-	friend EXPORTDECL_FOUNDATION inline bool operator>(const String &s1, const char *s2);
+	friend inline bool operator==(const String &s1, const String &s2);
+	friend inline bool operator==(const char *s1, const String &s2);
+	friend inline bool operator==(const String &s1, const char *s2);
+	friend inline bool operator!=(const String &s1, const String &s2);
+	friend inline bool operator!=(const char *s1, const String &s2);
+	friend inline bool operator!=(const String &s1, const char *s2);
+	friend inline bool operator<(const String &s1, const char *s2);
+	friend inline bool operator>(const String &s1, const char *s2);
 
 	//! convert all ascii uppercase characters into corresponding lowercase
 	//! this is done inplace using ctype.h - classification isupper()
@@ -329,16 +328,16 @@ public:
 	//! canonical input operator for strings
 	/*! reads up to the next whitespace character
 		use getline() function for reading lines */
-	friend EXPORTDECL_FOUNDATION std::istream &operator>>(std::istream &is, String &s);
+	friend std::istream &operator>>(std::istream &is, String &s);
 
 	//! canonical output operator for strings
-	friend EXPORTDECL_FOUNDATION std::ostream  &operator<<(std::ostream &os, const String &s);
+	friend std::ostream  &operator<<(std::ostream &os, const String &s);
 
 	//! function for reading strings from a stream up to a delimiter
 	/*! \param is istream read from
 		\param s result of input is stored here
 		\param c delimiting character, usually newline */
-	friend EXPORTDECL_FOUNDATION std::istream  &getline(std::istream &is, String &s, char c);
+	friend std::istream  &getline(std::istream &is, String &s, char c);
 
 	//! manually set the allocator (should not usually be used...)
 	bool SetAllocator(Allocator *a) ;
@@ -411,7 +410,7 @@ protected:
 
 //---- StringTokenizer ---------------------------------------------------------
 //! an efficient implementation of tokenization with one delimiter
-class EXPORTDECL_FOUNDATION StringTokenizer
+class StringTokenizer
 {
 public:
 	//! ctor takes content s and delimiting character
@@ -440,7 +439,7 @@ protected:
 //---- StringTokenizer ---------------------------------------------------------
 //! more flexible but slower implementation of tokenization
 //! allows several delimiting characters, instead of one
-class EXPORTDECL_FOUNDATION StringTokenizer2
+class StringTokenizer2
 {
 public:
 	//! ctor, take content s and use whitespace (" \t\n") as delimiters
@@ -531,39 +530,39 @@ inline bool String::IsEqual(const String &other) const
 }
 // this is just a performance shortcut
 
-EXPORTDECL_FOUNDATION inline std::istream &getline(std::istream &is, String &s)
+inline std::istream &getline(std::istream &is, String &s)
 {
 	return getline(is, s, '\n');
 }
-EXPORTDECL_FOUNDATION bool operator==(const String &s1, const String &s2)
+bool operator==(const String &s1, const String &s2)
 {
 	return s1.IsEqual(s2);
 }
-EXPORTDECL_FOUNDATION bool operator==(const char *s1, const String &s2)
+bool operator==(const char *s1, const String &s2)
 {
 	return s2.IsEqual(s1);
 }
-EXPORTDECL_FOUNDATION bool operator==(const String &s1, const char *s2)
+bool operator==(const String &s1, const char *s2)
 {
 	return s1.IsEqual(s2);
 }
-EXPORTDECL_FOUNDATION bool operator!=(const String &s1, const String &s2)
+bool operator!=(const String &s1, const String &s2)
 {
 	return !s1.IsEqual(s2);
 }
-EXPORTDECL_FOUNDATION bool operator!=(const char *s1, const String &s2)
+bool operator!=(const char *s1, const String &s2)
 {
 	return !s2.IsEqual(s1);
 }
-EXPORTDECL_FOUNDATION bool operator!=(const String &s1, const char *s2)
+bool operator!=(const String &s1, const char *s2)
 {
 	return !s1.IsEqual(s2);
 }
-EXPORTDECL_FOUNDATION bool operator<(const String &s1, const char *s2)
+bool operator<(const String &s1, const char *s2)
 {
 	return (s1.Compare(s2) < 0);
 }
-EXPORTDECL_FOUNDATION bool operator>(const String &s1, const char *s2)
+bool operator>(const String &s1, const char *s2)
 {
 	return (s1.Compare(s2) > 0);
 }

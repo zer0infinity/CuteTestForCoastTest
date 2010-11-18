@@ -49,7 +49,7 @@
 #define SystemSpecific(className)		_NAME2_(Linux, className)
 #endif
 
-class EXPORTDECL_FOUNDATION SystemSpecific(Resolver)
+class SystemSpecific(Resolver)
 {
 	Anything fAliases;
 	String fCanonicalName;
