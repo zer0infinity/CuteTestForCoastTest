@@ -6,6 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+#if !defined(WIN32)
+
 //--- interface include --------------------------------------------------------
 #include "MmapTest.h"
 
@@ -23,14 +25,10 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#if defined(WIN32)
-#include <io.h>
-#endif
 #include <fcntl.h>
 #include <fstream>
 
 // for additional functionality / syscalls
-#if !defined(WIN32)
 
 const char *const MmapTest::fgcContent =
 	"This is the content of a Test File\n"

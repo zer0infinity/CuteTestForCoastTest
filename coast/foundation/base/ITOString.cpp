@@ -420,20 +420,12 @@ String &String::Append(const l_long &number)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
 	std::ostrstream out(pcBuf, iBufSize);
-#if defined(WIN32)
-	out << (long)number;
-#else
 	out << number;
-#endif
 	out << std::ends;
 	(*this).Append(pcBuf);
 #else
 	OStringStream obuf(this, ios::app);
-#if defined(WIN32)
-	obuf << (long)number;
-#else
 	obuf << number;
-#endif
 #endif
 #endif
 	return *this;

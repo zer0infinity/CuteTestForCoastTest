@@ -80,13 +80,7 @@ public:
 	// input
 	void SkipToEOL();    // for reading comments by parser
 	bool Get(char &c)				{
-		return (
-#if defined(WIN32)
-				   !fIs.get(c).fail()
-#else
-				   fIs.get(c).good()
-#endif
-			   ) || (c = 0);
+		return (fIs.get(c).good()) || (c = 0);
 	}
 	// the last assignment is a trick for sunCC weakness of storing EOF(-1) in c
 	void Putback(char c)			{

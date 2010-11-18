@@ -167,12 +167,6 @@ public:
 		return Append(ll);
 	}
 
-#if defined(WIN32)
-	String &operator << (u_long ul)				{
-		return Append(ul);
-	}
-#endif
-
 	String &operator << (const char *s)			{
 		return Append(s);
 	}
