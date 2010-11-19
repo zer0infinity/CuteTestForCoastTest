@@ -280,7 +280,6 @@ void HTTPPostRequestBodyParserTest::ParseMultiPartTest()
 	result[0L]["header"]["CONTENT-DISPOSITION"][0L] = "form-data";
 	result[0L]["header"]["CONTENT-DISPOSITION"]["NAME"] = "Datei3";
 	result[0L]["header"]["CONTENT-DISPOSITION"]["FILENAME"] = "G:\\DEVELOP\\coast\\foundation\\Test\\config\\len5.tst";
-	result[0L]["header"]["CONTENT-LENGTH"] = 125L;
 	result[0L]["header"]["CONTENT-TYPE"] = "multipart/part";
 	result[0L]["body"].Append("01234");
 	{
@@ -290,17 +289,24 @@ void HTTPPostRequestBodyParserTest::ParseMultiPartTest()
 
 		assertAnyEqualm(Anything(), sm.GetContent(), "expected fContent to be empty" );
 		t_assert(sm.ParseMultiPart(&is, testboundary));
+		assertAnyEqualm(result, sm.GetContent(), "expected valid Content" );
 	}
 	{
 		IStringStream is(testinput1);
 		MIMEHeader mh;
 		HTTPPostRequestBodyParser sm(mh, is);
-		sm.ParseMultiPart(&is, testboundary);
+		try {
+			sm.ParseMultiPart(&is, testboundary);
+		} catch (MIMEHeader::InvalidLineException &e) {
+			t_assertm(true, "expected invalid line exception to happen");
+		} catch (...) {
+			t_assertm(false,"did not expect other exceptions to be thrown");
+		}
 
 		// see RFC 1806 for details about the content disposition header
 		String unparsedContent;
 		unparsedContent = sm.GetUnparsedContent();
-		t_assert(assertEqual(testinput1, unparsedContent));
+		assertCharPtrEqual(testinput1, unparsedContent);
 	}
 }
 

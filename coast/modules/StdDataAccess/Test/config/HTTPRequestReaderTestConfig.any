@@ -153,22 +153,19 @@
 				}
 			}
 		}
-		{
+		/IncompleteOrSimpleHTTPRequest {
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
 			/Expected {
-				/Return			1
+				/Return			0
 				/Request {
-					/REQUEST_METHOD		GET
-					/REQUEST_URI		""
-					/SERVER_PROTOCOL	"HTTP/1.0"
 					/header *
 				}
 			}
 		}
-		{
+		/LineSizeExceededTest {
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		8
@@ -182,16 +179,18 @@
 					/HTTPRequestReader {
 						/Error {
 							{
-								/ResponseCode 413
-								/ErrorMessage "Request line too long: >9, max: 8 => check setting of [LineSizeLimit]"
-								/FaultyContent "GET  HTTP"
+							    /Component "HTTPRequestReader"
+							    /ResponseCode 413
+							    /ResponseMsg "Request Entity Too Large"
+							    /ErrorMessage "Line size exceeded; max: 8 actual: 9 => check setting of [LineSizeLimit]"
+							    /FaultyContent "GET  HTTP"
 							}
 						}
 					}
 				}
 			}
 		}
-		{
+		/URISizeLimitExceededTest {
 			/RequestLine "GET /23456789 HTTP/1.0\r\n\r\n"
 			/URISizeLimit		8
 			/LineSizeLimit		4096
@@ -206,16 +205,18 @@
 					/HTTPRequestReader {
 						/Error {
 							{
-								/ResponseCode 414
-								/ErrorMessage "Request-URI too long: >9, max: 8 => check setting of [URISizeLimit]"
-								/FaultyContent "GET /23456789 HTTP/1.0"
+							    /Component "HTTPRequestReader"
+							    /ResponseCode 414
+							    /ResponseMsg "Request-URL Too Large"
+							    /ErrorMessage "Request-URI too long; max: 8 actual: 9 => check setting of [URISizeLimit]"
+							    /FaultyContent "GET /23456789 HTTP/1.0"
 							}
 						}
 					}
 				}
 			}
 		}
-		{
+		/RequestSizeLimitExceededTest {
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
@@ -229,17 +230,19 @@
 					/HTTPRequestReader {
 						/Error {
 							{
-								/ResponseCode 413
-								/ErrorMessage "Request too large: >15, max: 8 => check setting of [RequestSizeLimit]"
-								/FaultyContent "GET  HTTP/1.0\r\n"
+							    /Component "HTTPRequestReader"
+							    /ResponseCode 413
+							    /ResponseMsg "Request Entity Too Large"
+							    /ErrorMessage "RequestSizeLimit exceeded; max: 8 actual: 15 => check setting of [RequestSizeLimit]"
+							    /FaultyContent "GET  HTTP/1.0\x0D\n"
 							}
 						}
 					}
 				}
 			}
 		}
-		{
-			/RequestLine "xxGET  HTTP/1.0\r\n\r\n"
+		/InvalidRequestMethodTest {
+			/RequestLine "xxGET / HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
@@ -252,9 +255,11 @@
 					/HTTPRequestReader {
 						/Error {
 							{
-								/ResponseCode 405
-								/ErrorMessage "Method Not Allowed"
-								/FaultyContent "xxGET  HTTP/1.0"
+							    /Component "HTTPRequestReader"
+							    /ResponseCode 405
+							    /ResponseMsg "Method Not Allowed"
+							    /ErrorMessage "Method Not Allowed"
+							    /FaultyContent "xxGET / HTTP/1.0"
 							}
 						}
 					}

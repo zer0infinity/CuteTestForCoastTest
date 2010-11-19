@@ -78,10 +78,19 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 	StartTrace(HTTPProcessor.ReadRequestBody);
 	if ( strPOST.IsEqual(request["REQUEST_METHOD"].AsCharPtr()) ) {
 		HTTPPostRequestBodyParser sm(header, Ios);
-		sm.Parse();
+		try {
+			sm.Parse();
+		} catch (MIMEHeader::LineSizeExceededException &e) {
+			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
+		} catch (MIMEHeader::HeaderSizeExceededException &e) {
+			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine);
+		} catch (MIMEHeader::InvalidLineException &e) {
+			PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine);
+		}
 		request["REQUEST_BODY"] = sm.GetContent();
+		TraceAny(request["REQUEST_BODY"], "Body");
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
-		TraceAny(request["REQUEST_BODY"], "Body"); TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
+		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
 	} else {
 		request["header"]["CONTENT-LENGTH"] = 0L;
 	}

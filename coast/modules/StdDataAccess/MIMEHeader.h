@@ -42,10 +42,6 @@ public:
 	//! detect misuse of server
 	bool ParseHeaders(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
 
-	//! trim the line end and parse it according to the MIME Header rules
-	//! appends contents to fHeader
-	bool ParseHeaderLine(String &line);
-
 	//! answer if we are a header of a multipart MIME message
 	bool IsMultiPart();
 
@@ -59,16 +55,36 @@ public:
 	long GetContentLength() const;
 
 	// the complete header information as an Anything
-	Anything GetInfo() {
+	Anything GetInfo() const {
 		return fHeader;
 	}
 
-protected:
-	//! parse a line with fieldname ": " value
-	//! stores value as string in fHeader[Normalize(fieldname)]
-	//! \param fieldname out the normalized fieldname
-	bool ParseField(String const &line, Coast::URLUtils::NormalizeTag const normTag);
+	struct InvalidLineException {
+		String fMessage, fLine;
+		InvalidLineException(String const& msg, String const& line) throw() : fMessage(msg), fLine(line) {}
+		virtual const char* what() const throw() { return fMessage; }
+	};
+	struct SizeExceededException : MIMEHeader::InvalidLineException {
+		long fMaxSize, fActualSize;
+		SizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw() : MIMEHeader::InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
+			fMessage.Append("; max: ").Append(fMaxSize).Append(" actual: ").Append(fActualSize);
+		}
+	};
+	struct LineSizeExceededException: MIMEHeader::SizeExceededException {
+		LineSizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+			SizeExceededException(msg, line, lMaxSize, lActualSize) {
+		}
+	};
+	struct HeaderSizeExceededException: MIMEHeader::SizeExceededException {
+		HeaderSizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+			SizeExceededException(msg, line, lMaxSize, lActualSize) {
+		}
+	};
+	struct StreamNotGoodException {
+		const char* what() const throw() { return "Stream not good"; }
+	};
 
+protected:
 	// method to subclass if the lookup behaviour shall deviate from the standard
 	// implementation (i.e. allow more Anys to be searched, hierarchical, etc)
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
@@ -87,7 +103,7 @@ namespace Coast {
 	namespace StreamUtils {
 		char const LF = '\n';
 		char const CR = '\r';
-		bool getLineFromStream(std::istream &in, String &line, long const maxlinelen);
+		void getLineFromStream(std::istream &in, String &line, long const maxlinelen);
 	}
 }
 

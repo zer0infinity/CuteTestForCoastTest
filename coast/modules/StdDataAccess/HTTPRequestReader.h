@@ -30,22 +30,6 @@ public:
 	Anything const& GetRequest();
 
 private:
-	//!read the one input line stream and check it against limits,
-	//! my generate an error reply in case of "attacks"
-	bool ReadLine(Context &ctx, std::iostream &Ios, long const maxLineSz, String &line);
-
-	//!handle the the request line by line
-	bool ParseRequest(Context &ctx, String &line);
-
-	//!handle the first line of a request containing GET/POST
-	bool HandleFirstLine(Context &ctx, String &line);
-
-	//!check the length of a single request line, handle error if necessary
-	bool RequestSizeLimitExceeded(Context &ctx, long const maxReqSz, const String &line) const;
-
-	//!check the size of the request uri
-	bool CheckReqURISize(Context &ctx, long lineLength, const String &line) const;
-
 	//!product output a request anything
 	Anything fRequest;
 

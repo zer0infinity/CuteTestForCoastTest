@@ -83,12 +83,7 @@ bool HTTPPostRequestBodyParser::ParseBody() {
 
 void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
 	StartTrace(HTTPPostRequestBodyParser.Decode);
-	// add a sanity check and remove trailing \r\n in case
-	long slen = str.Length();
-	if (slen >= 2 && '\r' == str[(long) (slen - 2)] && '\n' == str[(long) (slen - 1)]) {
-		str.Trim(slen - 2);
-	}
-	Coast::URLUtils::Split(str, '&', result);
+	Coast::URLUtils::Split(Coast::URLUtils::TrimENDL(str), '&', result);
 	Coast::URLUtils::DecodeAll(result);
 }
 
