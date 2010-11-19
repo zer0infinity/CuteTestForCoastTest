@@ -57,6 +57,15 @@ public:
 		\param a Allocator to allocate memory from */
 	String(const String &s, Allocator *a = Storage::Current());
 
+	template <typename InputIterator>
+	String(InputIterator first, InputIterator last, Allocator *a = Storage::Current())
+		: fStringImpl(0)
+		, fAllocator((a) ? a : Storage::Current()) {
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+
 	//! dtor, deallocates memory used by string content
 	~String();
 

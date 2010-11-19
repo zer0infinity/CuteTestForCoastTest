@@ -21,6 +21,7 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <limits>
+#include <iterator>
 
 StringTest::StringTest (TString tname)
 	: TestCaseType(tname)
@@ -172,6 +173,13 @@ void StringTest::constructors()
 	assertCompare(oneString.Length(), equal_to, 1L);
 	assertEqual("short", fShort);
 	t_assert (fShort != "Short");  // == fails
+
+	String inputString("test for InputIterator constructor");
+	IStringStream inputStream(inputString);
+	std::istreambuf_iterator<char> end;
+	String outputString(std::istreambuf_iterator<char>(inputStream), end);
+	t_assert (inputString == outputString);
+	assertCompare(inputString.Length(), equal_to, outputString.Length());
 }
 
 void StringTest::appendsChar()
