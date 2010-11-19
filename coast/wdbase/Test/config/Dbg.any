@@ -103,18 +103,6 @@
 		/MainSwitch			0
 		/EnableAll			33
 	}
-	/MIMEHeader {
-		/MainSwitch	400
-		/EnableAll	400
-	}
-	/MIMEHeaderTest {
-		/MainSwitch	400
-		/EnableAll	400
-	}
-	/HTTPPostRequestBodyParser {
-		/MainSwitch	500
-		/EnableAll	500
-	}
 	/SlotPutterAppendTest {
 		/MainSwitch	1020
 		/EnableAll	1030
