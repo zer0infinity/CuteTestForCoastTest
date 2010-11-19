@@ -20,7 +20,8 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-//#include <iostream>
+#include <iterator>
+
 //---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)
@@ -56,10 +57,10 @@ void PipeExecutorTest::EchoEnvTest()
 		t_assertm(!!(*os), "Execute env failed");
 		t_assertm(!!(*is), "Execute env failed");
 		Execute.ShutDownWriting();
-		String s1;
-		OStringStream s1Stream(s1);
-		long bytes;
-		NSStringStream::PlainCopyStream2Stream(is, s1Stream, bytes);
+
+		std::istreambuf_iterator<char> end;
+		String s1(std::istreambuf_iterator<char>(*is), end);
+
 		Trace("ENV: " << s1);
 		t_assertm((s1.Contains("HALLO=Peter") != -1), "exported env variable not contained");
 	}
