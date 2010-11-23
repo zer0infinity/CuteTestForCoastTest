@@ -9,7 +9,6 @@
 #ifndef _PipeExecutor_H
 #define _PipeExecutor_H
 
-#include "config_foundation.h"
 #include "Anything.h"
 
 //---- forward declaration -----------------------------------------------

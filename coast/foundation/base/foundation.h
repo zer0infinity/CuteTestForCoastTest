@@ -37,7 +37,6 @@
 
 #ifdef DEBUG
 #if defined(WIN32)
-#include "config_foundation.h"
 int syslog_assert(const char *, long, const char *);
 #else
 extern int syslog_assert(const char *, long, const char *);

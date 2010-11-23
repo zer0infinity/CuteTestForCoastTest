@@ -10,7 +10,6 @@
 #define _InitFinisManager_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_foundation.h"
 
 //---- InitFinisManager ----------------------------------------------------------
 //! support class for initializing/cleaning things up in a deterministic sequence

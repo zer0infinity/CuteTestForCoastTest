@@ -9,7 +9,6 @@
 #ifndef _SYSTEMBASE_H
 #define _SYSTEMBASE_H
 
-#include "config_foundation.h"
 class String;
 class Anything;
 

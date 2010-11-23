@@ -9,7 +9,6 @@
 #ifndef _PipeStream_H
 #define _PipeStream_H
 
-#include "config_foundation.h"
 #include "ITOString.h"
 
 #include <cstdio>

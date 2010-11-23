@@ -13,7 +13,6 @@
 #define SOCKET_ERROR errno
 #endif
 
-#include "config_foundation.h"
 #include "Anything.h"
 
 //--- forward declarations ------------------------------------------------------------

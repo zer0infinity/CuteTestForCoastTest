@@ -7,7 +7,6 @@
  */
 
 //--- interface include ---------------------------------------------------------
-#include "config_foundation.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"

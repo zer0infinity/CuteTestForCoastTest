@@ -9,7 +9,6 @@
 #ifndef AnythingIterator_H
 #define AnythingIterator_H
 
-#include "config_foundation.h"
 #include <iterator>
 
 #if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)

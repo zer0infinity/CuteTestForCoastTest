@@ -10,7 +10,6 @@
 #define _AnyVisitor_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_foundation.h"
 #include "Anything.h"
 
 //---- AnyVisitor ----------------------------------------------------------

@@ -10,7 +10,6 @@
 #define _InitFinisManagerFoundation_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_foundation.h"
 #include "InitFinisManager.h"
 
 //---- forward declaration -----------------------------------------------
@@ -25,7 +24,7 @@ The advantage of not doing initialization/finalization in ctor/dtor lies within 
 
 Sample code how to implement a specific Init/Finis object. The code should be placed where actually needed - inside an implementation file - to keep complexity at a minimum
 <pre>
-class EXPORTDECL_LibXX SomeInitializer : public InitFinisManagerFoundation
+class SomeInitializer : public InitFinisManagerFoundation
 {
 public:
 	SomeInitializer(unsigned int uiPriority)

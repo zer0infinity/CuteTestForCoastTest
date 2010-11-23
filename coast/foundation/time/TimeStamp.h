@@ -9,7 +9,6 @@
 #ifndef _TimeStamp_H
 #define _TimeStamp_H
 
-#include "config_foundation.h"
 #include "ITOString.h"
 #include <time.h>
 
