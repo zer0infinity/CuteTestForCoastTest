@@ -10,8 +10,7 @@
 #define _MultiDimNavigationRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_HTMLRenderers.h"
-#include "Renderer.h"
+ #include "Renderer.h"
 
 //---- MultiDimNavigationRenderer ----------------------------------------------------------
 //! Preconfigured Table renderer, some things are hardcoded
@@ -39,7 +38,7 @@
 \endcode
 
 */
-class EXPORTDECL_HTMLRENDERERS MultiDimNavigationRenderer : public Renderer
+class MultiDimNavigationRenderer : public Renderer
 {
 public:
 	//--- constructors

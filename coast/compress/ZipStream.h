@@ -9,20 +9,19 @@
 #ifndef _ZipStream_H
 #define _ZipStream_H
 
-#include "config_compress.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
 #include "zlib.h"
 
-struct EXPORTDECL_COMPRESS GzipHdr {
+struct GzipHdr {
 	GzipHdr();
 
 	bool IsValid();
 	TimeStamp GetModificationTime() const;
 	void SetModificationTime(TimeStamp aStamp);
 
-	friend EXPORTDECL_COMPRESS std::ostream &operator<<(std::ostream &os, GzipHdr &header);
-	friend EXPORTDECL_COMPRESS std::istream &operator>>(std::istream &is, GzipHdr &header);
+	friend std::ostream &operator<<(std::ostream &os, GzipHdr &header);
+	friend std::istream &operator>>(std::istream &is, GzipHdr &header);
 
 	unsigned char ID1;					/* gzip magic header[0] */
 	unsigned char ID2;					/* gzip magic header[1] */
@@ -100,7 +99,7 @@ namespace ZipStream
 //! Does not do anything in particular except hold a few static constants.
 //! Once could merge ZipOStreamBuf and ZipIStreamBuf into this class, but
 //! this would result in a very complex class.
-class EXPORTDECL_COMPRESS ZipStreamBuf : public streambuf
+class ZipStreamBuf : public streambuf
 {
 public:
 	ZipStreamBuf(ZipStream::eStreamMode aMode, Allocator *alloc);
@@ -130,7 +129,7 @@ private:
 
 //---- ZipIStreamBuf ----------------------------------------------------------
 //! wrap other istream objects with decompression
-class EXPORTDECL_COMPRESS ZipIStreamBuf : public ZipStreamBuf
+class ZipIStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
@@ -176,7 +175,7 @@ private:
 
 //---- ZipOStreamBuf ----------------------------------------------------------
 //! wrap other ostream objects with compression compression
-class EXPORTDECL_COMPRESS ZipOStreamBuf : public ZipStreamBuf
+class ZipOStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
@@ -218,8 +217,7 @@ namespace ZipStream
 {
 	struct _CRCType {
 		bool fCrc;
-	};
-	EXPORTDECL_COMPRESS inline _CRCType setHeaderCRC(bool bFlag = true)
+	}; inline _CRCType setHeaderCRC(bool bFlag = true)
 	{
 		_CRCType aType = { bFlag };
 		return aType;
@@ -227,16 +225,14 @@ namespace ZipStream
 	struct _CprsType {
 		int comp_level;
 		int comp_strategy;
-	};
-	EXPORTDECL_COMPRESS inline _CprsType setCompression(int comp_level, int comp_strategy = Z_DEFAULT_STRATEGY)
+	}; inline _CprsType setCompression(int comp_level, int comp_strategy = Z_DEFAULT_STRATEGY)
 	{
 		_CprsType aType = { comp_level, comp_strategy };
 		return aType;
 	}
 	struct _EFType {
 		String fBuf;
-	};
-	EXPORTDECL_COMPRESS inline _EFType setExtraField(const String &strBuf)
+	}; inline _EFType setExtraField(const String &strBuf)
 	{
 		_EFType aArgument;
 		aArgument.fBuf = strBuf;
@@ -244,8 +240,7 @@ namespace ZipStream
 	}
 	struct _FnameType {
 		String fBuf;
-	};
-	EXPORTDECL_COMPRESS inline _FnameType setFilename(String strFilename)
+	}; inline _FnameType setFilename(String strFilename)
 	{
 		_FnameType aArgument;
 		aArgument.fBuf = strFilename;
@@ -253,8 +248,7 @@ namespace ZipStream
 	}
 	struct _CommType {
 		String fBuf;
-	};
-	EXPORTDECL_COMPRESS inline _CommType setComment(String strComment)
+	}; inline _CommType setComment(String strComment)
 	{
 		_CommType aArgument;
 		aArgument.fBuf = strComment;
@@ -262,8 +256,7 @@ namespace ZipStream
 	}
 	struct _ModTType {
 		TimeStamp fStamp;
-	};
-	EXPORTDECL_COMPRESS inline _ModTType setModificationTime(TimeStamp aStamp)
+	}; inline _ModTType setModificationTime(TimeStamp aStamp)
 	{
 		_ModTType aArgument;
 		aArgument.fStamp = aStamp;
@@ -272,7 +265,7 @@ namespace ZipStream
 }
 //---- ZipOStream ----------------------------------------------------------
 //! wrap other ostream objects with compression
-class EXPORTDECL_COMPRESS ZipOStream : public std::ostream
+class ZipOStream : public std::ostream
 {
 public:
 	//--- constructors
@@ -291,27 +284,27 @@ public:
 		fBuf.close();
 	}
 
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CRCType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CRCType aArgs) {
 		os.fBuf.setHeaderCRC(aArgs.fCrc);
 		return os;
 	}
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CprsType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CprsType aArgs) {
 		os.fBuf.setCompression(aArgs.comp_level, aArgs.comp_strategy);
 		return os;
 	}
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_EFType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_EFType aArgs) {
 		os.fBuf.setExtraField(aArgs.fBuf);
 		return os;
 	}
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_FnameType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_FnameType aArgs) {
 		os.fBuf.setFilename(aArgs.fBuf);
 		return os;
 	}
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CommType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CommType aArgs) {
 		os.fBuf.setComment(aArgs.fBuf);
 		return os;
 	}
-	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_ModTType aArgs) {
+	friend inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_ModTType aArgs) {
 		os.fBuf.setModificationTime(aArgs.fStamp);
 		return os;
 	}
@@ -321,7 +314,7 @@ protected:
 
 //---- ZipOStreamBuf ----------------------------------------------------------
 //! wrap other istream objects with decompression
-class EXPORTDECL_COMPRESS ZipIStream : public std::istream
+class ZipIStream : public std::istream
 {
 public:
 	//--- constructors

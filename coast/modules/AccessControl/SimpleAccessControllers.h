@@ -10,7 +10,6 @@
 #define _SimpleAccessControllers_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_AccessControl.h"
 #include "AccessController.h"
 #include "Threads.h"
 
@@ -21,7 +20,7 @@
 //! The first should store the contents of the user file under /FileContent
 //! in tmp store the latter should read from /FileContent and store it in
 //! user file.
-class EXPORTDECL_ACCESSCONTROL FileUDAC : public UserDataAccessController
+class FileUDAC : public UserDataAccessController
 {
 public:
 	// constructors
@@ -62,7 +61,7 @@ protected:
 //! The first should store the contents of the token file (which is an Anything)
 //! under tmp.FileContent, the latter should read from tmp.FileContent and store
 // it in user file.
-class EXPORTDECL_ACCESSCONTROL FileTDAC : public TokenDataAccessController
+class FileTDAC : public TokenDataAccessController
 {
 public:
 	// constructors
@@ -95,7 +94,7 @@ protected:
 //! The first should store the contents of the entity file (which is an Anything)
 //! under tmp.FileContent, the latter should read from tmp.FileContent and store
 //! it in entity file.
-class EXPORTDECL_ACCESSCONTROL FileEDAC : public EntityDataAccessController
+class FileEDAC : public EntityDataAccessController
 {
 public:
 	// constructors
@@ -152,7 +151,7 @@ Configuration:<PRE>
 </PRE>
 Initial test config is modified in memory only.
 */
-class EXPORTDECL_ACCESSCONTROL MockUDAC : public FileUDAC
+class MockUDAC : public FileUDAC
 {
 public:
 	MockUDAC(const char *name) : FileUDAC(name) {};
@@ -200,7 +199,7 @@ Configuration:<PRE>
 </PRE>
 Initial test config is modified in memory only.
 */
-class EXPORTDECL_ACCESSCONTROL MockTDAC : public FileTDAC
+class MockTDAC : public FileTDAC
 {
 public:
 	MockTDAC(const char *name) : FileTDAC(name) {};
@@ -251,7 +250,7 @@ Configuration:<PRE>
 </PRE>
 Initial test config is modified in memory only.
 */
-class EXPORTDECL_ACCESSCONTROL MockEDAC : public FileEDAC
+class MockEDAC : public FileEDAC
 {
 public:
 	MockEDAC(const char *name) : FileEDAC(name) {};

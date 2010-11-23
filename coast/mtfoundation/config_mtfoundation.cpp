@@ -15,25 +15,27 @@
 #include "SystemLog.h"
 #include "Threads.h"
 
-static void Init()
-{
-	InitFinisManager::IFMTrace(">> mtfoundation::Init\n");
-	// initialize InitFinisManagerMTFoundation relative components
-	if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
-		InitFinisManagerMTFoundation::Instance()->Init();
+namespace {
+	void Init()
+	{
+		InitFinisManager::IFMTrace(">> mtfoundation::Init\n");
+		// initialize InitFinisManagerMTFoundation relative components
+		if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+			InitFinisManagerMTFoundation::Instance()->Init();
+		}
+		InitFinisManager::IFMTrace("<< mtfoundation::Init\n");
 	}
-	InitFinisManager::IFMTrace("<< mtfoundation::Init\n");
-}
 
-static void Finis()
-{
-	InitFinisManager::IFMTrace(">> mtfoundation::Finis\n");
-	// finalize InitFinisManagerMTFoundation relative components
-	if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
-		InitFinisManagerMTFoundation::Instance()->Finis();
-		delete InitFinisManagerMTFoundation::Instance();
+	void Finis()
+	{
+		InitFinisManager::IFMTrace(">> mtfoundation::Finis\n");
+		// finalize InitFinisManagerMTFoundation relative components
+		if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+			InitFinisManagerMTFoundation::Instance()->Finis();
+			delete InitFinisManagerMTFoundation::Instance();
+		}
+		InitFinisManager::IFMTrace("<< mtfoundation::Finis\n");
 	}
-	InitFinisManager::IFMTrace("<< mtfoundation::Finis\n");
 }
 
 #if defined(WIN32)
@@ -46,7 +48,7 @@ DWORD fgThreadPtrKey;
 Anything fgThreads;
 SimpleMutex fgThreadsMutex("fgThreadsMutex", Storage::Global());
 
-void EXPORTDECL_MTFOUNDATION TerminateKilledThreads()
+void TerminateKilledThreads()
 {
 	static bool once = false;
 	if (!once) {

@@ -9,13 +9,12 @@
 #ifndef _HTTPCHUNKEDOSTREAM_H
 #define _HTTPCHUNKEDOSTREAM_H
 
-#include "config_wdbase.h"
 #include "StringStream.h"
 
 //---- HTTPChunkedStreamBuf --------------------------------------------------------------
 
 //! Streambuffer for HTTPChunkedOStream.
-class EXPORTDECL_WDBASE HTTPChunkedStreamBuf : public streambuf
+class HTTPChunkedStreamBuf : public streambuf
 {
 public:
 	//! \param os wrapped output stream
@@ -70,7 +69,7 @@ private:
 //---- HTTPChunkedStreamBase --------------------------------------------------------------
 
 //! Base class for HTTPChunkedStream classes (see RFC 2068 sec 3.6).
-class EXPORTDECL_WDBASE HTTPChunkedStreamBase : virtual public std::ios
+class HTTPChunkedStreamBase : virtual public std::ios
 {
 public:
 	//! \param os wrapped output stream
@@ -105,7 +104,7 @@ protected:
 //! Can be used if the content length of the generated server output is not known in advanced,
 //! but persistent connections are required.
 //! The HTTP header must contain the field "Transfer-Encoding: chunked".
-class EXPORTDECL_WDBASE HTTPChunkedOStream : public HTTPChunkedStreamBase, public std::ostream
+class HTTPChunkedOStream : public HTTPChunkedStreamBase, public std::ostream
 {
 public:
 	//! \param os wrapped output stream

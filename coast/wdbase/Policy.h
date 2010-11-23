@@ -9,12 +9,11 @@
 #ifndef _POLICY_H
 #define _POLICY_H
 
-#include "config_wdbase.h"
 #include "IFAConfObject.h"
 
 //---- InstallerPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
-class EXPORTDECL_WDBASE InstallerPolicy
+class InstallerPolicy
 {
 public:
 	InstallerPolicy(const char *category)
@@ -44,7 +43,7 @@ private:
 
 //---- TerminationPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
-class EXPORTDECL_WDBASE TerminationPolicy
+class TerminationPolicy
 {
 public:
 	TerminationPolicy(const char *category)
@@ -73,7 +72,7 @@ private:
 
 //---- AliasInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
-class EXPORTDECL_WDBASE AliasInstaller : public InstallerPolicy
+class AliasInstaller : public InstallerPolicy
 {
 public:
 	AliasInstaller(const char *category)
@@ -86,7 +85,7 @@ protected:
 };
 
 //---- AliasTerminator ------------------------------------------------------
-class EXPORTDECL_WDBASE AliasTerminator : public TerminationPolicy
+class AliasTerminator : public TerminationPolicy
 {
 public:
 	AliasTerminator(const char *category)
@@ -100,7 +99,7 @@ protected:
 
 //---- HierarchyInstaller ------------------------------------------------------
 /*! hierarchyInstaller installs objects that are connected by a super relation into the registry */
-class EXPORTDECL_WDBASE HierarchyInstaller : public InstallerPolicy
+class HierarchyInstaller : public InstallerPolicy
 {
 public:
 	HierarchyInstaller(const char *cat)

@@ -10,7 +10,6 @@
 #define _SubStringRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- SubStringRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 }
 \endcode
 */
-class EXPORTDECL_RENDERER SubStringRenderer : public Renderer
+class SubStringRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

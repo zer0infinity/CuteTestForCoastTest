@@ -9,7 +9,6 @@
 #ifndef _HTMLTEMPLATERENDERER_H
 #define _HTMLTEMPLATERENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- HTMLTemplateRenderer ----------------------------------------------------
@@ -73,7 +72,7 @@ templates that are defined inline.)
 
 HTMLTemplateRenderer uses the SystemLog mechanism to record error conditions!
 */
-class EXPORTDECL_RENDERER HTMLTemplateRenderer : public Renderer
+class HTMLTemplateRenderer : public Renderer
 {
 public:
 	HTMLTemplateRenderer(const char *name);

@@ -8,7 +8,6 @@ buildSettings = {
         'linkDependencies' : ['CoastFoundation'],
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['MTFOUNDATION_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles( ['*.h', '*.ipp'] ),
             'appendUnique' : { 'CPPDEFINES' : ['_POSIX_THREADS'], 'LIBS' : ['pthread'] },

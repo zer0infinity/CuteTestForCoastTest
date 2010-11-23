@@ -10,7 +10,6 @@
 #define _QueueWorkingModule_H
 
 //---- WDModule include -------------------------------------------------
-#include "config_Queueing.h"
 #include "Context.h"
 #include "Server.h"
 #include "Queue.h"

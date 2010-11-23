@@ -10,7 +10,6 @@
 #define _FloorRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "ComparingRenderer.h"
 
 //---- FloorRenderer ----------------------------------------------------------
@@ -38,7 +37,7 @@
 
 Renders : "Second"
  */
-class EXPORTDECL_RENDERER FloorRenderer : public ComparingRenderer
+class FloorRenderer : public ComparingRenderer
 {
 public:
 	//--- constructors

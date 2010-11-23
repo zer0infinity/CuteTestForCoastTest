@@ -10,7 +10,6 @@
 #define _ReadXMLFileDAImpl_H
 
 //--- superclass interface ---
-#include "config_dataaccess.h"
 #include "ReadFileDAImpl.h"
 
 //---- ReadXMLFileDAImpl ----------------------------------------------------------
@@ -26,7 +25,7 @@
 }
 </PRE>
 */
-class EXPORTDECL_DATAACCESS ReadXMLFileDAImpl: public ReadFileDAImpl
+class ReadXMLFileDAImpl: public ReadFileDAImpl
 {
 public:
 	ReadXMLFileDAImpl(const char *name);

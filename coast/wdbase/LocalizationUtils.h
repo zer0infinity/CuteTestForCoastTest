@@ -9,11 +9,10 @@
 #ifndef _LocalizationUtils_H
 #define _LocalizationUtils_H
 
-#include "config_wdbase.h"
 #include "Context.h"
 #include "Threads.h"
 
-class EXPORTDECL_WDBASE LocalizationUtils
+class LocalizationUtils
 {
 public:
 	static const char *Eval(const char *lang, const ROAnything &config);

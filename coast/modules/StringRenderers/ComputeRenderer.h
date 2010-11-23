@@ -9,7 +9,6 @@
 #ifndef _ComputeRenderer_H
 #define _ComputeRenderer_H
 
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- ComputeRenderer ----------------------------------------------------------------
@@ -27,7 +26,7 @@
 \endcode
 
 */
-class EXPORTDECL_STRINGRENDERERS ComputeRenderer : public Renderer
+class ComputeRenderer : public Renderer
 {
 public:
 	ComputeRenderer(const char *name);

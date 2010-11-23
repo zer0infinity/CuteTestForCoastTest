@@ -10,7 +10,6 @@
 #define _PageNameRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_wdbase.h"
 #include "Renderer.h"
 
 //---- PageNameRenderer ----------------------------------------------------------
@@ -26,7 +25,7 @@ or
 *
 \endcode
 */
-class EXPORTDECL_WDBASE PageNameRenderer : public Renderer
+class PageNameRenderer : public Renderer
 {
 public:
 	//--- constructors

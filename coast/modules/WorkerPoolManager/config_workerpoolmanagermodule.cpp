@@ -7,61 +7,24 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "config_workerpoolmanagermodule.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "InitFinisManager.h"
 
-static void Init()
-{
-	InitFinisManager::IFMTrace(">> WorkerPoolManager::Init\n");
-	InitFinisManager::IFMTrace("<< WorkerPoolManager::Init\n");
-}
-
-static void Finis()
-{
-	InitFinisManager::IFMTrace(">> WorkerPoolManager::Finis\n");
-	InitFinisManager::IFMTrace("<< WorkerPoolManager::Finis\n");
-}
-
-#if defined(WIN32)
-#ifdef _DLL
-// DllMain() is the entry-point function for this DLL.
-BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
-					DWORD fdwReason,                    // reason called
-					LPVOID lpvReserved)                 // reserved
-{
-	switch (fdwReason) {
-
-			// The DLL is loading due to process
-			// initialization or a call to LoadLibrary.
-		case DLL_PROCESS_ATTACH:
-			Init();
-			break;
-
-			// The attached process creates a new thread.
-		case DLL_THREAD_ATTACH:
-			break;
-
-			// The thread of the attached process terminates.
-		case DLL_THREAD_DETACH:
-			break;
-
-			// The DLL unloading due to process termination or call to FreeLibrary.
-		case DLL_PROCESS_DETACH:
-			Finis();
-			break;
-
-		default:
-			break;
+namespace {
+	void Init()
+	{
+		InitFinisManager::IFMTrace(">> WorkerPoolManager::Init\n");
+		InitFinisManager::IFMTrace("<< WorkerPoolManager::Init\n");
 	}
 
-	return true;
-	UNREFERENCED_PARAMETER(hinstDLL);
-	UNREFERENCED_PARAMETER(lpvReserved);
+	void Finis()
+	{
+		InitFinisManager::IFMTrace(">> WorkerPoolManager::Finis\n");
+		InitFinisManager::IFMTrace("<< WorkerPoolManager::Finis\n");
+	}
 }
-#endif	// _DLL
-#else
+
 extern "C" void __attribute__ ((constructor)) WorkerPoolManager_init()
 {
 	Init();
@@ -70,4 +33,3 @@ extern "C" void __attribute__ ((destructor)) WorkerPoolManager_fini()
 {
 	Finis();
 }
-#endif	// WIN32

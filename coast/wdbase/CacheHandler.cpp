@@ -69,7 +69,7 @@ Anything SimpleAnyLoader::Load(const char *key)
 CacheHandler *CacheHandler::fgCacheHandler = 0;
 Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 
-class EXPORTDECL_WDBASE CacheHandlerMutexAllocator : public InitFinisManagerWDBase
+class CacheHandlerMutexAllocator : public InitFinisManagerWDBase
 {
 public:
 	CacheHandlerMutexAllocator(unsigned int uiPriority)

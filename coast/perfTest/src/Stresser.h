@@ -9,11 +9,10 @@
 #ifndef _Stresser_h_
 #define _Stresser_h_
 
-#include "config_perftest.h"
 #include "WDModule.h"
 
 //---- StressersModule -----------------------------------------------------------
-class EXPORTDECL_PERFTEST StressersModule : public WDModule
+class StressersModule : public WDModule
 {
 public:
 	StressersModule(const char *);
@@ -24,7 +23,7 @@ public:
 };
 
 //---- Stresser -----------------------------------------------------------
-class EXPORTDECL_PERFTEST Stresser : public ConfNamedObject
+class Stresser : public ConfNamedObject
 {
 public:
 	Stresser(const char *StresserName);

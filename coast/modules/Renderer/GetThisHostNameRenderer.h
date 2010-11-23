@@ -10,7 +10,6 @@
 #define _GetThisHostNameRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- GetThisHostNameRenderer ----------------------------------------------------------
@@ -21,7 +20,7 @@
 	/Representation		String	optional, [*Full*|HostOnly|DomainOnly]
 }
 \endcode */
-class EXPORTDECL_RENDERER GetThisHostNameRenderer : public Renderer
+class GetThisHostNameRenderer : public Renderer
 {
 public:
 	//--- constructors

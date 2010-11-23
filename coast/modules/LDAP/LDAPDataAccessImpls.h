@@ -11,7 +11,6 @@
 #ifndef _LDAPDataAccessImpls_H
 #define _LDAPDataAccessImpls_H
 
-#include "config_LDAPDA.h"
 
 //--- superclass interface ---
 #include "DataAccessImpl.h"
@@ -56,7 +55,7 @@ In general, an ldap operation is performed as follows (without error checking, a
 - PutResult
 - (Disconnect) (as soon as connection is not used anymore)
 */
-class EXPORTDECL_LDAPDA LDAPAbstractDAI: public DataAccessImpl
+class LDAPAbstractDAI: public DataAccessImpl
 {
 public:
 	/*! \param name defines the name of the data access */
@@ -165,7 +164,7 @@ an attribute can be forced by setting an attribute explicitely to *
 (null). After a replace operation, the attribute will have the
 values listed, be deleted or created if necessary.
 */
-class EXPORTDECL_LDAPDA LDAPModifyDAI: public LDAPAbstractDAI
+class LDAPModifyDAI: public LDAPAbstractDAI
 {
 public:
 	/*! \param name defines the name of the data access */
@@ -236,7 +235,7 @@ multiple value (see example). You should use a config mapper to get
 a literal config, i.e. exactly the attribute/value pairings that you wish
 to get. (This mapper stops scripting and returns its config as anything)
 */
-class EXPORTDECL_LDAPDA LDAPAddDAI: public LDAPModifyDAI
+class LDAPAddDAI: public LDAPModifyDAI
 {
 public:
 	/*! \param name defines the name of the data access */
@@ -283,7 +282,7 @@ private:
 </pre>
 Compares value of an attribute with value in LDAP directory.
 */
-class EXPORTDECL_LDAPDA LDAPCompareDAI: public LDAPAbstractDAI
+class LDAPCompareDAI: public LDAPAbstractDAI
 {
 public:
 	/*! \param name defines the name of the data access */
@@ -324,7 +323,7 @@ private:
 </pre>
 Deletes a whole entry. Base must be a leaf entry or delete will fail.
 */
-class EXPORTDECL_LDAPDA LDAPDeleteDAI: public LDAPAbstractDAI
+class LDAPDeleteDAI: public LDAPAbstractDAI
 {
 public:
 	/*! \param name defines the name of the data access */
@@ -367,7 +366,7 @@ private:
 	/LDAPTimeLimit	optional	give an own timeout. defaults to timeout of session/connection.
 }</pre>
 */
-class EXPORTDECL_LDAPDA LDAPSearchDAI: public LDAPAbstractDAI
+class LDAPSearchDAI: public LDAPAbstractDAI
 {
 public:
 	/*! \param name defines the name of the data access */

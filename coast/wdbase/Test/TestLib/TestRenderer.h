@@ -10,7 +10,6 @@
 #define _TestRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_TestLib.h"
 #include "Renderer.h"
 
 //---- TestRenderer ----------------------------------------------------------
@@ -19,7 +18,7 @@
 /*!
 nothing to configure, simply renders TestRenderer on output
 */
-class EXPORTDECL_TESTLIB TestRenderer : public Renderer
+class TestRenderer : public Renderer
 {
 public:
 	//--- constructors

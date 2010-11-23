@@ -10,7 +10,6 @@
 #define _ConnectorDAImpl_H
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "DataAccessImpl.h"
 
 class Connector;
@@ -35,7 +34,7 @@ Use a specific Mapper to implement a protocol. For example you can use a Anythin
 \endcode
 
 */
-class EXPORTDECL_STDDATAACCESS ConnectorDAImpl: public DataAccessImpl
+class ConnectorDAImpl: public DataAccessImpl
 {
 public:
 	/*! \param name defines the name of the data access */

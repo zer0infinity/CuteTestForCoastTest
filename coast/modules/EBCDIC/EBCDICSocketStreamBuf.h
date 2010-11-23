@@ -10,7 +10,6 @@
 #define _EBCDICSocketStreamBuf_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_ebcdic.h"
 #include "SocketStream.h"
 
 //---- EBCDICSocketStreamBuf ---------------------------------------------
@@ -19,7 +18,7 @@
 //! data sent is converted from ASCII to EBCDIC
 //! Caution: *ALL* data is converted. Do *NOT* send binary data accross
 //! an EBCDICSocketStreamBuf (or characters that cannot be translated)
-class EXPORTDECL_EBCDIC EBCDICSocketStreamBuf : public SocketStreamBuf
+class EBCDICSocketStreamBuf : public SocketStreamBuf
 {
 public:
 	EBCDICSocketStreamBuf(Socket *socket, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize);

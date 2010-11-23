@@ -10,7 +10,6 @@
 #define _AuthenticateActions_H
 
 //---- Action include -------------------------------------------------
-#include "config_AccessControl.h"
 #include "Action.h"
 
 class AccessManager;
@@ -32,7 +31,7 @@ method with the given arguments. The transition token is changed to the
 role specified for successful/failing authentication (see config
 of AccessManager for those values).
 */
-class EXPORTDECL_ACCESSCONTROL AuthenticateWeakAction : public Action
+class AuthenticateWeakAction : public Action
 {
 public:
 	//--- constructors
@@ -73,7 +72,7 @@ method with the given arguments. The transition token is changed to the
 role specified for successful/failing authentication (see config
 of AccessManager for those values).
 */
-class EXPORTDECL_ACCESSCONTROL AuthenticateStrongAction : public AuthenticateWeakAction
+class AuthenticateStrongAction : public AuthenticateWeakAction
 {
 public:
 	//--- constructors

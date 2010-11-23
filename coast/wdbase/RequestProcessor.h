@@ -10,13 +10,12 @@
 #define _RequestProcessor_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 #include "IFAConfObject.h"
 #include "Context.h"
 
 //--- RequestProcessor ----------------------------------------------------------
 //! Policy object shared by all threads to handle a request message;
-class EXPORTDECL_WDBASE RequestProcessor : public RegisterableObject
+class RequestProcessor : public RegisterableObject
 {
 public:
 	//!named object shared by all requests

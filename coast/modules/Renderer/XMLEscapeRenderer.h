@@ -10,12 +10,11 @@
 #define _XMLEscapeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- XMLEscapeRenderer ----------------------------------------------------------
 //! Escapes &lt &gt &amp &quot &apos
-class EXPORTDECL_RENDERER XMLEscapeRenderer : public Renderer
+class XMLEscapeRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -29,7 +28,7 @@ public:
 
 //---- XMLEscapeRenderer ----------------------------------------------------------
 //! Unescapes &lt &gt &amp &quot &apos
-class EXPORTDECL_RENDERER XMLUnescapeRenderer : public Renderer
+class XMLUnescapeRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

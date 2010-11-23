@@ -9,7 +9,6 @@
 #ifndef _ImageRenderers_H
 #define _ImageRenderers_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- ImageLocationRenderer -------------------------------------------------------
@@ -27,7 +26,7 @@ ImageLocationRenderer renders the full filename of an image. The filename is dev
 -# the actual filename of the image
 both parts are concatenated by the renderer to form the full filename
 */
-class EXPORTDECL_RENDERER ImageLocationRenderer : public Renderer
+class ImageLocationRenderer : public Renderer
 {
 public:
 	ImageLocationRenderer(const char *name);
@@ -101,7 +100,7 @@ All HTML image options may be specified at slot /Options, e.g.:
 PS: may be we should add more useful support for some of these kinds of IMG tag attributes (e.g. lowsrc, alignment, etc.)
 PS: Language specific Images are needed. Learn from Applications and provide more versatile Image renderers (?)
 */
-class EXPORTDECL_RENDERER ImageRenderer : public ImageLocationRenderer
+class ImageRenderer : public ImageLocationRenderer
 {
 public:
 	ImageRenderer(const char *name);
@@ -131,7 +130,7 @@ In addition the text to be displayed below the image is taken from the 'Caption'
 If 'Options' are not supplied explicitly, a border is drawn around the image as a default.
 The caption-text will be used as ALT text for the image.
 */
-class EXPORTDECL_RENDERER FigureRenderer : public ImageRenderer
+class FigureRenderer : public ImageRenderer
 {
 public:
 	FigureRenderer(const char *name);

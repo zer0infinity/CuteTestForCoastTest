@@ -9,14 +9,13 @@
 #ifndef _ServiceDispatcher_h_
 #define _ServiceDispatcher_h_
 
-#include "config_wdbase.h"
 #include "Context.h"
 #include "WDModule.h"
 
 class ServiceHandler;
 
 //---- ServiceDispatchersModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE ServiceDispatchersModule : public WDModule
+class ServiceDispatchersModule : public WDModule
 {
 public:
 	ServiceDispatchersModule(const char *);
@@ -31,7 +30,7 @@ public:
 //!dispatches handling of the request to a service handler using context information
 //!standard implementation looks for "DefaultService" entry in Context and uses "WebAppService" if nothing is found<br>
 //!no rendering takes place for efficiency reason
-class EXPORTDECL_WDBASE ServiceDispatcher : public HierarchConfNamed
+class ServiceDispatcher : public HierarchConfNamed
 {
 public:
 	//!standard named object constructor
@@ -69,7 +68,7 @@ private:
 //!the uri prefix of the request is mapped to a service name using a map defined in the context with the tag <b>URIPrefix2ServiceMap</b><br>
 //!the service name can be a renderer specification<br>
 //!if nothing matches the <b>DefaultService</b> Entry is used
-class EXPORTDECL_WDBASE RendererDispatcher : public ServiceDispatcher
+class RendererDispatcher : public ServiceDispatcher
 {
 public:
 	RendererDispatcher(const char *RendererDispatcherName);

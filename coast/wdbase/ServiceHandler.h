@@ -9,12 +9,11 @@
 #ifndef _ServiceHandler_h_
 #define _ServiceHandler_h_
 
-#include "config_wdbase.h"
 #include "WDModule.h"
 #include "Context.h"
 
 //---- ServiceHandlersModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE ServiceHandlersModule : public WDModule
+class ServiceHandlersModule : public WDModule
 {
 public:
 	ServiceHandlersModule(const char *);
@@ -27,7 +26,7 @@ public:
 
 //---- ServiceHandler -----------------------------------------------------------
 //!handles requests of a certain kind by providing a service
-class EXPORTDECL_WDBASE ServiceHandler : public HierarchConfNamed
+class ServiceHandler : public HierarchConfNamed
 {
 public:
 	//!default named object constructor

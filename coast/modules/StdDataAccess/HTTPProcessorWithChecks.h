@@ -9,14 +9,13 @@
 #ifndef _HTTPProcessorWithChecks_H
 #define _HTTPProcessorWithChecks_H
 
-#include "config_stddataaccess.h"
 #include "HTTPProcessor.h"
 
 class Context;
 
 //--- HTTPProcessor ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
-class EXPORTDECL_STDDATAACCESS HTTPProcessorWithChecks : public HTTPProcessor
+class HTTPProcessorWithChecks : public HTTPProcessor
 {
 public:
 	HTTPProcessorWithChecks(const char *processorName) :

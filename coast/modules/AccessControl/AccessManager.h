@@ -10,7 +10,6 @@
 #define _AccessManager_H
 
 //---- WDModule include -------------------------------------------------
-#include "config_AccessControl.h"
 #include "WDModule.h"
 
 class AccessManager;
@@ -22,7 +21,7 @@ class Context;
 Installs configured access managers list from coastd config.
 Gives access to default access manager implementation.
 */
-class EXPORTDECL_ACCESSCONTROL AccessManagerModule : public WDModule
+class AccessManagerModule : public WDModule
 {
 public:
 	//--- constructors
@@ -42,7 +41,7 @@ protected:
 
 //---- AbstractAccessManager ----------------------------------------------------------
 //! Interface for all AccessManagers.
-class EXPORTDECL_ACCESSCONTROL AccessManager : public HierarchConfNamed
+class AccessManager : public HierarchConfNamed
 {
 public:
 	//--- constructors

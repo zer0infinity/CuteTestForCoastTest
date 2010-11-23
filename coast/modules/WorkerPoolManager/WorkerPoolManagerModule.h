@@ -12,7 +12,6 @@
 //---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 #include "ThreadPools.h"
-#include "config_workerpoolmanagermodule.h"
 class WorkerPoolManagerModulePoolManager;
 
 //---- WorkerPoolManagerModule ----------------------------------------------------------
@@ -34,7 +33,7 @@ class WorkerPoolManagerModulePoolManager;
 //		}
 //      ...
 //	}</PRE>
-class EXPORTDECL_WORKERPOOLMANAGERMODULE WorkerPoolManagerModule : public WDModule
+class WorkerPoolManagerModule : public WDModule
 {
 public:
 	//--- constructors

@@ -7,8 +7,7 @@
  */
 
 //--- standard modules used ----------------------------------------------------
-#include "config_perftesttest.h"
-
+ 
 //--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
@@ -23,15 +22,7 @@
 #include "NewRendererTest.h"
 #include "HTMLParserTest.h"
 
-#if defined(WIN32)
-#include "config_bases.h"
-void bases()
-{
-	RegisterBasesObjs();
-}
-#endif
-
-void EXPORTDECL_PERFTESTTEST setupRunner(TestRunner &runner)
+void setupRunner(TestRunner &runner)
 {
 	// Use this work suite to debug a failing TestCase
 	ADD_SUITE(runner, StressAppTest) ;

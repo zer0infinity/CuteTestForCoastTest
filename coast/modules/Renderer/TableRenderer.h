@@ -9,7 +9,6 @@
 #ifndef _TABLERENDERER_H
 #define _TABLERENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- TableRenderer -------------------------------------------------------------------
@@ -67,7 +66,7 @@ config from Query:
 \endcode
 \note Following things of the outer table are hardcoded: BORDER=1 ALIGN=CENTER CELLPADDING=2 BGCOLOR=\#BEBEBE
 */
-class EXPORTDECL_RENDERER TableRenderer : public Renderer
+class TableRenderer : public Renderer
 {
 public:
 	TableRenderer( const char *name );
@@ -91,7 +90,7 @@ private:
 }
 \endcode
 */
-class EXPORTDECL_RENDERER ItemRenderer : public Renderer
+class ItemRenderer : public Renderer
 {
 public:
 	ItemRenderer(const char *name);

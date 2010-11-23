@@ -10,13 +10,12 @@
 #define _LDAPErrorHandler_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_LDAPDA.h"
 #include "LDAPAPI.h"
 #include "Mapper.h"
 
 //---- LDAPErrorHandler ----------------------------------------------------------
 //! Handles LDAP Errors
-class EXPORTDECL_LDAPDA LDAPErrorHandler
+class LDAPErrorHandler
 {
 public:
 	enum eRetryState { eRetry, eIsInRetrySequence, eNoRetry };

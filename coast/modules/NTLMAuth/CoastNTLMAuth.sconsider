@@ -8,7 +8,6 @@ buildSettings = {
         'linkDependencies' : ['CoastSecurity', 'CoastWDBase', 'openssl'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['NTLMAUTH_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
             'includeSubdir'    : '',

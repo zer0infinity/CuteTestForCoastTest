@@ -9,7 +9,6 @@
 #ifndef _OPTIONSPRINTER_H
 #define _OPTIONSPRINTER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- OptionsPrinter -----------------------------------------------------------
@@ -33,7 +32,7 @@ It iterates over all slots in the config
 If the slot has a name  Slotname=Render(Value)  is rendered
 If the slot does not have a name  Render(Value)    is produced
 */
-class EXPORTDECL_RENDERER OptionsPrinter : public Renderer
+class OptionsPrinter : public Renderer
 {
 public:
 	//! use this for direct call of this renderer

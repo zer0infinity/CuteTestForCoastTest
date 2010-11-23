@@ -10,7 +10,6 @@
 #define _CompareValuesMapper_H
 
 //---- ResultMapper include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "Mapper.h"
 
 //---- CompareValuesMapper ----------------------------------------------------------
@@ -72,7 +71,7 @@ Results after DataAccess using this Mapper:
 	}
 }</pre>
 */
-class EXPORTDECL_DATAACCESS CompareValuesMapper : public ResultMapper
+class CompareValuesMapper : public ResultMapper
 {
 public:
 	//--- constructors

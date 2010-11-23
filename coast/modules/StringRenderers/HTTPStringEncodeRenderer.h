@@ -10,7 +10,6 @@
 #define _HTTPStringEncodeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- HTTPStringEncodeRenderer ----------------------------------------------------------
@@ -26,7 +25,7 @@
  * Mandatory\n
  * String value which gets URL encoded
  */
-class EXPORTDECL_STRINGRENDERERS HTTPStringEncodeRenderer : public Renderer
+class HTTPStringEncodeRenderer : public Renderer
 {
 	HTTPStringEncodeRenderer();
 public:

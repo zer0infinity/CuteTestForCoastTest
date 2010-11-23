@@ -9,7 +9,6 @@
 #ifndef _ConditionalRenderers_H
 #define _ConditionalRenderers_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 // ---- ConditionalRenderer ---------------------------------------------------------
@@ -27,7 +26,7 @@
 }
 \endcode
 */
-class EXPORTDECL_RENDERER ConditionalRenderer : public Renderer
+class ConditionalRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -64,7 +63,7 @@ protected:
 }
 \endcode
 */
-class EXPORTDECL_RENDERER SwitchRenderer : public Renderer
+class SwitchRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

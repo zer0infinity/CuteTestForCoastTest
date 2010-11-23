@@ -10,7 +10,6 @@
 #define _ListAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- ListAction ----------------------------------------------------------
@@ -33,7 +32,7 @@
 }
 \endcode
 */
-class EXPORTDECL_ACTIONS ListAction : public Action
+class ListAction : public Action
 {
 public:
 	//--- constructors

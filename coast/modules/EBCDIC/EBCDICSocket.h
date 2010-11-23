@@ -10,14 +10,13 @@
 #define _EBCDICSocket_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_ebcdic.h"
 #include "Socket.h"
 
 //--- EBCDICSocket ---
 //!Socket to an EBCDIC speeking peer
 //! Everything you read/write throu the stream of this Socket will be
 //! converted from/to EBCDIC, what you do to the fd will *NOT* be converted!
-class EXPORTDECL_EBCDIC EBCDICSocket : public Socket
+class EBCDICSocket : public Socket
 {
 	// opens a client side socket connection
 	// and closes it in destructor

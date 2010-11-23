@@ -18,7 +18,7 @@ typedef String (*funcPtr)( String );
 
 //---- HttpFlowController -----------------------------------------------------------
 
-class EXPORTDECL_PERFTEST HttpFlowController : public FlowController
+class HttpFlowController : public FlowController
 {
 public:
 	HttpFlowController(const char *HttpFlowControllerName);

@@ -10,7 +10,6 @@
 #define _ConditionalAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- ConditionalAction ----------------------------------------------------------
@@ -33,7 +32,7 @@
 }
  * @endcode
 */
-class EXPORTDECL_ACTIONS ConditionalAction : public Action
+class ConditionalAction : public Action
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

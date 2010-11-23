@@ -9,7 +9,6 @@
 #ifndef _TAGRENDERER_H
 #define _TAGRENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- TagRenderer -----------------------------------------------------------
@@ -30,7 +29,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER TagRenderer : public Renderer
+class TagRenderer : public Renderer
 {
 public:
 	TagRenderer(const char *name);

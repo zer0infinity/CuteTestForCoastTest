@@ -7,62 +7,24 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "config_compress.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "InitFinisManager.h"
 
-static void Init()
-{
-	InitFinisManager::IFMTrace(">> compress::Init\n");
-	InitFinisManager::IFMTrace("<< compress::Init\n");
-}
-
-static void Finis()
-{
-	InitFinisManager::IFMTrace(">> compress::Finis\n");
-	InitFinisManager::IFMTrace("<< compress::Finis\n");
-}
-
-//--- used modules
-#if defined(WIN32)
-#ifdef _DLL
-// DllMain() is the entry-point function for this DLL.
-BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
-					DWORD fdwReason,					// reason called
-					LPVOID lpvReserved)					// reserved
-{
-	switch (fdwReason) {
-
-			// The DLL is loading due to process
-			// initialization or a call to LoadLibrary.
-		case DLL_PROCESS_ATTACH:
-			Init();
-			break;
-
-			// The attached process creates a new thread.
-		case DLL_THREAD_ATTACH:
-			break;
-
-			// The thread of the attached process terminates.
-		case DLL_THREAD_DETACH:
-			break;
-
-			// The DLL unloading due to process termination or call to FreeLibrary
-		case DLL_PROCESS_DETACH:
-			Finis();
-			break;
-
-		default:
-			break;
+namespace {
+	void Init()
+	{
+		InitFinisManager::IFMTrace(">> compress::Init\n");
+		InitFinisManager::IFMTrace("<< compress::Init\n");
 	}
 
-	return true;
-	UNREFERENCED_PARAMETER(hinstDLL);
-	UNREFERENCED_PARAMETER(lpvReserved);
+	void Finis()
+	{
+		InitFinisManager::IFMTrace(">> compress::Finis\n");
+		InitFinisManager::IFMTrace("<< compress::Finis\n");
+	}
 }
-#endif	// _DLL
-#else
+
 extern "C" void __attribute__ ((constructor)) compress_init()
 {
 	Init();
@@ -71,4 +33,3 @@ extern "C" void __attribute__ ((destructor)) compress_fini()
 {
 	Finis();
 }
-#endif	// WIN32

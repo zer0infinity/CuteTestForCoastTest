@@ -10,12 +10,11 @@
 #define _ConnectorParams_H
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "Context.h"
 
 class ParameterMapper;
 
-class EXPORTDECL_STDDATAACCESS ConnectorParams
+class ConnectorParams
 {
 public:
 	ConnectorParams(Context &ctx, ParameterMapper *pMapper);

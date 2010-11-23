@@ -26,7 +26,7 @@ class StatGatherer;
 class ServerPoolsManagerInterface;
 
 //---- ServersModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE ServersModule : public WDModule
+class ServersModule : public WDModule
 {
 public:
 	ServersModule(const char *);
@@ -54,7 +54,7 @@ protected:
 //!the server initializes SystemLog, sets RootDir and Path and initializes the global modules using WDModule::Install(fgConfig)<p>
 //!handles service requests as a session based service handler<p>
 //!filters and verifies requests
-class EXPORTDECL_WDBASE Server : public Application
+class Server : public Application
 {
 public:
 	//!support for named object
@@ -222,7 +222,7 @@ class ServerThread;
 The MasterServer manages several servers as configured within ServerModules. Each server has its own thread of control. This allows having an own memory pool for the server instance to optimize for performance.
 The Server methods Init() and Terminate() will be called in DoStartedHook and DoTerminatedRunMethodHook respectively which allows usage of pool memory from within Init().
 */
-class EXPORTDECL_WDBASE MasterServer : public Server
+class MasterServer : public Server
 {
 public:
 	MasterServer(const char *name);
@@ -262,7 +262,7 @@ protected:
 
 //---- ServerThread ------------------------------------------------------------
 //!thread wrapper for a server started by the MasterServer
-class EXPORTDECL_WDBASE ServerThread: public Thread
+class ServerThread: public Thread
 {
 public:
 	ServerThread();

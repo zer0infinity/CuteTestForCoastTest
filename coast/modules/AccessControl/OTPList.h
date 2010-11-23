@@ -9,7 +9,6 @@
 #ifndef _OTPList_h_
 #define _OTPList_h_
 
-#include "config_AccessControl.h"
 #include "IFAConfObject.h"
 #include "WDModule.h"
 
@@ -17,7 +16,7 @@ class TokenDataAccessController;
 
 //---- OTPListsModule -----------------------------------------------------------
 //! Manages OneTimePasswordList-Singletons
-class EXPORTDECL_ACCESSCONTROL OTPListsModule : public WDModule
+class OTPListsModule : public WDModule
 {
 public:
 	OTPListsModule(const char *name) : WDModule(name) {};
@@ -29,7 +28,7 @@ public:
 
 //---- OTPList -----------------------------------------------------------
 //! \em Abstract OneTimePassword List. Do not instantiate directly.
-class EXPORTDECL_ACCESSCONTROL OTPList : public ConfNamedObject
+class OTPList : public ConfNamedObject
 {
 public:
 	OTPList(const char *name) : ConfNamedObject(name) {};

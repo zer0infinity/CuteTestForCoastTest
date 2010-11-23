@@ -20,7 +20,7 @@
 class WDModuleCaller;
 
 //:abstracting iteration over a module list calling some operation on each module
-class EXPORTDECL_WDBASE WDModuleIterator
+class WDModuleIterator
 {
 public:
 	WDModuleIterator(WDModuleCaller *wdmc, bool forward = true) : fCaller(wdmc), fForward(forward) { }
@@ -35,7 +35,7 @@ protected:
 	bool fForward;
 };
 
-class EXPORTDECL_WDBASE ConfiguredWDMIterator: public WDModuleIterator
+class ConfiguredWDMIterator: public WDModuleIterator
 {
 public:
 	ConfiguredWDMIterator(WDModuleCaller *wdmc, const ROAnything roaModules, bool forward = true);
@@ -50,7 +50,7 @@ protected:
 	long fIndex;
 };
 
-class EXPORTDECL_WDBASE RegistryWDMIterator: public WDModuleIterator
+class RegistryWDMIterator: public WDModuleIterator
 {
 public:
 	RegistryWDMIterator(WDModuleCaller *wdmc, bool forward = true);
@@ -66,7 +66,7 @@ protected:
 //---- WDModuleCaller ----------------------------------------------
 
 //:abstracting calling some operation on a module
-class EXPORTDECL_WDBASE WDModuleCaller
+class WDModuleCaller
 {
 public:
 	WDModuleCaller(const ROAnything roaConfig);
@@ -89,7 +89,7 @@ protected:
 	String fModuleName; // only set temporary
 };
 
-class EXPORTDECL_WDBASE WDInit : public WDModuleCaller
+class WDInit : public WDModuleCaller
 {
 public:
 	WDInit(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
@@ -101,7 +101,7 @@ public:
 	}
 };
 
-class EXPORTDECL_WDBASE WDTerminate : public WDModuleCaller
+class WDTerminate : public WDModuleCaller
 {
 public:
 	WDTerminate(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
@@ -115,7 +115,7 @@ protected:
 	virtual bool DoCallInner(WDModule *wdm);
 };
 
-class EXPORTDECL_WDBASE WDResetInstall : public WDModuleCaller
+class WDResetInstall : public WDModuleCaller
 {
 public:
 	WDResetInstall(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
@@ -127,7 +127,7 @@ public:
 	}
 };
 
-class EXPORTDECL_WDBASE WDResetTerminate : public WDTerminate
+class WDResetTerminate : public WDTerminate
 {
 public:
 	WDResetTerminate(const ROAnything roaConfig) : WDTerminate(roaConfig) { }

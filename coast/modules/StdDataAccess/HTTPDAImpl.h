@@ -10,14 +10,13 @@
 #define _HTTPDAImpl_H
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "DataAccessImpl.h"
 
 class ConnectorParams;
 class Connector;
 
 //! DataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any
-class EXPORTDECL_STDDATAACCESS HTTPDAImpl: public DataAccessImpl
+class HTTPDAImpl: public DataAccessImpl
 {
 public:
 	HTTPDAImpl(const char *name);

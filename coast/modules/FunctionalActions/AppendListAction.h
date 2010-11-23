@@ -10,7 +10,6 @@
 #define _AppendListAction_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "CopyActions.h"
 
 class Context;
@@ -34,7 +33,7 @@ class Context;
 
 The AppendListAction loads its configuration from the context using the actions's name.
 */
-class EXPORTDECL_FUNCTIONALACTIONS AppendListAction : public CopyAction
+class AppendListAction : public CopyAction
 {
 public:
 	//--- constructors

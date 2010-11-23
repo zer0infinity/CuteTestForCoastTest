@@ -10,7 +10,6 @@
 #define _BasicAuthenticationRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_security.h"
 #include "Renderer.h"
 
 //---- BasicAuthenticationRenderer ----------------------------------------------------------
@@ -26,7 +25,7 @@
 }
 \endcode
 */
-class EXPORTDECL_SECURITY BasicAuthenticationRenderer : public Renderer
+class BasicAuthenticationRenderer : public Renderer
 {
 public:
 	//--- constructors

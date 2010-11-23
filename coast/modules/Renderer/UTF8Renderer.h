@@ -10,7 +10,6 @@
 #define _UTF8Renderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- UTF8Renderer ----------------------------------------------------------
@@ -26,7 +25,7 @@
 }
 </PRE>
  */
-class EXPORTDECL_RENDERER UTF8Renderer : public Renderer
+class UTF8Renderer : public Renderer
 {
 public:
 	//--- constructors

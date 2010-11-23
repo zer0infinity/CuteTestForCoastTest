@@ -10,7 +10,6 @@
 #define _TransitionDispatchAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- TransitionDispatchAction ----------------------------------------------------------
@@ -38,7 +37,7 @@
 }
 @endcode
 */
-class EXPORTDECL_ACTIONS TransitionDispatchAction : public Action
+class TransitionDispatchAction : public Action
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

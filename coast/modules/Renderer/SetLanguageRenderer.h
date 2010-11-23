@@ -10,7 +10,6 @@
 #define _SetLanguageRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- SetLanguageRenderer ----------------------------------------------------------
@@ -42,7 +41,7 @@ anything respresenting string (temporary!).
 }
 \endcode
 */
-class EXPORTDECL_RENDERER SetLanguageRenderer : public Renderer
+class SetLanguageRenderer : public Renderer
 {
 public:
 	//--- constructors

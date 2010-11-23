@@ -10,7 +10,7 @@
 #include "Registry.h"
 
 //---- RegistryInitFinis -----------------------------------------------------------------------
-class EXPORTDECL_WDBASE RegistryInitFinis : public InitFinisManagerWDBase
+class RegistryInitFinis : public InitFinisManagerWDBase
 {
 public:
 	RegistryInitFinis(unsigned int uiPriority)

@@ -9,7 +9,6 @@
 #ifndef _STRINGCOMPARERENDERER_H
 #define _STRINGCOMPARERENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- StringCompareRenderer -----------------------------------------------------------
@@ -27,7 +26,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER StringCompareRenderer : public Renderer
+class StringCompareRenderer : public Renderer
 {
 public:
 	StringCompareRenderer(const char *name);

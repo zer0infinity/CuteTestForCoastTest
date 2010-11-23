@@ -10,7 +10,6 @@
 #define _DirFileListAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 //---- DirFileListAction ----------------------------------------------------------
@@ -28,7 +27,7 @@
 \endcode
 
 */
-class EXPORTDECL_FUNCTIONALACTIONS DirFileListAction : public Action
+class DirFileListAction : public Action
 {
 public:
 	//--- constructors

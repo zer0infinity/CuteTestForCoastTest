@@ -9,11 +9,10 @@
 #ifndef _blowfish_h_
 #define _blowfish_h_
 
-#include "config_security.h"
 #include "SecurityModule.h"
 
 //---- BlowfishScrambler -----------------------------------------------------------
-class EXPORTDECL_SECURITY BlowfishScrambler :  public Scrambler
+class BlowfishScrambler :  public Scrambler
 {
 public:
 	BlowfishScrambler(const char *name);
@@ -71,7 +70,7 @@ private:
 
 //! do blowfish string encryption in CBC mode with initialization vector of 0
 //! block padding is done in front to increase randomness
-class EXPORTDECL_SECURITY BlowfishCBCScrambler : public BlowfishScrambler
+class BlowfishCBCScrambler : public BlowfishScrambler
 {
 public:
 	BlowfishCBCScrambler(const char *name): BlowfishScrambler(name), fIvec0(0), fIvec1(0) {}

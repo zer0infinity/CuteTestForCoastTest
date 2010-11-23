@@ -10,14 +10,13 @@
 #define _PeriodicAction_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 #include "Threads.h"
 
 //---- PeriodicAction ------------------------------------------------------------------
 //!performs periodic execution of action associated with string fAction
 //! this thread wakes up periodically and tries to cleanup sessions that have
 //! timed out
-class EXPORTDECL_WDBASE PeriodicAction : public Thread
+class PeriodicAction : public Thread
 {
 public:
 	//!construct thread with action which is executed periodically after waitTime seconds

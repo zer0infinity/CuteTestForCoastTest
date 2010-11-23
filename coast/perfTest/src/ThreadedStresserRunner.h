@@ -24,7 +24,7 @@
 //!	}</PRE>
 //! This configuration defines that Nr1 threads are run with StresserName1,
 //! Nr2 threads with StresserName2 and so on.
-class EXPORTDECL_PERFTEST ThreadedStresserRunner : public Stresser
+class ThreadedStresserRunner : public Stresser
 {
 public:
 	//--- constructors

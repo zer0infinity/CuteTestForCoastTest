@@ -53,14 +53,6 @@
 #include "ThreadedTimeStampTest.h"
 #include "ConfiguredLookupAdapterTest.h"
 
-#if defined(WIN32)
-#include "config_bases.h"
-void bases()
-{
-	RegisterBasesObjs();
-}
-#endif
-
 void setupRunner(TestRunner &runner)
 {
 	ADD_SUITE(runner, ThreadedTimeStampTest);

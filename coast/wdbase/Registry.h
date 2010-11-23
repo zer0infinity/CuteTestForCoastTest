@@ -9,7 +9,6 @@
 #ifndef _REGISTRY_H
 #define _REGISTRY_H
 
-#include "config_wdbase.h"
 //PS make Registry an IFAObject --> NotCloned to have clean handling of Anything
 #include "IFAConfObject.h"
 #include "Policy.h"
@@ -20,7 +19,7 @@
 //!After installation they are available by name. The <i>"type"</i> of the objects is defined by the registry name;<br>
 //!installed objects should be "subtypes" of this type (instances of this class or a subclass).<br>
 //!the objects are removed from the registry by a termination policy.
-class EXPORTDECL_WDBASE Registry : public NotCloned
+class Registry : public NotCloned
 {
 	friend class RegistryIterator;
 	friend class RegistryInitFinis;
@@ -110,7 +109,7 @@ private:
 //! data structur, nor threadsafe
 //! if you want to delete elements iterate backwards
 //! if you expect concurrent accesses, use Mutexes
-class EXPORTDECL_WDBASE RegistryIterator
+class RegistryIterator
 {
 public:
 	//!constructor parametrizing the iterator with the registry and the direction of the iteration

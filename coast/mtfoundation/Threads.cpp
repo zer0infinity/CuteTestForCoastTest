@@ -57,7 +57,7 @@ AllocatorUnref::~AllocatorUnref()
 
 //:subclasses may be defined to perform cleanup in thread specific storage
 // while thread is still alive. CleanupHandlers are supposed to be singletons..
-class EXPORTDECL_MTFOUNDATION MutexCountTableCleaner : public CleanupHandler
+class MutexCountTableCleaner : public CleanupHandler
 {
 public:
 	//:Constructor
@@ -80,7 +80,7 @@ long Thread::fgNumOfThreads = 0;
 //:guard of thread count
 SimpleMutex *Thread::fgpNumOfThreadsMutex = NULL;
 
-class EXPORTDECL_MTFOUNDATION ThreadInitializer : public InitFinisManagerMTFoundation
+class ThreadInitializer : public InitFinisManagerMTFoundation
 {
 public:
 	ThreadInitializer(unsigned int uiPriority)
@@ -895,7 +895,7 @@ long Mutex::fgMutexId = 0;
 SimpleMutex *Mutex::fgpMutexIdMutex = NULL;
 THREADKEY Mutex::fgCountTableKey = 0;	// WIN32 defined it 0xFFFFFFFF !!
 
-class EXPORTDECL_MTFOUNDATION MutexInitializer : public InitFinisManagerMTFoundation
+class MutexInitializer : public InitFinisManagerMTFoundation
 {
 public:
 	MutexInitializer(unsigned int uiPriority)

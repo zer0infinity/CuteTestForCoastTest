@@ -9,7 +9,6 @@ buildSettings = {
         'linkDependencies' : ['CoastAppLog', 'CoastSSL', 'CoastHTTP', 'CoastAccessControl', 'CoastRegex'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['STDDATAACCESS_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

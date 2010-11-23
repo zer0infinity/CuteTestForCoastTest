@@ -9,7 +9,6 @@
 #ifndef ORACLESTATEMENT_H_
 #define ORACLESTATEMENT_H_
 
-#include "config_coastoracle.h"
 #include "OracleConnection.h"
 #include "IFAObject.h"
 #include "AllocatorNewDelete.h"
@@ -55,7 +54,7 @@ class OracleResultset;
  * 		using getValue() or using getCursor() to process the results of a cursor type parameter\n
  * 		Please use OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
-class EXPORTDECL_COASTORACLE OracleStatement: public IFAObject
+class OracleStatement: public IFAObject
 {
 public:
 	//! Tracking internal state of statement processing

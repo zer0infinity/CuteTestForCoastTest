@@ -10,7 +10,6 @@
 #define _MockAccessManager_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_AccessControl.h"
 #include "AccessManager.h"
 
 //---- MockAccessManager ----------------------------------------------------------
@@ -55,7 +54,7 @@ For the strong authentication, count and seed are not relevant, the
 code is simply looked up in a list. User/password pairs are also looked
 up from a list (see examples above).
 */
-class EXPORTDECL_ACCESSCONTROL MockAccessManager : public AccessManager
+class MockAccessManager : public AccessManager
 {
 public:
 	//--- constructors

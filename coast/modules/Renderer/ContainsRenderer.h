@@ -10,7 +10,6 @@
 #define _ContainsRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- ContainsRenderer ----------------------------------------------------------
@@ -27,7 +26,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER ContainsRenderer : public Renderer
+class ContainsRenderer : public Renderer
 {
 public:
 	//--- constructors

@@ -11,11 +11,10 @@
 
 #define DEF_UNKNOWN "No-domain-provided"
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "DataAccessImpl.h"
 
 //! DataAccess for
-class EXPORTDECL_STDDATAACCESS MailDAImpl: public DataAccessImpl {
+class MailDAImpl: public DataAccessImpl {
 public:
 	MailDAImpl(const char *name);
 	~MailDAImpl();

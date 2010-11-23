@@ -9,13 +9,12 @@
 #ifndef _ServerThreadPoolsManager_h_
 #define _ServerThreadPoolsManager_h_
 
-#include "config_wdbase.h"
 #include "ServerPoolsManagerInterface.h"
 
 class RequestThreadsManager;
 class ListenerPool;
 
-class EXPORTDECL_WDBASE ServerThreadPoolsManager: public ServerPoolsManagerInterface
+class ServerThreadPoolsManager: public ServerPoolsManagerInterface
 {
 public:
 	ServerThreadPoolsManager(const char *ServerThreadPoolsManagerName);

@@ -9,7 +9,6 @@
 #ifndef _AccessControllersModule_H
 #define _AccessControllersModule_H
 
-#include "config_AccessControl.h"
 #include "WDModule.h"
 
 //---- AccessControllersModule -----------------------------------------------------------
@@ -48,7 +47,7 @@ e.g.
 	}
 
 }</PRE>*/
-class EXPORTDECL_ACCESSCONTROL AccessControllersModule : public WDModule
+class AccessControllersModule : public WDModule
 {
 public:
 	AccessControllersModule(const char *);

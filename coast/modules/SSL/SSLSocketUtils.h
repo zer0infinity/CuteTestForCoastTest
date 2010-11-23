@@ -12,14 +12,13 @@
 //---- baseclass include -------------------------------------------------
 
 //---- framework classes -------------------------------------------------
-#include "config_ssl.h"
 #include "SSLAPI.h"
 #include "Dbg.h"
 #include "Anything.h"
 
 //---- SSLSocketUtils ----------------------------------------------------------
 //! Helper methods for X509 certificates
-class EXPORTDECL_SSL SSLSocketUtils
+class SSLSocketUtils
 {
 public:
 	//--- constructors

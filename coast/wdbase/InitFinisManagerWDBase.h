@@ -10,7 +10,6 @@
 #define _InitFinisManagerWDBase_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 #include "InitFinisManager.h"
 
 //---- InitFinisManagerWDBase ----------------------------------------------------------
@@ -23,7 +22,7 @@ The advantage of not doing initialization/finalization in ctor/dtor lies within 
 
 Sample code how to implement a specific Init/Finis object. The code should be placed where actually needed - inside an implementation file - to keep complexity at a minimum
 <pre>
-class EXPORTDECL_WDBASE SomeInitializer : public InitFinisManagerWDBase
+class SomeInitializer : public InitFinisManagerWDBase
 {
 public:
 	SomeInitializer(unsigned int uiPriority)
@@ -47,7 +46,7 @@ public:
 static SomeInitializer *psgSomeInitializer = new SomeInitializer(0);
 </pre>
 */
-class EXPORTDECL_WDBASE InitFinisManagerWDBase : public InitFinisManager
+class InitFinisManagerWDBase : public InitFinisManager
 {
 public:
 	/*! Base constructor, pass a priority number greater or equal 0 to control Init/Finis sequence

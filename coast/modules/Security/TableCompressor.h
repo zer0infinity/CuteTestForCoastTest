@@ -9,14 +9,13 @@
 #ifndef _TableCompressor_h_
 #define _TableCompressor_h_
 
-#include "config_security.h"
 #include "SecurityModule.h"
 
 //---- TableCompressor -----------------------------------------------------------
 class TableCompressorTest;
 
 //!compressor class that converts input anythings into streamed out output anythings and replaces keys and values table driven
-class EXPORTDECL_SECURITY TableCompressor :  public Compressor
+class TableCompressor :  public Compressor
 {
 public:
 	TableCompressor(const char *name);

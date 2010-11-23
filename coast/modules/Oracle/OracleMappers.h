@@ -10,7 +10,6 @@
 #define _OracleMappers_H
 
 //---- ParameterMapper include -------------------------------------------------
-#include "config_coastoracle.h"
 #include "Mapper.h"
 
 //---- OracleParameterMapper ----------------------------------------------------------
@@ -43,7 +42,7 @@
  * IN or INOUT parameter name and its value. The name must match with the parameter name of the declared stored
  * procedure/function and must be written in all upper case letters!
 */
-class EXPORTDECL_COASTORACLE OracleParameterMapper : public ParameterMapper
+class OracleParameterMapper : public ParameterMapper
 {
 public:
 	/*! Default registering ctor using a unique name to register mapper with
@@ -102,7 +101,7 @@ private:
  * @par \c PARAMNAME \c .key
  * Optional, specialized MapperSpec for prefixed key
 */
-class EXPORTDECL_COASTORACLE OracleResultMapper : public ResultMapper
+class OracleResultMapper : public ResultMapper
 {
 public:
 	/*! Default registering ctor using a unique name to register mapper with

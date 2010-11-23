@@ -10,7 +10,6 @@
 #define _LoggingAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_applog.h"
 #include "Action.h"
 #include "AppLog.h"
 
@@ -26,7 +25,7 @@
 }
 \endcode
 */
-class EXPORTDECL_APPLOG LoggingAction : public Action
+class LoggingAction : public Action
 {
 public:
 	//--- constructors
@@ -53,7 +52,7 @@ public:
 }
 \endcode
 */
-class EXPORTDECL_APPLOG TimeLoggingAction : public Action
+class TimeLoggingAction : public Action
 {
 public:
 	//--- constructors

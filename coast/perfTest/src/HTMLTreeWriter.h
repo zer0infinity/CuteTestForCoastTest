@@ -9,13 +9,12 @@
 #ifndef _HTMLTreeWriter_H
 #define _HTMLTreeWriter_H
 
-#include "config_perftest.h"
 #include "HTMLParser.h"
 
 class String;
 class Anything;
 
-class EXPORTDECL_PERFTEST HTMLTreeWriter : public AAT_HTMLWriter
+class HTMLTreeWriter : public AAT_HTMLWriter
 {
 public:
 	HTMLTreeWriter();

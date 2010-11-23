@@ -10,7 +10,6 @@
 #define _GetEnvRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "LookupRenderers.h"
 
 //---- GetEnvRenderer ----------------------------------------------------------
@@ -26,7 +25,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class EXPORTDECL_RENDERER GetEnvRenderer : public LookupRenderer
+class GetEnvRenderer : public LookupRenderer
 {
 public:
 	//--- constructors

@@ -12,7 +12,7 @@
 #include "SecurityModule.h"
 
 //---- URLEncoder -----------------------------------------------------------
-class EXPORTDECL_WDBASE URLEncoder : public Encoder
+class URLEncoder : public Encoder
 {
 public:
 	URLEncoder(const char *name);

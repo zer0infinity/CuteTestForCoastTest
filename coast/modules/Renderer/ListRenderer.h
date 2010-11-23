@@ -9,7 +9,6 @@
 #ifndef _LISTRENDERER_H
 #define _LISTRENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- ListRenderer -----------------------------------------------------------
@@ -59,7 +58,7 @@ Process Overview:
  -# EntryFooter is rendered depending on /EFSuppressLast,/EFStartingEntry and /EFEveryXEntries
 -# If present the ListFooter is rendererd.
 */
-class EXPORTDECL_RENDERER ListRenderer : public Renderer
+class ListRenderer : public Renderer
 {
 public:
 	ListRenderer(const char *name);

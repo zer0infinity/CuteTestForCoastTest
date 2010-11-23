@@ -10,7 +10,6 @@
 #define _TestContextFlagRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- TestContextFlagRenderer ----------------------------------------------------------
@@ -33,7 +32,7 @@ or also
 /ConditionalRenderer { /ContextCondition <FlagName> /True <IsSet> /False <NotSet> }
 \endcode
 */
-class EXPORTDECL_RENDERER TestContextFlagRenderer : public Renderer
+class TestContextFlagRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

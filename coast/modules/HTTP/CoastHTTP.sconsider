@@ -9,7 +9,6 @@ buildSettings = {
         'linkDependencies' : ['CoastSecurity'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['HTTP_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

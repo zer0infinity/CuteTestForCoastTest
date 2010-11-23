@@ -9,7 +9,6 @@ buildSettings = {
         'linkDependencies' : ['CoastWDBase'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['SECURITY_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

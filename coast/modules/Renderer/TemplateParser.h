@@ -9,7 +9,6 @@
 #ifndef _TemplateParser_H
 #define _TemplateParser_H
 
-#include "config_renderer.h"
 #include "Anything.h"
 
 //---- TemplateParser ----------------------------------------------------------
@@ -30,7 +29,7 @@
 }
 \endcode
 */
-class EXPORTDECL_RENDERER TemplateParser
+class TemplateParser
 {
 public:
 	TemplateParser() {}
@@ -82,7 +81,7 @@ protected:
 
 //---- FormTemplateParser ----------------------------------------------------------
 //! Used to parse Form-specific HTML-Template content
-class EXPORTDECL_RENDERER FormTemplateParser: public TemplateParser
+class FormTemplateParser: public TemplateParser
 {
 protected:
 	bool IsSpecialTag(String &tagName, Anything &tagAttributes);
@@ -91,7 +90,7 @@ protected:
 
 //---- ScriptTemplateParser ----------------------------------------------------------
 //! Used to parse script-specific HTML-Template content
-class EXPORTDECL_RENDERER ScriptTemplateParser: public TemplateParser
+class ScriptTemplateParser: public TemplateParser
 {
 protected:
 	void DoParse();

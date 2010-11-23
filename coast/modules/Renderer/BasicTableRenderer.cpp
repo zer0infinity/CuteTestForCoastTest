@@ -20,7 +20,7 @@
 // utility class used by BasicTableRenderer to cache the renderers/configuration data
 // used for the creation of table rows
 
-class EXPORTDECL_RENDERER RowAccessor
+class RowAccessor
 {
 	// CAUTION: objects of this class are used as a better struct..
 	// they are not initialized properly (using a constructor),

@@ -13,7 +13,6 @@
 #include "ObjectList.h"
 
 //---- standard-module include ----------------------------------------------
-#include "config_mtfoundation.h"
 #include "SystemLog.h"
 #include "Threads.h"
 

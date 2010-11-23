@@ -9,7 +9,6 @@
 #ifndef _MockOTPList_h_
 #define _MockOTPList_h_
 
-#include "config_AccessControl.h"
 #include "OTPList.h"
 
 class TokenDataAccessController;
@@ -53,7 +52,7 @@ Keeps one time password lists in its config and updates count in memory only.
 If no config is defined (i.e. no corresponding any file exists) then the
 Mock implementation will always return true, no matter what the inputs are.
 */
-class EXPORTDECL_ACCESSCONTROL MockOTPList : public OTPList
+class MockOTPList : public OTPList
 {
 public:
 	MockOTPList(const char *name) : OTPList(name) {};

@@ -10,12 +10,11 @@
 #define _HTMLEscapeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- HTMLEscapeRenderer ----------------------------------------------------------
 //! Render config an HTML-escaped result string
-class EXPORTDECL_RENDERER HTMLEscapeRenderer : public Renderer
+class HTMLEscapeRenderer : public Renderer
 {
 public:
 	//--- constructors

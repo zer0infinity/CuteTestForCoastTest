@@ -44,7 +44,7 @@ typedef unsigned int uint32;
 typedef unsigned long uint32;
 #endif
 
-class EXPORTDECL_SECURITY MD5Context
+class MD5Context
 {
 public:
 	MD5Context();

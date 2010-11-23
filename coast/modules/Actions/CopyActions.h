@@ -10,7 +10,6 @@
 #define _CopyActions_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- CopyAction ----------------------------------------------------------
@@ -38,7 +37,7 @@
 //! The copying  works as follows:<BR>
 //! With each the slotname of each entry a lookup in the source is performed.
 //! The entry's value defines the slotname under which the lookuped result is put into the Destination's slot defined by Destination.
-class EXPORTDECL_ACTIONS CopyAction : public Action
+class CopyAction : public Action
 {
 public:
 	//--- constructors
@@ -96,7 +95,7 @@ protected:
 //!		}
 //!	}
 //! </PRE>
-class EXPORTDECL_ACTIONS CopyContextAction : public CopyAction
+class CopyContextAction : public CopyAction
 {
 public:
 	//--- constructors
@@ -142,7 +141,7 @@ protected:
 //!		}
 //!	}
 //! </PRE>
-class EXPORTDECL_ACTIONS CopyQueryAction : public CopyContextAction
+class CopyQueryAction : public CopyContextAction
 {
 public:
 	//--- constructors
@@ -190,7 +189,7 @@ protected:
 //!		}
 //! }
 //! </PRE>
-class EXPORTDECL_ACTIONS CopyQueryIfNotEmptyAction : public CopyQueryAction
+class CopyQueryIfNotEmptyAction : public CopyQueryAction
 {
 public:
 	//--- constructors

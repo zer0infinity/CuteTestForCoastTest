@@ -9,7 +9,6 @@
 #ifndef _WebAppService_H
 #define _WebAppService_H
 
-#include "config_wdbase.h"
 
 //---- baseclass include -------------------------------------------------
 #include "ServiceHandler.h"
@@ -19,7 +18,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class EXPORTDECL_WDBASE WebAppService : public ServiceHandler
+class WebAppService : public ServiceHandler
 {
 	friend class WebAppServiceTest;
 public:

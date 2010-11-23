@@ -10,12 +10,11 @@
 #define _StressProcessor_H
 
 //---- RequestProcessor include -------------------------------------------------
-#include "config_perftest.h"
 #include "RequestProcessor.h"
 
 //---- StressProcessor ----------------------------------------------------------
 //!Expects a Stresser name in the requests, runs it and replies the result
-class EXPORTDECL_PERFTEST StressProcessor : public RequestProcessor
+class StressProcessor : public RequestProcessor
 {
 public:
 	//--- constructors

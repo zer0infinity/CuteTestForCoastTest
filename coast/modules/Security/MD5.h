@@ -9,11 +9,10 @@
 #ifndef _md5_h_
 #define _md5_h_
 
-#include "config_security.h"
 #include "SecurityModule.h"
 
 //---- MD5Signer -----------------------------------------------------------
-class EXPORTDECL_SECURITY MD5Signer :  public Signer
+class MD5Signer :  public Signer
 {
 public:
 	MD5Signer(const char *name);

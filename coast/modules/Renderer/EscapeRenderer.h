@@ -10,7 +10,6 @@
 #define _EscapeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- EscapeRenderer ----------------------------------------------------------
@@ -35,7 +34,7 @@
 
 Renders : "You can\'t escape this String\'s content"
  */
-class EXPORTDECL_RENDERER EscapeRenderer : public Renderer
+class EscapeRenderer : public Renderer
 {
 public:
 	//--- constructors

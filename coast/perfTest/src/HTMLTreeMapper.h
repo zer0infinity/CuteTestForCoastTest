@@ -9,12 +9,11 @@
 #ifndef _HTMLTreeMapper_h_
 #define _HTMLTreeMapper_h_
 
-#include "config_perftest.h"
 #include "Mapper.h"
 
 //---- HTMLTreeMapper -----------------------------------------------------------
 
-class EXPORTDECL_PERFTEST HTMLTreeMapper : public ResultMapper
+class HTMLTreeMapper : public ResultMapper
 {
 public:
 	HTMLTreeMapper(const char *name) : ResultMapper(name) {};
@@ -43,7 +42,7 @@ private:
 };
 //---- HTMLTreeAndSortedTagsMapper -----------------------------------------------------------
 
-class EXPORTDECL_PERFTEST HTMLTreeAndSortedTagsMapper : public ResultMapper
+class HTMLTreeAndSortedTagsMapper : public ResultMapper
 {
 public:
 	HTMLTreeAndSortedTagsMapper(const char *name) : ResultMapper(name) {};

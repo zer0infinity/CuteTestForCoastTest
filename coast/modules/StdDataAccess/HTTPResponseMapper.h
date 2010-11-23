@@ -10,12 +10,11 @@
 #define _HTTPResponseMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 //---- HTTPResponseMapper ----------------------------------------------------------
 //! Parses a http response from a stream and puts it under Mapper.HTTPResponse
-class EXPORTDECL_STDDATAACCESS HTTPResponseMapper : public ResultMapper
+class HTTPResponseMapper : public ResultMapper
 {
 public:
 	//--- constructors

@@ -10,7 +10,6 @@
 #define _HTTPMimeHeaderMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 //---- HTTPMimeHeaderMapper ----------------------------------------------------------
@@ -22,7 +21,7 @@
 //! "Mozilla" and a new header /fd-info with value "blah". If headers are added that already
 //! exists, the old ones are overwritten (thus the above suppressing of /server is not really
 //! necessary).
-class EXPORTDECL_STDDATAACCESS HTTPMimeHeaderMapper : public EagerResultMapper
+class HTTPMimeHeaderMapper : public EagerResultMapper
 {
 public:
 	//--- constructors

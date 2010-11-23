@@ -37,7 +37,7 @@
 }
 </PRE>
 */
-class EXPORTDECL_DATAACCESS XMLMapper : public ResultMapper
+class XMLMapper : public ResultMapper
 {
 public:
 	//--- constructors

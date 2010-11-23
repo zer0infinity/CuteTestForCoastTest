@@ -10,7 +10,6 @@
 #define _AppBooter_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 
 //---- forward declaration -----------------------------------------------
 #include "Anything.h"
@@ -21,7 +20,7 @@ class Application;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class EXPORTDECL_WDBASE AppBooter
+class AppBooter
 {
 	// load the global config file with the information
 	// set in the environment variable COAST_ROOT

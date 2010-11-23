@@ -10,7 +10,6 @@
 #define _ContainsStringRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- ContainsStringRenderer ----------------------------------------------------------
@@ -67,7 +66,7 @@ Renders : "8"
 
 Renders : "Oops!"
 */
-class EXPORTDECL_STRINGRENDERERS ContainsStringRenderer : public Renderer
+class ContainsStringRenderer : public Renderer
 {
 	ContainsStringRenderer();
 public:

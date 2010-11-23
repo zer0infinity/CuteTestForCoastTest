@@ -10,7 +10,6 @@
 #define _ComparingRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- ComparingRenderer ----------------------------------------------------------
@@ -26,7 +25,7 @@
 
 The rules that define which slot matches are coded in the method FindSlot()
 */
-class EXPORTDECL_RENDERER ComparingRenderer : public Renderer
+class ComparingRenderer : public Renderer
 {
 public:
 	//--- constructors

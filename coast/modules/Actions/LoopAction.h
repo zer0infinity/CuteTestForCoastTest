@@ -10,7 +10,6 @@
 #define _LoopAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- LoopAction ----------------------------------------------------------
@@ -24,7 +23,7 @@
 	/BreakOutOnFailure	Long			# optional, [0|1], default 0, if set to 1, break out of loop if executed action returns false
 }</pre>
 Storing the index in tmpStore at value of IndexSlot. If Start is greater than End, the loop counts downward */
-class EXPORTDECL_ACTIONS LoopAction : public Action
+class LoopAction : public Action
 {
 public:
 	//--- constructors

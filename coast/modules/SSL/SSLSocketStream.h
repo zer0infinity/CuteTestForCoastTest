@@ -10,14 +10,13 @@
 #define _SSLSocketStream_H
 
 //--- module used in the interface
-#include "config_ssl.h"
 #include "SocketStream.h"
 
 typedef struct ssl_st SSL;
 
 class SSLSocket;
 
-class EXPORTDECL_SSL SSLSocketStreamBuf : public SocketStreamBuf
+class SSLSocketStreamBuf : public SocketStreamBuf
 {
 public:
 	SSLSocketStreamBuf(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -40,7 +39,7 @@ private:
 // adapts ios to a SSL Socket Stream buffer
 //
 
-class EXPORTDECL_SSL iosITOSSLSocket : virtual public std::ios
+class iosITOSSLSocket : virtual public std::ios
 {
 public:
 	iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -66,7 +65,7 @@ private:
 	// (see comment in iostream.h)
 }; // iosIFASocket
 
-class  EXPORTDECL_SSL ISSLSocketStream : public iosITOSSLSocket, public std::istream
+class ISSLSocketStream : public iosITOSSLSocket, public std::istream
 {
 public:
 	ISSLSocketStream(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000)
@@ -77,7 +76,7 @@ public:
 	~ISSLSocketStream() { }
 }; // iSSLSocketStream
 
-class  EXPORTDECL_SSL OSSLSocketStream : public iosITOSSLSocket, public std::ostream
+class OSSLSocketStream : public iosITOSSLSocket, public std::ostream
 {
 public:
 
@@ -93,7 +92,7 @@ private:
 
 }; // OSSLSocketStream
 
-class  EXPORTDECL_SSL SSLSocketStream : public iosITOSSLSocket, public std::iostream
+class SSLSocketStream : public iosITOSSLSocket, public std::iostream
 {
 public:
 	SSLSocketStream(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000)

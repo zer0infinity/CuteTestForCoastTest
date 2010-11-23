@@ -9,13 +9,12 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
 
-#include "config_wdbase.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "WDModule.h"
 
 //---- RenderersModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE RenderersModule : public WDModule
+class RenderersModule : public WDModule
 {
 public:
 	RenderersModule(const char *name);
@@ -29,7 +28,7 @@ public:
 //---- Renderer -----------------------------------------------------------
 //!rendering interpreter for configurable generation of output
 //!Renderer implements a render script interpreter to generate (mostly but necessarily html) output in a flexible, configurable way
-class EXPORTDECL_WDBASE Renderer : public NotCloned
+class Renderer : public NotCloned
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

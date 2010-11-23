@@ -9,7 +9,6 @@
 #ifndef _TIMERS_H
 #define _TIMERS_H
 
-#include "config_wdbase.h"
 #include "AllocatorNewDelete.h"
 #include "DiffTimer.h"
 #include "Context.h"
@@ -34,7 +33,7 @@ Currently, this call is already present in RequestProcessor to gather Request ti
 
 But unless you declare the TimeLoggingModule, and configure it to DoTiming and DoLogging nothing will be done - except allocation and destruction of the message String.
 */
-class EXPORTDECL_WDBASE TimeLoggingModule : public WDModule
+class TimeLoggingModule : public WDModule
 {
 public:
 	//--- constructors
@@ -59,7 +58,7 @@ public:
 
 //---- TimeLogger --------------------------------------------------------------------------
 //!helper class to log timing information
-class EXPORTDECL_WDBASE TimeLogger : public Coast::AllocatorNewDelete
+class TimeLogger : public Coast::AllocatorNewDelete
 {
 	friend class TimeLoggerEntry;
 public:
@@ -109,7 +108,7 @@ private:
 This level of abstraction is needed to reduce the overhead of always instantiating a DiffTimer object as done in TimeLogger.
 It is also important to have because there is no flexible other way to have time logging enabled/disabled on demand without recompiling everytime.
 */
-class EXPORTDECL_WDBASE TimeLoggerEntry
+class TimeLoggerEntry
 {
 public:
 	typedef std::auto_ptr<TimeLogger> TimeLoggerPtr;

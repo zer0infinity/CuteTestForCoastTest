@@ -9,7 +9,6 @@
 #ifndef _StresserThread_h_
 #define _StresserThread_h_
 
-#include "config_perftest.h"
 #include "Threads.h"
 
 // --- forward declaration --------------------
@@ -18,7 +17,7 @@ class Anything;
 
 //---- StresserThread -----------------------------------------------------------
 //! Wraps a Stresser in a thread.
-class EXPORTDECL_PERFTEST StresserThread : public Thread
+class StresserThread : public Thread
 {
 public:
 	StresserThread();

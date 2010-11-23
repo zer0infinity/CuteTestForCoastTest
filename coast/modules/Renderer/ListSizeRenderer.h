@@ -10,7 +10,6 @@
 #define _ListSizeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- ListSizeRenderer ----------------------------------------------------------
@@ -34,7 +33,7 @@ This renderer may be handy when constructing tables. It may sometimes
 be handy to know the number of columns/rows, so as to be able to generate
 \em colspan or \em rowspan attributes.
 */
-class EXPORTDECL_RENDERER ListSizeRenderer : public Renderer
+class ListSizeRenderer : public Renderer
 {
 public:
 	//--- constructors

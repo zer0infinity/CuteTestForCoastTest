@@ -10,7 +10,6 @@
 #define _StringTokenizeRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- StringTokenizeRenderer ----------------------------------------------------------
@@ -34,7 +33,7 @@
 
 Examples in the TestCases
 */
-class EXPORTDECL_RENDERER StringTokenizeRenderer : public Renderer
+class StringTokenizeRenderer : public Renderer
 {
 public:
 	//--- constructors

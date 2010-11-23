@@ -9,7 +9,6 @@ buildSettings = {
         'linkDependencies' : ['CoastWDBase', 'CoastDataAccess'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['BACKENDCONFIGLOADER_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

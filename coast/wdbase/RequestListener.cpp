@@ -18,7 +18,7 @@
 
 //---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
-class EXPORTDECL_WDBASE AcceptorFactoriesReInitInstaller : public InstallerPolicy
+class AcceptorFactoriesReInitInstaller : public InstallerPolicy
 {
 public:
 	AcceptorFactoriesReInitInstaller(const char *category)
@@ -35,7 +35,7 @@ protected:
 };
 
 //---- AcceptorFactoriesReInitTerminator ------------------------------------------------------
-class EXPORTDECL_WDBASE AcceptorFactoriesReInitTerminator : public TerminationPolicy
+class AcceptorFactoriesReInitTerminator : public TerminationPolicy
 {
 public:
 	AcceptorFactoriesReInitTerminator(const char *category)

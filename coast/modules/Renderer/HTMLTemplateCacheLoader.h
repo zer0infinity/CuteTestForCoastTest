@@ -9,7 +9,6 @@
 #ifndef _HTMLTemplateCacheLoader_H
 #define _HTMLTemplateCacheLoader_H
 
-#include "config_renderer.h"
 
 //---- WDModule include -------------------------------------------------
 #include "WDModule.h"
@@ -20,7 +19,7 @@ class TemplateParser;
 //---- TemplatesCacheModule -----------------------------------------------------------
 //! Used to load HTML-pages at startup and cache them for later access
 //! <BR>Configuration: -> check HTMLTemplateCacheLoader for the configuration
-class EXPORTDECL_RENDERER TemplatesCacheModule : public WDModule
+class TemplatesCacheModule : public WDModule
 {
 public:
 	TemplatesCacheModule(const char *name);
@@ -73,7 +72,7 @@ config/SpecialTemplates/Localized_I
 </PRE>
 will be loaded into the cache.
 */
-class EXPORTDECL_RENDERER HTMLTemplateCacheLoader : public CacheLoadPolicy
+class HTMLTemplateCacheLoader : public CacheLoadPolicy
 {
 public:
 	HTMLTemplateCacheLoader(TemplateParser *parser, const ROAnything config = ROAnything())
@@ -94,7 +93,7 @@ private:
 
 //--- HTMLTemplateCacheBuilder ------------------------------------------------------
 //! Worker class to load the html-files using the given CacheHandler and CacheLoadPolicy
-class EXPORTDECL_RENDERER HTMLTemplateCacheBuilder
+class HTMLTemplateCacheBuilder
 {
 public:
 	HTMLTemplateCacheBuilder() { }
@@ -109,7 +108,7 @@ private:
 
 //--- HTMLTemplateNameMapLoader ------------------------------------------------------
 //! Dummy policy to cache the TemplateName to FilesystemFile map
-class EXPORTDECL_RENDERER HTMLTemplateNameMapLoader : public CacheLoadPolicy
+class HTMLTemplateNameMapLoader : public CacheLoadPolicy
 {
 public:
 	HTMLTemplateNameMapLoader(const Anything &nameMap) : fNameMap(nameMap, Storage::Global())  { }

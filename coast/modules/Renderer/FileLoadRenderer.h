@@ -10,7 +10,6 @@
 #define _FileLoadRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- FileLoadRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER FileLoadRenderer : public Renderer
+class FileLoadRenderer : public Renderer
 {
 public:
 	//--- constructors

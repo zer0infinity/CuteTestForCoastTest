@@ -10,7 +10,6 @@
 #define _StringsEqualAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 class Context;
@@ -28,7 +27,7 @@ class Context;
 
 Result is True (1) or False (0)
 */
-class EXPORTDECL_FUNCTIONALACTIONS StringsEqualAction : public Action
+class StringsEqualAction : public Action
 {
 public:
 	//--- constructors

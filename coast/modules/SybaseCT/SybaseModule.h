@@ -10,7 +10,6 @@
 #define _SybaseModule_H
 
 //---- WDModule include -------------------------------------------------
-#include "config_sybasect.h"
 #include "WDModule.h"
 
 //---- SybaseModule ----------------------------------------------------------
@@ -22,7 +21,7 @@
 //		}
 //      ...
 //	}</PRE>
-class EXPORTDECL_SYBASECT SybaseModule : public WDModule
+class SybaseModule : public WDModule
 {
 public:
 	//--- constructors

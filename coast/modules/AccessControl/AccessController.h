@@ -9,13 +9,12 @@
 #ifndef _AccessController_h_
 #define _AccessController_h_
 
-#include "config_AccessControl.h"
 #include "IFAConfObject.h"
 
 //---- UserDataAccessController -----------------------------------------------------------
 //! This should be the superclass of all user data access controller implementations.
 //! Abstract class.
-class EXPORTDECL_ACCESSCONTROL UserDataAccessController : public HierarchConfNamed
+class UserDataAccessController : public HierarchConfNamed
 {
 public:
 	UserDataAccessController(const char *name) : HierarchConfNamed(name) {};
@@ -53,7 +52,7 @@ private:
 //---- TokenDataAccessController -----------------------------------------------------------
 //! This should be the superclass of all token data access controller implementations.
 //! Abstract class.
-class EXPORTDECL_ACCESSCONTROL TokenDataAccessController : public HierarchConfNamed
+class TokenDataAccessController : public HierarchConfNamed
 {
 public:
 	TokenDataAccessController(const char *name) : HierarchConfNamed(name) {};
@@ -85,7 +84,7 @@ private:
 //---- EntityDataAccessController -----------------------------------------------------------
 //! This should be the superclass of all entity data access controller implementations.
 //! Abstract class.
-class EXPORTDECL_ACCESSCONTROL EntityDataAccessController : public HierarchConfNamed
+class EntityDataAccessController : public HierarchConfNamed
 {
 public:
 	EntityDataAccessController(const char *name) : HierarchConfNamed(name) {};

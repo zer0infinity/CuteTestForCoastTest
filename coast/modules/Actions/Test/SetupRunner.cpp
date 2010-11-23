@@ -15,14 +15,6 @@
 #include "ConfiguredActionTest.h"
 #include "CopyActionsTest.h"
 
-#if defined(WIN32)
-#include "config_bases.h"
-void bases()
-{
-	RegisterBasesObjs();
-}
-#endif
-
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro

@@ -8,7 +8,6 @@ buildSettings = {
         'linkDependencies' : ['CoastRenderers'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['HTMLRENDERERS_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

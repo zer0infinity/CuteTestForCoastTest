@@ -9,8 +9,6 @@
 #ifndef _SimpleDataAccessService_h_
 #define _SimpleDataAccessService_h_
 
-#include "config_dataaccess.h"
-
 //---- baseclass include -------------------------------------------------
 #include "ServiceHandler.h"
 
@@ -19,7 +17,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class EXPORTDECL_DATAACCESS SimpleDataAccessService : public ServiceHandler
+class SimpleDataAccessService : public ServiceHandler
 {
 public:
 	//!standard named object constructor

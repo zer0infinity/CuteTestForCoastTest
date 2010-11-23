@@ -10,7 +10,6 @@
 #define _CharReplaceRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- CharReplaceRenderer ----------------------------------------------------------
@@ -21,7 +20,7 @@
 //		/ReplaceChar	Character		replacement character, default is '_'
 //		/String			Rendererspec	String which will be affected
 //	}</PRE>
-class EXPORTDECL_STRINGRENDERERS CharReplaceRenderer : public Renderer
+class CharReplaceRenderer : public Renderer
 {
 public:
 	//--- constructors

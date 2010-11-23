@@ -10,7 +10,6 @@
 #define _StringReplaceRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- StringReplaceRenderer ----------------------------------------------------------
@@ -52,7 +51,7 @@ Renders : "Bar, Gugus"
 
 Renders : "myBar, yourGugus"
 */
-class EXPORTDECL_STRINGRENDERERS StringReplaceRenderer : public Renderer
+class StringReplaceRenderer : public Renderer
 {
 public:
 	//--- constructors

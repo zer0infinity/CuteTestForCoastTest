@@ -10,7 +10,6 @@
 #define _SlotNameRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- SlotNameRenderer ----------------------------------------------------------
@@ -38,7 +37,7 @@
 
 Renders : "B01"
 */
-class EXPORTDECL_STRINGRENDERERS SlotNameRenderer : public Renderer
+class SlotNameRenderer : public Renderer
 {
 public:
 	//--- constructors

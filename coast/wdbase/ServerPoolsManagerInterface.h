@@ -9,7 +9,6 @@
 #ifndef _ServerPoolsManagerInterface_h_
 #define _ServerPoolsManagerInterface_h_
 
-#include "config_wdbase.h"
 #include "Threads.h"
 #include "WDModule.h"
 
@@ -17,7 +16,7 @@ class Server;
 class RequestProcessor;
 
 //---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE ServerPoolsManagerInterfacesModule : public WDModule
+class ServerPoolsManagerInterfacesModule : public WDModule
 {
 public:
 	ServerPoolsManagerInterfacesModule(const char *);
@@ -29,7 +28,7 @@ public:
 };
 
 //---- ServerThreadPoolsManager -----------------------------------------------------------
-class EXPORTDECL_WDBASE ServerPoolsManagerInterface: public ConfNamedObject
+class ServerPoolsManagerInterface: public ConfNamedObject
 {
 public:
 	ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName);

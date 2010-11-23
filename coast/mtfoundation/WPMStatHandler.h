@@ -10,7 +10,6 @@
 #define _WPMStatHandler_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_mtfoundation.h"
 #include "StatUtils.h"
 
 //---- forward declaration -----------------------------------------------
@@ -19,7 +18,7 @@
 
 //---- WPMStatHandler ----------------------------------------------------------
 //!gather statistical information about a worker pool
-class EXPORTDECL_MTFOUNDATION WPMStatHandler: public StatEvtHandler
+class WPMStatHandler: public StatEvtHandler
 {
 public:
 	WPMStatHandler(long poolSize);

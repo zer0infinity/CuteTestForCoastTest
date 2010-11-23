@@ -9,7 +9,6 @@
 #ifndef ORACLEEXCEPTION_H_
 #define ORACLEEXCEPTION_H_
 
-#include "config_coastoracle.h"
 #include "OracleConnection.h"
 #include "ITOString.h"
 #include <exception>
@@ -19,7 +18,7 @@
  * This class is used to abort the program flow with either a self written message or a message provided using the
  * return code of the last OCI API call.
 */
-class EXPORTDECL_COASTORACLE OracleException : public std::exception
+class OracleException : public std::exception
 {
 	OracleConnection &fConnection;
 	sword fStatus;

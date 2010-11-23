@@ -10,7 +10,6 @@
 #define _TailRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- TailRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER TailRenderer : public Renderer
+class TailRenderer : public Renderer
 {
 public:
 	//--- constructors

@@ -10,7 +10,6 @@
 #define _RemoveAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- RemoveAction ----------------------------------------------------------
@@ -25,7 +24,7 @@
 }
 @endcode
  */
-class EXPORTDECL_ACTIONS RemoveAction : public Action
+class RemoveAction : public Action
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

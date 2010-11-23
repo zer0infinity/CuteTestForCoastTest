@@ -9,7 +9,6 @@
 #ifndef _IFACONFOBJECT_H
 #define _IFACONFOBJECT_H
 
-#include "config_wdbase.h"
 
 #include "IFAObject.h"
 #include "LookupInterface.h"
@@ -21,7 +20,7 @@ class TerminationPolicy;
 
 //---- RegisterableObject ----------------------------------------------------------
 //!defines api to support registerable objects; objects registered with a name in a category
-class EXPORTDECL_WDBASE RegisterableObject : public NamedObject
+class RegisterableObject : public NamedObject
 {
 public:
 	//! Named object constructor
@@ -138,7 +137,7 @@ private:
 };
 
 //!objects are generated as static variables by macro RegisterObject; installs RegisterableObject r with name in category
-class EXPORTDECL_WDBASE RegisterableObjectInstaller
+class RegisterableObjectInstaller
 {
 public:
 	//!installs r into category with name; caches r into fObject
@@ -199,7 +198,7 @@ protected:
 //! therefore it installes simple aliases ( entries in the registry, that
 //! access the same object under different names eg. HTMLTemplateRenderer and
 //! HTML )
-class EXPORTDECL_WDBASE NotCloned : public RegisterableObject
+class NotCloned : public RegisterableObject
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -228,7 +227,7 @@ private:
 ConfNamedObject provides a protocol for handling configuration data
 it already provides a default implementation that is sufficient
 for most classes ( eg. Role and Page ) */
-class EXPORTDECL_WDBASE ConfNamedObject : public RegisterableObject, public virtual LookupInterface
+class ConfNamedObject : public RegisterableObject, public virtual LookupInterface
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -361,7 +360,7 @@ private:
 //---- HierarchConfNamed ----------------------------------------------------------
 //!configurable object; api for configuration support with hierachical object relationships (inheritance)
 //!implements inheritance relationship of configurations through super objects
-class EXPORTDECL_WDBASE HierarchConfNamed : public ConfNamedObject
+class HierarchConfNamed : public ConfNamedObject
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

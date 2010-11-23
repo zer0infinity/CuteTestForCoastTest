@@ -9,11 +9,10 @@
 #ifndef _a2ee2a_H
 #define _a2ee2a_H
 
-#include "config_ebcdic.h"
 #include <sys/types.h>
 
 // void ebcdic2ascii(unsigned char *dest, const unsigned char *srce, size_t count);
-EXPORTDECL_EBCDIC void ebcdic2ascii(void *dest, const void *srce, size_t count);
-EXPORTDECL_EBCDIC void ascii2ebcdic(void *dest, const void *srce, size_t count);
+void ebcdic2ascii(void *dest, const void *srce, size_t count);
+void ascii2ebcdic(void *dest, const void *srce, size_t count);
 
 #endif		//not defined _a2ee2a_H

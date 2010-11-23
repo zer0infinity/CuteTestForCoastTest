@@ -10,7 +10,6 @@
 #define _CallRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- CallRenderer ----------------------------------------------------------
@@ -39,7 +38,7 @@ or
 The CallRenderer allows to reuse renderer specifications with multiple calls
 of a specification on a single page with passing "local" parameters at each call.
 */
-class EXPORTDECL_RENDERER CallRenderer : public Renderer
+class CallRenderer : public Renderer
 {
 protected:
 	virtual Anything DoGetParameters(Context &ctx, const ROAnything &config);
@@ -73,7 +72,7 @@ public:
 The EagerCallRenderer allows to reuse renderer specifications with multiple calls
 of a specification on a single page with passing "local" parameters at each call.
 */
-class EXPORTDECL_RENDERER EagerCallRenderer : public CallRenderer
+class EagerCallRenderer : public CallRenderer
 {
 protected:
 	virtual Anything DoGetParameters(Context &ctx, const ROAnything &config);

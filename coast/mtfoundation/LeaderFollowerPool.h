@@ -9,8 +9,6 @@
 #ifndef _LeaderFollowerPool_H
 #define _LeaderFollowerPool_H
 
-#include "config_mtfoundation.h"
-
 //---- baseclass include -------------------------------------------------
 #include "ThreadPools.h"
 
@@ -21,7 +19,7 @@ class Socket;
 
 //---- LeaderFollowerPool ----------------------------------------------------------
 //!implements leader follower thread pool; description see POSA2 p.447 ff
-class EXPORTDECL_MTFOUNDATION LeaderFollowerPool : public ThreadPoolManager
+class LeaderFollowerPool : public ThreadPoolManager
 {
 public:
 	//--- constructors
@@ -64,7 +62,7 @@ protected:
 
 //---- LeaderFollowerThread -----------------------------------------------------------
 //!Thread that manages a passive connection end point using an Acceptor
-class EXPORTDECL_MTFOUNDATION LeaderFollowerThread : public Thread
+class LeaderFollowerThread : public Thread
 {
 public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
@@ -91,7 +89,7 @@ struct pollfd;
 
 //--- HandleSet -----------------------------------------------
 //!manages a set of file descriptors as accept points
-class  EXPORTDECL_MTFOUNDATION HandleSet
+class HandleSet
 {
 public:
 	//! does nothing
@@ -123,7 +121,7 @@ private:
 
 //---- Reactor ----------------------------------------------------------
 //!reactor pattern; description see POSA2 p.179 ff
-class EXPORTDECL_MTFOUNDATION Reactor
+class Reactor
 {
 public:
 	//!does nothing

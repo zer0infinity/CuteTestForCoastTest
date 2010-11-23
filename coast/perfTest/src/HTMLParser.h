@@ -12,7 +12,6 @@
 #ifndef HTMLParser_First
 #define HTMLParser_First
 
-#include "config_perftest.h"
 #include "Anything.h"
 
 typedef int Unicode;
@@ -32,7 +31,7 @@ enum EAlign {
 // extremely simple parser for HTML files: does not consider hierachical
 // structure of HTML... only at the tag level... (special treatment of
 // <SCRIPT> tag  and comments)
-class EXPORTDECL_PERFTEST HTMLParser
+class HTMLParser
 {
 public:
 	HTMLParser();
@@ -138,7 +137,7 @@ private:
 	static TagInfo TagTable[];
 };
 //---- AAT_HTMLReader ---------------------------------------------------------------------------
-class EXPORTDECL_PERFTEST AAT_HTMLReader
+class AAT_HTMLReader
 {
 public:
 	AAT_HTMLReader(std::istream *fp = 0);
@@ -151,7 +150,7 @@ protected:
 };
 
 //---- AAT_HTMLWriter ---------------------------------------------------------------------------
-class EXPORTDECL_PERFTEST AAT_HTMLWriter
+class AAT_HTMLWriter
 {
 public:
 	AAT_HTMLWriter() { }
@@ -172,7 +171,7 @@ public:
 };
 
 //---- AAT_StdHTMLParser -----
-class EXPORTDECL_PERFTEST AAT_StdHTMLParser : public HTMLParser
+class AAT_StdHTMLParser : public HTMLParser
 {
 public:
 	AAT_StdHTMLParser(AAT_HTMLReader &reader, AAT_HTMLWriter &writer);
@@ -197,7 +196,7 @@ private:
 // copy - paste - delete reuse of Juergens HTMLParser
 // we don't need a reply here only some special tags like hrefs, imgs, forms ...
 //---- MyHTMLWriter ---------------------------------------------------------------------------
-class EXPORTDECL_PERFTEST MyHTMLWriter : public AAT_HTMLWriter
+class MyHTMLWriter : public AAT_HTMLWriter
 {
 public:
 	MyHTMLWriter( Anything &urls ) : fUrls(urls), fStoreTitle(0), fRequestFailed(0), fFormNr(-1), fTitle(""), fAllStringsInPage(""), fInScript(false)

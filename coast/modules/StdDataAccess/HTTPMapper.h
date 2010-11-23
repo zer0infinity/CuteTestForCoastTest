@@ -9,7 +9,6 @@
 #ifndef _HTTPMAPPER_H
 #define _HTTPMAPPER_H
 
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 // --------------------- HTTPHeaderParameterMapper -------------------------
@@ -66,7 +65,7 @@
 HOST: my.host.dom\r\nUSER-AGENT: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100629 Ubuntu/10.10 (maverick) Firefox/3.6.6 GTB7.0\r\n
  * \endcode
  */
-class EXPORTDECL_STDDATAACCESS HTTPHeaderParameterMapper : public ParameterMapper
+class HTTPHeaderParameterMapper : public ParameterMapper
 {
 public:
 	HTTPHeaderParameterMapper(const char *name) : ParameterMapper(name) { }
@@ -96,7 +95,7 @@ private:
 };
 
 // ------------------------- HTTPBodyResultMapper -------------------------
-class EXPORTDECL_STDDATAACCESS HTTPBodyResultMapper : public ResultMapper
+class HTTPBodyResultMapper : public ResultMapper
 {
 public:
 	HTTPBodyResultMapper(const char *name) : ResultMapper(name) { }
@@ -119,7 +118,7 @@ private:
 };
 
 // ------------------------- HTTPBodyParameterMapper -------------------------
-class EXPORTDECL_STDDATAACCESS HTTPBodyParameterMapper : public ParameterMapper
+class HTTPBodyParameterMapper : public ParameterMapper
 {
 public:
 	HTTPBodyParameterMapper(const char *name) : ParameterMapper(name) { }

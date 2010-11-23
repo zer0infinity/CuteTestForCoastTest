@@ -10,7 +10,6 @@
 #define _URI2FileNameMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 //---- URI2FileNameMapper ----------------------------------------------------------
@@ -25,7 +24,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class EXPORTDECL_STDDATAACCESS URI2FileNameMapper : public ParameterMapper
+class URI2FileNameMapper : public ParameterMapper
 {
 public:
 	//--- constructors

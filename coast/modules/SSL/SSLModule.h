@@ -9,14 +9,17 @@
 #ifndef _SSLModule_H
 #define _SSLModule_H
 
-#include "config_ssl.h"
 #include "RequestListener.h"
 
 //---- forward declarations ----
 class SSLSocket;
 
+typedef struct ssl_ctx_st SSL_CTX;
+typedef struct ssl_st SSL;
+typedef struct x509_st X509;
+
 //---- SSLModule -----------------------------------------------------------
-class EXPORTDECL_SSL SSLModule : public WDModule
+class SSLModule : public WDModule
 {
 	friend class SSLModuleTest;
 public:
@@ -44,7 +47,7 @@ protected:
 };
 
 //---- SSLAcceptorFactory -----------------------------------------------------------
-class EXPORTDECL_SSL SSLAcceptorFactory : public AcceptorFactory
+class SSLAcceptorFactory : public AcceptorFactory
 {
 public:
 	SSLAcceptorFactory(const char *SSLAcceptorFactoryName);

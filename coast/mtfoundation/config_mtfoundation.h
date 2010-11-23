@@ -11,23 +11,14 @@
 
 //! DLL specific settings for Windows NT
 #if defined(WIN32)
-#ifdef _DLL
-#include "Anything.h"
-extern Anything fgThreads;
-extern DWORD fgThreadPtrKey;
-class SimpleMutex;
-extern SimpleMutex fgThreadsMutex;
-#ifdef MTFOUNDATION_IMPL
-#define EXPORTDECL_MTFOUNDATION	__declspec(dllexport)
-#else
-#define EXPORTDECL_MTFOUNDATION	__declspec(dllimport)
-#endif
-void EXPORTDECL_MTFOUNDATION TerminateKilledThreads();
-#else
-#define EXPORTDECL_MTFOUNDATION
-#endif
-#else
-#define EXPORTDECL_MTFOUNDATION
+	#ifdef _DLL
+		#include "Anything.h"
+		extern Anything fgThreads;
+		extern DWORD fgThreadPtrKey;
+		class SimpleMutex;
+		extern SimpleMutex fgThreadsMutex;
+		void TerminateKilledThreads();
+	#endif
 #endif
 
 #endif

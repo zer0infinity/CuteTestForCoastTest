@@ -9,12 +9,11 @@
 #ifndef _SortedTagsHTMLMapper_h_
 #define _SortedTagsHTMLMapper_h_
 
-#include "config_perftest.h"
 #include "Mapper.h"
 
 //---- SortedTagsHTMLMapper -----------------------------------------------------------
 
-class EXPORTDECL_PERFTEST SortedTagsHTMLMapper : public ResultMapper
+class SortedTagsHTMLMapper : public ResultMapper
 {
 public:
 	SortedTagsHTMLMapper(const char *SortedTagsHTMLMapperName) : ResultMapper(SortedTagsHTMLMapperName) {};

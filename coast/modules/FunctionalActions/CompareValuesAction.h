@@ -10,7 +10,6 @@
 #define _CompareValuesAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 class String;
@@ -24,7 +23,7 @@ class Context;
 //		/Slot1	....
 //      ...
 //	}</PRE>
-class EXPORTDECL_FUNCTIONALACTIONS CompareValuesAction : public Action
+class CompareValuesAction : public Action
 {
 public:
 	//--- constructors

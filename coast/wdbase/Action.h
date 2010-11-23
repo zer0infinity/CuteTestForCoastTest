@@ -10,14 +10,13 @@
 #define _ACTION_H
 
 // superclass include
-#include "config_wdbase.h"
 #include "IFAConfObject.h"
 #include "WDModule.h"
 
 class Context;
 
 //---- ActionsModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE ActionsModule : public WDModule
+class ActionsModule : public WDModule
 {
 public:
 	ActionsModule(const char *);
@@ -30,7 +29,7 @@ public:
 
 //---- Action ----------------------------------------------------------------------
 //! MultiPurpose Do Something building block to script application behaviour
-class EXPORTDECL_WDBASE Action : public NotCloned
+class Action : public NotCloned
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

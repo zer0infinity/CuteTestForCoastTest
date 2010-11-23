@@ -10,7 +10,6 @@
 #define _EmailAddressCheckAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "NotEmptyCheckAction.h"
 
 //---- EmailAddressCheckAction ----------------------------------------------------------
@@ -23,7 +22,7 @@
 //! </PRE>
 //! Checks if the field contains a least @ and at least one . afterwards and no but trailing blanks
 //! If further enhancements are needed, think of a RegExp checking action
-class EXPORTDECL_ACTIONS EmailAddressCheckAction : public NotEmptyCheckAction
+class EmailAddressCheckAction : public NotEmptyCheckAction
 {
 public:
 	//--- constructors

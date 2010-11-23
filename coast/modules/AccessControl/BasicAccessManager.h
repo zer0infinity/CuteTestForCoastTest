@@ -10,7 +10,6 @@
 #define _BasicAccessManager_H
 
 //--- includes
-#include "config_AccessControl.h"
 #include "AccessManager.h"
 
 //--- forward decls
@@ -38,7 +37,7 @@ This access manager performs weak and strong authentication.
 It uses the specified AccessControllers to get user- and rights-data
 from desired resources. The specified OTPList is used to perform
 strong authentication (i.e. to verify an otp code). */
-class EXPORTDECL_ACCESSCONTROL BasicAccessManager : public AccessManager
+class BasicAccessManager : public AccessManager
 {
 public:
 	//--- constructors

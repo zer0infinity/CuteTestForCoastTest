@@ -13,11 +13,10 @@ class String;
 class Context;
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "DataAccessImpl.h"
 
 //! DataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any
-class EXPORTDECL_STDDATAACCESS DummyDAImpl: public DataAccessImpl
+class DummyDAImpl: public DataAccessImpl
 {
 public:
 	DummyDAImpl(const char *name);

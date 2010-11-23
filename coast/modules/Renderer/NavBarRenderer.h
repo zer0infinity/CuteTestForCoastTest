@@ -9,7 +9,6 @@
 #ifndef _NAVBARRENDERER_H
 #define _NAVBARRENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- NavBarRenderer -----------------------------------------------------------
@@ -22,7 +21,7 @@
 \endcode
 
 */
-class EXPORTDECL_RENDERER NavBarRenderer : public Renderer
+class NavBarRenderer : public Renderer
 {
 public:
 	NavBarRenderer(const char *name);

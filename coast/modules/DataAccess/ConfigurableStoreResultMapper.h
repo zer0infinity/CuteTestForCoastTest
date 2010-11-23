@@ -9,14 +9,12 @@
 #ifndef _ConfigurableStoreResultMapper_H
 #define _ConfigurableStoreResultMapper_H
 
-#include "config_dataaccess.h"
-
 //---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- ConfigurableStoreResultMapper ----------------------------------------------------------
 
-class EXPORTDECL_DATAACCESS ConfigurableStoreResultMapper : public ResultMapper
+class ConfigurableStoreResultMapper : public ResultMapper
 {
 public:
 	/*! constructor

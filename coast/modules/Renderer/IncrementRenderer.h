@@ -9,7 +9,6 @@
 #ifndef _IncrementRenderer_H
 #define _IncrementRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- IncrementRenderer ---------------------------------------------------------------
@@ -32,7 +31,7 @@ as a short cut for
 
 Non numeric values are converted to 0 and incremented to 1
 */
-class EXPORTDECL_RENDERER IncrementRenderer : public Renderer
+class IncrementRenderer : public Renderer
 {
 public:
 	IncrementRenderer(const char *name);

@@ -10,7 +10,6 @@
 #define _SybCTnewDAImpl_H
 
 //---- SybCTnewDAImpl include -------------------------------------------------
-#include "config_sybasect.h"
 #include "DataAccessImpl.h"
 #include "Threads.h"
 #include <ctpublic.h>
@@ -24,7 +23,7 @@ class PeriodicAction;
 // further explanation of the purpose of the class
 // this may contain <B>HTML-Tags</B>
 // ...
-class EXPORTDECL_SYBASECT SybCTnewDAImpl : public DataAccessImpl
+class SybCTnewDAImpl : public DataAccessImpl
 {
 public:
 	//--- constructors

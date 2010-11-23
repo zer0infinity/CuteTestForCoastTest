@@ -9,7 +9,6 @@
 #ifndef _AnyToXMLRenderer_H
 #define _AnyToXMLRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- AnyToXMLRenderer -----------------------------------------------------------
@@ -22,7 +21,7 @@
 }
 \endcode
 */
-class EXPORTDECL_RENDERER AnyToXMLRenderer : public Renderer
+class AnyToXMLRenderer : public Renderer
 {
 public:
 	//! basic constructor

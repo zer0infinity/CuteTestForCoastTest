@@ -10,7 +10,6 @@
 #define _CompareValuesRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- CompareValuesRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 //		/Error		{ RendererSpec for TestCondition == Error }
 //      ...
 //	}</PRE>
-class EXPORTDECL_STRINGRENDERERS CompareValuesRenderer : public Renderer
+class CompareValuesRenderer : public Renderer
 {
 public:
 	//--- constructors

@@ -9,10 +9,9 @@
 #ifndef HIERARCHYINSTALLERWITHCONFIG_H_
 #define HIERARCHYINSTALLERWITHCONFIG_H_
 
-#include "config_BackendConfigLoader.h"
 #include "Policy.h"
 
-class EXPORTDECL_BACKENDCONFIGLOADER HierarchyInstallerWithConfig : public HierarchyInstaller {
+class HierarchyInstallerWithConfig : public HierarchyInstaller {
 	ROAnything fObjectConfig;
 public:
 	HierarchyInstallerWithConfig(const char *cat, const ROAnything roaObjectConfig, char delimSlot = '.', char delimIdx = ':');

@@ -9,12 +9,11 @@
 #ifndef _PAGE_H
 #define _PAGE_H
 
-#include "config_wdbase.h"
 #include "Context.h"
 #include "WDModule.h"
 
 //---- PagesModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE PagesModule : public WDModule
+class PagesModule : public WDModule
 {
 public:
 	PagesModule(const char *name);
@@ -31,7 +30,7 @@ public:
 //!Preparation and postprocessing uses the Action class to execute code related to transition tokens.<br>
 //!Render normally uses the Renderer class to generate page content. Although it is possible to overwrite hook methods in subclasses,
 //!it should not be necessary since almost everything is configurable.
-class EXPORTDECL_WDBASE Page : public HierarchConfNamed
+class Page : public HierarchConfNamed
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

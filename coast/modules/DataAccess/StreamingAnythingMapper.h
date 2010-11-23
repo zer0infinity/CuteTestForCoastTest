@@ -10,7 +10,6 @@
 #define _StreamingAnythingMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "Mapper.h"
 
 //---- forward declaration -----------------------------------------------
@@ -55,7 +54,7 @@ Example output of pseudo-configuration from above assuming we got the following 
 
 Note that the slot \b ResultsInNoOutput does not exist because the LookupPath of \b NonExistingSlot resulted in a Null-Anything and therefore no output slot will be created!
  */
-class EXPORTDECL_DATAACCESS StreamToAnythingMapper : public ResultMapper
+class StreamToAnythingMapper : public ResultMapper
 {
 public:
 	/*! constructor
@@ -91,7 +90,7 @@ private:
 /*!
 looks up 'key' in context and streams it on the client provided stream
  */
-class EXPORTDECL_DATAACCESS AnythingToStreamMapper : public ParameterMapper
+class AnythingToStreamMapper : public ParameterMapper
 {
 public:
 	/*! constructor

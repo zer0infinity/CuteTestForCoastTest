@@ -10,7 +10,6 @@
 #define _AnythingNotNullAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 //---- AnythingNotNullAction ----------------------------------------------------------
@@ -24,7 +23,7 @@
 }
 \endcode
 */
-class EXPORTDECL_FUNCTIONALACTIONS AnythingNotNullAction : public Action
+class AnythingNotNullAction : public Action
 {
 public:
 	//--- constructors

@@ -9,14 +9,13 @@
 #ifndef _SSLSocket_H
 #define _SSLSocket_H
 
-#include "config_ssl.h"
 #include "Socket.h"
 #include "SSLAPI.h"
 
 //--- SSLSocketArgs-------------------------------------------------------------------------
 //! DataObject to hold arguments needed for SSLSockets.
 //! This class supports assignment and copy construction.
-class EXPORTDECL_SSL SSLSocketArgs
+class SSLSocketArgs
 {
 public:
 	SSLSocketArgs(bool verifyCertifiedEntity, const String &certVerifyString, bool certVerifyStringIsFilter, bool sessionResumption);
@@ -46,7 +45,7 @@ private:
 };
 
 //--- SSLSocket ---
-class EXPORTDECL_SSL SSLSocket : public Socket
+class SSLSocket : public Socket
 {
 	// opens a client side socket connection
 	// and closes it in destructor
@@ -117,7 +116,7 @@ private:
 };
 
 //--- SSLSocket ---
-class EXPORTDECL_SSL SSLClientSocket : public SSLSocket
+class SSLClientSocket : public SSLSocket
 {
 	// opens a client side socket connection
 	// and closes it in destructor
@@ -139,7 +138,7 @@ private:
 };
 
 //--- SSLServerSocket ---
-class EXPORTDECL_SSL SSLServerSocket : public SSLSocket
+class SSLServerSocket : public SSLSocket
 {
 	// opens a server side socket connection
 	// and closes it in destructor
@@ -160,7 +159,7 @@ private:
 };
 
 //--- SSLConnector --------------------------------------------
-class EXPORTDECL_SSL SSLConnector : public Connector
+class SSLConnector : public Connector
 {
 	// this class takes an active end point specification
 	// of a socket and connects to a server on the other
@@ -203,7 +202,7 @@ private:
 };
 
 //--- SSLAcceptor ---
-class EXPORTDECL_SSL SSLAcceptor : public Acceptor
+class SSLAcceptor : public Acceptor
 {
 	// This class handles an accept loop
 	// in its own thread

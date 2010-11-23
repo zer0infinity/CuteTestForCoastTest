@@ -9,14 +9,13 @@
 #ifndef _MAPPER_H
 #define _MAPPER_H
 
-#include "config_dataaccess.h"
 #include "Context.h"
 #include "WDModule.h"
 
 class Registry;
 
 //---- MappersModule -----------------------------------------------------------
-class EXPORTDECL_DATAACCESS MappersModule : public WDModule
+class MappersModule : public WDModule
 {
 public:
 	MappersModule(const char *name);
@@ -45,7 +44,7 @@ public:
 }
 \endcode
 */
-class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
+class ParameterMapper : public HierarchConfNamed
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -231,7 +230,7 @@ private:
 
 //---------------- EagerParameterMapper ------------------------------
 //! A ParameterMapper eager to interpret its config, interprets full config if key is not found
-class EXPORTDECL_DATAACCESS EagerParameterMapper : public ParameterMapper
+class EagerParameterMapper : public ParameterMapper
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -265,7 +264,7 @@ private:
 }
 \endcode
 */
-class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
+class ResultMapper : public HierarchConfNamed
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -443,7 +442,7 @@ private:
 
 //---------------- EagerResultMapper ------------------------------
 //! A ResultMapper eager to do something with its config, interprets full config if key is not found
-class EXPORTDECL_DATAACCESS EagerResultMapper : public ResultMapper
+class EagerResultMapper : public ResultMapper
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -474,7 +473,7 @@ private:
 //! Result mapper which stores Results directly at root of TmpStore
 /*! This could be configured in config, but it would be necessary to write a config every time a RootMapper is used.
 */
-class EXPORTDECL_DATAACCESS RootMapper : public ResultMapper
+class RootMapper : public ResultMapper
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -518,7 +517,7 @@ Example:<pre>
 }
 </pre>Result: exactly the config above, with the difference that the value of "calculated" slot will be assigned the results of the call to MyMapper
 */
-class EXPORTDECL_DATAACCESS ConfigMapper : public EagerParameterMapper
+class ConfigMapper : public EagerParameterMapper
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

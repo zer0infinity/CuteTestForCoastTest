@@ -9,7 +9,6 @@
 #ifndef _HTMLComparer_H
 #define _HTMLComparer_H
 
-#include "config_perftest.h"
 
 class Anything;
 class String;
@@ -18,7 +17,7 @@ class String;
 //!compares two HTML any trees
 //! to be defined
 //!
-class EXPORTDECL_PERFTEST HTMLComparer
+class HTMLComparer
 {
 public:
 	//--- constructors

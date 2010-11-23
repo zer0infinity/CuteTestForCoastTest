@@ -10,7 +10,6 @@
 #define _CeilingRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "ComparingRenderer.h"
 
 //---- CeilingRenderer ----------------------------------------------------------
@@ -38,7 +37,7 @@
 
 Renders : "Last"
 */
-class EXPORTDECL_RENDERER CeilingRenderer : public ComparingRenderer
+class CeilingRenderer : public ComparingRenderer
 {
 public:
 	//--- constructors

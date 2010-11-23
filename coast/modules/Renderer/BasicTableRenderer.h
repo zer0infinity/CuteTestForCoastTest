@@ -9,7 +9,6 @@
 #ifndef _BasicTableRenderer_H
 #define _BasicTableRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 class RowAccessor;
@@ -359,7 +358,7 @@ example renderer configuration:
 }
 </PRE>
 */
-class EXPORTDECL_RENDERER BasicTableRenderer : public Renderer
+class BasicTableRenderer : public Renderer
 {
 public:
 	BasicTableRenderer(const char *name);
@@ -408,7 +407,7 @@ protected:
 \endcode
 
 */
-class EXPORTDECL_RENDERER SequenceRenderer : public Renderer
+class SequenceRenderer : public Renderer
 {
 public:
 	SequenceRenderer(const char *name);

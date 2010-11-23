@@ -18,7 +18,6 @@ buildSettings = {
         'linkDependencies' : ['CoastWDBase'],
         'sourceFiles'      : SConsider.listFiles( ['TestLib/*.cpp'] ),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['TESTLIB_IMPL'] },
     }
 }
 

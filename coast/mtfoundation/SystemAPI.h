@@ -9,21 +9,20 @@
 #ifndef _SYSTEMAPI_H
 #define _SYSTEMAPI_H
 
-#include "config_mtfoundation.h"
 #include "foundation.h"
 
 #if defined(WIN32)
 #include <limits>
 #include <process.h>
-#include <winbase.h>
+#include <windows.h>
 #include <time.h>
 
 #define TIMEOUTCODE WAIT_TIMEOUT
 // define how long to wait in trylocks
 #define	TRYLOCKTIMEOUT	0L
 
-int EXPORTDECL_MTFOUNDATION doTimedWait(HANDLE c, HANDLE m, long s, long n);
-int EXPORTDECL_MTFOUNDATION doWaitObject(HANDLE h, HANDLE m, long time);
+int doTimedWait(HANDLE c, HANDLE m, long s, long n);
+int doWaitObject(HANDLE h, HANDLE m, long time);
 
 //#define TRACE_LOCK_UNLOCK	1
 #ifdef TRACE_LOCK_UNLOCK

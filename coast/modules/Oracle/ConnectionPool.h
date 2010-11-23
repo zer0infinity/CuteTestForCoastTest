@@ -10,7 +10,6 @@
 #define CONNECTIONPOOL_H_
 
 //---- ConnectionPool include -------------------------------------------------
-#include "config_coastoracle.h"
 #include "DataAccessImpl.h"
 #include "Threads.h"
 #include "WPMStatHandler.h"
@@ -70,7 +69,7 @@ namespace Coast
 		 * Optional, default 16\n
 		 * Long value defining the number of bucket sizes to allocate inside the PoolAllocator
 		 */
-		class EXPORTDECL_COASTORACLE ConnectionPool : public StatGatherer
+		class ConnectionPool : public StatGatherer
 		{
 			//! lock to protect internal bookkeeping structure and list of connections
 			SimpleMutex fStructureMutex;

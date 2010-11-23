@@ -10,7 +10,6 @@
 #define _CallDataAccessAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "Action.h"
 
 //---- CallDataAccessAction ----------------------------------------------------------
@@ -26,7 +25,7 @@
 //! or maybe one might prefer the short cut form that consists only in the
 //! NameOfTheDataAccessToPerform
 //! e.g. { /CallDA NameOfTheDataAccessToPerform }
-class EXPORTDECL_DATAACCESS CallDataAccessAction : public Action
+class CallDataAccessAction : public Action
 {
 public:
 	//--- constructors

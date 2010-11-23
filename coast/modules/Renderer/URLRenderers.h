@@ -9,7 +9,6 @@
 #ifndef _URLRenderers_H
 #define _URLRenderers_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 // ---- introduction ----------------------------------------------------
@@ -52,7 +51,7 @@ required in a given HTML context (see explanations below).
 
 It contains hook-methods to be overwritten by derived classes.
 */
-class EXPORTDECL_RENDERER URLPrinter : public Renderer
+class URLPrinter : public Renderer
 {
 public:
 	URLPrinter(const char *name);
@@ -107,7 +106,7 @@ single Form Variable named "X". Its command separator is '?' a la CGI,
 its argument separator '&' and the parameter separator ' '
 following the CGI conventions.
 */
-class EXPORTDECL_RENDERER FullURLPrinter : public URLPrinter
+class FullURLPrinter : public URLPrinter
 {
 public:
 	FullURLPrinter(const char *name);
@@ -125,7 +124,7 @@ links to the current Coast session are generated on a page.
 Because the base tag does only allow '/' as a separator every element
 is separated by a '/' the private state is denoted by "X1="
 */
-class EXPORTDECL_RENDERER BaseURLPrinter : public URLPrinter
+class BaseURLPrinter : public URLPrinter
 {
 public:
 	BaseURLPrinter(const char *name);
@@ -141,7 +140,7 @@ protected:
 The BaseURLRenderer is used to generate \<BASE\> tag in the HTML header
 It uses the BaseURLPrinter to generate the necessary URL
 */
-class EXPORTDECL_RENDERER BaseURLRenderer : public BaseURLPrinter
+class BaseURLRenderer : public BaseURLPrinter
 {
 public:
 	BaseURLRenderer(const char *name);
@@ -156,7 +155,7 @@ the BaseURLPrinter. It just emits the private state of the URL
 that is relative to the BASE URL. Again parameter separation is
 only possible via '/' and the encoded state is named "X2="
 */
-class EXPORTDECL_RENDERER SimpleURLPrinter : public URLPrinter
+class SimpleURLPrinter : public URLPrinter
 {
 public:
 	SimpleURLPrinter(const char *name);
@@ -188,7 +187,7 @@ SimpleURLPrinter when a \<BASE\> tag is used for a page.
 the structure of the possible date is explained at
 the URLPrinter base class:
 */
-class EXPORTDECL_RENDERER URLRenderer : public Renderer
+class URLRenderer : public Renderer
 {
 public:
 	URLRenderer(const char *name);
@@ -232,7 +231,7 @@ the called URLRenderer. See URLPrinter for additional
 data elements besides /Label. The additional data is used to
 generate the "private" part of the link.
 */
-class EXPORTDECL_RENDERER LinkRenderer : public Renderer
+class LinkRenderer : public Renderer
 {
 public:
 	LinkRenderer(const char *name);

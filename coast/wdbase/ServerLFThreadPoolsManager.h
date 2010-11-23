@@ -9,13 +9,12 @@
 #ifndef _ServerLFThreadPoolsManager_h_
 #define _ServerLFThreadPoolsManager_h_
 
-#include "config_wdbase.h"
 #include "ServerPoolsManagerInterface.h"
 
 class LFListenerPool;
 //---- ServerLFThreadPoolsManager -----------------------------------------------------------
 
-class EXPORTDECL_WDBASE ServerLFThreadPoolsManager: public ServerPoolsManagerInterface
+class ServerLFThreadPoolsManager: public ServerPoolsManagerInterface
 {
 public:
 	ServerLFThreadPoolsManager(const char *ServerThreadPoolsManagerName);

@@ -118,7 +118,7 @@ bool Action::CallAction(String &actionName, String &transitionToken, Context &c,
 RegCacheImpl(Action);	// FindAction()
 
 //---- PreprocessAction ----------------------------------------------------------------------
-class EXPORTDECL_WDBASE PreprocessAction : public Action
+class PreprocessAction : public Action
 {
 public:
 	PreprocessAction(const char *name);

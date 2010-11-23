@@ -10,7 +10,6 @@
 #define _NotEmptyCheckAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- NotEmptyCheckAction ----------------------------------------------------------
@@ -21,7 +20,7 @@
 //!		/SearchBase		{ Rendererspec }			# optional, default is query["FieldName"] but can be like "AnySlot.InAStore"
 //! }
 //! </PRE>
-class EXPORTDECL_ACTIONS NotEmptyCheckAction : public Action
+class NotEmptyCheckAction : public Action
 {
 public:
 	//--- constructors

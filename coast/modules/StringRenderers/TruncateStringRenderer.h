@@ -10,7 +10,6 @@
 #define _TruncateStringRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- TruncateStringRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 //!</PRE>
 /*!
 */
-class EXPORTDECL_STRINGRENDERERS TruncateStringRenderer : public Renderer
+class TruncateStringRenderer : public Renderer
 {
 public:
 	//--- constructors

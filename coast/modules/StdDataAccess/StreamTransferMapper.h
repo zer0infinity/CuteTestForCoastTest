@@ -10,14 +10,13 @@
 #define _StreamTransferMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 //---- StreamTransferMapper ----------------------------------------------------------
 //! transfer stream of DataAccessImpl to the stream in the context
 //! future versions might incorporate post processing which we ignore
 //! in the moment
-class EXPORTDECL_STDDATAACCESS StreamTransferMapper : public ResultMapper
+class StreamTransferMapper : public ResultMapper
 {
 public:
 	//--- constructors

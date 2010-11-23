@@ -10,12 +10,11 @@
 #define _Base64WDRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_security.h"
 #include "Renderer.h"
 
 //---- Base64WDRenderer ----------------------------------------------------------
 //! Coast style Base64 encoding
-class EXPORTDECL_SECURITY Base64WDRenderer : public Renderer
+class Base64WDRenderer : public Renderer
 {
 public:
 	//--- constructors

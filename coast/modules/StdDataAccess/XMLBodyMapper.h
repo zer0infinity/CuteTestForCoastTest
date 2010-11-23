@@ -9,7 +9,6 @@
 #ifndef _XMLBodyMapper_H
 #define _XMLBodyMapper_H
 
-#include "config_stddataaccess.h"
 #include "Mapper.h"
 
 class Registry;
@@ -77,7 +76,7 @@ Maps to
 }
 \endcode
 */
-class EXPORTDECL_STDDATAACCESS XMLBodyMapper : public ResultMapper
+class XMLBodyMapper : public ResultMapper
 {
 public:
 	XMLBodyMapper(const char *name) : ResultMapper(name) { }

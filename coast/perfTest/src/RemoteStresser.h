@@ -23,7 +23,7 @@
 //!		/Input 		"{ /StresserName TStresserRunner }"		# The input for the stress server
 //!	}</PRE>
 //! The configuration is search in the file StresserMeta.any
-class EXPORTDECL_PERFTEST RemoteStresser : public Stresser
+class RemoteStresser : public Stresser
 {
 public:
 	//--- constructors

@@ -9,11 +9,10 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "config_perftest.h"
 
 class String;
 
-class EXPORTDECL_PERFTEST Scheduler
+class Scheduler
 {
 public:
 	virtual ~Scheduler();

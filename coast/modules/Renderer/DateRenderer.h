@@ -9,7 +9,6 @@
 #ifndef _DateRenderer_H
 #define _DateRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- DateRenderer ----------------------------------------------------------------
@@ -49,7 +48,7 @@ to '%C' (= 19 for the current century and 20 for the next).
 \attention The buffer for constructing the time string is limited to 200 bytes!
 \note Unix dates will break somewhen around year 2036
 */
-class EXPORTDECL_RENDERER DateRenderer : public Renderer
+class DateRenderer : public Renderer
 {
 public:
 	DateRenderer(const char *name);

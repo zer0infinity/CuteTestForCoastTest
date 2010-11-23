@@ -10,7 +10,6 @@
 #define _MapperTestDAImpl_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "DataAccessImpl.h"
 
 //---- MapperTestDAImpl ----------------------------------------------------------
@@ -38,7 +37,7 @@
 }
 @endcode
  */
-class EXPORTDECL_DATAACCESS MapperTestDAImpl : public DataAccessImpl
+class MapperTestDAImpl : public DataAccessImpl
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

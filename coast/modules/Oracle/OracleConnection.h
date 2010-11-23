@@ -10,7 +10,6 @@
 #define ORACLECONNECTION_H_
 
 //--- modules used in the interface
-#include "config_coastoracle.h"
 #include "Anything.h"
 #include "Threads.h"
 #include "OciAutoHandle.h"
@@ -28,7 +27,7 @@ class OracleStatement;
  * to the back end and to let OracleConnection::createStatement give us an OracleStatement. The statement is used to
  * execute any type of valid oracle queries.
  */
-class EXPORTDECL_COASTORACLE OracleConnection
+class OracleConnection
 {
 public:
 	enum Status {

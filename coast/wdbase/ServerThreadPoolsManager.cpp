@@ -19,7 +19,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-class EXPORTDECL_WDBASE WorkerPoolCallBackFactory : public CallBackFactory
+class WorkerPoolCallBackFactory : public CallBackFactory
 {
 public:
 	WorkerPoolCallBackFactory(RequestThreadsManager *workerPool);
@@ -219,7 +219,7 @@ long ServerThreadPoolsManager::GetThreadPoolSize()
 }
 
 //---- ServerCallBack ------------------------------------------------------------------
-class EXPORTDECL_WDBASE ServerCallBack : public AcceptorCallBack
+class ServerCallBack : public AcceptorCallBack
 {
 public:
 	ServerCallBack(RequestThreadsManager *poolManager): fPoolManager(poolManager), fMutex("ServerCallBack"), fRequests(0) { }

@@ -9,8 +9,6 @@
 #ifndef _FilterFieldsMapper_H
 #define _FilterFieldsMapper_H
 
-#include "config_dataaccess.h"
-
 //---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
@@ -27,7 +25,7 @@
 \endcode
 
 */
-class EXPORTDECL_DATAACCESS FilterFieldsMapper : public ResultMapper
+class FilterFieldsMapper : public ResultMapper
 {
 public:
 	//--- constructors

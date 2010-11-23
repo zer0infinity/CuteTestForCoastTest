@@ -10,7 +10,6 @@
 #define _RendererDispatchAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- RendererDispatchAction ----------------------------------------------------------
@@ -41,7 +40,7 @@
 { ActionToDispatch }
  * @endcode
 */
-class EXPORTDECL_ACTIONS RendererDispatchAction : public Action
+class RendererDispatchAction : public Action
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

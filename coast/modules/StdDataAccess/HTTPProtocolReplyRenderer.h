@@ -9,7 +9,6 @@
 #ifndef _HTTPProtocolReplyRenderer_H
 #define _HTTPProtocolReplyRenderer_H
 
-#include "config_stddataaccess.h"
 #include "Renderer.h"
 
 //---- HTTPProtocolReplyRenderer ----------------------------------------------------------
@@ -20,7 +19,7 @@
 //!   /ResponseCode 200     defaults to 200
 //!   /ResponseMsg "OK"     might use a lookup from some config to map ResponseMsg to a reason
 //! }
-class EXPORTDECL_STDDATAACCESS HTTPProtocolReplyRenderer : public Renderer
+class HTTPProtocolReplyRenderer : public Renderer
 {
 public:
 	//--- constructors

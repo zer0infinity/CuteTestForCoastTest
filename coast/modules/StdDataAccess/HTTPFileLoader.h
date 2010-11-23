@@ -10,11 +10,10 @@
 #define _HTTPFileLoader_H
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "ReadFileDAImpl.h"
 
 //! FIXME: DataAccess to be refactored soon, do not stray HTTP knowledge around everywhere...
-class EXPORTDECL_STDDATAACCESS HTTPFileLoader: public ReadFileDAImpl
+class HTTPFileLoader: public ReadFileDAImpl
 {
 public:
 	HTTPFileLoader(const char *name);

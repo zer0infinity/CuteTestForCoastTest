@@ -9,7 +9,6 @@
 #ifndef _NTLMAuthMessage_H
 #define _NTLMAuthMessage_H
 
-#include "config_ntlmauth.h"
 #include "ITOString.h"
 //---- NTLMAuthMessage ----------------------------------------------------------
 //! simple class wrapping NTLMAuthMessages
@@ -17,7 +16,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class EXPORTDECL_NTLMAUTH NTLMAuthMessage
+class NTLMAuthMessage
 {
 public:
 	//--- constructors
@@ -55,7 +54,7 @@ protected:
 	long DecodeShort(long pos);
 	String fMsg;
 };
-class EXPORTDECL_NTLMAUTH NTLMAuthClientMsgType1 : public NTLMAuthMessage
+class NTLMAuthClientMsgType1 : public NTLMAuthMessage
 {
 public:
 	NTLMAuthClientMsgType1(const String &binarybuffer)
@@ -66,7 +65,7 @@ public:
 	virtual String GetDomain();
 	virtual String GetHost();
 };
-class EXPORTDECL_NTLMAUTH NTLMAuthServerMsgType2 : public NTLMAuthMessage
+class NTLMAuthServerMsgType2 : public NTLMAuthMessage
 {
 public:
 	NTLMAuthServerMsgType2(const String &binarybuffer)
@@ -77,7 +76,7 @@ public:
 	virtual unsigned long	GetFlags();
 	virtual String GetNonce();
 };
-class EXPORTDECL_NTLMAUTH NTLMAuthClientMsgType3 : public NTLMAuthMessage
+class NTLMAuthClientMsgType3 : public NTLMAuthMessage
 {
 public:
 	NTLMAuthClientMsgType3(const String &binarybuffer)

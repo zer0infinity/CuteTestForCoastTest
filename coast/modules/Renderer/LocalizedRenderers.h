@@ -9,7 +9,6 @@
 #ifndef _LOCALIZEDRENDERERS_H
 #define _LOCALIZEDRENDERERS_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- LanguageSwitchRenderer --------------------------------------------------------------
@@ -33,7 +32,7 @@ to render.
 Therefore the tags in the config data passed to StringRenderer are arbitrary,
 depending on the choosen representation of the languages.
 */
-class EXPORTDECL_RENDERER LanguageSwitchRenderer : public Renderer
+class LanguageSwitchRenderer : public Renderer
 {
 public:
 	LanguageSwitchRenderer(const char *name);
@@ -61,7 +60,7 @@ specifications. There may be a performance advantage by using a StringRenderer
 instead of the more general LanguageSwitchRenderer, however a
 LanguageSwitchRenderer could always be used instead of a StringRenderer:
 */
-class EXPORTDECL_RENDERER StringRenderer : public Renderer
+class StringRenderer : public Renderer
 {
 public:
 	StringRenderer(const char *name);

@@ -10,7 +10,6 @@
 #define _StringUpperLowerRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- StringUpperLowerRenderer ----------------------------------------------------------
@@ -20,7 +19,7 @@
 //		/Value 	String to convert
 //      /Mode	upper or lower
 //	}</PRE>
-class EXPORTDECL_STRINGRENDERERS StringUpperLowerRenderer : public Renderer
+class StringUpperLowerRenderer : public Renderer
 {
 public:
 	//--- constructors

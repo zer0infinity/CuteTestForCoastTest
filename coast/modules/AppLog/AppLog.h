@@ -9,7 +9,6 @@
 #ifndef AppLog_H
 #define AppLog_H
 
-#include "config_applog.h"
 #include "WDModule.h"
 #include "Threads.h"
 
@@ -54,7 +53,7 @@ conveniently. The method of this class are called by Coast
 \endcode
 
 */
-class EXPORTDECL_APPLOG AppLogModule : public WDModule
+class AppLogModule : public WDModule
 {
 	friend class AppLogChannel;
 	friend class AppLogTest;
@@ -114,7 +113,7 @@ protected:
 	Anything fLogConnections;
 	ROAnything fROLogConnections;
 
-	class EXPORTDECL_APPLOG LogRotator : public Thread
+	class LogRotator : public Thread
 	{
 		friend class AppLogTest;
 	public:
@@ -166,7 +165,7 @@ During the rendering process of Format, the following fields exist in the Contex
 \endcode
 
 */
-class EXPORTDECL_APPLOG AppLogChannel : public RegisterableObject
+class AppLogChannel : public RegisterableObject
 {
 	friend class AppLogTest;
 	// use careful, you inhibit subclass use

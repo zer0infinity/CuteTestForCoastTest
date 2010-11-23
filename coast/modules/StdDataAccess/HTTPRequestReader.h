@@ -9,7 +9,6 @@
 #ifndef _REQUESTREADER_H
 #define _REQUESTREADER_H
 
-#include "config_stddataaccess.h"
 #include "Anything.h"
 #include <iosfwd>
 
@@ -18,7 +17,7 @@ class Context;
 
 //--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
-class EXPORTDECL_STDDATAACCESS HTTPRequestReader
+class HTTPRequestReader
 {
 public:
 	//!reads request from ios on behalf of processor

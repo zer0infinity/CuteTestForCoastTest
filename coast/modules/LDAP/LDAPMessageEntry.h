@@ -10,12 +10,11 @@
 #define _LDAPMessageEntry_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_LDAPDA.h"
 #include "LDAPAPI.h"
 
 //---- LDAPMessageEntry ---------------------------------------------------
 //! Automatic destruction of LDAPMessage struct
-class EXPORTDECL_LDAPDA LDAPMessageEntry
+class LDAPMessageEntry
 {
 public:
 	//!Sets the LDAPMessage pointer to pointer in the constructor

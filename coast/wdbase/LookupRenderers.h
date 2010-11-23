@@ -9,7 +9,6 @@
 #ifndef _LOOKUPRENDERERS_H
 #define _LOOKUPRENDERERS_H
 
-#include "config_wdbase.h"
 #include "Renderer.h"
 
 //---- LookupRenderer -------------------------------------------------------
@@ -46,7 +45,7 @@ be used to dynamically create some page content using the data.)
 
 Subclasses of LookupRenderer are supposed to override the method DoLookup() to define how the data is actually retrieved.
 */
-class EXPORTDECL_WDBASE LookupRenderer : public Renderer
+class LookupRenderer : public Renderer
 {
 public:
 	/*! standard named object constructor
@@ -87,7 +86,7 @@ or just
 }
 \endcode
 */
-class EXPORTDECL_WDBASE ContextLookupRenderer : public LookupRenderer
+class ContextLookupRenderer : public LookupRenderer
 {
 public:
 	/*! standard named object constructor
@@ -122,7 +121,7 @@ or just
 }
 \endcode
 */
-class EXPORTDECL_WDBASE StoreLookupRenderer : public LookupRenderer
+class StoreLookupRenderer : public LookupRenderer
 {
 public:
 	/*! standard named object constructor
@@ -157,7 +156,7 @@ or just
 }
 \endcode
 \note The query is not included using an ordinary ContextLookupRenderer */
-class EXPORTDECL_WDBASE QueryLookupRenderer : public LookupRenderer
+class QueryLookupRenderer : public LookupRenderer
 {
 public:
 	/*! standard named object constructor

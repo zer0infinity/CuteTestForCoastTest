@@ -9,14 +9,13 @@
 #ifndef BackendConfigLoader_H
 #define BackendConfigLoader_H
 
-#include "config_BackendConfigLoader.h"
 #include "WDModule.h"
 
 class Context;
 
 //---- BackendConfigLoaderModule -----------------------------------------------------------
 
-class EXPORTDECL_BACKENDCONFIGLOADER BackendConfigLoaderModule : public WDModule
+class BackendConfigLoaderModule : public WDModule
 {
 	friend class BackendConfigLoaderTest;
 public:

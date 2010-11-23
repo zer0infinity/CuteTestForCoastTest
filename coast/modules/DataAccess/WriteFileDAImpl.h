@@ -10,7 +10,6 @@
 #define _WriteFileDAImpl_H
 
 //--- superclass interface ---
-#include "config_dataaccess.h"
 #include "FileDAImpl.h"
 
 //---- WriteFileDAImpl ----------------------------------------------------------
@@ -29,7 +28,7 @@
 	/FileContent	Mapperspec		optional, store the content of this slot into the file
 }
 */
-class EXPORTDECL_DATAACCESS WriteFileDAImpl: public FileDAImpl
+class WriteFileDAImpl: public FileDAImpl
 {
 public:
 	WriteFileDAImpl(const char *name);

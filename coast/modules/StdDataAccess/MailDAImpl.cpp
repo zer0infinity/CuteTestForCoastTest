@@ -19,7 +19,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //--- SMTPState -----------------
-class EXPORTDECL_STDDATAACCESS SMTPState: public NotCloned
+class SMTPState: public NotCloned
 {
 // abstract base class for communication states
 public:
@@ -77,7 +77,7 @@ protected:
 	RegCacheDef(SMTPState);
 };
 
-class EXPORTDECL_STDDATAACCESS MailFROMState: public SMTPState
+class MailFROMState: public SMTPState
 {
 public:
 	MailFROMState(const char *name);
@@ -90,7 +90,7 @@ public:
 	}
 };
 
-class EXPORTDECL_STDDATAACCESS MailSTARTState: public SMTPState
+class MailSTARTState: public SMTPState
 {
 public:
 	MailSTARTState(const char *name);
@@ -105,7 +105,7 @@ public:
 	}
 };
 
-class EXPORTDECL_STDDATAACCESS MailRCPTState: public SMTPState
+class MailRCPTState: public SMTPState
 {
 public:
 	MailRCPTState(const char *name);
@@ -119,7 +119,7 @@ public:
 
 };
 
-class EXPORTDECL_STDDATAACCESS MailDATAState: public SMTPState
+class MailDATAState: public SMTPState
 {
 public:
 	MailDATAState(const char *name);
@@ -138,7 +138,7 @@ public:
 	}
 };
 
-class EXPORTDECL_STDDATAACCESS MailSENDState: public SMTPState
+class MailSENDState: public SMTPState
 {
 public:
 	MailSENDState(const char *name);
@@ -157,7 +157,7 @@ protected:
 	static const String BOUNDARY;
 };
 
-class EXPORTDECL_STDDATAACCESS MailERRORState: public SMTPState
+class MailERRORState: public SMTPState
 {
 public:
 	MailERRORState(const char *name);
@@ -171,7 +171,7 @@ public:
 	}
 };
 
-class EXPORTDECL_STDDATAACCESS MailQUITState: public SMTPState
+class MailQUITState: public SMTPState
 {
 public:
 	MailQUITState(const char *name);
@@ -189,7 +189,7 @@ public:
 
 };
 
-class EXPORTDECL_STDDATAACCESS MailENDState: public SMTPState
+class MailENDState: public SMTPState
 {
 public:
 	MailENDState(const char *name) : SMTPState(name) {};
@@ -211,7 +211,7 @@ public:
 	}
 };
 
-class EXPORTDECL_STDDATAACCESS SMTPStateInstaller
+class SMTPStateInstaller
 {
 public:
 	SMTPStateInstaller(const char *name, SMTPState *s);

@@ -9,7 +9,6 @@
 #ifndef _AnythingContentRenderer_H
 #define _AnythingContentRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- AnythingContentRenderer -----------------------------------------------------------
@@ -29,7 +28,7 @@
 }
 \endcode
 */
-class EXPORTDECL_RENDERER AnythingContentRenderer : public Renderer
+class AnythingContentRenderer : public Renderer
 {
 public:
 	AnythingContentRenderer(const char *name);

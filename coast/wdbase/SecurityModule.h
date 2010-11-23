@@ -9,7 +9,6 @@
 #ifndef _SecurityModule_H
 #define _SecurityModule_H
 
-#include "config_wdbase.h"
 #include "WDModule.h"
 #include "Threads.h"
 
@@ -19,7 +18,7 @@ class TRXContext;
 class String;
 
 //---- Scrambler -----------------------------------------------------------
-class EXPORTDECL_WDBASE SecurityItem: public HierarchConfNamed
+class SecurityItem: public HierarchConfNamed
 {
 public:
 	SecurityItem(const char *name) : HierarchConfNamed(name) { }
@@ -69,7 +68,7 @@ private:
 	SecurityItem &operator=(const SecurityItem &);
 };
 
-class EXPORTDECL_WDBASE Scrambler :  public SecurityItem
+class Scrambler :  public SecurityItem
 {
 public:
 	Scrambler(const char *name);
@@ -94,7 +93,7 @@ private:
 	Scrambler &operator=(const Scrambler &);
 };
 
-class EXPORTDECL_WDBASE Signer :  public SecurityItem
+class Signer :  public SecurityItem
 {
 public:
 	Signer();
@@ -120,7 +119,7 @@ private:
 };
 
 //---- Encoder -----------------------------------------------------------
-class EXPORTDECL_WDBASE Encoder : public SecurityItem
+class Encoder : public SecurityItem
 {
 public:
 	Encoder(const char *name);
@@ -144,7 +143,7 @@ private:
 };
 
 //---- Compressor -----------------------------------------------------------
-class EXPORTDECL_WDBASE Compressor :  public SecurityItem
+class Compressor :  public SecurityItem
 {
 public:
 	Compressor(const char *name);
@@ -176,7 +175,7 @@ private:
 };
 
 //---- SecurityModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE SecurityModule : public WDModule
+class SecurityModule : public WDModule
 {
 public:
 	// Module methods

@@ -16,7 +16,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 // Utilities ---
-class EXPORTDECL_STDDATAACCESS TagToken
+class TagToken
 {
 public:
 	TagToken(String Tag): fTag(Tag) {};
@@ -48,7 +48,7 @@ private:
 	String fTag;
 };
 
-class EXPORTDECL_STDDATAACCESS XMLTagParser
+class XMLTagParser
 {
 public:
 	XMLTagParser() {};

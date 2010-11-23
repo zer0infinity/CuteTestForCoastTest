@@ -10,8 +10,7 @@
 #define _MultifunctionListBoxRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_HTMLRenderers.h"
-#include "FormRenderer.h"
+ #include "FormRenderer.h"
 
 //---- MultifunctionListBoxRenderer ----------------------------------------------------------
 //! comment Renderer
@@ -170,7 +169,7 @@
 		...
 	}
 */
-class EXPORTDECL_HTMLRENDERERS MultifunctionListBoxRenderer : public SelectBoxRenderer
+class MultifunctionListBoxRenderer : public SelectBoxRenderer
 {
 public:
 	//--- constructors
@@ -226,7 +225,7 @@ private:
 };
 
 //---- HeaderListRenderer -----------------------------------------------------------
-class EXPORTDECL_HTMLRENDERERS HeaderListRenderer : public ListRenderer
+class HeaderListRenderer : public ListRenderer
 {
 public:
 	HeaderListRenderer(const char *name) : ListRenderer(name) {};

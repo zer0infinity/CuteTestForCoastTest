@@ -7,7 +7,6 @@ buildSettings = {
         'linkDependencies' : ['oracle.oracle', 'CoastDataAccess'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['COASTORACLE_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         },

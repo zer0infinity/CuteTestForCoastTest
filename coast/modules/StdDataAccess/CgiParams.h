@@ -10,12 +10,11 @@
 #define _CGIParams_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_stddataaccess.h"
 #include "URI2FileNameMapper.h"
 
 //---- CgiParams ----------------------------------------------------------
 //! obtain CGI parameters
-class EXPORTDECL_STDDATAACCESS CgiParams : public URI2FileNameMapper
+class CgiParams : public URI2FileNameMapper
 {
 public:
 	//--- constructors

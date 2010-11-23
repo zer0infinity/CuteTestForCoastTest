@@ -9,7 +9,6 @@
 #ifndef _NullParameterMapper_H
 #define _NullParameterMapper_H
 
-#include "config_coastoracle.h"
 #include "Mapper.h"
 
 //---- NullParameterMapper ----------------------------------------------------------
@@ -46,7 +45,7 @@
 \endcode
  *
  */
-class EXPORTDECL_COASTORACLE NullParameterMapper : public ParameterMapper
+class NullParameterMapper : public ParameterMapper
 {
 public:
 	/*! Default registering ctor using a unique name to register mapper with

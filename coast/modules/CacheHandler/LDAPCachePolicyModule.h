@@ -10,11 +10,10 @@
 #define _LdapCachePolicyModule_H
 
 //---- WDModule include -------------------------------------------------
-#include "config_cache.h"
 #include "CacheHandler.h"
 
 //--- LdapDataAccessLoader -----------------------------------------------
-class EXPORTDECL_CACHE LdapDataAccessLoader : public CacheLoadPolicy
+class LdapDataAccessLoader : public CacheLoadPolicy
 {
 public:
 	LdapDataAccessLoader();
@@ -28,7 +27,7 @@ private:
 };
 
 //--- LdapActionLoder --------------------------------------------------
-class EXPORTDECL_CACHE LdapActionLoader : public CacheLoadPolicy
+class LdapActionLoader : public CacheLoadPolicy
 {
 public:
 	LdapActionLoader();
@@ -49,7 +48,7 @@ private:
 //! <PRE> { /LdapDataAccessAction { DA1Action DA2Action }
 //! }</PRE>
 //! This allows you to define multiple ldap queries to be cached on initialization.
-class EXPORTDECL_CACHE LdapCachePolicyModule : public WDModule
+class LdapCachePolicyModule : public WDModule
 {
 public:
 	enum EDataAccessType { dataaccess, action };
@@ -70,7 +69,7 @@ private:
 //! Get("TestDA1",:0.DN");
 //! See test cases more examples.
 
-class EXPORTDECL_CACHE LdapCacheGetter : public LookupInterface
+class LdapCacheGetter : public LookupInterface
 {
 public:
 	LdapCacheGetter(const String &da);

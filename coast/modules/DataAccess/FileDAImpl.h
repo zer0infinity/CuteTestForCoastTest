@@ -10,7 +10,6 @@
 #define _FileDAImpl_H
 
 //--- superclass interface ---
-#include "config_dataaccess.h"
 #include "DataAccessImpl.h"
 #include "SystemFile.h"
 
@@ -31,7 +30,7 @@
 }
 </PRE>
 */
-class EXPORTDECL_DATAACCESS FileDAImpl: public DataAccessImpl
+class FileDAImpl: public DataAccessImpl
 {
 public:
 	FileDAImpl(const char *name);

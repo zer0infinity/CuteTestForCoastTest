@@ -9,13 +9,12 @@
 #ifndef _base64_h_
 #define _base64_h_
 
-#include "config_security.h"
 #include "SecurityModule.h"
 
 //---- Base64 -----------------------------------------------------------
 //! Coasts Base64 encoding with the default URL style using -$ instead
 /*! registered as Base64 and b64 */
-class EXPORTDECL_SECURITY Base64 :  public Encoder
+class Base64 :  public Encoder
 {
 public:
 	Base64(const char *name): Encoder(name) {}
@@ -46,7 +45,7 @@ private:
 
 //! normal Base64 encoding as used everywhere else (except inserting newlines)
 /*! registered as Base64Regular and b64r */
-class EXPORTDECL_SECURITY Base64Regular :  public Base64
+class Base64Regular :  public Base64
 {
 public:
 	Base64Regular(const char *name): Base64(name) {}

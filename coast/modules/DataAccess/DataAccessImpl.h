@@ -9,7 +9,6 @@
 #ifndef _DataAccessImpl_H
 #define _DataAccessImpl_H
 
-#include "config_dataaccess.h"
 #include "Mapper.h"
 
 class Registry;
@@ -43,7 +42,7 @@ class Registry;
  * @subsection DataAccessImplsModuleAssumptions Assumptions
     The transaction name is unique in the system.
  */
-class EXPORTDECL_DATAACCESS DataAccessImplsModule : public WDModule
+class DataAccessImplsModule : public WDModule
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -59,7 +58,7 @@ public:
 /*! Concrete classes need to implement the Exec() function and perform the access in one call.
  * Parameters needed to configure the data access operation should be retrieved using the supplied ParameterMapper,
  * results should be stored away using the supplied ResultMapper. */
-class EXPORTDECL_DATAACCESS DataAccessImpl : public HierarchConfNamed
+class DataAccessImpl : public HierarchConfNamed
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -119,7 +118,7 @@ private:
 }
 @endcode
  */
-class EXPORTDECL_DATAACCESS LoopBackDAImpl: public DataAccessImpl
+class LoopBackDAImpl: public DataAccessImpl
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

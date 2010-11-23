@@ -9,7 +9,6 @@
 #ifndef _FirstNonEmptyRenderer_H
 #define _FirstNonEmptyRenderer_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- FirstNonEmptyRenderer ----------------------------------------------------------
@@ -37,7 +36,7 @@
 \endcode
  * In this example the second slot ["this slot is not empty"] will be output because the first one is empty.
 */
-class EXPORTDECL_RENDERER FirstNonEmptyRenderer : public Renderer
+class FirstNonEmptyRenderer : public Renderer
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

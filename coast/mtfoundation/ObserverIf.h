@@ -9,7 +9,6 @@
 #ifndef _ObserverIf_H
 #define _ObserverIf_H
 
-#include "config_mtfoundation.h"
 #include <algorithm>
 #include <list>
 
@@ -24,7 +23,7 @@ template
 typename TObservedType,
 		 typename TArgs
 		 >
-class EXPORTDECL_MTFOUNDATION Observable
+class Observable
 {
 	friend class ThreadPoolTest;
 	SimpleMutex fObserversMutex;
@@ -32,7 +31,7 @@ public:
 	typedef TObservedType *tObservedPtr;
 	typedef TArgs tArgsRef;
 
-	class EXPORTDECL_MTFOUNDATION Observer
+	class Observer
 	{
 	public:
 		//--- constructors

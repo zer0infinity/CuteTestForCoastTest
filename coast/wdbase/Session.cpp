@@ -23,7 +23,7 @@
 #include "Dbg.h"
 #include "AnythingUtils.h"
 
-class EXPORTDECL_WDBASE AccessTimer
+class AccessTimer
 {
 public:
 	Session *fSession;

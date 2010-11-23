@@ -10,7 +10,6 @@
 #define _sslapi_h
 
 //--- c-library modules used ---------------------------------------------------
-#include "config_ssl.h"
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>

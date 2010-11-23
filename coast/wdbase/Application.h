@@ -9,13 +9,12 @@
 #ifndef _Application_H
 #define _Application_H
 
-#include "config_wdbase.h"
 #include "IFAConfObject.h"
 #include "Threads.h"
 
 //---- Application -----------------------------------------------------------
 //! life-cycle of an application: Init - Run - Terminate
-class EXPORTDECL_WDBASE Application : public HierarchConfNamed
+class Application : public HierarchConfNamed
 {
 	friend class ServerThread;
 public:

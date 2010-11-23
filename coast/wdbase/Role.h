@@ -9,7 +9,6 @@
 #ifndef _ROLE_H
 #define _ROLE_H
 
-#include "config_wdbase.h"
 #include "WDModule.h"
 
 //---- forward declaration -----------------------------------------------
@@ -17,7 +16,7 @@ class Session;
 class Context;
 
 //---- RolesModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE RolesModule : public WDModule
+class RolesModule : public WDModule
 {
 public:
 	RolesModule(const char *name);
@@ -36,7 +35,7 @@ If it fails, reauthentication is required before processing the request.
 It manages the possible navigation paths a user can have according to his authentication levels.
 The default algorithm in GetNewPageName uses a Map defined in the role's configuration.
 This configuration defines mappings from a transition token to a new page name, optionally defining a preprocess action */
-class EXPORTDECL_WDBASE Role : public HierarchConfNamed
+class Role : public HierarchConfNamed
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */

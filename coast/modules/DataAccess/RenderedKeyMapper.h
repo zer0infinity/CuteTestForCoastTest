@@ -9,8 +9,6 @@
 #ifndef _RenderedKeyMapper_H
 #define _RenderedKeyMapper_H
 
-#include "config_dataaccess.h"
-
 //---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
@@ -27,7 +25,7 @@
 
 The value Anything to put will be temporarily pushed onto the context to allow lookups within.
 */
-class EXPORTDECL_DATAACCESS RenderedKeyMapper : public ResultMapper
+class RenderedKeyMapper : public ResultMapper
 {
 public:
 	//--- constructors
@@ -63,7 +61,7 @@ private:
 
 The value Anything to put will be temporarily pushed onto the context to allow lookups within.
 */
-class EXPORTDECL_DATAACCESS RenderedKeyParameterMapper : public ParameterMapper
+class RenderedKeyParameterMapper : public ParameterMapper
 {
 public:
 	//--- constructors

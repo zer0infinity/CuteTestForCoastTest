@@ -9,7 +9,6 @@
 #ifndef _MT_Storage_H
 #define _MT_Storage_H
 
-#include "config_mtfoundation.h"
 #include "SystemAPI.h"
 #include "MemHeader.h"
 #include "ITOStorage.h"
@@ -17,7 +16,7 @@
 class SimpleMutex;
 
 //! multithreading safe memory allocation tracker
-class EXPORTDECL_MTFOUNDATION MT_MemTracker : public MemTracker
+class MT_MemTracker : public MemTracker
 {
 public:
 	//!creates system dependent mutex to provide locking without allocation of strings
@@ -43,7 +42,7 @@ protected:
 };
 
 //!Multi Threading aware storage management using thread local store pools
-class EXPORTDECL_MTFOUNDATION MT_Storage
+class MT_Storage
 {
 public:
 	/*! allocates a pool allocator which is used as thread local store

@@ -9,11 +9,10 @@
 #ifndef _RequestLineRenderer_H
 #define _RequestLineRenderer_H
 
-#include "config_perftest.h"
 #include "Renderer.h"
 
 //---- RequestLineRenderer -----------------------------------------------------------
-class EXPORTDECL_PERFTEST RequestLineRenderer : public Renderer
+class RequestLineRenderer : public Renderer
 {
 public:
 	RequestLineRenderer(const char *name);

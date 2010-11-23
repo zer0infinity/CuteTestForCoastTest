@@ -21,7 +21,7 @@ class Thread;
 /*! Implementation of Dijkstra semaphore
 This is a simple wrapper for native semaphore implementations
 */
-class EXPORTDECL_MTFOUNDATION Semaphore
+class Semaphore
 {
 public:
 	Semaphore(unsigned i_nCount);
@@ -60,7 +60,7 @@ private:
 };
 
 //!helper class to Acquire and Release Semaphores automatically in scope
-class EXPORTDECL_MTFOUNDATION SemaphoreEntry
+class SemaphoreEntry
 {
 public:
 	/*! Acquires the semaphore
@@ -79,7 +79,7 @@ class SimpleCondition;
 //---- Mutex ------------------------------------------------------------
 /*! <b>mutual exclusion lock, wrapper for nativ system service</b>
 recursive call from the same thread means deadlock! */
-class EXPORTDECL_MTFOUNDATION SimpleMutex
+class SimpleMutex
 {
 	friend class SimpleCondition;
 public:
@@ -125,7 +125,7 @@ class Condition;
 /*! <b>mutual exclusion lock, wrapper for nativ system service adding recursive lock feature</b>
 it is possible to call lock from the same thread without deadlock.
 \note you have to call unlock as many times as you have called lock */
-class EXPORTDECL_MTFOUNDATION Mutex
+class Mutex
 {
 	friend class Condition;
 	friend class MutexInitializer;
@@ -207,7 +207,7 @@ private:
 
 //---- SimpleCondition --------------------------------------------------------------
 //!native condition variable api wrapper implementing the common condition variable operations wait, signal and broadcast
-class EXPORTDECL_MTFOUNDATION SimpleCondition
+class SimpleCondition
 {
 public:
 	typedef SimpleMutex MutexType;
@@ -246,7 +246,7 @@ private:
 
 //---- Condition --------------------------------------------------------------
 //!native condition variable api wrapper implementing the common condition variable operations wait, signal and broadcast
-class EXPORTDECL_MTFOUNDATION Condition
+class Condition
 {
 public:
 	typedef Mutex MutexType;
@@ -284,7 +284,7 @@ private:
 
 //---- RWLock ------------------------------------------------------------
 //! read/write lock, wrapper for nativ system service
-class EXPORTDECL_MTFOUNDATION RWLock
+class RWLock
 {
 public:
 	enum eLockMode {
@@ -484,7 +484,7 @@ public:
 
 //---- CleanupHandler ------------------------------------------------------------
 //!subclasses may be defined to perform cleanup in thread specific storage while thread is still alive. CleanupHandlers are supposed to be singletons..
-class EXPORTDECL_MTFOUNDATION CleanupHandler
+class CleanupHandler
 {
 public:
 	//!Constructor does nothing
@@ -504,7 +504,7 @@ protected:
 //! utility class used for proper destruction of thread local storage
 /*!destruction of thread local store belonging to a thread has to take place at the very
 last moment possible; but it has to be done; it is the only task of this class */
-class EXPORTDECL_MTFOUNDATION AllocatorUnref
+class AllocatorUnref
 {
 public:
 	//!stores away the thread the object is working for
@@ -524,7 +524,7 @@ protected:
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
 With this means it is possible to reliably control starting and stopping of a thread */
-class EXPORTDECL_MTFOUNDATION Thread : public NamedObject, public Observable<Thread, ROAnything>
+class Thread : public NamedObject, public Observable<Thread, ROAnything>
 {
 	typedef Observable<Thread, ROAnything> tObservableBase;
 public:
@@ -828,7 +828,7 @@ private:
 	friend class AllocatorUnref;
 #if defined(WIN32)
 	friend BOOL WINAPI DllMain(HANDLE, DWORD, LPVOID);
-	friend void EXPORTDECL_MTFOUNDATION TerminateKilledThreads();
+	friend void TerminateKilledThreads();
 #endif
 };
 

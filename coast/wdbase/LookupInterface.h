@@ -10,7 +10,6 @@
 #define _LookupInterface_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 
 class ROAnything;
 
@@ -18,7 +17,7 @@ class ROAnything;
 //! Define client API for lookupable context information
 /*! public members define the lookup protocol for clients, protected members define implementation protocol for subclasses
  * The information can be addressed by a Anything::LookupPath() path expression. */
-class EXPORTDECL_WDBASE LookupInterface
+class LookupInterface
 {
 public:
 	LookupInterface() {};

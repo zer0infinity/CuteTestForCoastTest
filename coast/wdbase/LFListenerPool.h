@@ -9,7 +9,6 @@
 #ifndef _LFListenerPool_h_
 #define _LFListenerPool_h_
 
-#include "config_wdbase.h"
 #include "LeaderFollowerPool.h"
 
 class Acceptor;
@@ -21,7 +20,7 @@ class WPMStatHandler;
 
 //---- LFListenerPool -----------------------------------------------------------
 //! Leader Follower implementation for socket connection dispatching and request processing
-class EXPORTDECL_WDBASE LFListenerPool : public LeaderFollowerPool
+class LFListenerPool : public LeaderFollowerPool
 {
 public:
 	//!configure LeaderFollowerPool with request reactor
@@ -51,7 +50,7 @@ public:
 
 //--- RequestReactor -------------
 //!dispatcher of socket connection requests
-class EXPORTDECL_WDBASE RequestReactor: public Reactor, public StatGatherer
+class RequestReactor: public Reactor, public StatGatherer
 {
 public:
 	//!takes Request processor and WPMStatHandler as strategies for request processing with regard to protocol (e.g. http) and statistics

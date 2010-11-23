@@ -23,7 +23,7 @@ class RWLock;
 //! requests should be processed.
 //! RequestBlocker is used by the server.
 
-class EXPORTDECL_WDBASE RequestBlocker: public WDModule
+class RequestBlocker: public WDModule
 {
 public:
 	//!it exists only one since it is a not cloned

@@ -9,12 +9,11 @@
 #ifndef _HTTPStreamStack_H
 #define _HTTPStreamStack_H
 
-#include "config_wdbase.h"
 #include "StringStream.h"
 
 //---- HTTPStreamStack ----------------------------------------------------------
 //! Helper class to handle chunked and gzip encoding of http bodys.
-class EXPORTDECL_WDBASE HTTPStreamStack
+class HTTPStreamStack
 {
 public:
 	//! Creates a stack of ostreams to stream out an http body.

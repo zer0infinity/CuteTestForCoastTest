@@ -11,13 +11,12 @@
 
 //---- baseclass include -------------------------------------------------
 #include "ITOString.h"
-#include "config_http.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- BasicAuthenticationData ----------------------------------------------------------
 //! Decoder for HTTP Basic authentication scheme
-class EXPORTDECL_HTTP BasicAuthenticationData
+class BasicAuthenticationData
 {
 public:
 	BasicAuthenticationData(const String &authorizationHeaderValue);

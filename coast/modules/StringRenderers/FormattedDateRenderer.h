@@ -10,7 +10,6 @@
 #define _FormattedDateRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- FormattedDateRenderer ----------------------------------------------------------
@@ -19,7 +18,7 @@
 //<PRE>	{
 //		/Value		Rendererspec	String to be rendered
 //	}</PRE>
-class EXPORTDECL_STRINGRENDERERS FormattedDateRenderer : public Renderer
+class FormattedDateRenderer : public Renderer
 {
 public:
 	//--- constructors

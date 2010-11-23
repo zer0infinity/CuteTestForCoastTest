@@ -9,7 +9,6 @@
 #ifndef _CONTEXT_H
 #define _CONTEXT_H
 
-#include "config_wdbase.h"
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "AnyLookupInterfaceAdapter.h"
@@ -22,7 +21,7 @@ class Socket;
 
 //---- Context -------------------------------------------------------------------
 //!Request Context object that contains read only configuration information and read writable stores
-class EXPORTDECL_WDBASE Context : public virtual LookupInterface
+class Context : public virtual LookupInterface
 {
 public:
 	//! empty constructor useful for testcases and to add elements later on
@@ -382,7 +381,7 @@ private:
 	friend class TestSequence;
 };
 
-class EXPORTDECL_WDBASE SessionReleaser
+class SessionReleaser
 {
 public:
 	SessionReleaser(Context &c): fContext(c) {

@@ -10,7 +10,6 @@
 #define _LDAPConnectionManager_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_LDAPDA.h"
 #include "WDModule.h"
 #include "Threads.h"
 #include "ldap.h"
@@ -82,7 +81,7 @@ On termination, all allocated structures are freed.
 }
 \endcode
 */
-class EXPORTDECL_LDAPDA LDAPConnectionManager: public WDModule
+class LDAPConnectionManager: public WDModule
 {
 public:
 	static THREADKEY fgErrnoKey;

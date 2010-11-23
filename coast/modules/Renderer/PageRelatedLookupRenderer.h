@@ -9,7 +9,6 @@
 #ifndef _PageRelatedLookupRenderer_H
 #define _PageRelatedLookupRenderer_H
 
-#include "config_renderer.h"
 #include "LookupRenderers.h"
 
 //---- PageRelatedLookupRenderer --------------------------------------------------------------
@@ -63,7 +62,7 @@ Entries in the LocalizedStrings.any file might look like this:
 }
 \endcode
 */
-class EXPORTDECL_RENDERER PageRelatedLookupRenderer : public LookupRenderer
+class PageRelatedLookupRenderer : public LookupRenderer
 {
 public:
 	PageRelatedLookupRenderer(const char *name);

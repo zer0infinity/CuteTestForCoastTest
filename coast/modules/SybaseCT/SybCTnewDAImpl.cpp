@@ -392,7 +392,7 @@ bool SybCTnewDAImpl::CheckCloseOpenedConnections(long lTimeout)
 
 //---- SybCheckCloseOpenedConnectionsAction ----------------------------------------------------------
 //: triggers cleanup of open but unused sybase connections
-class EXPORTDECL_SYBASECT SybCheckCloseOpenedConnectionsAction : public Action
+class SybCheckCloseOpenedConnectionsAction : public Action
 {
 public:
 	//--- constructors

@@ -9,14 +9,13 @@
 #ifndef _ADMINACTIONS_H
 #define _ADMINACTIONS_H
 
-#include "config_actions.h"
 #include "Action.h"
 
 //---- ServerManagement ----------------------------------------------------------------
 //@{ \deprecated
 //! Executes a server command.
 //@}
-class EXPORTDECL_ACTIONS ServerManagement : public Action
+class ServerManagement : public Action
 {
 public:
 	ServerManagement(const char *name);

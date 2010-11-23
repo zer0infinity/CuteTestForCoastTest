@@ -9,7 +9,6 @@
 #ifndef _DataAccessStresser_h_
 #define _DataAccessStresser_h_
 
-#include "config_perftest.h"
 #include "Stresser.h"
 
 //---- DataAccessStresser -----------------------------------------------------------
@@ -28,7 +27,7 @@
 \endcode
 
 */
-class EXPORTDECL_PERFTEST DataAccessStresser : public Stresser
+class DataAccessStresser : public Stresser
 {
 public:
 	/*! Ctor of this Stresser

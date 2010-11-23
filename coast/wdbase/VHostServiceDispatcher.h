@@ -9,10 +9,9 @@
 #ifndef VHOSTSERVICEDISPATCHER_H_
 #define VHOSTSERVICEDISPATCHER_H_
 
-#include "config_wdbase.h"
 #include "ServiceDispatcher.h"
 
-class EXPORTDECL_WDBASE VHostServiceDispatcher: public RendererDispatcher
+class VHostServiceDispatcher: public RendererDispatcher
 {
 public:
 	VHostServiceDispatcher(const char *dispatcherName);

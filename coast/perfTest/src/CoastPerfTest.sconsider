@@ -9,7 +9,6 @@ buildSettings = {
         'linkDependencies' : ['CoastDataAccess', 'CoastSSL'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['PERFTEST_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         },

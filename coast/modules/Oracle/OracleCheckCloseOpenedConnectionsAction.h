@@ -9,7 +9,6 @@
 #ifndef ORACLECHECKCLOSEOPENEDCONNECTIONSACTION_H_
 #define ORACLECHECKCLOSEOPENEDCONNECTIONSACTION_H_
 
-#include "config_coastoracle.h"
 #include "Action.h"
 
 //---- OracleCheckCloseOpenedConnectionsAction ----------------------------------------------------------
@@ -18,7 +17,7 @@
  * The action will get called from within a PeriodicAction through its registered name.
  * The setup of the PeriodicAction is done in Coast::Oracle::ConnectionPool::Init.
  */
-class EXPORTDECL_COASTORACLE OracleCheckCloseOpenedConnectionsAction : public Action
+class OracleCheckCloseOpenedConnectionsAction : public Action
 {
 public:
 	/*! Default ctor using a name

@@ -9,7 +9,6 @@
 #ifndef _WDMODULE_H
 #define _WDMODULE_H
 
-#include "config_wdbase.h"
 #include "IFAConfObject.h"
 
 class Registry;
@@ -22,7 +21,7 @@ class Server;
  * static api supports installation, termination and resets of configured extensions
  * WDModule components are singletons since they are not cloned
  */
-class EXPORTDECL_WDBASE WDModule: public NotCloned
+class WDModule: public NotCloned
 {
 public:
 	//!standard named object constructor

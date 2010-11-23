@@ -9,7 +9,6 @@
 #ifndef _HTTPPROCESSOR_H
 #define _HTTPPROCESSOR_H
 
-#include "config_stddataaccess.h"
 #include "RequestProcessor.h"
 
 class Context;
@@ -17,7 +16,7 @@ class MIMEHeader;
 
 //--- HTTPProcessor ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
-class EXPORTDECL_STDDATAACCESS HTTPProcessor : public RequestProcessor
+class HTTPProcessor : public RequestProcessor
 {
 public:
 	HTTPProcessor(const char *processorName) :

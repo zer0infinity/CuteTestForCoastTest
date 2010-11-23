@@ -9,7 +9,6 @@
 #ifndef _CACHEHANDLER_H
 #define _CACHEHANDLER_H
 
-#include "config_wdbase.h"
 #include "WDModule.h"
 
 class Mutex;
@@ -17,7 +16,7 @@ class Mutex;
 //---- CacheHandlerModule -----------------------------------------------------------
 //! <B>Initializes the global caching structures</B><BR>Configuration: -
 //! This Module should be initialized at first to ensure proper functionality of dependent modules
-class EXPORTDECL_WDBASE CacheHandlerModule : public WDModule
+class CacheHandlerModule : public WDModule
 {
 public:
 	CacheHandlerModule(const char *name);
@@ -56,7 +55,7 @@ public:
     Cache is uniquely identified by Group/Key pair
   Assumptions_End
 ****/
-class EXPORTDECL_WDBASE CacheLoadPolicy
+class CacheLoadPolicy
 {
 public:
 	CacheLoadPolicy();
@@ -66,7 +65,7 @@ public:
 };
 
 //--- SimpleAnyLoader -----------------------------------------------
-class EXPORTDECL_WDBASE SimpleAnyLoader : public CacheLoadPolicy
+class SimpleAnyLoader : public CacheLoadPolicy
 {
 public:
 	SimpleAnyLoader();
@@ -77,7 +76,7 @@ public:
 
 //--- AnythingLoaderPolicy -----------------------------------------------
 //! Dummy policy wrap an Anything to cache
-class EXPORTDECL_WDBASE AnythingLoaderPolicy : public CacheLoadPolicy
+class AnythingLoaderPolicy : public CacheLoadPolicy
 {
 public:
 	AnythingLoaderPolicy(const Anything &anyToCache);
@@ -119,7 +118,7 @@ private:
     Cache is uniquely identified by Group/Key pair
   Assumptions_End
 ****/
-class EXPORTDECL_WDBASE CacheHandler : public NotCloned
+class CacheHandler : public NotCloned
 {
 	friend class CacheHandlerMutexAllocator;
 

@@ -66,7 +66,7 @@ bool Stresser::DoLoadConfig(const char *category)
 }
 
 // Provide a dummy Stresser that only stresses itself to do some testing with it
-class EXPORTDECL_PERFTEST DummyStresser: public Stresser
+class DummyStresser: public Stresser
 {
 public:
 	DummyStresser(const char *StresserName)

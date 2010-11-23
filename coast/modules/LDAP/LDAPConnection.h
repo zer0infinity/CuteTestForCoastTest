@@ -10,7 +10,6 @@
 #define _LDAPConnection_H
 
 //---- baseclass include --------------------------------------------------
-#include "config_LDAPDA.h"
 #include "LDAPErrorHandler.h"
 
 //---- LDAPConnection ----------------------------------------------------------
@@ -30,7 +29,7 @@
 //!	/MapUTF8			Translate string results to html-escape sequences. Default is yes.
 //!
 
-class EXPORTDECL_LDAPDA LDAPConnection
+class LDAPConnection
 {
 public:
 	enum EConnectState { eOk, eNok, eMustRebind, eMustNotRebind, eRebindOk, eInitNok, eBindNok, eSetOptionsNok };

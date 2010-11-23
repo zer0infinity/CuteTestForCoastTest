@@ -9,7 +9,6 @@
 #ifndef _CookieToServerRenderer_H
 #define _CookieToServerRenderer_H
 
-#include "config_perftest.h"
 #include "Renderer.h"
 
 //---- CookieToServerRenderer -----------------------------------------------------------
@@ -28,7 +27,7 @@
  * /NoEndTag      If defined, suppresses the        optional
  *                renderering of the end tag
  */
-class EXPORTDECL_PERFTEST CookieToServerRenderer : public Renderer
+class CookieToServerRenderer : public Renderer
 {
 public:
 	CookieToServerRenderer(const char *name);

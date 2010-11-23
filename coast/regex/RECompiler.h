@@ -9,7 +9,6 @@
 #ifndef _RECompiler_H
 #define _RECompiler_H
 
-#include "config_regex.h"
 #include "Anything.h"
 
 //!this class translates a regular expression into a NFA program
@@ -17,7 +16,7 @@
 //!major entry point is the compile() method. Other methods are
 //!only useful for testing or error reporting
 //!relies on Coast's foundation Anything and String.
-class EXPORTDECL_REGEX RECompiler
+class RECompiler
 {
 	//! (intermediate) result of compilation
 	Anything	fInstruction;

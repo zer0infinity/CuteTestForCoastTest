@@ -10,7 +10,6 @@
 #define _NameUsingOutputMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "Mapper.h"
 
 //---- NameUsingOutputMapper ----------------------------------------------------------
@@ -30,7 +29,7 @@
 
 Default configuration is the mappers alias name in TempStore
 */
-class EXPORTDECL_DATAACCESS NameUsingOutputMapper : public EagerResultMapper
+class NameUsingOutputMapper : public EagerResultMapper
 {
 public:
 	NameUsingOutputMapper(const char *name);

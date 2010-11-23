@@ -10,7 +10,6 @@
 #define _OracleModule_H
 
 //---- WDModule include -------------------------------------------------
-#include "config_coastoracle.h"
 #include "WDModule.h"
 #include "ConnectionPool.h"
 #include <memory>
@@ -33,7 +32,7 @@
  * Optional\n
  * @see @ref cps1
  */
-class EXPORTDECL_COASTORACLE OracleModule: public WDModule
+class OracleModule: public WDModule
 {
 	typedef std::auto_ptr<Coast::Oracle::ConnectionPool> ConnectionPoolPtr;
 	ConnectionPoolPtr fpConnectionPool;

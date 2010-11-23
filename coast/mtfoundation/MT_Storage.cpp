@@ -20,12 +20,15 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
+#if defined(WIN32)
+#include <cstdio>
+#endif
 
 #if 1
 #define TrackLockerInit(lockvar) , lockvar(0)
 #define TrackLockerDef(lockvar)	volatile long lockvar
 
-class EXPORTDECL_MTFOUNDATION CurrLockerEntry
+class CurrLockerEntry
 {
 	volatile long &frLockerId;
 public:
@@ -174,7 +177,7 @@ void MT_MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
-class EXPORTDECL_MTFOUNDATION MTStorageHooks : public StorageHooks
+class MTStorageHooks : public StorageHooks
 {
 public:
 	MTStorageHooks();
@@ -211,7 +214,7 @@ struct AllocList {
 
 static AllocList *fgPoolAllocatorList = 0;
 
-class EXPORTDECL_MTFOUNDATION MTStorageInitializer : public InitFinisManagerMTFoundation
+class MTStorageInitializer : public InitFinisManagerMTFoundation
 {
 public:
 	MTStorageInitializer(unsigned int uiPriority)

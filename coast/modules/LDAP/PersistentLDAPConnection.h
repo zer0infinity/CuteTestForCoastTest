@@ -10,7 +10,6 @@
 #define _PersistentLDAPConnection_H
 
 //---- baseclass include --------------------------------------------------
-#include "config_LDAPDA.h"
 #include "LDAPConnection.h"
 
 //---- PersistentLDAPConnection ----------------------------------------------------------
@@ -50,7 +49,7 @@ Below values apply to PersistentLDAPConnections only.
 }
 \endcode
 */
-class EXPORTDECL_LDAPDA PersistentLDAPConnection: public LDAPConnection
+class PersistentLDAPConnection: public LDAPConnection
 {
 public:
 

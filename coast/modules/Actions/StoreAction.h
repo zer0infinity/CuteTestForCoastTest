@@ -10,7 +10,6 @@
 #define _StoreAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_actions.h"
 #include "Action.h"
 
 //---- StoreAction ----------------------------------------------------------
@@ -25,7 +24,7 @@
  * @par \c Destination
  * See \ref storeputterconfiguration "StorePutter Configuration" to see options.
  */
-class EXPORTDECL_ACTIONS StoreAction : public Action
+class StoreAction : public Action
 {
 public:
 	//! constructors

@@ -9,7 +9,6 @@
 #ifndef _StressApp_h_
 #define _StressApp_h_
 
-#include "config_perftest.h"
 #include "Application.h"
 
 // -- forward declaration ------------
@@ -17,7 +16,7 @@ class Anything;
 
 //---- StressApp -----------------------------------------------------------
 //! Runs a Stresser and shows the results
-class EXPORTDECL_PERFTEST StressApp : public Application
+class StressApp : public Application
 {
 public:
 	StressApp();

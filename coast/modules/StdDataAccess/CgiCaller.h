@@ -10,13 +10,12 @@
 #define _CgiCaller_H
 
 //--- superclass interface ---
-#include "config_stddataaccess.h"
 #include "HTTPFileLoader.h"
 
 //! DataAccess for calling programs via CGI (common gateway interface)
 //! expects the input mapper to provide the following keys
 //! "program"
-class EXPORTDECL_STDDATAACCESS CgiCaller: public HTTPFileLoader
+class CgiCaller: public HTTPFileLoader
 {
 	friend class CgiCallerTest;
 

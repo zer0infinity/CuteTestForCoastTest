@@ -10,7 +10,6 @@
 #define _SybCTnewDA_H
 
 //---- baseclass include -------------------------------------------------------
-#include "config_sybasect.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
@@ -40,7 +39,7 @@
 #define EX_GET_COLUMN_VALUE(coldata, row, col, colfmt) \
 	(coldata[col].value + ((row) * (colfmt[col].maxlength)))
 
-class EXPORTDECL_SYBASECT SybCTnewDA : public IFAObject
+class SybCTnewDA : public IFAObject
 {
 	// Define structure where row data is bound.
 	// Allow for column arrays - for array binding.

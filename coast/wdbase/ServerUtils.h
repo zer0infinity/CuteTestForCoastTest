@@ -9,7 +9,6 @@
 #ifndef _SERVERUTILS_H
 #define _SERVERUTILS_H
 
-#include "config_wdbase.h"
 #include "ThreadPools.h"
 
 class Server;
@@ -24,7 +23,7 @@ class ROAnything;
 // implementation for the WIN32 interrupthandler
 // which is quite different from the solaris one
 
-class EXPORTDECL_WDBASE WIN32InterruptHandler
+class WIN32InterruptHandler
 {
 public:
 	WIN32InterruptHandler(Server *server);
@@ -44,7 +43,7 @@ public:
 // is based on the signal handling API's of the
 // solaris thread library
 
-class  EXPORTDECL_WDBASE InterruptHandler: public Thread
+class InterruptHandler: public Thread
 {
 public:
 	InterruptHandler(Server *server);
@@ -60,7 +59,7 @@ private:
 /*!handles request execution in its own thread; it handles at most one request at a time
 wraps RequestProcessor with a thread of control; it implements the worker metapher
 with the setup; work and ready cycle */
-class EXPORTDECL_WDBASE HandleRequest : public WorkerThread
+class HandleRequest : public WorkerThread
 {
 public:
 	//! default constructor used for array allocation
@@ -89,7 +88,7 @@ protected:
 };
 
 //---- RequestThreadsManager ------------------------------------------------
-class EXPORTDECL_WDBASE RequestThreadsManager : public WorkerPoolManager
+class RequestThreadsManager : public WorkerPoolManager
 {
 public:
 	RequestThreadsManager(String name);

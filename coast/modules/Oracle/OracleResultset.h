@@ -10,7 +10,6 @@
 #define ORACLERESULTSET_H_
 
 //--- modules used in the interface
-#include "config_coastoracle.h"
 #include "AllocatorNewDelete.h"
 #include "OracleStatement.h"
 #include "Anything.h"
@@ -24,7 +23,7 @@
  * are needed to store the columns of a row. It is possible that some common parts of result row processing will
  * move into this class.
  */
-class EXPORTDECL_COASTORACLE OracleResultset : public Coast::AllocatorNewDelete
+class OracleResultset : public Coast::AllocatorNewDelete
 {
 public:
 	/*! Status is used for internal state transition */

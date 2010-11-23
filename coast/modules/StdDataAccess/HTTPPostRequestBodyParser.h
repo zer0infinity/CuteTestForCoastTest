@@ -9,7 +9,6 @@
 #ifndef _RequestBodyParser_H
 #define _RequestBodyParser_H
 
-#include "config_stddataaccess.h"
 #include "Anything.h"
 
 class MIMEHeader;
@@ -18,7 +17,7 @@ class MIMEHeader;
 //! where content-disposition gives us a hint for decoding
 //! decodes bodies according to normal browser POST requests
 //! only works for multipart-form data
-class EXPORTDECL_STDDATAACCESS HTTPPostRequestBodyParser
+class HTTPPostRequestBodyParser
 {
 public:
 	//! ctor requires a header for parameters on length and decoding

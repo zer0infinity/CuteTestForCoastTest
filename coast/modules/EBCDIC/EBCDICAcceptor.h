@@ -10,12 +10,11 @@
 #define _EBCDICAcceptor_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_ebcdic.h"
 #include "Socket.h"
 
 //---- EBCDICAcceptor ----------------------------------------------------------
 //!accepts a connection from an EBCDIC peer and creates an appropriate socket
-class EXPORTDECL_EBCDIC EBCDICAcceptor : public Acceptor
+class EBCDICAcceptor : public Acceptor
 {
 	// This class handles an accept loop
 	// in its own thread

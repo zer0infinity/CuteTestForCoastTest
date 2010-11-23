@@ -9,13 +9,12 @@
 #ifndef _RequestListener_h_
 #define _RequestListener_h_
 
-#include "config_wdbase.h"
 #include "ThreadPools.h"
 #include "WDModule.h"
 #include "Socket.h"
 
 //---- AcceptorFactoriesModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE AcceptorFactoriesModule : public WDModule
+class AcceptorFactoriesModule : public WDModule
 {
 public:
 	AcceptorFactoriesModule(const char *);
@@ -29,7 +28,7 @@ public:
 
 //---- AcceptorFactory -----------------------------------------------------------
 //!Factory that produces Acceptor; allows configuration of ListenerPool with different Acceptors
-class EXPORTDECL_WDBASE AcceptorFactory : public HierarchConfNamed
+class AcceptorFactory : public HierarchConfNamed
 {
 public:
 	//!standard named object constructor
@@ -64,7 +63,7 @@ private:
 
 //---- ListenerThread -----------------------------------------------------------
 //!Thread that manages a passive connection end point using an Acceptor
-class EXPORTDECL_WDBASE ListenerThread : public Thread
+class ListenerThread : public Thread
 {
 public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
@@ -105,7 +104,7 @@ private:
 
 //---- ListenerPool -----------------------------------------------------------
 //! Thread pool that manages ListenerThreads
-class EXPORTDECL_WDBASE ListenerPool: public ThreadPoolManager
+class ListenerPool: public ThreadPoolManager
 {
 public:
 	//!constructor is configured by a CallBackFactory that allows to allocate ListenerThreads with correct CallBack objects

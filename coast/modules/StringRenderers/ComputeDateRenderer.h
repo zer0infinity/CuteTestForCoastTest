@@ -10,7 +10,6 @@
 #define _ComputeDateRenderer_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 class TimeStamp;
@@ -77,7 +76,7 @@ The follow features are missing :
 Just the operators "+", "-" and Offset
 Localization of time values (GMT-offset) is not implemented.
 */
-class EXPORTDECL_STRINGRENDERERS ComputeDateRenderer : public Renderer
+class ComputeDateRenderer : public Renderer
 {
 public:
 	ComputeDateRenderer(const char *name);

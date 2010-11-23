@@ -9,14 +9,13 @@
 #ifndef _DataAccess_H
 #define _DataAccess_H
 
-#include "config_dataaccess.h"
 #include "DataAccessImpl.h"
 
 //---- DataAccess --------------------------------------------------------------------
 //! Monomorph DataAccess entry point, minimal easy to use client api
 //! this class supports a flexible data access mechanism through composition of its
 //! parameter objects inputMapper, outputMapper and dataAccessImpl
-class EXPORTDECL_DATAACCESS DataAccess
+class DataAccess
 {
 public:
 	//! daName configures the data access that should take place

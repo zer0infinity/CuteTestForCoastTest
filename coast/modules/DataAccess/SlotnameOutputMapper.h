@@ -10,7 +10,6 @@
 #define _SlotnameOutputMapper_H
 
 //---- Mapper include -------------------------------------------------
-#include "config_dataaccess.h"
 #include "NameUsingOutputMapper.h"
 
 //---- SlotnameOutputMapper ----------------------------------------------------------
@@ -115,7 +114,7 @@ The result which gets stored in TempStore will then look like this:
 }
 </pre>
 */
-class EXPORTDECL_DATAACCESS SlotnameOutputMapper : public NameUsingOutputMapper
+class SlotnameOutputMapper : public NameUsingOutputMapper
 {
 public:
 	SlotnameOutputMapper(const char *name) : NameUsingOutputMapper(name) {};

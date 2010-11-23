@@ -10,14 +10,13 @@
 #define _DateTime_H
 
 //---- include -------------------------------------------------
-#include "config_SystemFunctions.h"
 #include "Anything.h"
 
 //---- DateTime ----------------------------------------------------------
 //! wrapper class for date and time functions
 /*!
 */
-class EXPORTDECL_SYSTEMFUNCTIONS DateTime
+class DateTime
 {
 public:
 	//--- public api

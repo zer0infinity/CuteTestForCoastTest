@@ -9,12 +9,11 @@
 #ifndef _LOCALIZEDSTRINGS_H
 #define _LOCALIZEDSTRINGS_H
 
-#include "config_wdbase.h"
 #include "Threads.h"
 #include "WDModule.h"
 
 //---- LocalizationModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE LocalizationModule : public WDModule
+class LocalizationModule : public WDModule
 {
 	Anything fLocalizedStrings;
 	bool ReadFromFile(Anything &config, const char *filename);
@@ -27,7 +26,7 @@ public:
 };
 
 //---- LocalizedStrings -----------------------------------------------------------
-class EXPORTDECL_WDBASE LocalizedStrings
+class LocalizedStrings
 {
 public:
 	LocalizedStrings();

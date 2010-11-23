@@ -10,7 +10,6 @@
 #define _HTTPHeaderRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_http.h"
 #include "Renderer.h"
 
 //---- HTTPHeaderRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 \endcode
 
 */
-class EXPORTDECL_HTTP HTTPHeaderRenderer : public Renderer
+class HTTPHeaderRenderer : public Renderer
 {
 public:
 	//--- constructors

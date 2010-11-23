@@ -29,7 +29,7 @@
 
 //---- CleanSessions ----------------------------------------------------------
 //: triggers cleanup of sessions
-class EXPORTDECL_WDBASE CleanSessions : public Action
+class CleanSessions : public Action
 {
 public:
 	//--- constructors

@@ -10,11 +10,10 @@
 #define _WorkerPoolManagerModulePoolManager_H
 
 //---- Thread include -------------------------------------------------
-#include "config_workerpoolmanagermodule.h"
 #include "ThreadPools.h"
 
 //---- WorkerPoolManagerModuleWorker -----------------------------------------------
-class  EXPORTDECL_WORKERPOOLMANAGERMODULE WorkerPoolManagerModuleWorker : public WorkerThread
+class WorkerPoolManagerModuleWorker : public WorkerThread
 {
 public:
 	WorkerPoolManagerModuleWorker(const char *name = "WorkerPoolManagerModuleWorker");
@@ -45,7 +44,7 @@ private:
 //---- SybCTPoolManager ------------------------------------------------
 // this class demonstrates how to properly subclass WorkerPoolManager
 
-class EXPORTDECL_WORKERPOOLMANAGERMODULE WorkerPoolManagerModulePoolManager : public WorkerPoolManager
+class WorkerPoolManagerModulePoolManager : public WorkerPoolManager
 {
 public:
 	WorkerPoolManagerModulePoolManager(String name);

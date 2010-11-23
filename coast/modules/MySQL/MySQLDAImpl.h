@@ -9,7 +9,6 @@
 #ifndef _MySQLDAImpl_H
 #define _MySQLDAImpl_H
 
-#include "config_mysql.h"
 //--- superclass interface ---
 #include "DataAccessImpl.h"
 
@@ -17,7 +16,7 @@
 #include <mysql.h>
 
 //! DataAccess for
-class EXPORTDECL_MYSQL MySQLDAImpl: public DataAccessImpl
+class MySQLDAImpl: public DataAccessImpl
 {
 public:
 	MySQLDAImpl(const char *name);

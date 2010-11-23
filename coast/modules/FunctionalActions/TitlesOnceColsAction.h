@@ -10,7 +10,6 @@
 #define _TitlesOnceColsAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 class String;
@@ -67,7 +66,7 @@ class Context;
 //		let the MultifunctionListBoxRenderer use the optimized columns:
 //		/ColList	VerfuegbareUserColumnsOpt
 
-class EXPORTDECL_FUNCTIONALACTIONS TitlesOnceColsAction : public Action
+class TitlesOnceColsAction : public Action
 {
 public:
 	//--- constructors

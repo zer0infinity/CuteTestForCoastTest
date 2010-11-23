@@ -96,7 +96,6 @@ buildSettings = {
         'targetType'       : 'LibraryShared',
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'includeSubdir'    : '',
-        'appendUnique'     : { 'CPPDEFINES' : ['PERFTESTTEST_IMPL'] },
         'linkDependencies' : [
             'testfwWDBase',
             'CoastPerfTest',

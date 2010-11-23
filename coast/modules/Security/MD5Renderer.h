@@ -10,7 +10,6 @@
 #define _MD5Renderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_security.h"
 #include "Renderer.h"
 
 //---- MD5Renderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class EXPORTDECL_SECURITY MD5Renderer : public Renderer
+class MD5Renderer : public Renderer
 {
 public:
 	//--- constructors

@@ -8,7 +8,6 @@ buildSettings = {
         'linkDependencies' : ['CoastDataAccess'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['ACCESSCONTROL_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

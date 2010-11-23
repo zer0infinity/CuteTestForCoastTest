@@ -9,14 +9,13 @@
 #ifndef _ANYTHINGUTILS_H
 #define _ANYTHINGUTILS_H
 
-#include "config_wdbase.h"
 #include "Context.h"
 
 //---- StoreCopier -----------------------------------------------------------
 
 //! Use this class to copy item from Context to an Anything
 //! To use this class; create an instance and call Operate on it.
-class EXPORTDECL_WDBASE StoreCopier
+class StoreCopier
 {
 public:
 	//! Copies slots from context to dest according to config
@@ -47,7 +46,7 @@ private:
 
 //! Use this class to get a slot from a context store according to configuration
 //! To use this class; create an instance and call Operate on it.
-class EXPORTDECL_WDBASE StoreFinder
+class StoreFinder
 {
 public:
 	//! looks up the slot in the store, creates it if not found.
@@ -103,7 +102,7 @@ private:
  * \b optional, default ":"\n
  * First character is taken as delimiter for indexed slots
  */
-class EXPORTDECL_WDBASE StorePutter
+class StorePutter
 {
 public:
 	/*! Store source Anything into Context using the specification given in config

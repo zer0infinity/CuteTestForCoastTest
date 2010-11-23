@@ -10,7 +10,6 @@
 #define _CreateAnythingFromStringAction_H
 
 //---- Action include -------------------------------------------------
-#include "config_FunctionalActions.h"
 #include "Action.h"
 
 //---- CreateAnythingFromStringAction ----------------------------------------------------------
@@ -27,7 +26,7 @@
 //!	}</PRE>
 /*!
 */
-class EXPORTDECL_FUNCTIONALACTIONS CreateAnythingFromStringAction : public Action
+class CreateAnythingFromStringAction : public Action
 {
 public:
 	//--- constructors

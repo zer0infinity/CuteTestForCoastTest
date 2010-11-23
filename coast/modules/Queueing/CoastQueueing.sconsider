@@ -7,7 +7,6 @@ buildSettings = {
         'linkDependencies' : ['CoastAppLog', 'CoastSystemFunctions'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : ['QUEUEING_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h']),
         }

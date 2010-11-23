@@ -10,7 +10,6 @@
 #define _Queue_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_Queueing.h"
 #include "STLStorage.h"
 #include "Threads.h"
 #include "DateTime.h"

@@ -9,11 +9,10 @@
 #ifndef _EBCDICSocketStream_H
 #define _EBCDICSocketStream_H
 
-#include "config_ebcdic.h"
 #include "EBCDICSocketStreamBuf.h"
 
 //!provides the correct SocketStreamBuf for EBCDIC Sockets
-class EXPORTDECL_EBCDIC iosCoastEBCDICSocket : virtual public std::ios
+class iosCoastEBCDICSocket : virtual public std::ios
 {
 public:
 	iosCoastEBCDICSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize )
@@ -40,7 +39,7 @@ private:
 //!text socket stream which translates data to/from EBCDIC
 //! outbound data is converted from ASCII to EBCDIC,
 //! inbound data is converted from EBCDIC to ASCII.
-class  EXPORTDECL_EBCDIC EBCDICSocketStream : public iosCoastEBCDICSocket, public std::iostream
+class EBCDICSocketStream : public iosCoastEBCDICSocket, public std::iostream
 {
 public:
 	EBCDICSocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize);

@@ -9,11 +9,10 @@
 #ifndef _REBitSet_H
 #define _REBitSet_H
 
-#include "config_regex.h"
 #include "StringStream.h"
 
 //!implement bitsets suitable for 256 bits corresponding to a set of 8 bit unsigned chars
-class EXPORTDECL_REGEX REBitSet
+class REBitSet
 {
 	enum eREBitSetConstants {
 		//!internal constants to optionally adjust what is going on later....
@@ -99,7 +98,7 @@ public:
 		return fgcSingletons[index&fgcSubSetMask];
 	}
 	//!auxiliary to generate ascii/hex representation useful for inclusion in programs
-	friend EXPORTDECL_REGEX std::ostream &operator<<(std::ostream & , const REBitSet &s);
+	friend std::ostream &operator<<(std::ostream & , const REBitSet &s);
 };
 
 #endif  /* REBitSet */

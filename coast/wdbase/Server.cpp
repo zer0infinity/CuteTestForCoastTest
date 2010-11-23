@@ -35,7 +35,7 @@ using namespace Coast;
 
 //---- ServerReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
-class EXPORTDECL_WDBASE ServerReInitInstaller : public InstallerPolicy
+class ServerReInitInstaller : public InstallerPolicy
 {
 public:
 	ServerReInitInstaller(const char *category)
@@ -52,7 +52,7 @@ protected:
 };
 
 //---- ServerReInitTerminator ------------------------------------------------------
-class EXPORTDECL_WDBASE ServerReInitTerminator : public TerminationPolicy
+class ServerReInitTerminator : public TerminationPolicy
 {
 public:
 	ServerReInitTerminator(const char *category)

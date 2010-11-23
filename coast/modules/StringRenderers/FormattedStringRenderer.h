@@ -10,7 +10,6 @@
 #define _FormattedStringRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- FormattedStringRenderer ----------------------------------------------------------
@@ -25,7 +24,7 @@
 //		/SpacesForTab	Rendererspec	how many fillers should be inserted for a tab (\t) in value
 //      ...
 //	}</PRE>
-class EXPORTDECL_STRINGRENDERERS FormattedStringRenderer : public Renderer
+class FormattedStringRenderer : public Renderer
 {
 public:
 	//--- constructors

@@ -9,7 +9,6 @@
 #ifndef _APPLETRENDERER_H
 #define _APPLETRENDERER_H
 
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- AppletRenderer ---------------------------------------------------------------
@@ -47,7 +46,7 @@ text literal '10' whereas 'X2' is obtained by looking up 'foo' in the context.
 }
 \endcode
 */
-class EXPORTDECL_RENDERER AppletRenderer : public Renderer
+class AppletRenderer : public Renderer
 {
 public:
 	//!standard constructor

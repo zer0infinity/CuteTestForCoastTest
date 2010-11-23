@@ -10,7 +10,6 @@
 #define _UnTaintRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_renderer.h"
 #include "Renderer.h"
 
 //---- UnTaintRenderer ----------------------------------------------------------
@@ -34,7 +33,7 @@ Escaped values > xFF are considered invalid (they might be potentially harmful u
 The characters given in /BadChars are removed from the unescaped string. Under any circumstances, \%\&\<\> are removed.
 This renderer may be used whenever input from a client (user) is rendered into a html page.
 */
-class EXPORTDECL_RENDERER UnTaintRenderer : public Renderer
+class UnTaintRenderer : public Renderer
 {
 public:
 	//--- constructors

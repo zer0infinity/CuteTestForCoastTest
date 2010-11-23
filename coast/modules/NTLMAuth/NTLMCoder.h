@@ -9,7 +9,6 @@
 #ifndef _NTLMCoder_H
 #define _NTLMCoder_H
 
-#include "config_ntlmauth.h"
 #include "ITOString.h"
 
 //---- NTLMCoder ----------------------------------------------------------
@@ -17,7 +16,7 @@
 /*!
 basic mechanics for implementing WWW-Authenticate: NTLM
 */
-class EXPORTDECL_NTLMAUTH NTLMCoder
+class NTLMCoder
 {
 public:
 

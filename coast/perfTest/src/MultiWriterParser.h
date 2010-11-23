@@ -10,12 +10,11 @@
 #define _MultiWriterParser_H
 
 //---- AAT_StdHTMLParser include -------------------------------------------------
-#include "config_perftest.h"
 #include "HTMLParser.h"
 
 //---- MultiWriterParser ----------------------------------------------------------
 //!Parser that drives two writers
-class EXPORTDECL_PERFTEST MultiWriterParser : public AAT_StdHTMLParser
+class MultiWriterParser : public AAT_StdHTMLParser
 {
 public:
 	//--- constructors

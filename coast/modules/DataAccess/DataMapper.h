@@ -9,11 +9,10 @@
 #ifndef _DataMapper_H
 #define _DataMapper_H
 
-#include "config_dataaccess.h"
 #include "Mapper.h"
 
 //---- FixedSizeMapper -------------------------------------------------------------------
-class EXPORTDECL_DATAACCESS FixedSizeMapper : public EagerParameterMapper
+class FixedSizeMapper : public EagerParameterMapper
 {
 // special mapper generating a fixed width input
 public:
@@ -34,7 +33,7 @@ private:
 
 //---- UpperCaseMapper -------------------------------------------------------------------
 //! renders value in uppercase on stream
-class EXPORTDECL_DATAACCESS UpperCaseMapper : public EagerParameterMapper
+class UpperCaseMapper : public EagerParameterMapper
 {
 public:
 	UpperCaseMapper(const char *name);
@@ -55,7 +54,7 @@ private:
 /*! uses slot /LookupName "aMapperName" and delegates to mapper aMapperName if found
  * new scripting mechanics allows almost the same with /key { /aMapperName literalconfig }
  */
-class EXPORTDECL_DATAACCESS LookupMapper : public EagerParameterMapper
+class LookupMapper : public EagerParameterMapper
 {
 public:
 	LookupMapper(const char *name);
@@ -72,7 +71,7 @@ private:
 };
 
 //---- RendererMapper -------------------------------------------------------------------
-class EXPORTDECL_DATAACCESS RendererMapper : public EagerParameterMapper
+class RendererMapper : public EagerParameterMapper
 {
 public:
 	RendererMapper(const char *name);

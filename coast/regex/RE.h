@@ -9,7 +9,6 @@
 #ifndef _RE_H
 #define _RE_H
 
-#include "config_regex.h"
 #include "Anything.h"
 
 //!implement a simple regular expression engine for Coast
@@ -22,7 +21,7 @@
 	automaton. each node is a 3 slot anything with opcode, opdata (=parameter),
 	and opnext, the relative offset to the next node to consider if
 	the current node matches. */
-class EXPORTDECL_REGEX RE
+class RE
 {
 public:
 	/*! with this RE impl. the matching engine handles the following flags, not the

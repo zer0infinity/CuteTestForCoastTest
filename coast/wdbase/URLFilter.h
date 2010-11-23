@@ -13,14 +13,13 @@
 #include "IFAConfObject.h"
 
 //--- URLFilter ----------------------------------------------------------
-#include "config_wdbase.h"
 
 class Context;
 class Anything;
 class ROAnything;
 
 //! Policy object to filter URL content and unscramble URL Variables
-class EXPORTDECL_WDBASE URLFilter : public NotCloned
+class URLFilter : public NotCloned
 {
 public:
 	//! constructor with filter name

@@ -9,7 +9,6 @@
 #ifndef _TimeStampRenderer_H
 #define _TimeStampRenderer_H
 
-#include "config_wdbase.h"
 
 //---- Renderer include -------------------------------------------------
 #include "Renderer.h"
@@ -34,7 +33,7 @@ This renderer simply creates a TimeStamp object from current system time or give
 The output format is fixed to the format returned from the object.
 Currently it is (in strftime format): "\%Y\%m\%d\%H\%M\%S"
 */
-class EXPORTDECL_WDBASE TimeStampRenderer : public Renderer
+class TimeStampRenderer : public Renderer
 {
 public:
 	//--- constructors

@@ -10,7 +10,6 @@
 #define _SessionListManager_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_wdbase.h"
 #include "WDModule.h"
 #include "DiffTimer.h"
 #include "Threads.h"
@@ -22,7 +21,7 @@ class PeriodicAction;
 class URLFilter;
 
 //---- SessionFactoriesModule -----------------------------------------------------------
-class EXPORTDECL_WDBASE SessionFactoriesModule : public WDModule
+class SessionFactoriesModule : public WDModule
 {
 public:
 	SessionFactoriesModule(const char *name);
@@ -35,7 +34,7 @@ public:
 
 //---- SessionFactory -----------------------------------------------------------
 //!factory for session creation
-class EXPORTDECL_WDBASE SessionFactory : public HierarchConfNamed
+class SessionFactory : public HierarchConfNamed
 {
 public:
 	SessionFactory(const char *SessionFactoryName);
@@ -75,7 +74,7 @@ private:
 \b retrieval: sessions are retrieved through the session key\n
 \b deletion: sessions can be actively disabled (but not deleted);\n
 Sessions will be deleted by a SessionCleanerThread running periodically. */
-class EXPORTDECL_WDBASE SessionListManager: public WDModule
+class SessionListManager: public WDModule
 {
 public:
 	//!it exists only one since it is a not cloned

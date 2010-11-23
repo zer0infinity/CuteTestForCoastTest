@@ -9,12 +9,11 @@
 #ifndef _FlowController_h_
 #define _FlowController_h_
 
-#include "config_perftest.h"
 #include "Context.h"
 #include "WDModule.h"
 
 //---- FlowControllersModule -----------------------------------------------------------
-class EXPORTDECL_PERFTEST FlowControllersModule : public WDModule
+class FlowControllersModule : public WDModule
 {
 public:
 	FlowControllersModule(const char *);
@@ -43,7 +42,7 @@ public:
  *	}
  * \endcode
  */
-class EXPORTDECL_PERFTEST FlowController : public ConfNamedObject
+class FlowController : public ConfNamedObject
 {
 public:
 	FlowController(const char *FlowControllerName);

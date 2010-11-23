@@ -9,11 +9,10 @@
 #ifndef _AuthenticationService_H
 #define _AuthenticationService_H
 
-#include "config_stddataaccess.h"
 #include "ServiceHandler.h"
 
 //---- AuthenticationService ----------------------------------------------------------
-class EXPORTDECL_STDDATAACCESS AuthenticationService : public ServiceHandler
+class AuthenticationService : public ServiceHandler
 {
 public:
 	//--- constructors

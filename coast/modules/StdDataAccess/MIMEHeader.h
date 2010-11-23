@@ -9,7 +9,6 @@
 #ifndef _MIMEHeader_H
 #define _MIMEHeader_H
 
-#include "config_stddataaccess.h"
 #include "LookupInterface.h"
 #include "URLUtils.h"
 
@@ -26,7 +25,7 @@ static const long cDefaultMaxLineSz = 1024;
 //! usually all header fields should be treated case-insensitive.
 //! because our infrastructure (Anything) is case sensitive
 //! we normalize all strings used as header-field indexes to uppercase.
-class EXPORTDECL_STDDATAACCESS MIMEHeader : public LookupInterface
+class MIMEHeader : public LookupInterface
 {
 public:
 	enum ProcessMode {

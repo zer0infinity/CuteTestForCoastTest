@@ -21,7 +21,7 @@
  * }
  * \endcode
  */
-class EXPORTDECL_PERFTEST FlowControlDAStresser : public Stresser
+class FlowControlDAStresser : public Stresser
 {
 public:
 	FlowControlDAStresser(const char *FlowControlDAStresserName);
