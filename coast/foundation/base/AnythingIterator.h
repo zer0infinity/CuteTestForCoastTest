@@ -11,11 +11,7 @@
 
 #include <iterator>
 
-#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
-typedef std::random_access_iterator<class Anything, ptrdiff_t> IteratorBase;
-#else
 typedef std::iterator<std::random_access_iterator_tag, class Anything> IteratorBase;
-#endif
 
 class Anything_iterator : public IteratorBase
 {
@@ -68,11 +64,7 @@ public:
 	}
 };
 
-#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
-typedef std::random_access_iterator<const class Anything, ptrdiff_t> ConstIteratorBase;
-#else
 typedef std::iterator<std::random_access_iterator_tag, class Anything, ptrdiff_t, const class Anything *, const class Anything &> ConstIteratorBase;
-#endif
 
 // no direct support for const_iterators, need to spell out std::iterator template parameters
 class Anything_const_iterator : public ConstIteratorBase
@@ -119,6 +111,5 @@ public:
 		return *this;
 	}
 };
-// do we need reverse-iterators, or can we rely on a std adapter for iterators?
 
 #endif

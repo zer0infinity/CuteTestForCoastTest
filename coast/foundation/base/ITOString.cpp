@@ -547,9 +547,9 @@ String String::SubString(const char *pattern) const
 {
 	if ( pattern ) {
 		if ( GetImpl() ) {
-			const char *at = strstr( GetContent(), pattern );
-			if ( at ) {
-				return String( at, Length() - (at - GetContent()), const_cast<String *>(this)->GetAllocator() );
+			const char *c = strstr( GetContent(), pattern );
+			if ( c ) {
+				return String( c, Length() - (c - GetContent()), const_cast<String *>(this)->GetAllocator() );
 			}
 		}
 	}
@@ -562,9 +562,9 @@ long String::Contains(const char *pattern) const
 	long result = -1;
 	if ( pattern ) {
 		if ( GetImpl() ) {
-			const char *at = strstr( GetContent(), pattern );
-			if ( at )	{
-				result = (at - GetContent());
+			const char *c = strstr( GetContent(), pattern );
+			if ( c )	{
+				result = (c - GetContent());
 			}
 		}
 	}
