@@ -54,8 +54,6 @@ public:
 	/*! Base constructor, pass a priority number greater than 0 to control Init/Finis sequence
 		\param uiPriority The library specific 'singleton' always sets its priority 0 because it is not used and does nothing in its DoInit()/DoFinis() methods. The lower the number, the higher the priority. */
 	InitFinisManagerFoundation(unsigned int uiPriority);
-	//! Do-nothing dtor
-	~InitFinisManagerFoundation() {};
 
 	/*! Static method the get library specific instance pointer
 		\return pointer to the 'singleton' instance */

@@ -47,8 +47,6 @@ public:
 		: InitFinisManagerFoundation(uiPriority) {
 		IFMTrace("StringInitializer created\n");
 	}
-	~StringInitializer()
-	{}
 
 	virtual void DoInit() {
 #if !defined(IOSTREAM_NUM_CONVERSION)

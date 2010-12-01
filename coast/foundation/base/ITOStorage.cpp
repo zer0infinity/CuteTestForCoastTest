@@ -210,8 +210,6 @@ public:
 		: InitFinisManagerFoundation(uiPriority) {
 		IFMTrace("StorageInitializer created\n");
 	}
-	~StorageInitializer()
-	{}
 
 	virtual void DoInit() {
 		IFMTrace("Storage::Initialize\n");
@@ -476,6 +474,7 @@ TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 TestStorageHooks::~TestStorageHooks()
 {
 	StorageHooks *pHook = Storage::SetHooks(NULL);
+	(void)pHook;
 	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
 }
 

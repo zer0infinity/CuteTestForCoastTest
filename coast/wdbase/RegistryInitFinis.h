@@ -20,9 +20,6 @@ public:
 		Registry::GetRegROTable();
 	}
 
-	~RegistryInitFinis()
-	{}
-
 	virtual void DoInit() {
 		IFMTrace("RegistryInitFinis::DoInit\n");
 	}
