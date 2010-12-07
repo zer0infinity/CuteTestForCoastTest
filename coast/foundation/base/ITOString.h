@@ -10,8 +10,10 @@
 #define _ITOString_H
 
 #include "ITOStorage.h"
+#include "StringIterator.h"
 
 #include <iosfwd>
+#include <stdexcept>
 
 //---- String --------------------------------------------------------------
 //! simple mt-safe string handling class
@@ -56,15 +58,6 @@ public:
 	/*! \param s initial value of String object
 		\param a Allocator to allocate memory from */
 	String(const String &s, Allocator *a = Storage::Current());
-
-	template <typename InputIterator>
-	String(InputIterator first, InputIterator last, Allocator *a = Storage::Current())
-		: fStringImpl(0)
-		, fAllocator((a) ? a : Storage::Current()) {
-		for (; first != last; ++first) {
-			Append(*first);
-		}
-	}
 
 	//! dtor, deallocates memory used by string content
 	~String();
@@ -264,9 +257,6 @@ public:
 	bool PrependWith(long newLength, const char fill);
 	//! return character at position ix, if ix is out of range return 0
 	char At(long ix) const;
-	//! return character at position ix, if ix is out of range return 0
-	char operator[] (long ix) const;
-	char operator[] (int ix) const;
 
 	friend inline bool operator==(const String &s1, const String &s2);
 	friend inline bool operator==(const char *s1, const String &s2);
@@ -344,6 +334,166 @@ public:
 
 	//! manually set the allocator (should not usually be used...)
 	bool SetAllocator(Allocator *a) ;
+
+//------ support STL compliant container behavior
+	typedef String_iterator iterator;
+	typedef String_const_iterator const_iterator;
+	typedef std::reverse_iterator<String_iterator> reverse_iterator;
+	typedef std::reverse_iterator<String_const_iterator> const_reverse_iterator;
+	typedef long difference_type;
+	typedef long size_type;
+	typedef char value_type;
+	typedef value_type &reference;
+	typedef value_type const &const_reference;
+	static size_type const npos = -1;
+	iterator begin();
+	iterator end();
+	const_iterator begin()const;
+	const_iterator end() const;
+	reverse_iterator rbegin();
+	reverse_iterator rend();
+	const_reverse_iterator rbegin() const;
+	const_reverse_iterator rend() const;
+	void clear();
+	bool empty() const {
+		return 0 == size();
+	}
+	String& erase(size_type pos = 0, size_type n = npos);
+	iterator erase(iterator pos);
+	iterator erase(iterator from, iterator to);
+	size_type max_size() const;
+	size_type size() const {
+		return Length();
+	}
+	const_reference at(size_type n) const {
+		if (n >= 0 && n < Length()) {
+			return GetContent()[n];
+		}
+		throw std::out_of_range("array index out of range");
+	}
+	reference at(size_type n) {
+		if (n >= 0 && n < Length()) {
+			return GetContent()[n];
+		}
+		throw std::out_of_range("array index out of range");
+	}
+       //! return character at position n, if n is out of range return 0
+	template< typename index_type >
+	const_reference operator[](index_type n) const {
+		if (n >= 0 && n < Length()) {
+			return GetContent()[n];
+		}
+		//! behave nicely when invalid index given
+		static char const c0 = 0;
+		return c0;
+	}
+	template< typename index_type >
+	reference operator[](index_type x) {
+		static char const c0 = 0;
+		size_type n = std::max(static_cast<size_type> (x), 0L); //!< adjust index bounds
+		//!@note ugly with empty string (forced allocation of space for fStringImpl), but at least safe to return a reference
+		if (not Length()) {
+			alloc(n);
+		} else if (n > Length()) {
+			Set(n, &c0, 1); //!< adjust string as needed
+		}
+		return GetContent()[n];
+	}
+	reference back() {
+		return at(size() - 1);
+	}
+	const_reference back() const {
+		return at(size() - 1);
+	}
+	reference front() {
+		return at(0);
+	}
+	const_reference front() const {
+		return at(0);
+	}
+	void pop_back() {
+		erase(end() - 1);
+	}
+	void pop_front() {
+		erase(begin());
+	}
+	void push_back(const value_type &a) {
+		Append(a);
+	}
+	void push_front(const value_type &a) {
+		insert(begin(), a);
+	}
+	String& assign(String const &str, size_type pos, size_type n) {
+		clear();
+		return this->operator =(str.SubString(pos, n));
+	}
+	template <typename InputIterator>
+	void assign(InputIterator first, InputIterator last) {
+		clear();
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+	void assign(size_type n, const value_type &val) {
+		clear();
+		for (; n > 0; --n) {
+			Append(val);
+		}
+	}
+	void insert(iterator it, size_type n, const value_type &v) {
+		if (&(it.a) != this) {
+			return;
+		}
+		if (it > end()) {
+			throw std::out_of_range("pos out of range");
+		}
+		size_type pos = it.position;
+		size_type const remain = size() - pos;
+		//! move contents n character to the right
+		Set(pos+n, GetContent() + pos, remain);
+		for (; n > 0; ++pos, --n) {
+			GetContent()[pos] = v;
+		}
+	}
+	iterator insert(iterator it, const value_type &v) {
+		if (&(it.a) != this || it > end()) {
+			return end();
+		}
+		insert(it, 1L, v);
+		return it;
+	}
+	template <typename InputIterator>
+	void insert(iterator it, InputIterator first, InputIterator last) {
+		if (&(it.a) != this) {
+			return;
+		}
+		if (it > end()) {
+			throw std::out_of_range("pos out of range");
+		}
+		size_type const dist = std::distance(first, last);
+		size_type pos = it.position;
+		size_type const remain = size() - pos;
+		//! move contents offset character to the right
+		Set(pos+dist, GetContent() + pos, remain);
+		for (; first != last; ++pos, ++first) {
+			GetContent()[pos] = *first;
+		}
+	}
+	String substr(size_type pos=0, size_type n=npos) const {
+		if (pos > size()) {
+			throw std::out_of_range("array index out of range");
+		}
+		return SubString(pos, n);
+	}
+	template <typename InputIterator>
+	String(InputIterator first, InputIterator last, Allocator *a = Storage::Current())
+		: fStringImpl(0)
+		, fAllocator((a) ? a : Storage::Current()) {
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+
 protected:
 
 	enum Pilfer { STEAL }; // for syntactical difference of CTOR
@@ -486,14 +636,6 @@ inline bool String::SetAllocator(Allocator *a)
 	return false; // cannot change allocator later on
 }
 
-inline char String::operator[](long ix) const
-{
-	return At(ix);
-}
-inline char String::operator[](int ix) const
-{
-	return At(long(ix));
-}
 inline long String::Length() const
 {
 	if (GetImpl()) {

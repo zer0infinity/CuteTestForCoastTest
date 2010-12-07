@@ -655,7 +655,7 @@ namespace Coast {
 			// right now - although "real" browsers do this
 			// "http(s)://xxx/abcdef" strings are broken down into elements - full URI
 			StartTrace(URLUtils.HandleURI2);
-			String uri = String(currentUri);
+			String uri(currentUri);
 			String baseHREF(base);
 
 			TraceAny(query, "Query at start")

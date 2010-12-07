@@ -40,6 +40,9 @@
 #include "MmapTest.h"
 #endif
 #include "StringStreamTest.h"
+#include "StringIteratorTest.h"
+#include "StringReverseIteratorTest.h"
+#include "StringSTLTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -73,4 +76,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, SystemBaseTest);
 	ADD_SUITE(runner, SystemFileTest);
 	ADD_SUITE(runner, StringTestExtreme);
+	ADD_SUITE(runner, StringIteratorTest);
+	ADD_SUITE(runner, StringReverseIteratorTest);
+	ADD_SUITE(runner, StringSTLTest);
 } // setupRunner
