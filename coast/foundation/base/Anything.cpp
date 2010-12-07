@@ -1575,7 +1575,7 @@ Anything::const_reverse_iterator Anything::rbegin()const
 }
 Anything::const_reverse_iterator Anything::rend() const
 {
-	return const_reverse_iterator(end());
+	return const_reverse_iterator(begin());
 }
 void Anything::clear()
 {
