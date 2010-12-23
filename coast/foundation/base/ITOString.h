@@ -326,12 +326,6 @@ public:
 	//! canonical output operator for strings
 	friend std::ostream  &operator<<(std::ostream &os, const String &s);
 
-	//! function for reading strings from a stream up to a delimiter
-	/*! \param is istream read from
-		\param s result of input is stored here
-		\param c delimiting character, usually newline */
-	friend std::istream  &getline(std::istream &is, String &s, char c);
-
 	//! manually set the allocator (should not usually be used...)
 	bool SetAllocator(Allocator *a) ;
 
@@ -675,10 +669,20 @@ inline bool String::IsEqual(const String &other) const
 }
 // this is just a performance shortcut
 
+//! function for reading strings from a stream up to a delimiter
+/*! \param is istream read from
+	\param s result of input is stored here
+	\param delim delimiting character, usually newline */
+std::istream &getline(std::istream &is, String &s, char delim);
+
+//! function for reading strings from a stream up to a newline
+/*! \param is istream read from
+	\param s result of input is stored here */
 inline std::istream &getline(std::istream &is, String &s)
 {
 	return getline(is, s, '\n');
 }
+
 bool operator==(const String &s1, const String &s2)
 {
 	return s1.IsEqual(s2);

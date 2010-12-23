@@ -159,18 +159,6 @@ String::String(const String &s, Allocator *a)
 	}
 }
 
-String &String::Append(std::istream &is, long length, char delim) {
-	Set(Length(), 0, ++length); //!< marcel: increment length to *really* copy length bytes and not length-1, as this would not be 'natural' for our String class
-	if (!(delim == is.peek())) {
-		is.get(GetContent() + Length(), length, delim); // should do some error checking?
-		long l = is.gcount(); // should be fLength
-		Assert(l <= length);
-		IncrementLength(l); // PT: always adjust length now
-		GetContent()[Length()] = '\0';
-	} // else nothing to read at all, must consume delim char elsewhere
-	return *this;
-}
-
 String::~String()
 {
 	if (GetImpl()) {
@@ -303,22 +291,28 @@ String &String::Append(const void *s, long len)
 }
 
 // PS: implement similar of IStream!
-String &String::Append(std::istream &is, long length)
-{
+String &String::Append(std::istream &is, long length) {
 	if (length > 0) {
-		Set(Length(), 0, length); // adjust capacity // PT: now just capacity
+		Reserve(length);
 		is.read(GetContent() + Length(), length); // should do some error checking?
-
 		long l = is.gcount(); // should be fLength
-		//	if (l < length)
-		//		; // short read
-		//	else if (l > length)
-		//		; // might be a big problem....read more than requested
 		Assert(l <= length);
-		// PT: with the new Set semantics for s=0 fLength must be set now
 		IncrementLength(l);
 		GetContent()[Length()] = '\0';
 	} // else no-op
+	return *this;
+}
+
+String &String::Append(std::istream &is, long length, char delim) {
+	if (length > 0 && delim != is.peek()) {
+		Reserve(length);
+		// increment length to *really* copy length bytes
+		is.get(GetContent() + Length(), length+1, delim); // should do some error checking?
+		long l = is.gcount(); // should be fLength
+		Assert(l <= length);
+		IncrementLength(l);
+		GetContent()[Length()] = '\0';
+	} // else nothing to read at all, must consume delim char elsewhere
 	return *this;
 }
 
@@ -1359,6 +1353,7 @@ std::istream &operator>>(std::istream &is, String &s)
 	int aChar;
 
 	s.Set(0, 0, cStrAllocMinimum);		// empty string reserve cStrAllocMinimum chars, tunable param
+
 	if (is.good() && s.GetImpl()) {
 		// sanity checks
 		is >> std::ws;	// skips whitespace
@@ -1385,38 +1380,16 @@ std::istream &operator>>(std::istream &is, String &s)
 	return is;
 }
 
-std::istream &getline(std::istream &is, String &s, char c)
+std::istream &getline(std::istream &is, String &s, char delim)
 {
 	char aChar = 0;
 
 	s.Trim(0);
 	for (;;) {
-		// make sure, that we have at least 120 free bytes
-		long freespace = s.Capacity() - s.Length() - 1;
+		s.Append(is, 128, delim);
 
-		if (freespace < 120) {
-			s.Reserve(128);
-			freespace = s.Capacity() - s.Length() - 1;
-		}
-
-		is.get(s.GetContent() + s.Length(), freespace, c);
-		if (!is) {
-			// This is for the guys from Watcom, who
-			// love to set up their own standards.
-			// Watcoms iostream sets the fail bit,
-			// when an empty line is read.
-			if (is.rdstate() & std::ios::failbit) {
-				is.clear();
-			} else {
-				break;    // eof or bad
-			}
-		} else {
-			// set the length explicitly
-			s.IncrementLength(is.gcount());
-			s.GetContent()[s.Length()] = '\0';
-		}
 		is.get(aChar);
-		if (is.eof() || !is.good() || aChar == c) {
+		if (is.eof() || !is.good() || aChar == delim) {
 			break;
 		}
 		s.Append(aChar);
