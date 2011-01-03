@@ -311,7 +311,7 @@ String &String::Append(std::istream &is, long length, char delim) {
 		long l = is.gcount(); // should be fLength
 		Assert(l <= length);
 		IncrementLength(l);
-		GetContent()[Length()] = '\0';
+		// is.get() adds null terminating character
 	} // else nothing to read at all, must consume delim char elsewhere
 	return *this;
 }
@@ -1350,28 +1350,27 @@ bool StringTokenizer2::HasMoreTokens(long start, long &end)
 
 std::istream &operator>>(std::istream &is, String &s)
 {
-	int aChar;
+	char aChar;
 
-	s.Set(0, 0, cStrAllocMinimum);		// empty string reserve cStrAllocMinimum chars, tunable param
+	s.Set(0, 0, cStrAllocMinimum); // empty string reserve cStrAllocMinimum chars, tunable param
 
 	if (is.good() && s.GetImpl()) {
 		// sanity checks
-		is >> std::ws;	// skips whitespace
+		is >> std::ws; // skips whitespace
 		while ((aChar = is.get()) != EOF) {
-			if (isspace( (unsigned char) aChar)) {
-				is.putback(char(aChar));
+			if (isspace(aChar)) {
+				is.putback(aChar);
 				break;
 			}
 			if (s.Length() + 2 > s.Capacity()) {
-				char c = (char)aChar;
-				s.Set(s.Length(), &c, 1);	// auto-expand
+				s.Set(s.Length(), &aChar, 1); // auto-expand
 			} else {
 				// optimize for inline expansion, Set allocates additional stuff
-				s.GetContent()[s.Length()] = (char)aChar;
+				s.GetContent()[s.Length()] = aChar;
 				s.IncrementLength(1);
 			}
 		}
-		s.GetContent()[s.Length()] = '\0';		// add 0 byte for termination
+		s.GetContent()[s.Length()] = '\0'; // add 0 byte for termination
 	}
 	if (is.eof() && s.Length() != 0) {
 		is.clear();

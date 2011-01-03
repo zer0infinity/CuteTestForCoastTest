@@ -258,15 +258,6 @@ public:
 	//! return character at position ix, if ix is out of range return 0
 	char At(long ix) const;
 
-	friend inline bool operator==(const String &s1, const String &s2);
-	friend inline bool operator==(const char *s1, const String &s2);
-	friend inline bool operator==(const String &s1, const char *s2);
-	friend inline bool operator!=(const String &s1, const String &s2);
-	friend inline bool operator!=(const char *s1, const String &s2);
-	friend inline bool operator!=(const String &s1, const char *s2);
-	friend inline bool operator<(const String &s1, const char *s2);
-	friend inline bool operator>(const String &s1, const char *s2);
-
 	//! convert all ascii uppercase characters into corresponding lowercase
 	//! this is done inplace using ctype.h - classification isupper()
 	//! \return *this after the conversion
@@ -322,9 +313,6 @@ public:
 	/*! reads up to the next whitespace character
 		use getline() function for reading lines */
 	friend std::istream &operator>>(std::istream &is, String &s);
-
-	//! canonical output operator for strings
-	friend std::ostream  &operator<<(std::ostream &os, const String &s);
 
 	//! manually set the allocator (should not usually be used...)
 	bool SetAllocator(Allocator *a) ;
@@ -678,41 +666,35 @@ std::istream &getline(std::istream &is, String &s, char delim);
 //! function for reading strings from a stream up to a newline
 /*! \param is istream read from
 	\param s result of input is stored here */
-inline std::istream &getline(std::istream &is, String &s)
-{
+inline std::istream &getline(std::istream &is, String &s) {
 	return getline(is, s, '\n');
 }
 
-bool operator==(const String &s1, const String &s2)
-{
+//! canonical output operator for strings
+std::ostream  &operator<<(std::ostream &os, const String &s);
+
+inline bool operator==(const String &s1, const String &s2) {
 	return s1.IsEqual(s2);
 }
-bool operator==(const char *s1, const String &s2)
-{
+inline bool operator==(const char *s1, const String &s2) {
 	return s2.IsEqual(s1);
 }
-bool operator==(const String &s1, const char *s2)
-{
+inline bool operator==(const String &s1, const char *s2) {
 	return s1.IsEqual(s2);
 }
-bool operator!=(const String &s1, const String &s2)
-{
+inline bool operator!=(const String &s1, const String &s2){
 	return !s1.IsEqual(s2);
 }
-bool operator!=(const char *s1, const String &s2)
-{
+inline bool operator!=(const char *s1, const String &s2) {
 	return !s2.IsEqual(s1);
 }
-bool operator!=(const String &s1, const char *s2)
-{
+inline bool operator!=(const String &s1, const char *s2) {
 	return !s1.IsEqual(s2);
 }
-bool operator<(const String &s1, const char *s2)
-{
+inline bool operator<(const String &s1, const char *s2) {
 	return (s1.Compare(s2) < 0);
 }
-bool operator>(const String &s1, const char *s2)
-{
+inline bool operator>(const String &s1, const char *s2) {
 	return (s1.Compare(s2) > 0);
 }
 
