@@ -205,19 +205,28 @@ long Storage::fglStatisticLevel = 0L;
 
 class StorageInitializer : public InitFinisManagerFoundation
 {
+	StorageHooks* fOldHook;
+	StorageHooks* fMyHook;
 public:
 	StorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
+		: InitFinisManagerFoundation(uiPriority), fOldHook(0), fMyHook(0) {
 		IFMTrace("StorageInitializer created\n");
 	}
 
 	virtual void DoInit() {
 		IFMTrace("Storage::Initialize\n");
+		fMyHook = new FoundationStorageHooks();
+		fOldHook = Storage::SetHooks(fMyHook);
 		Storage::Initialize();
 	}
 	virtual void DoFinis() {
 		IFMTrace("Storage::Finalize\n");
 		Storage::Finalize();
+		StorageHooks *pOldHook = Storage::SetHooks(fOldHook);
+		if ( pOldHook == fMyHook ) {
+			delete fMyHook;
+			fMyHook = NULL;
+		}
 	}
 };
 
@@ -465,7 +474,8 @@ void TestStorageHooks::Finalize()
 }
 
 TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
-	: fAllocator(wdallocator)
+	: FoundationStorageHooks()
+	, fAllocator(wdallocator)
 	, fpOldHook(NULL)
 {
 	fpOldHook = Storage::SetHooks(this);
@@ -473,6 +483,7 @@ TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 
 TestStorageHooks::~TestStorageHooks()
 {
+	disposeAllocMap();
 	StorageHooks *pHook = Storage::SetHooks(NULL);
 	(void)pHook;
 	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
@@ -481,4 +492,105 @@ TestStorageHooks::~TestStorageHooks()
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)
 {
 	return new MemTracker(name);
+}
+
+char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes)
+{
+	char *pRet = reinterpret_cast<char *>(Storage::Global()->Malloc(bytes));
+//	_StatTrace(BoostPoolUserAllocatorGlobal.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Global());
+	return pRet;
+}
+
+void ITOStorage::BoostPoolUserAllocatorGlobal::free(char *const block)
+{
+	size_t sz(Storage::Global()->Free(block));
+//	_StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block << " sz:" << (long)sz, Storage::Global());
+	(void) sz; // avoid unused variable warning
+}
+
+char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
+{
+	char *pRet = reinterpret_cast<char *>(Storage::Current()->Malloc(bytes));
+//	_StatTrace(BoostPoolUserAllocatorCurrent.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Current());
+	return pRet;
+}
+
+void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
+{
+	size_t sz(Storage::Current()->Free(block));
+//	_StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block << " sz:" << (long)sz, Storage::Current());
+	(void) sz; // avoid unused variable warning
+}
+
+
+FoundationStorageHooks::FoundationStorageHooks()
+	: fgInitialized(false)
+{
+}
+
+FoundationStorageHooks::~FoundationStorageHooks()
+{
+}
+
+StorageHooks::CurrentPoolTypePtr FoundationStorageHooks::PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
+	AllocPoolMapping::iterator ita;
+	if ((ita = allocPoolMap.find(a)) == allocPoolMap.end()) {
+		ita = allocPoolMap.insert(std::make_pair(a, SizePoolMapType())).first;
+	}
+	SizePoolMapType::iterator it;
+	if ((it = ita->second.find(nrequested_size)) != ita->second.end()) {
+		return it->second;
+	} else {
+		CurrentPoolTypePtr newTLSPool(new CurrentPoolType(nrequested_size, nnext_size));
+		ita->second.insert(std::make_pair(nrequested_size, newTLSPool));
+		return newTLSPool;
+	}
+}
+
+StorageHooks::CurrentPoolTypePtr FoundationStorageHooks::PoolForFree( Allocator* a, std::size_t nrequested_size, std::size_t nnext_size ) {
+	AllocPoolMapping::iterator ita;
+	if ( ( ita = allocPoolMap.find( a ) ) != allocPoolMap.end() ) {
+		SizePoolMapType::iterator it;
+		if ( ( it = ita->second.find( nrequested_size ) ) != ita->second.end() ) {
+			return it->second;
+		}
+	}
+	return CurrentPoolTypePtr();
+}
+
+Allocator *FoundationStorageHooks::Global()
+{
+	return Storage::DoGlobal();
+}
+
+MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe)
+{
+//	MemTracker *pTracker = NULL;
+//	if ( bThreadSafe ) {
+//		pTracker = new MT_MemTracker(name, 55667788);
+//	} else {
+//		pTracker = Storage::DoMakeMemTracker(name);
+//	}
+	return 0;
+}
+
+Allocator *FoundationStorageHooks::Current()
+{
+	return Global();
+}
+
+void FoundationStorageHooks::Initialize()
+{
+	if ( !fgInitialized ) {
+		fgInitialized = true;
+	}
+}
+
+void FoundationStorageHooks::Finalize()
+{
+	if ( fgInitialized ) {
+		fgInitialized = false;
+	}
+	// must dispose before SetHooks() gets called - otherwise Storage::Current() might point to something else already
+	disposeAllocMap();
 }

@@ -9,13 +9,15 @@
 #ifndef _STL_fast_pool_allocator_H
 #define _STL_fast_pool_allocator_H
 
+#include "STLStorage.h"
+
 //---- STL_fast_pool_allocator ----------------------------------------------------------
 namespace STLStorage
 {
 	// use fast_pool_allocator type for std::vector container types which allocate a bunch of elements at once
 	template <
 	typename T,
-			 typename UserAllocator = BoostPoolUserAllocatorGlobal,
+			 typename UserAllocator = ITOStorage::BoostPoolUserAllocatorGlobal,
 			 unsigned NextSize = 32 >
 	class fast_pool_allocator
 	{
@@ -146,8 +148,8 @@ namespace STLStorage
 		int_pool_instance_type fpIntPool;
 	};
 
-	template < typename T > struct fast_pool_allocator_global : public STLStorage::fast_pool_allocator<T, BoostPoolUserAllocatorGlobal, 32 > {};
-	template < typename T > struct fast_pool_allocator_current : public STLStorage::fast_pool_allocator<T, BoostPoolUserAllocatorCurrent, 32 > {};
+	template < typename T > struct fast_pool_allocator_global : public STLStorage::fast_pool_allocator<T, ITOStorage::BoostPoolUserAllocatorGlobal, 32 > {};
+	template < typename T > struct fast_pool_allocator_current : public STLStorage::fast_pool_allocator<T, ITOStorage::BoostPoolUserAllocatorCurrent, 32 > {};
 }
 
 #endif

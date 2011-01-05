@@ -13,13 +13,14 @@
 #include "ITOString.h"
 #include "AnyImplTypes.h"
 #include "IFAObject.h"
+#include "SegStorAllocatorNewDelete.h"
 
 //---- forward declaration -----------------------------------------------
 class Anything;
 class AnyVisitor;
 
 //---- AnyImpl --------------------------------------------------------------
-class AnyImpl: public IFAObject {
+class AnyImpl {
 public:
 	AnyImpl(Allocator *a) :
 		fRefCount(1), fAllocator((a) ? a : Storage::Current()) {
@@ -39,10 +40,6 @@ public:
 
 	virtual long AsLong(long dflt) const = 0;
 
-	virtual IFAObject *AsIFAObject(IFAObject *dflt) const {
-		return dflt;
-	}
-
 	virtual double AsDouble(double dflt) const = 0;
 
 	virtual const char *AsCharPtr(const char *dflt) const = 0;
@@ -52,6 +49,8 @@ public:
 	virtual String AsString(const char *dflt) const = 0;
 
 	virtual bool IsEqual(AnyImpl const *) const = 0;
+
+	virtual AnyImpl *Clone(Allocator *a) const = 0;
 
 	AnyImpl *DeepClone(Allocator *a, Anything &xreftable) const;
 
@@ -76,7 +75,7 @@ public:
 		return fAllocator;
 	}
 protected:
-	virtual AnyImpl *DoDeepClone(IFAObject *res, Allocator *a, Anything &xreftable) const {
+	virtual AnyImpl *DoDeepClone(AnyImpl *res, Allocator *a, Anything &xreftable) const {
 		return dynamic_cast<AnyImpl*> (res);
 	}
 
@@ -88,7 +87,7 @@ private:
 };
 
 //---- AnyLongImpl -----------------------------------------------------------------
-class AnyLongImpl: public AnyImpl {
+class AnyLongImpl: public Coast::SegStorAllocatorNewDelete<AnyLongImpl>, public AnyImpl {
 	long fLong;
 	String fBuf;
 
@@ -100,7 +99,7 @@ public:
 	AnyLongImpl(long l, Allocator *a);
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	AnyImplType GetType() const {
 		return AnyLongType;
@@ -128,7 +127,7 @@ public:
 };
 
 //---- AnyObjectImpl -----------------------------------------------------------------
-class AnyObjectImpl: public AnyImpl {
+class AnyObjectImpl: public Coast::SegStorAllocatorNewDelete<AnyObjectImpl>, public AnyImpl {
 	IFAObject *fObject;
 
 public:
@@ -137,7 +136,7 @@ public:
 	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	AnyImplType GetType() const {
 		return AnyObjectType;
@@ -170,7 +169,7 @@ private:
 };
 
 //---- AnyDoubleImpl -----------------------------------------------------------------
-class AnyDoubleImpl: public AnyImpl {
+class AnyDoubleImpl: public Coast::SegStorAllocatorNewDelete<AnyDoubleImpl>, public AnyImpl {
 	double fDouble;
 	String fBuf;
 
@@ -182,7 +181,7 @@ public:
 	AnyDoubleImpl(double d, Allocator *a);
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	AnyImplType GetType() const {
 		return AnyDoubleType;
@@ -210,7 +209,7 @@ public:
 };
 
 //---- AnyBinaryBufImpl -----------------------------------------------------------------
-class AnyBinaryBufImpl: public AnyImpl {
+class AnyBinaryBufImpl: public Coast::SegStorAllocatorNewDelete<AnyBinaryBufImpl>, public AnyImpl {
 	String fBuf;
 
 public:
@@ -219,7 +218,7 @@ public:
 	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	AnyImplType GetType() const {
 		return AnyVoidBufType;
@@ -251,7 +250,7 @@ public:
 };
 
 //---- AnyStringImpl -----------------------------------------------------------------
-class AnyStringImpl: public AnyImpl {
+class AnyStringImpl: public Coast::SegStorAllocatorNewDelete<AnyStringImpl>, public AnyImpl {
 	String fString;
 
 public:
@@ -264,7 +263,7 @@ public:
 	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	AnyImplType GetType() const {
 		return AnyCharPtrType;
@@ -372,8 +371,7 @@ private:
 class AnyKeyAssoc;
 class AnyComparer;
 //---- AnyArrayImpl -----------------------------------------------------------------
-class AnyArrayImpl : public AnyImpl
-{
+class AnyArrayImpl : public Coast::SegStorAllocatorNewDelete<AnyArrayImpl>, public AnyImpl {
 	AnyKeyAssoc **fContents;
 	AnyKeyTable *fKeys;
 	AnyIndTable *fInd;
@@ -387,7 +385,7 @@ public:
 	~AnyArrayImpl();
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	AnyImpl *Clone(Allocator *a) const;
 
 	Anything &At(long i);
 	Anything const& At(long i) const;
@@ -545,7 +543,7 @@ public:
 	};
 
 private:
-	AnyImpl *DoDeepClone(IFAObject *res, Allocator *a, Anything &xreftable) const;
+	AnyImpl *DoDeepClone(AnyImpl *res, Allocator *a, Anything &xreftable) const;
 };
 
 // convenience macros for AnyImpl simplification

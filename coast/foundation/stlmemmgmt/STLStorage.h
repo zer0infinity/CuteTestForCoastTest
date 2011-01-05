@@ -202,23 +202,6 @@ namespace STLStorage
 		return left.fAllocator != right.fAllocator;
 	}
 
-	// adaption of Storage::Global / Storage::Current for boost::poolXXX usage
-	struct BoostPoolUserAllocatorGlobal {
-		typedef std::size_t size_type;
-		typedef std::ptrdiff_t difference_type;
-
-		static char *malloc(const size_type bytes);
-		static void free(char *const block);
-	};
-
-	struct BoostPoolUserAllocatorCurrent {
-		typedef std::size_t size_type;
-		typedef std::ptrdiff_t difference_type;
-
-		static char *malloc(const size_type bytes);
-		static void free(char *const block);
-	};
-
 ////////////////////////////////////////////////////////////////////////////////
 ///  \class RefCountedWithFinalDestroy
 ///
@@ -285,7 +268,7 @@ namespace STLStorage
 
 	template <
 	class SPT,
-		  typename UserAllocator = STLStorage::BoostPoolUserAllocatorGlobal
+		  typename UserAllocator = ITOStorage::BoostPoolUserAllocatorGlobal
 		  >
 	class WDAllocatorStorage
 	{
@@ -376,8 +359,8 @@ namespace STLStorage
 		return sp.pointee_;
 	}
 
-	template < typename T > struct WDAllocatorGlobalStorage : public WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorGlobal > {
-		typedef WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorGlobal > BaseClassType;
+	template < typename T > struct WDAllocatorGlobalStorage : public WDAllocatorStorage<T, ITOStorage::BoostPoolUserAllocatorGlobal > {
+		typedef WDAllocatorStorage<T, ITOStorage::BoostPoolUserAllocatorGlobal > BaseClassType;
 		WDAllocatorGlobalStorage() : BaseClassType() {}
 		WDAllocatorGlobalStorage(const WDAllocatorGlobalStorage &) : BaseClassType() {}
 		template <class U>
@@ -385,8 +368,8 @@ namespace STLStorage
 		WDAllocatorGlobalStorage(const typename BaseClassType::StoredType &p) : BaseClassType(p) {}
 	};
 
-	template < typename T > struct WDAllocatorCurrentStorage : public WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorCurrent > {
-		typedef WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorCurrent > BaseClassType;
+	template < typename T > struct WDAllocatorCurrentStorage : public WDAllocatorStorage<T, ITOStorage::BoostPoolUserAllocatorCurrent > {
+		typedef WDAllocatorStorage<T, ITOStorage::BoostPoolUserAllocatorCurrent > BaseClassType;
 		WDAllocatorCurrentStorage() : BaseClassType() {}
 		WDAllocatorCurrentStorage(const WDAllocatorCurrentStorage &) : BaseClassType() {}
 		template <class U>

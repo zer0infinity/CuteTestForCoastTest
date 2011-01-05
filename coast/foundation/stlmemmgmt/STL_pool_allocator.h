@@ -9,13 +9,15 @@
 #ifndef _STL_pool_allocator_H
 #define _STL_pool_allocator_H
 
+#include "STLStorage.h"
+
 //---- STL_pool_allocator ----------------------------------------------------------
 namespace STLStorage
 {
 	// use pool_allocator type for std::list container types which allocate elements one by one
 	template <
 	typename T,
-			 typename UserAllocator = BoostPoolUserAllocatorGlobal,
+			 typename UserAllocator = ITOStorage::BoostPoolUserAllocatorGlobal,
 			 unsigned NextSize = 32 >
 	class pool_allocator
 	{
@@ -126,8 +128,8 @@ namespace STLStorage
 		}
 		int_pool_instance_type fpIntPool;
 	};
-	template < typename T > struct pool_allocator_global : public STLStorage::pool_allocator<T, BoostPoolUserAllocatorGlobal, 32 > {};
-	template < typename T > struct pool_allocator_current : public STLStorage::pool_allocator<T, BoostPoolUserAllocatorCurrent, 32 > {};
+	template < typename T > struct pool_allocator_global : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorGlobal, 32 > {};
+	template < typename T > struct pool_allocator_current : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorCurrent, 32 > {};
 }
 
 #endif

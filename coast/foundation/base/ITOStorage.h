@@ -14,8 +14,30 @@
 #include <iosfwd>
 #include <cstdlib>
 #include <deque>
+#include <map>
+#include <boost/pool/pool.hpp>
+#include <boost/shared_ptr.hpp>
 
 class MemoryHeader;
+
+namespace ITOStorage {
+	// adaption of Storage::Global / Storage::Current for boost::poolXXX usage
+	struct BoostPoolUserAllocatorGlobal {
+		typedef std::size_t size_type;
+		typedef std::ptrdiff_t difference_type;
+
+		static char *malloc(const size_type bytes);
+		static void free(char *const block);
+	};
+
+	struct BoostPoolUserAllocatorCurrent {
+		typedef std::size_t size_type;
+		typedef std::ptrdiff_t difference_type;
+
+		static char *malloc(const size_type bytes);
+		static void free(char *const block);
+	};
+}
 
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
@@ -256,6 +278,9 @@ class StorageHooks
 	StorageHooks(const StorageHooks &);
 	StorageHooks &operator=(const StorageHooks &);
 public:
+	typedef boost::pool<ITOStorage::BoostPoolUserAllocatorCurrent> CurrentPoolType;
+	typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
+
 	StorageHooks()
 		: fpOldHook(NULL) {};
 
@@ -279,6 +304,12 @@ public:
 		\return poniter to a newly created MemTracker object */
 	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) = 0;
 
+	//!TODO write API comment
+	virtual CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) = 0;
+
+	//!TODO write API comment
+	virtual CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) = 0;
+
 	void SetOldHook(StorageHooks *pOld) {
 		fpOldHook = pOld;
 	}
@@ -286,9 +317,57 @@ public:
 	StorageHooks *GetOldHook() {
 		return fpOldHook;
 	}
+	virtual void Lock() {}
+	virtual void Unlock() {}
+
+	template <typename T>
+    class LockingProxy {
+    public:
+    	LockingProxy(T*t, StorageHooks* pH):fT(t), fHooks(pH) {
+    		fHooks->Lock();
+    	};
+    	T* operator->() const {
+    		return fT;
+    	}
+    	~LockingProxy() {
+    		fHooks->Unlock();
+    	}
+    private:
+    	T* fT;
+    	StorageHooks* fHooks;
+    };
+
+    template<typename T>
+    LockingProxy<T> LockedAccessFor(T& t) {
+    	return LockingProxy<T>(&t, this);
+    }
 
 private:
 	StorageHooks *fpOldHook;
+};
+
+class FoundationStorageHooks : public StorageHooks {
+    typedef std::map<size_t, CurrentPoolTypePtr> SizePoolMapType;
+	typedef std::map<Allocator*, SizePoolMapType> AllocPoolMapping;
+	AllocPoolMapping allocPoolMap;
+	bool fgInitialized;
+public:
+	FoundationStorageHooks();
+	virtual ~FoundationStorageHooks();
+
+	CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
+
+	CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
+
+	virtual void Initialize();
+	virtual void Finalize();
+	virtual Allocator *Global();
+	virtual Allocator *Current();
+	virtual MemTracker *MakeMemTracker(const char *name, bool);
+protected:
+	void disposeAllocMap() {
+		allocPoolMap.clear();
+	}
 };
 
 //! a wrapper for memory allocations and deallocations that allows to dispatch memory management to allocator policies
@@ -323,16 +402,19 @@ public:
 		return fglStatisticLevel;
 	}
 
+	//! used by mt system to redefine the hooks for mt-local storage policy
+	static StorageHooks *SetHooks(StorageHooks *h);
+
+	//!exchange this object when MT_Storage is used
+	static StorageHooks *fgHooks;
 protected:
 	// somewhat silly the need to declare all storage hook derivations as friend
 	friend class MT_Storage;
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
+	friend class FoundationStorageHooks;
 	friend class Server;	// needs ForceGlobalStorage() for re-initialization
 	friend class BatchServer;
-
-	//! used by mt system to redefine the hooks for mt-local storage policy
-	static StorageHooks *SetHooks(StorageHooks *h);
 
 	//!temporarily disable thread local storage policies e.g. to reinitialize server
 	static void ForceGlobalStorage(bool b) {
@@ -350,9 +432,6 @@ protected:
 	//!factory method to allocate MemTracker
 	static MemTracker *DoMakeMemTracker(const char *name);
 
-	//!exchange this object when MT_Storage is used
-	static StorageHooks *fgHooks;
-
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
 
@@ -367,7 +446,7 @@ protected:
 	static Allocator *fgGlobalPool;
 };
 
-class TestStorageHooks : public StorageHooks
+class TestStorageHooks : public FoundationStorageHooks
 {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);

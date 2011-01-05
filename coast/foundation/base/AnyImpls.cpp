@@ -55,24 +55,23 @@ String AnyImpl::ThisToHex(Allocator *a) const {
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const {
 	aimplStartTrace1(AnyImpl.DeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a);
-	IFAObject *pObj = 0;
+	AnyImpl *pObj = 0;
 	// SOP: only use xreftable if 'this' has more than one reference on it, otherwise it does not make sense
 	if ( RefCount() > 1L ) {
 		String adr = ThisToHex();
 		Anything &pRefEntry = (xreftable[adr]);
-		pObj = pRefEntry.AsIFAObject(0);
+		pObj = reinterpret_cast<AnyImpl*>(pRefEntry.AsIFAObject()); //TODO might not be the best way to do it (requires friendship of Anything and AnyImpl)
 		if (pObj != 0) {
-			AnyImpl* pImpl = dynamic_cast<AnyImpl*>(pObj);
-			aimplTraceAny(pRefEntry, "found existing entry, adding reference " << (pImpl?pImpl->ThisToHex():"0"));
-			pImpl->Ref(); // do not forget to count
-			return pImpl;
+			aimplTraceAny(pRefEntry, "found existing entry, adding reference " << (pObj?pObj->ThisToHex():"0"));
+			pObj->Ref(); // do not forget to count
+			return pObj;
 		}
 		pObj = this->Clone(a);
-		pRefEntry = pObj;
-		aimplTrace("stored xref entry for adr: " << adr << " is " << dynamic_cast<AnyImpl*>(pObj)->ThisToHex());
-		} else {
+		pRefEntry = reinterpret_cast<IFAObject*>(pObj);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << pObj->ThisToHex());
+	} else {
 		pObj = this->Clone(a);
-		}
+	}
 	// let the specific impl modify the cloned entry if it needs to (like in AnyArrayImpl)
 	return this->DoDeepClone(pObj, a, xreftable);
 }
@@ -100,7 +99,7 @@ void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const {
 	v.VisitLong(fLong, this, lIdx, slotname);
 }
 
-IFAObject *AnyLongImpl::Clone(Allocator *a) const {
+AnyImpl *AnyLongImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 }
 
@@ -120,7 +119,7 @@ String AnyObjectImpl::AsString(const char *) const {
 	return gcObjectText;
 }
 
-IFAObject *AnyObjectImpl::Clone(Allocator *a) const {
+AnyImpl *AnyObjectImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
 }
 
@@ -147,7 +146,7 @@ const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const {
 	return fBuf.cstr();
 }
 
-IFAObject *AnyDoubleImpl::Clone(Allocator *a) const {
+AnyImpl *AnyDoubleImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
 }
 
@@ -170,7 +169,7 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 	v.VisitVoidBuf(fBuf, this, lIdx, slotname);
 }
 
-IFAObject *AnyBinaryBufImpl::Clone(Allocator *a) const {
+AnyImpl *AnyBinaryBufImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 }
 
@@ -207,7 +206,7 @@ void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	v.VisitCharPtr(fString, this, lIdx, slotname);
 }
 
-IFAObject *AnyStringImpl::Clone(Allocator *a) const {
+AnyImpl *AnyStringImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
 }
 
@@ -1011,11 +1010,11 @@ void AnyArrayImpl::PrintHash() const {
 	}
 }
 
-IFAObject *AnyArrayImpl::Clone(Allocator *a) const {
+AnyImpl *AnyArrayImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
 	}
 
-AnyImpl *AnyArrayImpl::DoDeepClone(IFAObject *pObj, Allocator *a, Anything &xreftable) const {
+AnyImpl *AnyArrayImpl::DoDeepClone(AnyImpl *pObj, Allocator *a, Anything &xreftable) const {
 	aimplStartTrace(AnyArrayImpl.DoDeepClone);
 	long count = this->GetSize();
 	AnyArrayImpl *pImpl = dynamic_cast<AnyArrayImpl*> (pObj);
@@ -1023,7 +1022,7 @@ AnyImpl *AnyArrayImpl::DoDeepClone(IFAObject *pObj, Allocator *a, Anything &xref
 		pImpl->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return pImpl;
-			}
+}
 
 void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare &comparer) {
 	if (hi < m + 1 || lo > m) {

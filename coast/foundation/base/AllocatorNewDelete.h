@@ -15,7 +15,6 @@
 
 namespace Coast
 {
-
 	class AllocatorNewDelete
 	{
 	public:
@@ -53,6 +52,5 @@ namespace Coast
 							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
 		};
 	}
-
 }
 #endif /* ALLOCATORNEWDELETE_H_ */
