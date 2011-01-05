@@ -517,6 +517,7 @@ protected:
 };
 
 #include "ObserverIf.h"
+#include "AllocatorNewDelete.h"
 
 //---- Thread ------------------------------------------------------------
 //! thread abstraction implementing its own thread state model using EThreadState and the available native thread api
@@ -524,7 +525,7 @@ protected:
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
 With this means it is possible to reliably control starting and stopping of a thread */
-class Thread : public NamedObject, public Observable<Thread, ROAnything>
+class Thread : public NamedObject, public Observable<Thread, ROAnything>, public Coast::AllocatorNewDelete
 {
 	typedef Observable<Thread, ROAnything> tObservableBase;
 public:
