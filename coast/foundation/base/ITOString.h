@@ -39,7 +39,7 @@ public:
 	//! ctor, reserves buffer spaces with capacity bytes
 	/*! \param capacity number of bytes reserved
 		\param a Allocator to allocate memory from */
-	String(long capacity, Allocator *a = Storage::Current());
+	explicit String(long capacity, Allocator *a = Storage::Current());
 
 	//! ctor, creates string with a copy of s
 	/*! \param s initial value of String object, may be 0

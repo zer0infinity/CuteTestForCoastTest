@@ -66,7 +66,7 @@ bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) 
 				cps.UseThreadLocal());
 		return DoExec(&sslcsc, &cps, context, in, out);
 	} else {
-		Connector csc(cps.IPAddress(), cps.Port(), cps.Timeout(), cps.UseThreadLocal());
+		Connector csc(cps.IPAddress(), cps.Port(), cps.Timeout(), "", 0, cps.UseThreadLocal());
 		return DoExec(&csc, &cps, context, in, out);
 	}
 	return false;

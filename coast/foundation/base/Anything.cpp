@@ -571,7 +571,7 @@ namespace {
 		}
 	};
 
-	struct appendAnyLevelToString : std::unary_function<Anything const&,void> {
+	struct appendAnyLevelToString : public std::unary_function<Anything const&,void> {
 		String fStr;
 		void operator()(Anything const& anyValue) {
 			if ( anyValue.GetType() == AnyCharPtrType ) {
@@ -583,7 +583,7 @@ namespace {
 			fStr.Append(std::for_each(strTok.cstr(), strTok.cstr()+strTok.Length(),escapeString()).result);
 		}
 	};
-	struct resolveToAnyLevel : std::unary_function<Anything const&,void> {
+	struct resolveToAnyLevel : public std::unary_function<Anything const&,void> {
 		Anything result;
 		resolveToAnyLevel(Anything const& anySource) : result(anySource) {}
 		void operator()(Anything const& anyValue) {

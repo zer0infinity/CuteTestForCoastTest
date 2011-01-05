@@ -726,9 +726,6 @@ void URLUtilsTest::urlDecodeTest()
 		Answer = Coast::URLUtils::urlDecode( Request );
 		assertCharPtrEqual( "", Answer );
 
-		Answer = Coast::URLUtils::urlDecode( 0L );
-		assertCharPtrEqual( "", Answer );
-
 		Request = "%2541";
 		Answer = Coast::URLUtils::urlDecode( Request );
 		assertCharPtrEqual( "%41", Answer );
@@ -787,9 +784,6 @@ void URLUtilsTest::urlDecodeTest()
 
 		Request = "";
 		Answer = Coast::URLUtils::urlDecode( Request );
-		assertCharPtrEqual( "", Answer );
-
-		Answer = Coast::URLUtils::urlDecode( 0L );
 		assertCharPtrEqual( "", Answer );
 
 		Request = "%u002541";

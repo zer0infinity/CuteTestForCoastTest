@@ -27,7 +27,7 @@ public:
 	LFListenerPool(RequestReactor *reactor);
 
 	//!terminates lfpool anyway
-	~LFListenerPool();
+	virtual ~LFListenerPool();
 	/*! adapts ListenerPool configuration to new LF requirements by creating acceptors as arguments to ListenerPool::Init
 		\param maxParallelRequests size of the pool
 		\param args names of the acceptor factories to be used

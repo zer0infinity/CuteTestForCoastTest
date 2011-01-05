@@ -24,8 +24,8 @@ using namespace Coast;
 #include <ctype.h>
 
 //---- AnythingParserTest ---------------------------------------------------------
-AnythingParserTest::AnythingParserTest (TString tname) : TestCaseType(tname)
-{
+AnythingParserTest::AnythingParserTest(TString tname) :
+	TestCaseType(tname), lineCounter(0) {
 }
 
 void AnythingParserTest::setUp ()
