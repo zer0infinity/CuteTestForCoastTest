@@ -33,10 +33,9 @@ ThreadPoolTest::~ThreadPoolTest()
 void ThreadPoolTest::JoinTest()
 {
 	StartTrace(ThreadPoolTest.JoinTest);
-
 	TestThreadPool ttp;
-
 	Anything dummy;
+
 	if ( t_assertm(ttp.Init(10, dummy), "Init failed") ) {
 		assertEqualm(0L, ttp.Start(false, 0, 0), "Start failed");
 		t_assert(ttp.AllThreadsStarted());
@@ -46,6 +45,7 @@ void ThreadPoolTest::JoinTest()
 		t_assert(ttp.AllThreadsTerminated());
 		assertEqualm(0L, ttp.Terminate(1, 10), "expected all threads to be terminated");
 	}
+
 	// restart pool to see if fStartetThreads is set to the correct value
 	if ( t_assertm(ttp.Init(5, dummy), "Init failed") ) {
 		assertEqualm(0L, ttp.Start(false, 0, 0), "Start failed");
