@@ -305,7 +305,6 @@ StorageHooks *Storage::SetHooks(StorageHooks *h)
 	}
 	if ( h == NULL && fgHooks ) {
 		fgHooks = fgHooks->GetOldHook();
-		pOldHook = fgHooks;
 	} else {
 		fgHooks = h;
 		if ( fgHooks != NULL ) {
@@ -474,19 +473,16 @@ void TestStorageHooks::Finalize()
 }
 
 TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
-	: FoundationStorageHooks()
-	, fAllocator(wdallocator)
-	, fpOldHook(NULL)
+	: fAllocator(wdallocator)
 {
-	fpOldHook = Storage::SetHooks(this);
+	Storage::SetHooks(this);
 }
 
 TestStorageHooks::~TestStorageHooks()
 {
-	disposeAllocMap();
-	StorageHooks *pHook = Storage::SetHooks(NULL);
-	(void)pHook;
-	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
+	StorageHooks *pOldHook = Storage::SetHooks(NULL);
+	(void)pOldHook;
+	Assert( pOldHook == this && "another Storage::SetHook() was called without restoring old Hook!");
 }
 
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)

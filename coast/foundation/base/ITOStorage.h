@@ -460,7 +460,6 @@ public:
 	virtual MemTracker *MakeMemTracker(const char *name, bool);
 
 	Allocator *fAllocator;
-	StorageHooks *fpOldHook;
 };
 
 #endif		//not defined _ITOStorage_H
