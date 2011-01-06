@@ -1882,8 +1882,6 @@ void AnythingParserSemanticTest::testSemantic28Prep( Anything *any ) {
 
 	delete anyHlp0;
 	delete anyHlp1;
-	anyHlp0 = 0;
-	anyHlp1 = 0;
 }
 //	testSemantic28Prep
 

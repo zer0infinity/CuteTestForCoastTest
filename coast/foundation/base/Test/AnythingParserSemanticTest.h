@@ -25,9 +25,6 @@ protected:
 	void		scanAnything( Anything );
 	Anything	anyOutput;
 	long		lineCounter;
-	void 		assertParsedAsDouble(const char *in, double val, int id);
-	void 		assertParsedAsLong(const char *in, long val, int id);
-	void 		assertParsedAsString(const char *in, int id);
 
 public:
 	AnythingParserSemanticTest (TString tstrName);

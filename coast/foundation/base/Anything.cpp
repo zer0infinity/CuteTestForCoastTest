@@ -480,13 +480,12 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 	// this code is a little bit tricky, since we have a multi-state automaton
 	// determining lexically correct floating point numbers
 	fToken = AnythingToken::eDecimalNumber; // might become eFloatNumber
-	bool sign = false, intpart = false, fraction = false,
+	bool intpart = false, fraction = false,
 		 exponent = false, echar = false;
 	if (context.IsGood()) {
 		if ('+' == firstchar || '-' == firstchar) {
 			// found optional sign character :
 			fText.Append(firstchar);
-			sign = true;
 			context.Get(firstchar);
 		}
 		// processed [+-]? follow: [0-9]*\.?[0-9]*([eE][+-]?[0-9]+)?
@@ -744,7 +743,6 @@ public:
 	AnythingParser(InputContext &c): fContext(c) {}
 	bool    DoParse(Anything &a); // returns false if there was a syntax error
 	bool    DoParseSequence(Anything &a, ParserXrefHandler &xrefs);
-	bool    DoParseArrayKey(Anything &a);
 	bool    MakeSimpleAny(AnythingToken &tok, Anything &a);
 
 private:

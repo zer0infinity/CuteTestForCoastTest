@@ -445,7 +445,6 @@ namespace Coast {
 				return;
 			}
 			// remember where the real path segmnent starts, needed especially for WIN32
-			long rootStart = 0;
 			String drive;
 		#if defined(WIN32)
 			// get drive letter if any specified
@@ -458,7 +457,6 @@ namespace Coast {
 		#endif
 
 			if (IsAbsolutePath(path)) {
-				rootStart = 1;
 				newPath << '/';
 			}
 
@@ -965,8 +963,7 @@ namespace Coast {
 				// do not use Storage module to allocate memory here, since readdir_r wreaks havoc with our storage management
 				struct dirent *direntp = (dirent *)calloc(1, sizeof(dirent) + _POSIX_PATH_MAX);
 				struct dirent *direntpSave = direntp;
-				int ret;
-				while ( ((ret = readdir_r( fp, direntp, &direntp )) == 0) && (direntp) )
+				while ( (readdir_r( fp, direntp, &direntp ) == 0) && (direntp) )
 				{
 					String name = direntp->d_name;
 					Trace("current entry [" << name << "]");

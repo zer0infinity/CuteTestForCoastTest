@@ -24,6 +24,9 @@ using namespace Coast;
 //--- c-library modules used ---------------------------------------------------
 #include <limits>
 
+typedef std::numeric_limits<long long> ll_limits;
+typedef std::numeric_limits<unsigned long long> ull_limits;
+
 const char *const StringStreamTest::fgcContent =
 	"This is the content of a Test String\n"
 	"it consists of several lines of simple Text\n"
@@ -275,11 +278,10 @@ void StringStreamTest::FormatTests()
 
 void StringStreamTest::OperatorShiftLeftWithLongLong()
 {
-	std::numeric_limits<long long> limit;
 	OStringStream ostr, ostr2;
-	ostr << limit.max();
+	ostr << ll_limits::max();
 	assertCharPtrEqual("9223372036854775807", ostr.str());
-	ostr2 << limit.min();
+	ostr2 << ll_limits::min();
 	assertCharPtrEqual("-9223372036854775808", ostr2.str());
 }
 
@@ -293,32 +295,29 @@ void StringStreamTest::OperatorShiftLeftWithUnsignedLongLong()
 void StringStreamTest::OperatorShiftRightWithLongLong()
 {
 	{
-		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << limit.max() << std::flush;
+		stream << ll_limits::max() << std::flush;
 		l_long llVal = INT64_LITERAL(-3);
 		stream >> llVal;
-		t_assert(limit.max() == llVal);
+		t_assert(ll_limits::max() == llVal);
 	}
 	{
-		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << limit.min() << std::flush;
+		stream << ll_limits::min() << std::flush;
 		l_long llVal = INT64_LITERAL(+5);
 		stream >> llVal;
-		t_assert(limit.min() == llVal);
+		t_assert(ll_limits::min() == llVal);
 	}
 }
 
 void StringStreamTest::OperatorShiftRightWithUnsignedLongLong()
 {
 	{
-		std::numeric_limits<unsigned long long> limit;
 		StringStream stream;
-		stream << limit.max() << std::flush;
+		stream << ull_limits::max() << std::flush;
 		ul_long ullVal = UINT64_LITERAL(1111);
 		stream >> ullVal;
-		t_assert(limit.max() == ullVal);
+		t_assert(ull_limits::max() == ullVal);
 	}
 }
 

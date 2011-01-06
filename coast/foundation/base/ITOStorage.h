@@ -282,9 +282,11 @@ public:
 	typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
 
 	StorageHooks()
-		: fpOldHook(NULL) {};
+		: fpOldHook(0) {};
 
-	virtual ~StorageHooks() {};
+	virtual ~StorageHooks() {
+		fpOldHook = 0;
+	};
 
 	//!initialize storage subsystem
 	virtual void Initialize() = 0;

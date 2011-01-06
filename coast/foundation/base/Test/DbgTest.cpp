@@ -318,7 +318,7 @@ void DbgTest::CheckMacrosCompile()
 	StatTrace("test", "a stat trace", Storage::Current());
 	StatTraceBuf("bli.bla", "0123456789012345", 10, Storage::Current());
 	StatTraceAny("test.x", a, "an any", Storage::Current());
-	TriggerEnabled(SectionNotDefined.SlotNotDefined);
+	t_assert(!TriggerEnabled(SectionNotDefined.SlotNotDefined));
 }
 
 Test *DbgTest::suite ()

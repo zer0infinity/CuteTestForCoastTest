@@ -35,6 +35,8 @@ MemChecker::MemChecker(const char *scope, Allocator *a)
 MemChecker::~MemChecker()
 {
 	TraceDelta("MemChecker.~MemChecker: ");
+	fAllocator = 0;
+	fScope = 0;
 }
 
 void MemChecker::TraceDelta(const char *message)
@@ -483,6 +485,7 @@ TestStorageHooks::~TestStorageHooks()
 	StorageHooks *pOldHook = Storage::SetHooks(NULL);
 	(void)pOldHook;
 	Assert( pOldHook == this && "another Storage::SetHook() was called without restoring old Hook!");
+	fAllocator = 0;
 }
 
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)

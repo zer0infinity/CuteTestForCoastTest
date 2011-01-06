@@ -131,7 +131,6 @@ public:
 	void trimFront0 ();
 	void trimFront1 ();
 	void trimFront2 ();
-	void trimFront3 ();
 
 	void trimFrontXXX ();
 	void trimFrontEmpty ();
