@@ -12,7 +12,7 @@ namespace Coast
 {
 	AllocatorNewDelete::~AllocatorNewDelete() {}
 
-	void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
+	void *AllocatorNewDelete::operator new(size_t sz, Allocator *a)
 	{
 		if (a) {
 			void *mem = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
@@ -23,24 +23,22 @@ namespace Coast
 		return a;
 	}
 	//TODO: refactor to DRY, check if alignedSize is an issue with pointers (might be with 32bit pointers)
-	void AllocatorNewDelete::operator delete(void *ptr) throw()
+	void AllocatorNewDelete::operator delete(void *ptr)
 	{
 		if (ptr) {
 			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
 			Allocator *a = (reinterpret_cast<Allocator **>(realPtr))[0L]; // retrieve Allocator
-			size_t sz; // separate assignment to avoid compiler warning of unused variable
-			sz=(a->Free(realPtr));
+			a->Free(realPtr);
 		}
 	}
 
-	void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
+	void AllocatorNewDelete::operator delete(void *ptr, Allocator *a)
 	{
 		if (ptr && a) {
 			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
 			Allocator *aStored = (reinterpret_cast<Allocator **>( realPtr))[0L]; // retrieve Allocator
 			assert(aStored == a);
-			size_t sz;// separate assignment to avoid compiler warning of unused variable
-			sz=(aStored->Free(realPtr));
+			aStored->Free(realPtr);
 		}
 	}
 }
