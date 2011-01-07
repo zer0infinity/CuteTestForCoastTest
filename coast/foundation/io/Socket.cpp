@@ -114,33 +114,6 @@ std::iostream *Socket::DoMakeStream()
 	return 0;
 }
 
-void *Socket::operator new(size_t size, Allocator *a)
-{
-	StartTrace(Socket.operatornew);
-	if (a) {
-		Trace("allocating with allocator:[" << (long)a << "]");
-		return a->Calloc(1, size);
-	} else {
-		Trace("using global new");
-		return ::operator new(size);
-	}
-}
-
-void Socket::operator delete(void *d)
-{
-	StartTrace(Socket.operatordelete);
-	if (d) {
-		Allocator *a = ((Socket *)d)->fAllocator;
-		if (a) {
-			Trace("deleting with allocator:[" << (long)a << "]");
-			a->Free(d);
-		} else {
-			Trace("deleting with global delete");
-			::operator delete(d);
-		}
-	}
-}
-
 bool Socket::IsReady(long fd, short event, long timeout, long &retCode)
 {
 	StartTrace1(Socket.IsReady, "fd:" << fd);

@@ -326,34 +326,13 @@ private:
 //!syntactic sugar to ease acquiring and releasing a mutex in one scope
 class LockUnlockEntry
 {
-	struct WrapperBase {
+	struct WrapperBase : public Coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
 			StatTrace(LockUnlockEntry.WrapperBase, "", Storage::Current());
 		}
 		virtual ~WrapperBase() {
 			StatTrace(LockUnlockEntry.~WrapperBase, "", Storage::Current());
-		}
-
-		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockUnlockEntry.new, "allocator:" << (long)size, Storage::Current());
-			if (a) {
-				return a->Calloc(1, size);
-			} else {
-				return ::operator new(size);
-			}
-		}
-
-		static void operator delete(void *d) {
-			StatTrace(LockUnlockEntry.delete, "", Storage::Current());
-			if (d) {
-				Allocator *a = ((WrapperBase *)d)->fAllocator;
-				if (a) {
-					a->Free(d);
-				} else {
-					::operator delete(d);
-				}
-			}
 		}
 
 		Allocator *fAllocator;
@@ -412,34 +391,13 @@ public:
 
 class LockedValueIncrementDecrementEntry
 {
-	struct WrapperBase {
+	struct WrapperBase : public Coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
 			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Storage::Current());
 		}
 		virtual ~WrapperBase() {
 			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Storage::Current());
-		}
-
-		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockedValueIncrementDecrementEntry.new, "allocator:" << (long)size, Storage::Current());
-			if (a) {
-				return a->Calloc(1, size);
-			} else {
-				return ::operator new(size);
-			}
-		}
-
-		static void operator delete(void *d) {
-			StatTrace(LockedValueIncrementDecrementEntry.delete, "", Storage::Current());
-			if (d) {
-				Allocator *a = ((WrapperBase *)d)->fAllocator;
-				if (a) {
-					a->Free(d);
-				} else {
-					::operator delete(d);
-				}
-			}
 		}
 
 		Allocator *fAllocator;

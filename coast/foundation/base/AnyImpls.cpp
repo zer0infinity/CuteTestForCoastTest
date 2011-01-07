@@ -457,27 +457,6 @@ void AnyKeyTable::PrintHash() const {
 	SystemLog::WriteToStderr("\n", 1);
 }
 
-void *AnyKeyTable::operator new(size_t size, Allocator *a)
-{
-	if (a) {
-		return a->Calloc(1, size);
-	} else {
-		return ::operator new(size);
-	}
-}
-
-void AnyKeyTable::operator delete(void *d)
-{
-	if (d) {
-		Allocator *a = reinterpret_cast<AnyKeyTable *>(d)->fAllocator;
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
-}
-
 //---- AnyIndTable --------------------------------------------------
 AnyIndTable::AnyIndTable(long initCapacity, Allocator *a) :
 	fIndexTable(0), fEmptyTable(0), fCapacity(initCapacity), fSize(0), fAllocator(a) {
@@ -642,27 +621,6 @@ void AnyIndTable::PrintTable() const {
 		m << "[" << i << "] <" << fIndexTable[i] << ">" << "\n";
 	}
 	SystemLog::WriteToStderr(m);
-}
-
-void *AnyIndTable::operator new(size_t size, Allocator *a)
-{
-	if (a) {
-		return a->Calloc(1, size);
-	} else {
-		return ::operator new(size);
-	}
-}
-
-void AnyIndTable::operator delete(void *d)
-{
-	if (d) {
-		Allocator *a = static_cast<AnyIndTable *>(d)->fAllocator;
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
 }
 
 //---- AnyArrayImpl -----------------------------------------------------------------

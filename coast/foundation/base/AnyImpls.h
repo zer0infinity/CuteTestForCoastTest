@@ -296,7 +296,7 @@ protected:
 
 class AnyArrayImpl;
 //---- AnyKeyTable --------------------------------------------------
-class AnyKeyTable
+class AnyKeyTable : public Coast::AllocatorNewDelete
 {
 public:
 	enum {
@@ -316,8 +316,6 @@ public:
 
 	void PrintHash() const;
 
-	static void *operator new(size_t size, Allocator *a);
-	static void operator delete(void *d);
 
 protected:
 	void InitTable(long cap);
@@ -334,7 +332,7 @@ private:
 };
 
 //---- AnyIndTable --------------------------------------------------
-class AnyIndTable
+class AnyIndTable : public Coast::AllocatorNewDelete
 {
 public:
 	AnyIndTable(long initCapacity, Allocator *a);
@@ -344,8 +342,6 @@ public:
 	long At(long) const;
 	void Remove(long slot);
 
-	static void *operator new(size_t size, Allocator *a);
-	static void operator delete(void *d);
 	void Swap(long l, long r);
 	void SetIndex(long slot, long index);
 	void InsertReserve(long slot, long size);

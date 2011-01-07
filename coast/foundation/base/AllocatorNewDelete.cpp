@@ -10,7 +10,9 @@
 
 namespace Coast
 {
-	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
+	AllocatorNewDelete::~AllocatorNewDelete() {}
+
+	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a)
 	{
 		if (a) {
 			void *mem = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
@@ -21,7 +23,7 @@ namespace Coast
 		return a;
 	}
 	//TODO: refactor to DRY, check if alignedSize is an issue with pointers (might be with 32bit pointers)
-	static void AllocatorNewDelete::operator delete(void *ptr) throw()
+	static void AllocatorNewDelete::operator delete(void *ptr)
 	{
 		if (ptr) {
 			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
@@ -30,7 +32,7 @@ namespace Coast
 			sz=(a->Free(realPtr));
 		}
 	}
-	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
+	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a)
 	{
 		if (ptr && a) {
 			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
@@ -40,7 +42,4 @@ namespace Coast
 			sz=(aStored->Free(realPtr));
 		}
 	}
-
-	AllocatorNewDelete::~AllocatorNewDelete() {}
-
 }

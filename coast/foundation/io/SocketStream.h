@@ -130,17 +130,13 @@ protected: // seekxxx are protected in the std..
 
 //---- iosITOSocket -------------------------------------------------------------------
 //! adapts ios to a Socket Stream buffer
-class iosITOSocket : virtual public std::ios
+class iosITOSocket : virtual public std::ios, public Coast::AllocatorNewDelete
 {
 public:
 	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::in | std::ios::out );
 	// s is the source resp. the sink;
 
 	virtual ~iosITOSocket() { }
-	//!allocate object with optimized allocator strategy
-	static void *operator new(size_t size, Allocator *a);
-	//!delete object with optimized allocator strategy
-	static void operator delete(void *d);
 
 	SocketStreamBuf *rdbuf()  {
 		return &fSocketBuf;

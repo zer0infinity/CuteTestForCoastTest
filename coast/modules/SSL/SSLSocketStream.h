@@ -16,7 +16,7 @@ typedef struct ssl_st SSL;
 
 class SSLSocket;
 
-class SSLSocketStreamBuf : public SocketStreamBuf
+class SSLSocketStreamBuf : public SocketStreamBuf, public Coast::AllocatorNewDelete
 {
 public:
 	SSLSocketStreamBuf(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -49,10 +49,6 @@ public:
 		return &fSSLSockBuf;
 	}
 
-	//!allocate object with optimized allocator strategy
-	static void *operator new(size_t size, Allocator *a);
-	//!delete object with optimized allocator strategy
-	static void operator delete(void *d);
 protected:
 	SSLSocketStreamBuf fSSLSockBuf;   // the buffer with its underlying string
 	Allocator *fAllocator;
