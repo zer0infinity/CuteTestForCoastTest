@@ -522,16 +522,6 @@ void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
 	(void) sz; // avoid unused variable warning
 }
 
-
-FoundationStorageHooks::FoundationStorageHooks()
-	: fgInitialized(false)
-{
-}
-
-FoundationStorageHooks::~FoundationStorageHooks()
-{
-}
-
 StorageHooks::CurrentPoolTypePtr FoundationStorageHooks::PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
 	AllocPoolMapping::iterator ita;
 	if ((ita = allocPoolMap.find(a)) == allocPoolMap.end()) {
@@ -563,15 +553,9 @@ Allocator *FoundationStorageHooks::Global()
 	return Storage::DoGlobal();
 }
 
-MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe)
+MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool)
 {
-//	MemTracker *pTracker = NULL;
-//	if ( bThreadSafe ) {
-//		pTracker = new MT_MemTracker(name, 55667788);
-//	} else {
-//		pTracker = Storage::DoMakeMemTracker(name);
-//	}
-	return 0;
+	return new MemTracker(name);
 }
 
 Allocator *FoundationStorageHooks::Current()

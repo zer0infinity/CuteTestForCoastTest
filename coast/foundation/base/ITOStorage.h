@@ -346,17 +346,17 @@ private:
 	StorageHooks *fpOldHook;
 };
 
-class FoundationStorageHooks : public StorageHooks {
-    typedef std::map<size_t, CurrentPoolTypePtr> SizePoolMapType;
+class FoundationStorageHooks: public StorageHooks {
+	typedef std::map<size_t, CurrentPoolTypePtr> SizePoolMapType;
 	typedef std::map<Allocator*, SizePoolMapType> AllocPoolMapping;
 	AllocPoolMapping allocPoolMap;
 	bool fgInitialized;
 public:
-	FoundationStorageHooks();
-	virtual ~FoundationStorageHooks();
+	FoundationStorageHooks() :
+		fgInitialized(false) {
+	}
 
 	CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
-
 	CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
 
 	virtual void Initialize();

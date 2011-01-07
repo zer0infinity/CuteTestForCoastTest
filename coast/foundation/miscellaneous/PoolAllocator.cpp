@@ -20,9 +20,6 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
-extern void *operator new(size_t size, void *vp);
-extern void operator delete(void *ptr);
-
 //! smallest size of allocation unit: 16UL for the usable memory block
 static const u_long fgMinPayloadSize = 16UL;
 
