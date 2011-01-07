@@ -179,7 +179,7 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 		a["key"]["second"] = value;
 		(this->*pFunc)(String("11 any ") << pName, a, iterations);
 	}
-	p.Refresh();
+//	p.Refresh();
 	{
 		Anything a(&p);
 		a["key"]["second"] = value;
