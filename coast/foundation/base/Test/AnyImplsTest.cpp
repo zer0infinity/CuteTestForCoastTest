@@ -19,6 +19,7 @@
 #include "Dbg.h"
 #include "StringStream.h"
 #include <iomanip>
+#include <memory>
 
 //---- AnyImplsTest ----------------------------------------------------------------
 AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)
@@ -35,11 +36,11 @@ void AnyImplsTest::ThisToHexTest()
 {
 	StartTrace(AnyImplsTest.ThisToHexTest);
 	{
-		AnyImpl *d=new(Storage::Current())AnyLongImpl(123L, Storage::Current());
+		std::auto_ptr<AnyImpl> d = std::auto_ptr<AnyImpl>(new(Storage::Current())AnyLongImpl(123L, Storage::Current()));
 		String res = d->ThisToHex();
 		assertCompare(sizeof(void *)*2L,equal_to,static_cast<unsigned long>(res.Length()));
 		StringStream os;
-		os << std::hex << std::setw(sizeof(d)*2)<<std::setfill('0')<<std::noshowbase<<reinterpret_cast<unsigned long long>(static_cast<void*>(d));
+		os << std::hex << std::setw(sizeof(d.get())*2)<<std::setfill('0')<<std::noshowbase<<reinterpret_cast<unsigned long long>(static_cast<void*>(d.get()));
 		assertCharPtrEqual(os.str(),res);
 	}
 }
