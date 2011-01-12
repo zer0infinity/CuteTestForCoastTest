@@ -60,7 +60,7 @@ OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPool
 	StartTrace(OracleEnvironment.OracleEnvironment);
 	// caution: the following memory handles supplied must allocate on Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
-	// lifetime of the connection, mutliple threads could share the same connection and so we
+	// lifetime of the connection, multiple threads could share the same connection and so we
 	// must take care not to allocate on the first Thread opening the connection
 	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), eMode, ctx_ptr, // context
 					   malloc_func, // malloc function to allocate handles and env specific memory

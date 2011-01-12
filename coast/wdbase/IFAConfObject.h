@@ -208,8 +208,7 @@ public:
 	//! Public api to return reference to this object instead of cloning, e.g. like a singleton
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
-		NotCloned *nonconst_this = (NotCloned *) this;
-		return nonconst_this;
+		return const_cast<NotCloned*>(this);
 	}
 
 private:

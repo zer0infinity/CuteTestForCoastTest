@@ -15,6 +15,7 @@
 #include <cassert>
 #include "boost/pool/pool.hpp"
 #include "boost/pool/detail/singleton.hpp"
+#include "AllocatorPool.h"
 
 namespace Coast {
 
@@ -26,28 +27,30 @@ class SegStorAllocatorNewDelete {
 		}
 
 		typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> GlobalPoolType;
-		typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
+		typedef Coast::Memory::MyPool CurrentPoolType;
 		typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
 		typedef std::map<Allocator*, CurrentPoolTypePtr> AllocPoolMapping;
 		AllocPoolMapping allocPoolMap;
+
 		CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
 			AllocPoolMapping::iterator it;
 			CurrentPoolTypePtr aPool;
 			if ((it = allocPoolMap.find(a)) != allocPoolMap.end()) {
 				aPool = it->second;
 			} else {
-				aPool = CurrentPoolTypePtr(new CurrentPoolType(nrequested_size, nnext_size));
+				aPool = CurrentPoolTypePtr(new CurrentPoolType(a, nrequested_size, nnext_size));
 				allocPoolMap.insert(std::make_pair(a, aPool));
 			}
 			return aPool;
 		}
+
 		CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
 			AllocPoolMapping::iterator it;
 			CurrentPoolTypePtr aPool;
 			if ((it = allocPoolMap.find(a)) != allocPoolMap.end()) {
 				aPool = it->second;
 			} else {
-				// hää?
+				//TODO
 			}
 			return aPool;
 		}
@@ -57,7 +60,7 @@ class SegStorAllocatorNewDelete {
 				return Storage::fgHooks->LockedAccessFor(globalPool)->malloc();
 			else {
 				CurrentPoolTypePtr newTLSPool = PoolForAlloc(a, N, NextSize);
-				return newTLSPool->malloc();
+				return newTLSPool->pmalloc();
 			}
 		}
 
@@ -66,7 +69,7 @@ class SegStorAllocatorNewDelete {
 				return Storage::fgHooks->LockedAccessFor(globalPool)->free(block);
 			else {
 				CurrentPoolTypePtr newTLSPool = PoolForFree(a, N, NextSize);
-				newTLSPool->free(block);
+				newTLSPool->pfree(block);
 			}
 		}
 		GlobalPoolType globalPool;

@@ -24,8 +24,6 @@ public:
 	 * @param name unique name to register this action
 	 */
 	OracleCheckCloseOpenedConnectionsAction(const char *name) : Action(name) { }
-	//! dtor
-	~OracleCheckCloseOpenedConnectionsAction() {}
 	/*! cleans the session list from timeouted sessions
 	 * @param transitionToken string passed in when action was executed
 	 * @param ctx Context to be used for action processing
