@@ -26,11 +26,37 @@ class SegStorAllocatorNewDelete {
 		CurrentGlobalWrapper() : globalPool(N, NextSize) {
 		}
 
+		typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
+		typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
+		typedef std::map<Allocator*, CurrentPoolTypePtr> AllocPoolMapping;
+		AllocPoolMapping allocPoolMap;
+		CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
+			AllocPoolMapping::iterator it;
+			CurrentPoolTypePtr aPool;
+			if ((it = allocPoolMap.find(a)) != allocPoolMap.end()) {
+				aPool = it->second;
+			} else {
+				aPool = CurrentPoolTypePtr(new CurrentPoolType(nrequested_size, nnext_size));
+				allocPoolMap.insert(std::make_pair(a, aPool));
+			}
+			return aPool;
+		}
+		CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
+			AllocPoolMapping::iterator it;
+			CurrentPoolTypePtr aPool;
+			if ((it = allocPoolMap.find(a)) != allocPoolMap.end()) {
+				aPool = it->second;
+			} else {
+				// hää?
+			}
+			return aPool;
+		}
+
 		void * malloc( Allocator *a ) {
 			if ( a == Storage::Global() )
 				return Storage::fgHooks->LockedAccessFor(globalPool)->malloc();
 			else {
-				StorageHooks::CurrentPoolTypePtr newTLSPool = Storage::fgHooks->PoolForAlloc(a, N, NextSize);
+				CurrentPoolTypePtr newTLSPool = PoolForAlloc(a, N, NextSize);
 				return newTLSPool->malloc();
 			}
 		}
@@ -39,33 +65,33 @@ class SegStorAllocatorNewDelete {
 			if ( a == Storage::Global() )
 				return Storage::fgHooks->LockedAccessFor(globalPool)->free(block);
 			else {
-				StorageHooks::CurrentPoolTypePtr newTLSPool = Storage::fgHooks->PoolForFree(a, N, NextSize);
+				CurrentPoolTypePtr newTLSPool = PoolForFree(a, N, NextSize);
 				newTLSPool->free(block);
 			}
 		}
-
 		GlobalPoolType globalPool;
 	};
+
 public:
-	static void *operator new( size_t, Allocator *a ) throw () {
+	static void *operator new( size_t, Allocator *a ) {
 		typedef CurrentGlobalWrapper<sizeof(T)> segwrapT;
 		typedef boost::details::pool::singleton_default<segwrapT> singleton;
 		segwrapT & p = singleton::instance();
 		return p.malloc(a);
 	}
 
-	static void *operator new( size_t t ) throw () {
+	static void *operator new( size_t t ) {
 		return operator new(t, Storage::Global());
 	}
 
-	static void operator delete( void *ptr, Allocator *a ) throw () {
+	static void operator delete( void *ptr, Allocator *a ) {
 		typedef CurrentGlobalWrapper<sizeof(T)> segwrapT;
 		typedef boost::details::pool::singleton_default<segwrapT> singleton;
 		segwrapT & p = singleton::instance();
 		return p.free(ptr, a);
 	}
 
-	static void operator delete( void *ptr ) throw () {
+	static void operator delete( void *ptr ) {
 		return operator delete(ptr, static_cast<T*>(ptr)->MyAllocator());
 	}
 };

@@ -521,32 +521,6 @@ void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
 	(void) sz; // avoid unused variable warning
 }
 
-StorageHooks::CurrentPoolTypePtr FoundationStorageHooks::PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {
-	AllocPoolMapping::iterator ita;
-	if ((ita = allocPoolMap.find(a)) == allocPoolMap.end()) {
-		ita = allocPoolMap.insert(std::make_pair(a, SizePoolMapType())).first;
-	}
-	SizePoolMapType::iterator it;
-	if ((it = ita->second.find(nrequested_size)) != ita->second.end()) {
-		return it->second;
-	} else {
-		CurrentPoolTypePtr newTLSPool(new CurrentPoolType(nrequested_size, nnext_size));
-		ita->second.insert(std::make_pair(nrequested_size, newTLSPool));
-		return newTLSPool;
-	}
-}
-
-StorageHooks::CurrentPoolTypePtr FoundationStorageHooks::PoolForFree( Allocator* a, std::size_t nrequested_size, std::size_t nnext_size ) {
-	AllocPoolMapping::iterator ita;
-	if ( ( ita = allocPoolMap.find( a ) ) != allocPoolMap.end() ) {
-		SizePoolMapType::iterator it;
-		if ( ( it = ita->second.find( nrequested_size ) ) != ita->second.end() ) {
-			return it->second;
-		}
-	}
-	return CurrentPoolTypePtr();
-}
-
 Allocator *FoundationStorageHooks::Global()
 {
 	return Storage::DoGlobal();
@@ -574,6 +548,4 @@ void FoundationStorageHooks::Finalize()
 	if ( fgInitialized ) {
 		fgInitialized = false;
 	}
-	// must dispose before SetHooks() gets called - otherwise Storage::Current() might point to something else already
-	disposeAllocMap();
 }

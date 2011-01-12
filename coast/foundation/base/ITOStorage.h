@@ -278,9 +278,6 @@ class StorageHooks
 	StorageHooks(const StorageHooks &);
 	StorageHooks &operator=(const StorageHooks &);
 public:
-	typedef boost::pool<ITOStorage::BoostPoolUserAllocatorCurrent> CurrentPoolType;
-	typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
-
 	StorageHooks()
 		: fpOldHook(0) {};
 
@@ -305,12 +302,6 @@ public:
 		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
 		\return poniter to a newly created MemTracker object */
 	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) = 0;
-
-	//!TODO write API comment
-	virtual CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) = 0;
-
-	//!TODO write API comment
-	virtual CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) = 0;
 
 	void SetOldHook(StorageHooks *pOld) {
 		fpOldHook = pOld;
@@ -349,27 +340,16 @@ private:
 };
 
 class FoundationStorageHooks: public StorageHooks {
-	typedef std::map<size_t, CurrentPoolTypePtr> SizePoolMapType;
-	typedef std::map<Allocator*, SizePoolMapType> AllocPoolMapping;
-	AllocPoolMapping allocPoolMap;
 	bool fgInitialized;
 public:
 	FoundationStorageHooks() :
 		fgInitialized(false) {
 	}
-
-	CurrentPoolTypePtr PoolForAlloc(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
-	CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size);
-
 	virtual void Initialize();
 	virtual void Finalize();
 	virtual Allocator *Global();
 	virtual Allocator *Current();
 	virtual MemTracker *MakeMemTracker(const char *name, bool);
-protected:
-	void disposeAllocMap() {
-		allocPoolMap.clear();
-	}
 };
 
 //! a wrapper for memory allocations and deallocations that allows to dispatch memory management to allocator policies
@@ -448,7 +428,7 @@ protected:
 	static Allocator *fgGlobalPool;
 };
 
-class TestStorageHooks : public FoundationStorageHooks
+class TestStorageHooks : public StorageHooks
 {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);

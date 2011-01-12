@@ -180,8 +180,6 @@ void MT_MemTracker::PrintStatistic(long lLevel)
 class MTStorageHooks : public StorageHooks
 {
 public:
-    typedef std::map<size_t, CurrentPoolTypePtr> SizePoolMapType;
-
 	MTStorageHooks();
 	virtual ~MTStorageHooks();
 
@@ -197,38 +195,9 @@ public:
 		\return poniter to a newly created MemTracker object */
 	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
 
-    //!
-	CurrentPoolTypePtr PoolForAlloc(Allocator*, std::size_t nrequested_size, std::size_t nnext_size);
-
-    //!
-	CurrentPoolTypePtr PoolForFree(Allocator*, std::size_t nrequested_size, std::size_t nnext_size);
-
-    class PoolKeyInitializer : public InitFinisManagerMTFoundation
-    {
-    public:
-    	PoolKeyInitializer(unsigned int uiPriority) : InitFinisManagerMTFoundation(uiPriority) {
-    		IFMTrace("PoolKeyInitializer created\n");
-    	}
-
-    	virtual void DoInit() {
-    		IFMTrace("PoolKeyInitializer::DoInit\n");
-    		if (THRKEYCREATE(MTStorageHooks::fgPoolKey, 0)) {
-    			SystemLog::Error("TlsAlloc of MTStorageHooks::fgPoolKey failed");
-    		}
-    	}
-
-    	virtual void DoFinis() {
-    		IFMTrace("PoolKeyInitializer::DoFinis\n");
-    		if (THRKEYDELETE(MTStorageHooks::fgPoolKey) != 0) {
-    			SystemLog::Error("TlsFree of MTStorageHooks::fgPoolKey failed" );
-    		}
-    	}
-    };
-
 	virtual void Lock() { fMutex.Lock(); }
 	virtual void Unlock() { fMutex.Unlock(); }
 
-    static THREADKEY fgPoolKey;
 private:
 	bool fgInitialized;
     SimpleMutex fMutex;
@@ -236,8 +205,6 @@ private:
 
 MemTracker *MT_Storage::fOldTracker = NULL;
 static MTStorageHooks *sgpMTHooks = NULL;
-THREADKEY MTStorageHooks::fgPoolKey = 0;
-static MTStorageHooks::PoolKeyInitializer *psgPoolKeyInitializer = new MTStorageHooks::PoolKeyInitializer(16);
 
 //---- MT_Storage ------------------------------------------
 THREADKEY MT_Storage::fgAllocatorKey = 0;
@@ -511,70 +478,4 @@ void MTStorageHooks::Finalize()
 	if ( fgInitialized ) {
 		fgInitialized = false;
 	}
-}
-
-class CurrentPoolTypeCleaner: public CleanupHandler {
-public:
-	static CurrentPoolTypeCleaner fgCleaner;
-protected:
-	// method used to cleanup specific settings within
-	// thread specific storage
-	virtual bool DoCleanup() {
-		StatTrace( CurrentPoolTypeCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global() );
-		MTStorageHooks::SizePoolMapType *sizePoolMapPtr = 0;
-		if (GETTLSDATA(MTStorageHooks::fgPoolKey, sizePoolMapPtr, MTStorageHooks::SizePoolMapType)) {
-			delete sizePoolMapPtr;
-			sizePoolMapPtr = 0;
-
-			if (SETTLSDATA(MTStorageHooks::fgPoolKey, sizePoolMapPtr)) {
-				return true;
-			}
-		}
-		return false;
-	}
-};
-
-CurrentPoolTypeCleaner CurrentPoolTypeCleaner::fgCleaner;
-
-StorageHooks::CurrentPoolTypePtr MTStorageHooks::PoolForAlloc(Allocator*, std::size_t nrequested_size, std::size_t nnext_size) {
-	SizePoolMapType *sizePoolMapPtr = 0;
-
-	if (not GETTLSDATA(fgPoolKey, sizePoolMapPtr, SizePoolMapType)) {
-		sizePoolMapPtr = new SizePoolMapType();
-
-		if (not SETTLSDATA(fgPoolKey, sizePoolMapPtr)) {
-			SystemLog::Error("aaarrrg!!!");
-			return CurrentPoolTypePtr();
-		}
-
-		Thread::RegisterCleaner(&CurrentPoolTypeCleaner::fgCleaner);
-	}
-
-	if (sizePoolMapPtr != 0) {
-		SizePoolMapType::iterator it;
-
-		if ((it = sizePoolMapPtr->find(nrequested_size)) != sizePoolMapPtr->end()) {
-			return it->second;
-		} else {
-			CurrentPoolTypePtr newTLSPool(new CurrentPoolType(nrequested_size, nnext_size));
-			sizePoolMapPtr->insert(std::make_pair(nrequested_size, newTLSPool));
-			return newTLSPool;
-		}
-	}
-
-	return CurrentPoolTypePtr();
-}
-
-StorageHooks::CurrentPoolTypePtr MTStorageHooks::PoolForFree(Allocator*, std::size_t nrequested_size, std::size_t) {
-	SizePoolMapType *sizePoolMapPtr = 0;
-
-	if (GETTLSDATA(fgPoolKey, sizePoolMapPtr, SizePoolMapType)) {
-		SizePoolMapType::iterator it;
-
-		if ((it = sizePoolMapPtr->find(nrequested_size)) != sizePoolMapPtr->end()) {
-			return it->second;
-		}
-	}
-
-	return CurrentPoolTypePtr();
 }
