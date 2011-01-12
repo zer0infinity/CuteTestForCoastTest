@@ -23,7 +23,7 @@
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
  * like an environment and a connection which can then be used to process oracle database requests.
  */
-class OraclePooledConnection: public IFAObject
+class OraclePooledConnection: public IFAObject, public Coast::AllocatorNewDelete
 {
 	OracleEnvironmentPtr fEnvironment;
 	OracleConnectionPtr fConnection;

@@ -38,9 +38,11 @@ namespace Coast
 
 	private:
 		//! disallow unintended creation of non-Allocator instances
-		static void *operator new(std::size_t sz) throw (std::bad_alloc);
+		static void *operator new(std::size_t sz, void *) throw();
+		static void *operator new(std::size_t sz);
 		static void *operator new (std::size_t size, const std::nothrow_t &nothrow_constant) throw();
 		static void operator delete (void *ptr, const std::nothrow_t &nothrow_constant) throw();
+		static void operator delete (void* ptr, void* voidptr2) throw();
 	};
 
 	namespace Memory

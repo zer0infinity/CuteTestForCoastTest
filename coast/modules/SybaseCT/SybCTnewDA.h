@@ -39,7 +39,7 @@
 #define EX_GET_COLUMN_VALUE(coldata, row, col, colfmt) \
 	(coldata[col].value + ((row) * (colfmt[col].maxlength)))
 
-class SybCTnewDA : public IFAObject
+class SybCTnewDA : public IFAObject, public Coast::AllocatorNewDelete
 {
 	// Define structure where row data is bound.
 	// Allow for column arrays - for array binding.

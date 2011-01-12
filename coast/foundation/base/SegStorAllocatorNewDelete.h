@@ -20,12 +20,12 @@ namespace Coast {
 
 template<typename T>
 class SegStorAllocatorNewDelete {
-	typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> GlobalPoolType;
 	template<unsigned N, unsigned NextSize = 32>
 	struct CurrentGlobalWrapper {
 		CurrentGlobalWrapper() : globalPool(N, NextSize) {
 		}
 
+		typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> GlobalPoolType;
 		typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
 		typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
 		typedef std::map<Allocator*, CurrentPoolTypePtr> AllocPoolMapping;

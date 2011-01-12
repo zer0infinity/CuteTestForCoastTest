@@ -16,7 +16,7 @@ typedef struct ssl_st SSL;
 
 class SSLSocket;
 
-class SSLSocketStreamBuf : public SocketStreamBuf, public Coast::AllocatorNewDelete
+class SSLSocketStreamBuf : public SocketStreamBuf
 {
 public:
 	SSLSocketStreamBuf(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -39,7 +39,7 @@ private:
 // adapts ios to a SSL Socket Stream buffer
 //
 
-class iosITOSSLSocket : virtual public std::ios
+class iosITOSSLSocket : virtual public std::ios, public Coast::AllocatorNewDelete
 {
 public:
 	iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);

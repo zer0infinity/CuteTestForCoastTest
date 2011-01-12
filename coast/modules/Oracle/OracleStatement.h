@@ -54,7 +54,7 @@ class OracleResultset;
  * 		using getValue() or using getCursor() to process the results of a cursor type parameter\n
  * 		Please use OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
-class OracleStatement: public IFAObject
+class OracleStatement: public IFAObject, public Coast::AllocatorNewDelete
 {
 public:
 	//! Tracking internal state of statement processing
