@@ -323,6 +323,8 @@ void PoolAllocator::Initialize()
 PoolAllocator::~PoolAllocator()
 {
 	String strUsedPoolSize("Pool usage: ", Storage::Global()), strUnusedBucketSizes("Unused bucket sizes: [", Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Storage::Global());
+	ExecuteCleanupCallback();
+
 	long lNumUsed = 0, lNumUnused = 0, lMaxUsedBucket = 0, lMaxExcessBit = 0;
 	long lStatisticLevel = Storage::GetStatisticLevel();
 	bool bFirst = true;
@@ -406,9 +408,11 @@ PoolAllocator::~PoolAllocator()
 		}
 	}
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Storage::Global());
+
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		delete (fPoolBuckets[i].fpBucketTracker);
 	}
+
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Storage::Global());
 	::free(fPoolBuckets);
 	::free(fPoolMemory);

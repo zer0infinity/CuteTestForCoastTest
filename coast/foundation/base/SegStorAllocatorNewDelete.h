@@ -16,11 +16,13 @@
 #include "boost/pool/pool.hpp"
 #include "boost/pool/detail/singleton.hpp"
 #include "AllocatorPool.h"
+#include <boost/function.hpp>
 
 namespace Coast {
 
 template<typename T>
 class SegStorAllocatorNewDelete {
+
 	template<unsigned N, unsigned NextSize = 32>
 	struct CurrentGlobalWrapper {
 		CurrentGlobalWrapper() : globalPool(N, NextSize) {
@@ -40,8 +42,15 @@ class SegStorAllocatorNewDelete {
 			} else {
 				aPool = CurrentPoolTypePtr(new CurrentPoolType(a, nrequested_size, nnext_size));
 				allocPoolMap.insert(std::make_pair(a, aPool));
+
+				Allocator::cleanupCallback f = std::bind1st(std::mem_fun(&CurrentGlobalWrapper<N, NextSize>::RemovePool), this);
+				a->registerCleanupCallback(f);
 			}
 			return aPool;
+		}
+
+		void RemovePool(Allocator* a) {
+			allocPoolMap.erase(a);
 		}
 
 		CurrentPoolTypePtr PoolForFree(Allocator* a, std::size_t nrequested_size, std::size_t nnext_size) {

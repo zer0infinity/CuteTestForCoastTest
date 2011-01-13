@@ -15,8 +15,10 @@
 #include <cstdlib>
 #include <deque>
 #include <map>
+#include <vector>
 #include <boost/pool/pool.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 
 class MemoryHeader;
 
@@ -153,6 +155,9 @@ protected:
 class Allocator
 {
 public:
+	typedef boost::function<void(Allocator*)> cleanupCallback;
+	std::vector<cleanupCallback> callbackList;
+
 	Allocator(long allocatorid);
 	virtual ~Allocator();
 
@@ -212,9 +217,13 @@ public:
 	//!hook method to reorganize the managed memory
 	virtual void Refresh();
 
+	void registerCleanupCallback(cleanupCallback);
 protected:
 	//!hook for allocation of memory
 	virtual void *Alloc(u_long allocSize) = 0;
+
+	//TODO
+	void ExecuteCleanupCallback();
 
 	//!calculates the memory needed
 	//! \param n number of objects needed
