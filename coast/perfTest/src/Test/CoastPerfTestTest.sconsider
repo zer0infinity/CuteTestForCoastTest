@@ -2,7 +2,7 @@ import SConsider
 import os, socket, pdb, re
 import threading, shutil
 from stat import *
-from SocketServer import BaseServer
+import ServerExtensions
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -39,7 +39,6 @@ def setUp(target, source, env):
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
     configdir = tdir.Dir('config')
     threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
-#    threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
 
 def tearDown(target, source, env):
     for server in servers:
