@@ -3,20 +3,13 @@ from stat import *
 
 Import('*')
 
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
+searchReplace = {
+    "LOGDIR": lambda env: env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('tmp').abspath,
+    "ROTATEDIR": lambda env: env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('tmp').abspath,
+}
 
 def setUp(target, source, env):
     env['ENV']['COAST_USE_MMAP_STREAMS'] = "0"
-
     targetDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     tmppath = targetDir.Dir('tmp').abspath
     for d in [tmppath,targetDir.Dir(os.path.join('config','rotate')).abspath]:
@@ -25,11 +18,6 @@ def setUp(target, source, env):
         try:
             os.makedirs(d)
         except oserror: pass
-    searchReplace = [
-        (r"##LOGDIR##", tmppath),
-        (r"##ROTATEDIR##", tmppath),
-    ]
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([targetDir.Dir('config').abspath],['.any']))
 
 def tearDown(target, source, env):
     dir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('config')
@@ -44,7 +32,7 @@ buildSettings = {
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
         'copyFiles' : [
-            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH),
+            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
         ],
         'runConfig' : {
             'setUp': setUp,

@@ -10,27 +10,16 @@ cport3=43043
 
 hostonly, domain, fqdn = SConsider.getfqdn()
 
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
+searchReplace = {
+    "HOSTNAME": hostonly,
+    "CPORT1": str(cport1),
+    "CPORT2": str(cport2),
+    "CPORT3": str(cport3),
+}
 
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     configdir = tdir.Dir('config')
-    searchReplace = [
-        (r"##HOSTNAME##", hostonly),
-        (r"##CPORT1##", str(cport1)),
-        (r"##CPORT2##", str(cport2)),
-        (r"##CPORT3##", str(cport3)),
-    ]
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
 #    env['ENV']['COAST_LOGONCERR'] = 2
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
 
@@ -46,7 +35,7 @@ buildSettings = {
         ],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH)],
+        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace)],
         'runConfig' : {
             'setUp'        : setUp,
             'tearDown'     : tearDown,

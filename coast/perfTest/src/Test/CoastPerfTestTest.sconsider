@@ -13,17 +13,6 @@ faultyhttpport=43031
 stressserverport=43032
 hostonly, domain, fqdn = SConsider.getfqdn()
 
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
-
 class MyHTTPServer(HTTPServer):
     """This class wrapper is needed to set allow_reuse_address to True
     prior to initializing it"""
@@ -35,20 +24,20 @@ def startServer(host, port, server_class, handler_class, **kw):
     servers.append(server)
     server.serve_forever()
 
+searchReplace = {
+    "FQDN": fqdn,
+    "HOSTNAME": hostonly,
+    "DOMAINONLY": domain,
+    "HTTPPORT": str(httpport),
+    "FAULTYHTTPPORT": str(faultyhttpport),
+    "STRESSSERVERPORT": str(stressserverport),
+}
+
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     tdirabs = tdir.abspath
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
     configdir = tdir.Dir('config')
-    searchReplace = [
-        (r"##FQDN##", fqdn),
-        (r"##HOSTNAME##", hostonly),
-        (r"##DOMAINONLY##", domain),
-        (r"##HTTPPORT##", str(httpport)),
-        (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
-        (r"##STRESSSERVERPORT##", str(stressserverport)),
-    ]
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
     threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
 #    threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
 
@@ -80,7 +69,7 @@ buildSettings = {
         'usedTarget'       : 'coastd.coastd',
         'copyFiles' : [
             (SConsider.findFiles(['.'],['.txt', '.html']), S_IRUSR|S_IRGRP|S_IROTH),
-            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH),
+            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH, searchReplace),
         ],
         'runConfig' : {
             'setUp': setUp,

@@ -5,25 +5,14 @@ Import('*')
 
 hostonly, domain, fqdn = SConsider.getfqdn()
 
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
+searchReplace = {
+    'FQDN': fqdn,
+    'HOSTNAME': hostonly,
+    'DOMAINONLY': domain,
+}
 
 def setUp( target, source, env ):
-    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    searchReplace = [
-        (r"##FQDN##", fqdn),
-        (r"##HOSTNAME##", hostonly),
-        (r"##DOMAINONLY##", domain),
-    ]
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([os.path.join(tdirabs,'config')],['.any']))
+    pass
 
 def tearDown( target, source, env ):
 	pass
@@ -35,7 +24,7 @@ buildSettings = {
         'requires'         : [],
 		'includeSubdir'    : '',
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-        'copyFiles'        : [( SConsider.findFiles( ['.'], ['.any', '.txt', '.tst', '.html'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+        'copyFiles'        : [( SConsider.findFiles( ['.'], ['.any', '.txt', '.tst', '.html'] ), S_IRUSR | S_IRGRP | S_IROTH, searchReplace ),
                               ( SConsider.findFiles( ['config'], ['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR )],
         'runConfig'        : {
 			'setUp': setUp,
