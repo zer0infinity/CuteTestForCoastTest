@@ -325,23 +325,9 @@ Allocator::Allocator(long allocatorid)
 {
 }
 
-struct CallbackCaller {
-	Allocator* fAllocator;
-
-	CallbackCaller(Allocator* a) : fAllocator(a) {}
-
-	void operator() (Allocator::cleanupCallback c) {
-		c(fAllocator);
-	}
-};
-
 Allocator::~Allocator()
 {
 	Assert(0 == fRefCnt);
-}
-
-void Allocator::registerCleanupCallback(cleanupCallback c)  {
-	callbackList.push_back(c);
 }
 
 void *Allocator::Calloc(int n, size_t size)
@@ -358,17 +344,12 @@ void *Allocator::Malloc(size_t size)
 	return Alloc(AllocSize(size, 1));
 }
 
-void Allocator::ExecuteCleanupCallback() {
-	std::for_each(callbackList.begin(), callbackList.end(), CallbackCaller(this));
-	callbackList.clear();
-}
-
 void Allocator::Refresh()
 {
 	// give the allocator opportunity to reorganize
 }
 
-u_long Allocator::AllocSize(u_long n, size_t size)
+size_t Allocator::AllocSize(size_t n, size_t size)
 {
 	return (n * size) + MemoryHeader::AlignedSize();
 }
@@ -408,11 +389,14 @@ GlobalAllocator::GlobalAllocator()
 
 GlobalAllocator::~GlobalAllocator()
 {
-	ExecuteCleanupCallback();
 	if ( fTracker ) {
 		delete fTracker;
 		fTracker = NULL;
 	}
+}
+
+void GlobalAllocator::Free(void* p, size_t sz) {
+	Free(p);
 }
 
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
@@ -437,7 +421,7 @@ void GlobalAllocator::PrintStatistic(long lLevel)
 	}
 }
 
-void *GlobalAllocator::Alloc(u_long allocSize)
+void *GlobalAllocator::Alloc(size_t allocSize)
 {
 	void *vp = ::malloc(allocSize);
 	if (vp) {

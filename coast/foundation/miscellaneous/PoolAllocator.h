@@ -20,32 +20,32 @@ class ExcessTrackerElt
 
 	MemTracker *fpTracker;
 	ExcessTrackerElt *fpNext;
-	u_long fulPayloadSize;
+	size_t fulPayloadSize;
 
 	ExcessTrackerElt &operator=(const ExcessTrackerElt &);
 
-	void SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize);
+	void SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, size_t ulPayloadSize);
 
 public:
 	ExcessTrackerElt();
 
-	ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize);
+	ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, size_t ulPayloadSize);
 
 	~ExcessTrackerElt();
 
 	void PrintStatistic(long lLevel = -1);
 
-	ul_long GetSizeToPowerOf2(u_long ulWishSize);
+	ul_long GetSizeToPowerOf2(size_t ulWishSize);
 
 	long GetLargestExcessEltBitNum();
 
-	MemTracker *FindTrackerForSize(u_long ulPayloadSize);
+	MemTracker *FindTrackerForSize(size_t ulPayloadSize);
 
-	ExcessTrackerElt *InsertTrackerForSize(MemTracker *pTracker, u_long ulPayloadSize);
+	ExcessTrackerElt *InsertTrackerForSize(MemTracker *pTracker, size_t ulPayloadSize);
 
 	void SetId(long lId);
 
-	MemTracker *operator[](u_long ulPayloadSize);
+	MemTracker *operator[](size_t ulPayloadSize);
 
 	l_long CurrentlyAllocated();
 
@@ -68,11 +68,15 @@ public:
 		\param poolid use poolid to distinguish more than one pool
 		\param poolSize size of pre-allocated pool in kBytes, default 1MByte
 		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max usable size of 8192 bytes. */
-	PoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10);
+	PoolAllocator(long poolid, size_t poolSize = 1024, size_t maxKindOfBucket = 10);
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
 	//! implement hook for freeing memory
 	virtual size_t Free(void *vp);
+
+	//TODO
+	virtual void Free(void *vp, size_t sz);
+
 	/*! Hook to allow allocators to optimize allocation of string buffers for example.
 		\param size requested memory size
 		\return optimal (maximum) number of bytes which fit into the internal bucket */
@@ -94,21 +98,21 @@ public:
 
 protected:
 	void *fPoolMemory;
-	u_long fAllocSz;
-	u_long fNumOfPoolBucketSizes;
+	size_t fAllocSz;
+	size_t fNumOfPoolBucketSizes;
 	PoolBucket *fPoolBuckets;
 
 	//!implement hook for allocating memory using bucketing
-	virtual void *Alloc(u_long allocSize);
+	virtual void *Alloc(size_t allocSize);
 
 	//auxiliary methods for bucket handling
 	MemoryHeader *RemoveHeaderFromBucket(PoolBucket *bucket);
 	MemoryHeader *MakeHeaderFromBucket(PoolBucket *bucket, void *lastFree);
 	void InsertFreeHeaderIntoBucket(MemoryHeader *mh, PoolBucket *bucket);
-	PoolBucket *FindBucketBySize(u_long allocSize);
+	PoolBucket *FindBucketBySize(size_t allocSize);
 	void Initialize();
 
-	void IntDumpStillAllocated(MemTracker *pTracker, u_long lSize, u_long lUsableSize);
+	void IntDumpStillAllocated(MemTracker *pTracker, size_t lSize, size_t lUsableSize);
 
 	// only used for debugging
 	MemTracker *fpPoolTotalTracker, *fpPoolTotalExcessTracker;

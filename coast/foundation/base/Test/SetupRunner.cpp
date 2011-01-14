@@ -31,6 +31,7 @@
 #include "SystemBaseTest.h"
 #include "SystemFileTest.h"
 #include "ROSimpleAnythingTest.h"
+#include "SegStoreAllocatorTest.h"
 #include "AnyBuiltInSortTest.h"
 #include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
@@ -65,6 +66,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, StringStreamTest);
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
+	ADD_SUITE(runner, SegStoreAllocatorTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, AnyBuiltInSortTest);
 	ADD_SUITE(runner, TypeTraitsTest);

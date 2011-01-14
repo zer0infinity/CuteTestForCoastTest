@@ -155,27 +155,37 @@ protected:
 class Allocator
 {
 public:
-	typedef boost::function<void(Allocator*)> cleanupCallback;
-	std::vector<cleanupCallback> callbackList;
-
 	Allocator(long allocatorid);
 	virtual ~Allocator();
 
 	//!analogous api to built in c function calloc
 	void *Calloc(int n, size_t size);
 
+	template<size_t SIZE>
+	void *Malloc() {
+		return Malloc(SIZE);
+	}
+
+	template<size_t SIZE>
+	void Free(void *p) {
+		Free(p, SIZE);
+	}
+
 	//!analogous api to built in c function malloc
-	void *Malloc(size_t size);
+	virtual void *Malloc(size_t size);
+
+	//!analogous api to built in c function free
+	virtual void Free(void *vp, size_t sz) = 0;
 
 	//!analogous api to built in c function free
 	virtual size_t Free(void *vp) = 0;
 
 	//!refcounting support
-	void Ref() 		{
+	virtual void Ref() 		{
 		++fRefCnt;
 	}
 	//!refcounting support
-	void Unref() 	{
+	virtual void Unref() 	{
 		--fRefCnt;
 	}
 	//!refcounting support
@@ -199,7 +209,7 @@ public:
 
 	/*! get identifier of this pool
 		\return identifier of this pool */
-	long GetId() {
+	virtual long GetId() {
 		return fAllocatorId;
 	}
 
@@ -217,18 +227,16 @@ public:
 	//!hook method to reorganize the managed memory
 	virtual void Refresh();
 
-	void registerCleanupCallback(cleanupCallback);
 protected:
 	//!hook for allocation of memory
-	virtual void *Alloc(u_long allocSize) = 0;
+	virtual void *Alloc(size_t allocSize) = 0;
 
-	//TODO
-	void ExecuteCleanupCallback();
+	//TODO The methods AllocSize, ExtMemStart and RealMemStart would be better moved to MemoryHeader
 
 	//!calculates the memory needed
 	//! \param n number of objects needed
 	//! \param size size of the object
-	virtual u_long AllocSize(u_long n, size_t size);
+	virtual size_t AllocSize(size_t n, size_t size);
 
 	//!calculates the offset into a buffer from the beginning of a managed piece of memory; clients should not care about the memory header before ExtMemStart
 	virtual void *ExtMemStart(void *vp);
@@ -236,14 +244,14 @@ protected:
 	//!calculates the real start of the memory managed from vp, assuming it contains a MemoryHeader
 	virtual MemoryHeader *RealMemStart(void *vp);
 
-	//!identification of the allocater
+	//!identification of the allocator
 	long fAllocatorId;
 
 	//!reference count
 	long fRefCnt;
 };
 
-//!manages storage using the builtin c api and does some statistic
+//!manages storage using the built-in C API and does some statistic
 class GlobalAllocator: public Allocator
 {
 	GlobalAllocator(const GlobalAllocator &);
@@ -257,6 +265,9 @@ public:
 
 	//!frees memory allocated by global allocator
 	virtual size_t Free(void *vp);
+
+	//TODO
+	virtual void Free(void *vp, size_t sz);
 
 	//!reference counting is disabled global allocator always exists (but only once)
 	virtual long RefCnt()	{
@@ -274,7 +285,7 @@ public:
 
 protected:
 	//!implements allocation bottleneck routine
-	virtual void *Alloc(u_long allocSize);
+	virtual void *Alloc(size_t allocSize);
 	friend class MemChecker;
 
 	//!tracks allocation and deallocation of memory
