@@ -6,7 +6,6 @@ from SocketServer import BaseServer, TCPServer, BaseRequestHandler
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
-
 Import('*')
 
 class MyTCPServer(TCPServer):
@@ -42,12 +41,9 @@ def startServer(host, port, server_class, handler_class):
 tcpnosendrecvport=43000
 tcpsendrecvport=43001
 httpsendrecvport=43002
-fqdn=socket.getfqdn()
-hostonly=fqdn.split('.')[0]
-try:
-    domain='.'.join(fqdn.split('.')[1:])
-except:
-    domain=""
+
+hostonly, domain, fqdn = SConsider.getfqdn()
+
 faultyfqdn='nonexisting.server.loc'
 localhostname='localhost'
 localhostip=socket.gethostbyname(localhostname)

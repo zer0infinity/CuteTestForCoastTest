@@ -1,15 +1,9 @@
-import os, pdb, socket
 import SConsider
 from stat import *
 
 Import('*')
 
-fqdn=socket.getfqdn()
-hostonly=fqdn.split('.')[0]
-try:
-    domain='.'.join(fqdn.split('.')[1:])
-except:
-    domain=""
+hostonly, domain, fqdn = SConsider.getfqdn()
 
 def ModifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:

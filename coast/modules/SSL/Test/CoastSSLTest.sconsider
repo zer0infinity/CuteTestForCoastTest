@@ -45,12 +45,7 @@ httpport=43010
 faultyhttpport=43011
 sslport=43012
 sslfaultyport=43013
-fqdn=socket.getfqdn()
-hostonly=fqdn.split('.')[0]
-try:
-    domain='.'.join(fqdn.split('.')[1:])
-except:
-    domain=""
+hostonly, domain, fqdn = SConsider.getfqdn()
 
 def appendReplaceCommandForCert(key, filename, searchReplace):
     try:
