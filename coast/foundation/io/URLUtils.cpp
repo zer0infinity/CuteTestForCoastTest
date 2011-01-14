@@ -294,7 +294,7 @@ namespace Coast {
 
 		void Pair(const char *buf, char delim, Anything &any, NormalizeTag normKey)
 		{
-			StartTrace(URLUtils.Pair);
+			StartTrace1(URLUtils.Pair, "[" << NotNull(buf) << "]");
 			if (buf) {
 				const char *p = strchr(buf, delim);
 				if (p) {
@@ -317,7 +317,7 @@ namespace Coast {
 
 		void AppendValueTo(Anything &any, const String &key, const char *value)
 		{
-			StartTrace1(URLUtils.AppendValueTo, "key [" << key << "] value [" << NotNull(value) << "]");
+			StatTrace(URLUtils.AppendValueTo, "key [" << key << "] value [" << NotNull(value) << "]", Storage::Current());
 			if (key.Length() > 0) {
 				if (value == 0) {
 					any[key] = Anything();
@@ -455,7 +455,7 @@ namespace Coast {
 		// decodes the given string into res by expanding %XX and %uXXXXX escapes
 		String urlDecode(const String &instr, bool replacePlusByBlank)
 		{
-			StartTrace(URLUtils.urlDecode);
+			StartTrace1(URLUtils.urlDecode, "dispatch [" << instr.SubString(0,100L).Append(instr.Length()>100?"...":"") << "]");
 			URLCheckStatus eUrlCheckStatus;
 			return urlDecode(instr, eUrlCheckStatus, replacePlusByBlank);
 		}
@@ -463,7 +463,7 @@ namespace Coast {
 		// decodes the given string into res by expanding %XX and %uXXXXX escapes
 		String urlDecode(const String &instr, URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank)
 		{
-			StartTrace(URLUtils.urlDecode);
+			StartTrace1(URLUtils.urlDecode, "[" << instr.SubString(0,100L).Append(instr.Length()>100?"...":"") << "]");
 			String res, str(instr);
 			eUrlCheckStatus = eOk;
 			if ( replacePlusByBlank ) {
@@ -636,7 +636,7 @@ namespace Coast {
 
 		void RemoveQuotes(String &str)
 		{
-			StartTrace(URLUtils.RemoveQuotes);
+			StatTrace(URLUtils.RemoveQuotes, "[" << str << "]", Storage::Current());
 			// casts below needed for ANSI (VC++) conformance
 			if ( ( str[0L] == '\'' ) && ( str[(long)( str.Length() -1)] == '\'' )  ) {
 				TrimChars(str, true, '\'');

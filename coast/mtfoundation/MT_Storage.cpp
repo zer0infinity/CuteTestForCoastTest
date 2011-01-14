@@ -222,9 +222,6 @@ public:
 		IFMTrace("MTStorageInitializer created\n");
 	}
 
-	~MTStorageInitializer()
-	{}
-
 	virtual void DoInit() {
 		IFMTrace("MTStorageInitializer::DoInit\n");
 		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
