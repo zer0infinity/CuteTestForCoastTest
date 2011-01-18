@@ -3,6 +3,13 @@ from stat import *
 
 Import('*')
 
+def setUp(target, source, env):
+    env['ENV']['COAST_LOGONCERR'] = '1'
+    env['ENV']['COAST_TRACE_STORAGE'] = '1'
+
+def tearDown(target, source, env):
+    pass
+
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastFoundation.Miscellaneous', 'testfwFoundation'],
@@ -11,6 +18,10 @@ buildSettings = {
         'copyFiles'        : [
             (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
+        'runConfig'        : {
+            'setUp'     : setUp,
+            'tearDown'     : tearDown,
+        },
     },
 }
 
