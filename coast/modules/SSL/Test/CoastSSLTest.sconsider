@@ -4,6 +4,7 @@ import threading, shutil
 import ServerExtensions
 from stat import *
 from OpenSSL import crypto, SSL
+from SomeUtils import runCommandWithInput
 
 Import('*')
 
@@ -46,27 +47,6 @@ def startServer(host, port, server_class, handler_class, **kw):
     servers.append(server)
     server.serve_forever()
 
-def runCommand(args, logpath, stdincontent=None, useShell=False, cwd=None):
-    import subprocess
-    theCommand = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                 stderr=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 shell=useShell,
-                                 cwd=cwd)
-
-    theCommand_out, theCommand_err = theCommand.communicate(stdincontent)
-
-    if not os.path.isdir(logpath):
-        os.makedirs(logpath)
-    logfilebasename=os.path.basename(args[0])
-    if theCommand_err:
-        with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
-            errfile.write(theCommand_err)
-    if theCommand_out:
-        with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
-            outfile.write(theCommand_out)
-    return theCommand.returncode
-
 def prepareMkCaParams(env, commandargs, tdirabs, certdir):
     mkcaScriptName = os.path.join(tdirabs, 'mkca-new.sh')
     ## set writable cfgfilename
@@ -103,7 +83,7 @@ def createCertificates(env):
     certOutDir = os.path.join(tdir.abspath, certdir)
     prepareMkCaParams(env, commandargs, tdir.abspath, certdir)
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
-    retCode=runCommand(commandargs, logpath.abspath, '\n'.join(stdincontent))
+    retCode=runCommandWithInput(commandargs, logpath.abspath, '\n'.join(stdincontent))
     certFileNodesList=[]
     certDict={}
     if retCode == 0:
@@ -117,7 +97,7 @@ def createCertificates(env):
             sslbin=''+target.abspath+' -S --'
         # if there is now c_rehash available, use the following improved script, (base from from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
         command='for file in *crt*.pem; do theHash=`'+sslbin+' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
-        retCode=runCommand(command, logpath.abspath, stdincontent=None, useShell=True, cwd=certOutDir)
+        retCode=runCommandWithInput(command, logpath.abspath, stdincontent=None, useShell=True, cwd=certOutDir)
     return (certOutDir, certFileNodesList, certDict)
 
 def createCertDict(certFileNodesList):
