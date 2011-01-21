@@ -1,46 +1,11 @@
-import os, subprocess, re, sys, shlex, pdb
+import os, re, sys, shlex, pdb
 import SConsider, Anything
 from stat import *
-from SomeUtils import multiple_replace
+from SomeUtils import multiple_replace, runCommandWithFile
 
 Import('*')
 
 defaults = None
-
-def runCommand(command, filename, logpath, filter=None, **kw):
-    res = 1
-    content=None
-    with open(filename) as file:
-        content = file.read()
-        if callable(filter):
-            content = filter(content)
-
-    popenObject = subprocess.Popen(command,
-                                stdin=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                **kw)
-
-    if not os.path.isdir(logpath):
-        os.makedirs(logpath)
-    logfilebasename = os.path.basename(command[0]) + '.' + os.path.basename(filename)
-    errfilename = os.path.join(logpath, logfilebasename + '.stderr')
-    outfilename = os.path.join(logpath, logfilebasename + '.stdout')
-    try:
-        popen_out, popen_err = popenObject.communicate(content)
-        if popen_err:
-            with open(errfilename, 'w') as errfile:
-                errfile.write(popen_err)
-        if popen_out:
-            with open(outfilename, 'w') as outfile:
-                outfile.write(popen_out)
-        res = popenObject.returncode
-    except OSError, e:
-        with open(errfilename, 'w') as errfile:
-            print >>errfile, e
-            for line in popenObject.stderr:
-                print >>errfile, line
-    return res
 
 def setUp(target, source, env):
     targets = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
@@ -69,7 +34,7 @@ def setUp(target, source, env):
 
     command = [target.abspath]
     command.extend(shlex.split("-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
-    res = runCommand(
+    res = runCommandWithFile(
         command,
         path.File('dropTestDefinitions.sql').abspath,
         logDir.abspath,
@@ -79,7 +44,7 @@ def setUp(target, source, env):
     if res != 0:
         raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
 
-    res = runCommand(
+    res = runCommandWithFile(
         command,
         path.File('TestDBDefinition.sql').abspath,
         logDir.abspath,
