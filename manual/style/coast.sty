@@ -1,57 +1,148 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{coast}[2011/01/18 v1.0 COAST manual styles file]
+
 \usepackage[utf8]{inputenc}
 \usepackage[pdftex]{graphicx}
-\usepackage[colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black, plainpages=false]{hyperref}
-\usepackage{lmodern}
-\usepackage[T1]{fontenc}
-\setkomafont{sectioning}{\rmfamily \bfseries}
-\usepackage{fixltx2e}
-\usepackage{multicol}
-\usepackage{color}
-\usepackage{scrhack}
+\usepackage[british]{babel}
 
-% The path(s) to the graphics files:
+% Graphics and Colors
 \graphicspath{{images/}{generated/}}
-
-\bibliographystyle{alpha}
-
-\usepackage{color}
-\usepackage{listings}
-
-% Title Page
+\usepackage{xcolor}
+\definecolor{title}{HTML}{2E3436}
 \definecolor{gray}{rgb}{0.9,0.9,0.9}
-\definecolor{keyword_color}{rgb}{0.643, 0.207, 0.478}
-\definecolor{string_color}{rgb}{0.165, 0, 1}
-\definecolor{comment_color}{rgb}{0.309, 0.541, 0.423}
+\definecolor{eclipsekeyword}{HTML}{7F0055}
+\definecolor{eclipsecomment}{HTML}{3F7F5F}
+\definecolor{eclipsestring}{HTML}{2A00FF}
+\definecolor{keyword}{rgb}{0.643, 0.207, 0.478}
+\definecolor{string}{rgb}{0.165, 0, 1}
+\definecolor{comment}{rgb}{0.309, 0.541, 0.423}
+\definecolor{todo}{HTML}{A40000}
+\definecolor{skyblue}{HTML}{204A87}
+\definecolor{rulesep}{HTML}{EEEEEC}
 
-\lstset{basicstyle=\scriptsize\ttfamily, framexleftmargin=5mm, 
-framextopmargin=3mm, framexbottommargin=3mm, frame=shadowbox,
-rulesepcolor=\color{gray}, aboveskip=5mm, belowskip=5mm,
-xleftmargin=5mm, keywordstyle=\color{keyword_color}\bfseries,
-stringstyle=\color{string_color},
-commentstyle=\color{comment_color},showstringspaces=false, tabsize=2, captionpos=b}
+% Font
+\usepackage{lmodern} % latin modern font
+\usepackage{mathpazo}
+\usepackage{textcomp}
+\usepackage[T1]{fontenc}
+\linespread{1.05}
+\setkomafont{sectioning}{\rmfamily \bfseries \color{title}}
 
-\lstdefinelanguage{C++}{language=C++}
-\lstdefinestyle{Console}{language=bash,basicstyle=\scriptsize\ttfamily}
-\lstdefinestyle{Python}{language=python,basicstyle=\scriptsize\ttfamily}
+% References
+\usepackage{varioref} % provides \vref which adds additional page references if necessary
+\usepackage[pdftex, plainpages=false]{hyperref}
+\hypersetup{
+  colorlinks,
+  linkcolor=title,
+  urlcolor=title,
+  citecolor=title,
+  pdftitle={COAST technical documentation},
+  pdfsubject={},
+  pdfauthor={Peter Sommerlad, Marcel Huber, Dominik Wild, Michael Rueegg, University of Applied Sciences Rapperswil},
+  pdfkeywords={C++, SCons, Web, Server, HTTP}
+}
 
-\usepackage{fancyhdr}
-\setlength{\parindent}{0em}
-\setlength{\topmargin}{0cm}
+% Heading and footing
+\usepackage[headsepline]{scrpage2}
+\pagestyle{scrheadings}
+\automark{chapter} % no page headings on chapter pages
 
-\pagestyle{fancy}
+% Other packages
+\usepackage{booktabs}  % nicer rules in tables
+\usepackage{fixltx2e}  % makes LaTeX behave as expected
+\usepackage{microtype} % perfect typesetting
+\usepackage{float}     % adds the notion of a 'float style' that
+                       % governs appearance of floats
+\usepackage{tikz}
+\usetikzlibrary{positioning,decorations.markings,decorations.text,arrows,shapes}
+\usepackage{nomencl}
+% \usepackage{style/gantt}
 
-\lhead{COAST Webframework} 
-\chead{} 
-\rhead{} 
-\lfoot{ \hrule Institute for Software } 
-\cfoot{\hrule \thepage} 
-\rfoot{\hrule \today}
+% Code Listings
+\usepackage{listings}
+\usepackage{verbatim}
 
-\fancypagestyle{plain}{
-\lhead{COAST Webframework} 
-\chead{} 
-\rhead{} 
-\lfoot{ \hrule Institute for Software } 
-\cfoot{\hrule \thepage} 
-\rfoot{\hrule \today}}
+% Python code
+\newcommand{\id}{\lstinline}
+\newcommand{\type}[1]{\textcolor{skyblue3}{\texttt{#1}}}
+\newcommand{\code}{\lstinline}
+\newcommand{\node}{\lstinline}
 
+% Java code
+\newcommand{\java}[1]{\lstinline[style=java]{#1}}
+\newcommand{\class}[1]{\textcolor{black}{\texttt{#1}}}
+
+% Other
+\newcommand{\QQ}[1]{``#1''}
+\newcommand{\file}{\texttt}
+\newcommand{\todo}[1]{\textcolor{todo}{\textbf{#1}}}
+\newcommand{\reminder}[1]{ [[[ {\bf\marginpar{\mbox{$<==$}} #1 } ]]] }
+%\newcommand{\latex2}{{\fb\LaTeX}\setmainfont[SmallCapsFont=Fontin\ SmallCaps]{Fontin-Regular}}
+\newcommand{\ie}{i.\,e.}
+\newcommand{\eg}{e.\,g.}
+\newcommand{\hl}[1]{\colorbox{yellow}{#1}}
+
+% Listings definitions
+% Python
+\newcommand{\verbatimfont}{\small\ttfamily}
+\renewcommand{\verbatim@font}{\verbatimfont}
+\lstdefinestyle{python}{
+  language=python,
+  keywordstyle=\color{eclipsekeyword}\bfseries,
+  identifierstyle=\color{black},
+  stringstyle=\color{todo}
+}
+\lstset{
+  style=python,
+  basicstyle=\verbatimfont,
+  frame=shadowbox,
+  numberstyle=\tiny,
+  numbersep=6mm,
+  framexleftmargin=3mm,
+  framextopmargin=2mm,
+  framexbottommargin=2mm,
+  aboveskip=5mm,
+  belowskip=5mm,
+  xleftmargin=4mm,
+  showstringspaces=false,
+  rulesepcolor=\color{rulesep},
+  captionpos=b,
+  literate={"}{\textquotedbl}1
+}
+
+% Java
+\lstdefinestyle{java}{
+  language=java,
+  basicstyle=\verbatimfont\footnotesize,
+  keywordstyle=\color{eclipsekeyword}\bfseries,
+  identifierstyle=\color{black},
+  stringstyle=\color{skyblue},
+  commentstyle=\color{eclipsecomment}
+}
+\lstdefinestyle{smalljava}{
+  style=java,
+  basicstyle=\verbatimfont\scriptsize,
+  tabsize=4
+}
+
+% C++
+\lstdefinestyle{C++}{
+  language=C++,
+  basicstyle=\verbatimfont
+}
+
+% Console
+\lstdefinestyle{console}{
+  escapeinside={\$*}{*)},
+  basicstyle=\verbatimfont
+}
+
+% Shell script
+\lstdefinestyle{shell}{
+  language=bash,
+  basicstyle=\verbatimfont
+}
+
+% Nomenclature
+\renewcommand{\nomlabel}[1]{\textbf{#1}}
+\makenomenclature

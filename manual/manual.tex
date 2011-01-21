@@ -2,19 +2,21 @@
 \usepackage{style/coast}
 
 % BEGIN Title Page
-\title{COAST Webframework}
+\title{COAST Application Framework}
 \author{IFS - Institute for Software}
 \begin{document}
 \begin{titlepage}
-\topmargin 0in
+
+\pagenumbering{alph}
 \thispagestyle{empty}
+
 \begin{center}
 \begin{figure}[h]
  \centering
  \includegraphics[width=0.3\hsize]{logo/logo_ifs_english.png}
 \end{figure}
 \vspace{1,5cm}
-{\Large \bfseries University of Applied Sciences Rapperswil\\} 
+{\Large \bfseries University of Applied Sciences Rapperswil\\}
 \vspace{0,5cm}
 {\Large \bfseries Institute for Software\\}
 \vspace{2cm}
@@ -30,17 +32,44 @@ Peter Sommerlad, Marcel Huber, Dominik Wild, Michael Rueegg\\\url{ifs@hsr.ch}\\\
 \today
 \end{center}
 \end{titlepage}
-% END Title Page
 
-% BEGIN Table of Contents
 \pagenumbering{roman}
 \setcounter{tocdepth}{2}
+
+% Table of contents
 \tableofcontents
-% END Table of Contents
+\newpage
+\pagenumbering{arabic}
+\pagestyle{scrheadings}
 
 % BEGIN Include Chapters
 \include{chapters/chap01}
-\include{chapters/chap02}
+%\include{chapters/chap02}
 % END Include Chapters
+
+%\setcounter{secnumdepth}{-1}
+\appendix
+%\chapter{First Appendix}
+%\appendix
+%\chapter{Appendix}
+%\pagenumbering{Alph}
+
+% List of Figures
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+% Nomenclature
+%\renewcommand{\nomname}{List of Symbols}
+%\cleardoublepage%
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\nomname}
+\printnomenclature
+
+% Bibliography
+\bibliographystyle{alpha}
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{bibliography}
 
 \end{document}
