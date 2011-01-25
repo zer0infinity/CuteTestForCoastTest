@@ -33,8 +33,7 @@
 class FileDAImpl: public DataAccessImpl
 {
 public:
-	FileDAImpl(const char *name);
-	~FileDAImpl();
+	FileDAImpl(const char *name) : DataAccessImpl(name) {}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;

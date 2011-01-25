@@ -20,15 +20,6 @@ using namespace Coast;
 //--- FileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(FileDAImpl);
 
-FileDAImpl::FileDAImpl(const char *name)
-	: DataAccessImpl(name)
-{
-}
-
-FileDAImpl::~FileDAImpl()
-{
-}
-
 IFAObject *FileDAImpl::Clone(Allocator *a) const
 {
 	return new (a) FileDAImpl(fName);
