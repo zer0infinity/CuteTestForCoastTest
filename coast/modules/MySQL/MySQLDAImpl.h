@@ -13,7 +13,7 @@
 #include "DataAccessImpl.h"
 
 //--- modules used in the interface ---
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 //! DataAccess for
 class MySQLDAImpl: public DataAccessImpl
