@@ -1,7 +1,7 @@
 import os, re, sys, shlex, pdb
 import SConsider, Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommandWithFile
+from SomeUtils import multiple_replace, runCommand
 
 Import('*')
 
@@ -48,19 +48,19 @@ def setUp(target, source, env):
     command = [target.abspath]
     command.extend(shlex.split("-U {Username!s} -P {Password!s} -S {Server!s}".format(**defaults['Sybase'])))
     command.extend(['-I' , configdir.File('interfaces').abspath])
-    res = runCommandWithFile(
+    res = runCommand(
         command,
-        configdir.File('dropPub2.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=configdir.File('dropPub2.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
-    res = runCommandWithFile(
+    res = runCommand(
         command,
-        configdir.File('createPub2.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=configdir.File('createPub2.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )

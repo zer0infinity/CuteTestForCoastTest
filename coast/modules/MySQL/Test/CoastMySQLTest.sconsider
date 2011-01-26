@@ -1,7 +1,7 @@
 import os, re, sys, shlex, pdb
 import SConsider, Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommandWithFile
+from SomeUtils import multiple_replace, runCommand
 
 Import('*')
 
@@ -34,20 +34,20 @@ def setUp(target, source, env):
 
     command = [target.abspath]
     command.extend(shlex.split("-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
-    res = runCommandWithFile(
+    res = runCommand(
         command,
-        path.File('dropTestDefinitions.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('dropTestDefinitions.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
 
-    res = runCommandWithFile(
+    res = runCommand(
         command,
-        path.File('TestDBDefinition.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('TestDBDefinition.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )

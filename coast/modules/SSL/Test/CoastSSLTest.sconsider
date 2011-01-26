@@ -4,7 +4,7 @@ import threading, shutil
 import ServerExtensions
 from stat import *
 from OpenSSL import crypto, SSL
-from SomeUtils import runCommandWithInput
+from SomeUtils import runCommand
 
 Import('*')
 
@@ -83,7 +83,7 @@ def createCertificates(env):
     certOutDir = os.path.join(tdir.abspath, certdir)
     prepareMkCaParams(env, commandargs, tdir.abspath, certdir)
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
-    retCode=runCommandWithInput(commandargs, logpath.abspath, '\n'.join(stdincontent))
+    retCode=runCommand(commandargs, logpath=logpath.abspath, stdincontent='\n'.join(stdincontent))
     certFileNodesList=[]
     certDict={}
     if retCode == 0:
@@ -97,7 +97,7 @@ def createCertificates(env):
             sslbin=''+target.abspath+' -S --'
         # if there is now c_rehash available, use the following improved script, (base from from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
         command='for file in *crt*.pem; do theHash=`'+sslbin+' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
-        retCode=runCommandWithInput(command, logpath.abspath, stdincontent=None, useShell=True, cwd=certOutDir)
+        retCode=runCommand(command, logpath=logpath.abspath, stdincontent=None, shell=True, cwd=certOutDir)
     return (certOutDir, certFileNodesList, certDict)
 
 def createCertDict(certFileNodesList):

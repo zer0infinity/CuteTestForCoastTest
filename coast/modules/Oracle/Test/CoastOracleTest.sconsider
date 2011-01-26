@@ -1,7 +1,7 @@
 import os, re, sys, pdb
 import SConsider, Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommandWithFile
+from SomeUtils import multiple_replace, runCommand
 
 Import('*')
 
@@ -39,24 +39,24 @@ def setUp(target, source, env):
     path = relDir.Dir(configDir)
 
     connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
-    res = runCommandWithFile(
+    res = runCommand(
         [target.abspath,'--','-S',connectstring],
-        path.File('oratest_dropschema.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('oratest_dropschema.sql').abspath,
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest('failed to drop test schema (rc='+str(res)+'), check error log')
-    res = runCommandWithFile(
+    res = runCommand(
         [target.abspath,'--','-S',connectstring],
-        path.File('oratest_schema.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('oratest_schema.sql').abspath,
         env=SConsider.getFlatENV(env)
     )
-    res = runCommandWithFile(
+    res = runCommand(
         [target.abspath,'--','-S',connectstring],
-        path.File('oratest_grant.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('oratest_grant.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
@@ -64,10 +64,10 @@ def setUp(target, source, env):
         raise SConsider.SkipTest('failed to grant permissions (rc='+str(res)+'), check error log')
 
     connectstring = "{Username2!s}/{Password2!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
-    res = runCommandWithFile(
+    res = runCommand(
         [target.abspath,'--','-S',connectstring],
-        path.File('oratest_synonym.sql').abspath,
-        logDir.abspath,
+        logpath=logDir.abspath,
+        filename=path.File('oratest_synonym.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
