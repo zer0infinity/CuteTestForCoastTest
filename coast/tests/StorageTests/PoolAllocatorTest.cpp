@@ -182,7 +182,7 @@ void PoolAllocatorTest::StillUsedBlocksTest()
 	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
 	if ( Storage::GetStatisticLevel() >= 1 ) {
 		PoolAllocator pa(1, 1024, 4);
-		// this alloc should allocate a block of size 16 + MemoryHeader::AlignedSize()
+		// this alloc should allocate a block of size 16 + Coast::Memory::AlignedSize<MemoryHeader>::value
 		void *p16 = pa.Calloc(1, 16);
 		// CurrentlyAllocated() counts only usable size, usable should be 16bytes
 		assertCompare(pa.CurrentlyAllocated(), equal_to, 16LL);
@@ -202,12 +202,12 @@ void PoolAllocatorTest::UseExcessMemTest()
 	// allocate only 1024 byte ( 1 * 1024 )
 	// use bucket sizes up to 512 bytes (num=6)
 	PoolAllocator pa(9, 1, 6);
-	// this alloc should allocate a block of size 512 + MemoryHeader::AlignedSize() in pool
+	// this alloc should allocate a block of size 512 + Coast::Memory::AlignedSize<MemoryHeader>::value in pool
 	void *p512 = pa.Calloc(1, 512);
 	MemoryHeader *pH512 = pa.RealMemStart(p512);
 	assertCompare(MemoryHeader::eUsed, equal_to, pH512->fState);
 
-	// this alloc should allocate a block of size 512 + MemoryHeader::AlignedSize() in excess space
+	// this alloc should allocate a block of size 512 + Coast::Memory::AlignedSize<MemoryHeader>::value in excess space
 	// -> because ( 1024 - (512+AlignedSize()) ) < (512+AlignedSize())
 	void *pE512 = pa.Calloc(1, 512);
 	MemoryHeader *pHE512 = pa.RealMemStart(pE512);
@@ -225,7 +225,7 @@ void PoolAllocatorTest::SplitBucketTest()
 	// allocate only 1024 byte ( 1 * 1024 )
 	// use bucket sizes up to 512 bytes (num=6)
 	PoolAllocator pa(9, 1, 6);
-	// this alloc should allocate a block of size 512 + MemoryHeader::AlignedSize() in pool
+	// this alloc should allocate a block of size 512 + Coast::Memory::AlignedSize<MemoryHeader>::value in pool
 	void *p512 = pa.Calloc(1, 512);
 	MemoryHeader *pH512 = pa.RealMemStart(p512);
 	assertCompare(MemoryHeader::eUsed, equal_to, pH512->fState);
@@ -243,7 +243,7 @@ void PoolAllocatorTest::SplitBucketTest()
 	MemoryHeader *pH256X = pa.RealMemStart(p256X);
 	assertCompare(MemoryHeader::eUsed, equal_to, pH256X->fState);
 
-	// this alloc should now allocate a block of size 512 + MemoryHeader::AlignedSize() in excess space
+	// this alloc should now allocate a block of size 512 + Coast::Memory::AlignedSize<MemoryHeader>::value in excess space
 	// because the previously available unused block was reused as 256byte block and no mor pool memory is available
 	void *pE512 = pa.Calloc(1, 512);
 	MemoryHeader *pHE512 = pa.RealMemStart(pE512);
