@@ -14,6 +14,7 @@
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
+#include "AllocatorNewDelete.h"
 
 #include <algorithm>
 
@@ -306,8 +307,9 @@ void PoolAllocator::Initialize()
 {
 	// initialize data structures used by the allocator
 	long sz = fgMinPayloadSize;
+	const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
-		fPoolBuckets[i].fSize = sz + MemoryHeader::AlignedSize();
+		fPoolBuckets[i].fSize = sz + alignedSize;
 		fPoolBuckets[i].fUsableSize = sz;
 		fPoolBuckets[i].fFirstFree = NULL;
 		// only create new trackers once
@@ -464,10 +466,11 @@ size_t PoolAllocator::Free(void *vp)
 		sz = header->fUsableSize;
 		if (header->fState == MemoryHeader::eUsed ) {	// most likely case first
 			// recycle into pool
-			PoolBucket *bucket = FindBucketBySize( header->fUsableSize + MemoryHeader::AlignedSize());
+			const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
+			PoolBucket *bucket = FindBucketBySize( header->fUsableSize + alignedSize);
 
 			if ( bucket ) {
-				Assert(header->fUsableSize + MemoryHeader::AlignedSize() == bucket->fSize);
+				Assert(header->fUsableSize + alignedSize == bucket->fSize);
 				// as detail tracking (level 2) only takes place when total tracking (level 1) is enabled
 				// the bucket tracker gets only checked when total tracking is also enabled
 				if ( fpPoolTotalTracker ) {
@@ -497,9 +500,10 @@ size_t PoolAllocator::Free(void *vp)
 			String strBuf(Storage::Global());
 			strBuf << "MemoryHeader [";
 			{
-				String strContent((void *)header, (long)header->AlignedSize(), Storage::Global());
+				const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
+				String strContent((void *)header, alignedSize, Storage::Global());
 				OStringStream stream(strBuf);
-				strContent.DumpAsHex(stream, (long)header->AlignedSize());
+				strContent.DumpAsHex(stream, alignedSize);
 			}
 			strBuf << "]";
 			SystemLog::Error(strBuf);
@@ -526,7 +530,7 @@ size_t PoolAllocator::SizeHint(size_t size)
 {
 	// as FindBucketBySize() internally compares against the given size against the (payload+MemoryHeader)
 	//  we must take care of that here
-	PoolBucket *bucket = FindBucketBySize(size + MemoryHeader::AlignedSize());
+	PoolBucket *bucket = FindBucketBySize(size + Coast::Memory::AlignedSize<MemoryHeader>::value);
 	// if a bucket is found, we need to return fUsableSize and not fSize as it was before!
 	// -> otherwise, the caller would finally allocate a larger block than needed
 	if (bucket) {
@@ -588,7 +592,7 @@ void *PoolAllocator::Alloc(u_long allocSize)
 // the next larger bucket but not the whole size consisting of payload plus header.
 // This is why splitting a larger bucket into smaller ones would only fit by chance.
 // -> As this can be avoided by specifying enough poolmemory, the following will only happen in rare situations.
-//					Assert((char*)mh + mh->fUsableSize + MemoryHeader::AlignedSize() == buketEnd);
+//					Assert((char*)mh + mh->fUsableSize + Coast::Memory::AlignedSize<MemoryHeader>::value == buketEnd);
 
 					for (long i = 0; i < nbuckets; ++i) {
 						// create new buckets of requested size
@@ -617,13 +621,14 @@ void *PoolAllocator::Alloc(u_long allocSize)
 	void *vp = ::calloc(allocSize, 1);
 	if (vp) {
 		// keep some statistic
-		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
+		const size_t alignedSize = allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value;
+		MemoryHeader *mh = new(vp) MemoryHeader(alignedSize, MemoryHeader::eUsedNotPooled);
 		// as excess tracking (level 2) only takes place when total tracking (level 1) is enabled
 		// the excess tracker gets only checked when total tracking is also enabled
 		if ( fpPoolTotalExcessTracker ) {
 			fpPoolTotalExcessTracker->TrackAlloc(mh);
 			if ( fpExcessTrackerList ) {
-				(*fpExcessTrackerList)[allocSize - MemoryHeader::AlignedSize()]->TrackAlloc(mh);
+				(*fpExcessTrackerList)[alignedSize]->TrackAlloc(mh);
 			}
 		}
 		return ExtMemStart(mh);

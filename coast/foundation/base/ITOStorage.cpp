@@ -14,6 +14,7 @@
 #include "SystemBase.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
+#include "AllocatorNewDelete.h"
 
 #include <algorithm>
 
@@ -140,14 +141,15 @@ void MemTracker::DumpUsedBlocks()
 	if ( fpUsedList && fpUsedList->size() ) {
 		SystemLog::Error(String(Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
+		const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
 		long lIdx = 0;
 		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
 			MemoryHeader *pMH = *aUsedIterator;
 			// reserve memory for the following text plus four times the buffer size for dumping as text
-			String strOut(( 40L + ( ( pMH->fUsableSize + MemoryHeader::AlignedSize() ) * 4L ) ), Storage::Global());
+			String strOut(( 40L + ( ( pMH->fUsableSize + alignedSize ) * 4L ) ), Storage::Global());
 			strOut.Append("Block ").Append(lIdx).Append('\n');
-			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, MemoryHeader::AlignedSize(), Storage::Global()).DumpAsHex()).Append('\n');
-			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + MemoryHeader::AlignedSize()), pMH->fUsableSize, Storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, alignedSize, Storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + alignedSize), pMH->fUsableSize, Storage::Global()).DumpAsHex()).Append('\n');
 			SystemLog::WriteToStderr(strOut);
 		}
 	}
@@ -340,14 +342,14 @@ void Allocator::Refresh()
 
 u_long Allocator::AllocSize(u_long n, size_t size)
 {
-	return (n * size) + MemoryHeader::AlignedSize();
+	return (n * size) + Coast::Memory::AlignedSize<MemoryHeader>::value;
 }
 
 void *Allocator::ExtMemStart(void *vp)
 {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *)(vp)) + MemoryHeader::AlignedSize()); // fUsableSize does *not* include header
+		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); // fUsableSize does *not* include header
 		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
@@ -357,7 +359,7 @@ void *Allocator::ExtMemStart(void *vp)
 MemoryHeader *Allocator::RealMemStart(void *vp)
 {
 	if ( vp ) {
-		MemoryHeader *mh = (MemoryHeader *) (((char *)(vp)) - MemoryHeader::AlignedSize());
+		MemoryHeader *mh = (MemoryHeader *) (((char *)(vp)) - Coast::Memory::AlignedSize<MemoryHeader>::value);
 		if (mh->fMagic == MemoryHeader::gcMagic) {
 			return mh;
 		}
@@ -410,7 +412,7 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 {
 	void *vp = ::malloc(allocSize);
 	if (vp) {
-		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
+		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
 		if ( fTracker ) {
 			fTracker->TrackAlloc(mh);
 		}

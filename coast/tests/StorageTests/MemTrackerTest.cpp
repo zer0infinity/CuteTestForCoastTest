@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MemHeader.h"
+#include "AllocatorNewDelete.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -48,12 +49,13 @@ void MemTrackerTest::TrackAllocFreeTest()
 {
 	StartTrace(MemTrackerTest.TrackAllocFreeTest);
 	MemTracker aTracker("AllocFreeTracker");
+	const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
 
-	void *vp32 = ::calloc(1, (MemoryHeader::AlignedSize() + 16));
-	void *vp48 = ::calloc(1, (MemoryHeader::AlignedSize() + 32));
+	void *vp32 = ::calloc(1, (alignedSize + 16));
+	void *vp48 = ::calloc(1, (alignedSize + 32));
 
-	memset(vp32, 0x55, (MemoryHeader::AlignedSize() + 16));
-	memset(vp48, 0xaa, (MemoryHeader::AlignedSize() + 32));
+	memset(vp32, 0x55, (alignedSize + 16));
+	memset(vp48, 0xaa, (alignedSize + 32));
 
 	// use placement new operator to allocate MemoryHeader from
 	MemoryHeader *pMH16 = new(vp32) MemoryHeader(16, MemoryHeader::eUsed), *pMH32 = new(vp48) MemoryHeader(32, MemoryHeader::eUsed);

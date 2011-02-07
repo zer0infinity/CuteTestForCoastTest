@@ -46,12 +46,6 @@ public:
 	EMemState fState;
 	//!link to next free chunk in pool
 	MemoryHeader *fNextFree;
-	//!align memory suitably
-	static inline size_t AlignedSize() {
-		const size_t rest =  sizeof(MemoryHeader) % sizeof(long double);
-		const size_t alignedsize = sizeof(MemoryHeader) + ( rest ? sizeof(long double) - rest : 0);
-		return alignedsize;
-	}
 };
 
 #endif
