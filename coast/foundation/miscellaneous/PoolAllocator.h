@@ -111,7 +111,7 @@ protected:
 	void IntDumpStillAllocated(MemTracker *pTracker, u_long lSize, u_long lUsableSize);
 
 	// only used for debugging
-	MemTracker *fpPoolTotalTracker, *fpPoolTotalExcessTracker;
+	MemTracker *fpPoolTotalExcessTracker;
 	ExcessTrackerElt *fpExcessTrackerList;
 };
 

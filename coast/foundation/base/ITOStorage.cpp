@@ -338,6 +338,7 @@ namespace Coast {
 Allocator::Allocator(long allocatorid)
 	: fAllocatorId(allocatorid)
 	, fRefCnt(0)
+	, fTracker(NULL)
 {
 }
 
@@ -395,7 +396,6 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 //---- GlobalAllocator ------------------------------------------
 GlobalAllocator::GlobalAllocator()
 	: Allocator(11223344L)
-	, fTracker(NULL)
 {
 	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		fTracker = Coast::Storage::MakeMemTracker("GlobalAllocator", false);

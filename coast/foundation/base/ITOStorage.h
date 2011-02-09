@@ -210,6 +210,9 @@ protected:
 
 	//!reference count
 	long fRefCnt;
+
+	//!tracks allocation and deallocation of memory
+	MemTracker *fTracker;
 };
 
 //!manages storage using the builtin c api and does some statistic
@@ -245,9 +248,6 @@ protected:
 	//!implements allocation bottleneck routine
 	virtual void *Alloc(u_long allocSize);
 	friend class MemChecker;
-
-	//!tracks allocation and deallocation of memory
-	MemTracker *fTracker;
 };
 
 //!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
