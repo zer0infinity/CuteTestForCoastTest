@@ -50,7 +50,7 @@ bool TemplatesCacheModule::Finis()
 Anything HTMLTemplateCacheLoader::Load(const char *key)
 {
 	StartTrace1(HTMLTemplateCacheLoader.Load, "key: " << key);
-	Anything cache(Storage::Global());
+	Anything cache(Coast::Storage::Global());
 	std::istream *fp = System::OpenIStream(key, (const char *)"html");
 	if (fp) {
 		std::istream &reader = *fp;
@@ -88,7 +88,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 	String rootDir(System::GetRootDir());
 	String filepath;
 	String templateDir;
-	Anything fileNameMap(Storage::Global());
+	Anything fileNameMap(Coast::Storage::Global());
 
 	CacheHandler *cache = CacheHandler::Get();
 	TemplateParser tp;

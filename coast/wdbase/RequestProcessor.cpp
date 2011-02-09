@@ -111,7 +111,7 @@ void RequestProcessor::ForceConnectionClose(Context &ctx) {
 
 bool RequestProcessor::KeepConnectionAlive(Context &ctx) {
 	bool retVal = false;
-	StatTrace(RequestProcessor.KeepConnectionAlive, "PersistentConnections:" << (ctx.Lookup("PersistentConnections").AsBool(false) ? "true" : "false"), Storage::Current());
+	StatTrace(RequestProcessor.KeepConnectionAlive, "PersistentConnections:" << (ctx.Lookup("PersistentConnections").AsBool(false) ? "true" : "false"), Coast::Storage::Current());
 	if (ctx.Lookup("PersistentConnections").AsBool(false)) {
 		// first check if we already know the result
 		ROAnything lookupAny;
@@ -123,7 +123,7 @@ bool RequestProcessor::KeepConnectionAlive(Context &ctx) {
 			ctx.GetTmpStore()["Keep-Alive"] = retVal;
 		}
 	}
-	StatTrace(RequestProcessor.KeepConnectionAlive, "Keep-Alive:" << (retVal ? "true" : "false"), Storage::Current());
+	StatTrace(RequestProcessor.KeepConnectionAlive, "Keep-Alive:" << (retVal ? "true" : "false"), Coast::Storage::Current());
 	return retVal;
 }
 
@@ -174,7 +174,7 @@ bool RequestProcessor::IntProcessRequest(std::ostream &Ios, Context &ctx) {
 bool RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 	Anything args;
 	args.Import(Ios);
-	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Storage::Current());
+	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Coast::Storage::Current());
 	ctx.PushRequest(args);
 	return true;
 }

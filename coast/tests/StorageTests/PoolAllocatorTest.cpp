@@ -180,7 +180,7 @@ void PoolAllocatorTest::StillUsedBlocksTest()
 {
 	StartTrace(PoolAllocatorTest.StillUsedBlocksTest);
 	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
-	if ( Storage::GetStatisticLevel() >= 1 ) {
+	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		PoolAllocator pa(1, 1024, 4);
 		// this alloc should allocate a block of size 16 + Coast::Memory::AlignedSize<MemoryHeader>::value
 		void *p16 = pa.Calloc(1, 16);

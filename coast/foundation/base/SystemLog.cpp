@@ -274,7 +274,7 @@ void SystemLog::DoLog(eLogLevel level, const char *msg)
 
 void SystemLog::DoTraceLevel(const char *level, const char *msg)
 {
-	String finalMessage(level, strlen(level), Storage::Global());
+	String finalMessage(level, strlen(level), Coast::Storage::Global());
 	finalMessage.Append(msg);
 	finalMessage.Append('\n');
 	SystemLog::WriteToStderr(finalMessage, finalMessage.Length());

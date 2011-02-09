@@ -47,7 +47,7 @@ bool OracleModule::Init(const ROAnything config)
 
 Coast::Oracle::ConnectionPool *OracleModule::GetConnectionPool()
 {
-	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Storage::Current());
+	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Coast::Storage::Current());
 	return fpConnectionPool.get();
 }
 

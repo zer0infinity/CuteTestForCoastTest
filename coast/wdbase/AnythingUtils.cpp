@@ -100,6 +100,6 @@ void StorePutter::Operate(Anything &source, Context &c, const ROAnything &config
 
 void StorePutter::Operate(Anything &source, Context &c, String strStoreName, String destSlotname, bool append, char delim, char indexdelim)
 {
-	StatTrace(StorePutter.Operate, "putting in store [" << (strStoreName.Length() ? (const char *)strStoreName : "TmpStore" ) << "] slot [" << destSlotname << "]", Storage::Current());
+	StatTrace(StorePutter.Operate, "putting in store [" << (strStoreName.Length() ? (const char *)strStoreName : "TmpStore" ) << "] slot [" << destSlotname << "]", Coast::Storage::Current());
 	SlotPutter::Operate(source, StoreFinder::FindStore(c, strStoreName), destSlotname, append, delim, indexdelim);
 }

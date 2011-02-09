@@ -336,13 +336,13 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aConsumer.Start(Storage::Global(), anyCons);
+		aConsumer.Start(Coast::Storage::Global(), anyCons);
 		anyProd["Product"] = "Prod10";
-		aProd10.Start(Storage::Global(), anyProd);
+		aProd10.Start(Coast::Storage::Global(), anyProd);
 		anyProd["Product"] = "Prod4";
-		aProd4.Start(Storage::Global(), anyProd);
+		aProd4.Start(Coast::Storage::Global(), anyProd);
 		anyProd["Product"] = "Prod5";
-		aProd5.Start(Storage::Global(), anyProd);
+		aProd5.Start(Coast::Storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 		TraceAny(aConsumer.fProducts, "produced items");
@@ -358,13 +358,13 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aConsumer.Start(Storage::Global(), anyCons);
+		aConsumer.Start(Coast::Storage::Global(), anyCons);
 		anyProd["Product"] = "Prod10";
-		aProd10.Start(Storage::Global(), anyProd);
+		aProd10.Start(Coast::Storage::Global(), anyProd);
 		anyProd["Product"] = "Prod4";
-		aProd4.Start(Storage::Global(), anyProd);
+		aProd4.Start(Coast::Storage::Global(), anyProd);
 		anyProd["Product"] = "Prod5";
-		aProd5.Start(Storage::Global(), anyProd);
+		aProd5.Start(Coast::Storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 		TraceAny(aConsumer.fProducts, "produced items");
@@ -393,11 +393,11 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aCons4.Start(Storage::Global(), anyCons);
-		aCons5.Start(Storage::Global(), anyCons);
-		aCons10.Start(Storage::Global(), anyCons);
+		aCons4.Start(Coast::Storage::Global(), anyCons);
+		aCons5.Start(Coast::Storage::Global(), anyCons);
+		aCons10.Start(Coast::Storage::Global(), anyCons);
 		anyProd["Product"] = "Gugus";
-		aProducer.Start(Storage::Global(), anyProd);
+		aProducer.Start(Coast::Storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aCons4.CheckState(Thread::eTerminated, 10));
 		t_assert(aCons5.CheckState(Thread::eTerminated, 10));
@@ -419,11 +419,11 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aCons4.Start(Storage::Global(), anyCons);
-		aCons5.Start(Storage::Global(), anyCons);
-		aCons10.Start(Storage::Global(), anyCons);
+		aCons4.Start(Coast::Storage::Global(), anyCons);
+		aCons5.Start(Coast::Storage::Global(), anyCons);
+		aCons10.Start(Coast::Storage::Global(), anyCons);
 		anyProd["Product"] = "Gugus";
-		aProducer.Start(Storage::Global(), anyProd);
+		aProducer.Start(Coast::Storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aCons4.CheckState(Thread::eTerminated, 10));
 		t_assert(aCons5.CheckState(Thread::eTerminated, 10));
@@ -452,7 +452,7 @@ void QueueTest::ConsumerTerminationTest()
 {
 	StartTrace(QueueTest.ConsumerTerminationTest);
 	{
-		AnyQueueType *pProductQueue = new (Storage::Global()) AnyQueueType("pProductQueue", 2);
+		AnyQueueType *pProductQueue = new (Coast::Storage::Global()) AnyQueueType("pProductQueue", 2);
 		ConsumerTerminationThread aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;
@@ -475,7 +475,7 @@ void QueueTest::ConsumerTerminationTest()
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 	}
 	{
-		AnyQueueType *pProductQueue = new (Storage::Global()) AnyQueueType("pProductQueue", 2);
+		AnyQueueType *pProductQueue = new (Coast::Storage::Global()) AnyQueueType("pProductQueue", 2);
 		ConsumerTerminationThread aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;
@@ -601,7 +601,7 @@ void QueueTest::QueueWithAllocatorTest()
 			TraceAny(anyOut, "statistics");
 		}
 		if ( Storage::GetStatisticLevel() >= 1 ) {
-			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Storage::Global()");
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}
 	{
@@ -637,7 +637,7 @@ void QueueTest::QueueWithAllocatorTest()
 			delete pEventWrapperOut2;
 		}
 		if ( Storage::GetStatisticLevel() >= 1 ) {
-			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Storage::Global()");
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}
 }

@@ -160,7 +160,7 @@ bool SessionListManager::ResetInit(const ROAnything config)
 		m << "\tLaunching new session cleaner";
 		SystemLog::WriteToStderr(m);
 		// periodically clean up sessions
-		fSessionCleaner = new (Storage::Global()) PeriodicAction(cleanerAction, cleanerWait);
+		fSessionCleaner = new (Coast::Storage::Global()) PeriodicAction(cleanerAction, cleanerWait);
 		fSessionCleaner->Start();
 		m = "";
 		m << " done" << "\n";
@@ -179,7 +179,7 @@ Session *SessionListManager::DoMakeSession(Context &ctx)
 	if ( fSessionFactory ) {
 		return fSessionFactory->DoMakeSession(ctx);
 	}
-	return new (Storage::Global()) Session("Session");
+	return new (Coast::Storage::Global()) Session("Session");
 }
 
 Session *SessionListManager::MakeSession(Context &ctx)
@@ -294,7 +294,7 @@ void SessionListManager::AddSession(const String &id, Session *session, Context 
 		if (fSessions.IsDefined(id)) {
 			fDisabledSessions.Append(fSessions[id]);
 		}
-		fSessions[id] = Anything(session, Storage::Global());
+		fSessions[id] = Anything(session, Coast::Storage::Global());
 		String msg("Session created; Sessions in use: ");
 		msg << fSessions.GetSize();
 		SystemLog::Info(msg);
@@ -362,7 +362,7 @@ void SessionListManager::GetNextId(String &s, Context &ctx)
 
 String SessionListManager::GetUniqueInstanceId()
 {
-	return String(fUniqueInstanceId, Storage::Current());
+	return String(fUniqueInstanceId, Coast::Storage::Current());
 }
 
 bool SessionListManager::SessionIsBusy(Session *session, bool &isBusy, Context &ctx)
@@ -759,7 +759,7 @@ Session *SessionFactory::DoMakeSession(Context &ctx)
 {
 	StartTrace(SessionFactory.DoMakeSession);
 	Trace("fName: " << fName);
-	return new (Storage::Global()) Session(fName);
+	return new (Coast::Storage::Global()) Session(fName);
 }
 
 Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy)

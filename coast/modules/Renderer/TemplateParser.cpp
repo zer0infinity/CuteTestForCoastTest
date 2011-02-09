@@ -375,7 +375,7 @@ void TemplateParser::SkipWhitespace()
 bool TemplateParser::IsValidNameChar(int c)
 {
 	bool bIsValid = (isalpha(c) || '-' == c || '_' == c || '.' == c || ':' == c);
-	StatTrace(TemplateParser.IsValidNameChar, "is " << (bIsValid ? "" : "not ") << "valid", Storage::Current());
+	StatTrace(TemplateParser.IsValidNameChar, "is " << (bIsValid ? "" : "not ") << "valid", Coast::Storage::Current());
 	return bIsValid;
 }
 
@@ -421,7 +421,7 @@ int TemplateParser::Get()
 			++fLine;
 		}
 	}
-	StatTrace(TemplateParser.Get, "char [" << (c ? (char)c : ' ') << "]", Storage::Current());
+	StatTrace(TemplateParser.Get, "char [" << (c ? (char)c : ' ') << "]", Coast::Storage::Current());
 	return c;
 }
 
@@ -431,13 +431,13 @@ int TemplateParser::Peek()
 	if (fReader && fReader->good()) {
 		c = fReader->peek();
 	}
-	StatTrace(TemplateParser.Peek, "char [" << (c ? (char)c : ' ') << "]", Storage::Current());
+	StatTrace(TemplateParser.Peek, "char [" << (c ? (char)c : ' ') << "]", Coast::Storage::Current());
 	return c;
 }
 
 void TemplateParser::PutBack(char c)
 {
-	StatTrace(TemplateParser.PutBack, "char [" << (char)c << "]", Storage::Current());
+	StatTrace(TemplateParser.PutBack, "char [" << (char)c << "]", Coast::Storage::Current());
 	if (fReader) {
 		fReader->putback(c);
 	}
@@ -748,7 +748,7 @@ bool TemplateParser::IsSpecialTag(String &tagName, Anything &tagAttributes)
 bool TemplateParser::IsEmptyOrWd()
 {
 	int c = Peek();
-	StatTrace(TemplateParser.IsEmptyOrWd, "char [" << (char)c << "]", Storage::Current());
+	StatTrace(TemplateParser.IsEmptyOrWd, "char [" << (char)c << "]", Coast::Storage::Current());
 	if (!isspace(c)) {
 		if (tolower(c) == 'w') {
 			Get();

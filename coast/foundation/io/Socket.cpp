@@ -59,7 +59,7 @@ Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long time
 	, fDoClose(doClose)
 	, fClientInfo(clientInfo)
 	, fTimeout(timeout)
-	, fAllocator((a) ? a : Storage::Global())
+	, fAllocator((a) ? a : Coast::Storage::Global())
 {
 	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << (long)fAllocator << "]");
 	TraceAny(fClientInfo, "clientInfo");
@@ -520,7 +520,7 @@ bool EndPoint::PrepareSockAddrInet(struct sockaddr_in &socketaddr, unsigned long
 
 Allocator *EndPoint::GetSocketAllocator()
 {
-	return fThreadLocal ? Storage::Current() : Storage::Global();
+	return fThreadLocal ? Coast::Storage::Current() : Coast::Storage::Global();
 }
 
 Socket *EndPoint::DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose)
@@ -602,9 +602,9 @@ long ConnectorArgs::ConnectTimeout()
 
 //--- Connector --------------------------------------------
 Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPAdr, long srcPort, bool threadLocal) :
-	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? Storage::Current() : Storage::Global()), port),
+	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()), port),
 	fConnectTimeout(connectTimeout),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Storage::Current() : Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);
@@ -615,9 +615,9 @@ Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPA
 }
 
 Connector::Connector(ConnectorArgs &connectorArgs, String srcIPAdr, long srcPort, bool threadLocal) :
-	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, threadLocal ? Storage::Current() : Storage::Global()), connectorArgs.Port()),
+	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()), connectorArgs.Port()),
 	fConnectTimeout(connectorArgs.ConnectTimeout()),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Storage::Current() : Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);

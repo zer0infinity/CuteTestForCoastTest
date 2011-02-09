@@ -136,7 +136,7 @@ public:
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
-	Mutex(const char *name, Allocator *a = Storage::Global());
+	Mutex(const char *name, Allocator *a = Coast::Storage::Global());
 	~Mutex();
 
 	/*! tries to acquire the mutex for this thread, blocks the caller if already locked (by another thread)
@@ -294,7 +294,7 @@ public:
 	/*! creates system dependent read/write lock
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
-	RWLock(const char *name, Allocator *a = Storage::Global());
+	RWLock(const char *name, Allocator *a = Coast::Storage::Global());
 	//!deletes system dependent read/write lock
 	~RWLock();
 	//!locks system dependent lock for reading or writing according to the reading flag
@@ -329,14 +329,14 @@ class LockUnlockEntry
 	struct WrapperBase {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
-			StatTrace(LockUnlockEntry.WrapperBase, "", Storage::Current());
+			StatTrace(LockUnlockEntry.WrapperBase, "", Coast::Storage::Current());
 		}
 		virtual ~WrapperBase() {
-			StatTrace(LockUnlockEntry.~WrapperBase, "", Storage::Current());
+			StatTrace(LockUnlockEntry.~WrapperBase, "", Coast::Storage::Current());
 		}
 
 		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockUnlockEntry.new, "allocator:" << (long)size, Storage::Current());
+			StatTrace(LockUnlockEntry.new, "allocator:" << (long)size, Coast::Storage::Current());
 			if (a) {
 				return a->Calloc(1, size);
 			} else {
@@ -345,7 +345,7 @@ class LockUnlockEntry
 		}
 
 		static void operator delete(void *d) {
-			StatTrace(LockUnlockEntry.delete, "", Storage::Current());
+			StatTrace(LockUnlockEntry.delete, "", Coast::Storage::Current());
 			if (d) {
 				Allocator *a = ((WrapperBase *)d)->fAllocator;
 				if (a) {
@@ -365,11 +365,11 @@ class LockUnlockEntry
 		explicit LockUnlockEntryWrapper(LockType &m, Allocator *pAlloc)
 			: WrapperBase(pAlloc)
 			, fLock(m) {
-			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "Mutex", Storage::Current());
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "Mutex", Coast::Storage::Current());
 			this->fLock.Lock();
 		}
 		~LockUnlockEntryWrapper() {
-			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "Mutex", Storage::Current());
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "Mutex", Coast::Storage::Current());
 			this->fLock.Unlock();
 		}
 		LockType &fLock;
@@ -382,11 +382,11 @@ class LockUnlockEntry
 			: WrapperBase(pAlloc)
 			, fLock(m)
 			, fMode(mode) {
-			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "RWLock", Storage::Current());
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "RWLock", Coast::Storage::Current());
 			this->fLock.Lock(fMode);
 		}
 		~LockUnlockEntryWrapper() {
-			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "RWLock", Storage::Current());
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "RWLock", Coast::Storage::Current());
 			this->fLock.Unlock(fMode);
 		}
 		LockType &fLock;
@@ -400,12 +400,12 @@ class LockUnlockEntry
 public:
 	//!acquires the mutex in the constructor
 	template < typename TMutex >
-	explicit LockUnlockEntry(TMutex &m, Allocator *pAlloc = Storage::Current() )
+	explicit LockUnlockEntry(TMutex &m, Allocator *pAlloc = Coast::Storage::Current() )
 		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<TMutex, bool>(m, pAlloc))
 	{}
 
 	template < typename LockType >
-	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode, Allocator *pAlloc = Storage::Current() )
+	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode, Allocator *pAlloc = Coast::Storage::Current() )
 		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<LockType, bool>(m, mode, pAlloc))
 	{}
 };
@@ -415,14 +415,14 @@ class LockedValueIncrementDecrementEntry
 	struct WrapperBase {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
-			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Coast::Storage::Current());
 		}
 		virtual ~WrapperBase() {
-			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Coast::Storage::Current());
 		}
 
 		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockedValueIncrementDecrementEntry.new, "allocator:" << (long)size, Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.new, "allocator:" << (long)size, Coast::Storage::Current());
 			if (a) {
 				return a->Calloc(1, size);
 			} else {
@@ -431,7 +431,7 @@ class LockedValueIncrementDecrementEntry
 		}
 
 		static void operator delete(void *d) {
-			StatTrace(LockedValueIncrementDecrementEntry.delete, "", Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.delete, "", Coast::Storage::Current());
 			if (d) {
 				Allocator *a = ((WrapperBase *)d)->fAllocator;
 				if (a) {
@@ -477,7 +477,7 @@ class LockedValueIncrementDecrementEntry
 	LockedValueIncrementDecrementEntry &operator=(const LockedValueIncrementDecrementEntry &);
 public:
 	template < typename MutexType >
-	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue, Allocator *pAlloc = Storage::Current())
+	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue, Allocator *pAlloc = Coast::Storage::Current())
 		: fWrapper(new (pAlloc) LockedValueIncrementDecrementEntryWrapper<MutexType>(aMutex, aCondition, lValue, pAlloc))
 	{}
 };
@@ -599,7 +599,7 @@ public:
 		\param wdallocator the storage allocator used in the thread to be started
 		\param args the arguments given to the DoStartRequestedHook
 		\return true if the thread is about to start and fState == eStarted; false if DoStartRequestedHook returns false and fState == eTerminated */
-	bool Start(Allocator *wdallocator = Storage::Global(), ROAnything args = ROAnything());
+	bool Start(Allocator *wdallocator = Coast::Storage::Global(), ROAnything args = ROAnything());
 
 	/*! blocks the caller until thread has reached the requested state
 		\param state EThreadState to check if the thread has reached it

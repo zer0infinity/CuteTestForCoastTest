@@ -52,8 +52,8 @@ STLStorageTest::~STLStorageTest()
 void STLStorageTest::GlobalStorageTest()
 {
 	StartTrace(STLStorageTest.GlobalStorageTest);
-	// create a vector, using STLAllocator<> as allocator using Storage::Global()
-	MemChecker aChecker("STLStorageTest.GlobalStorageTest", Storage::Global());
+	// create a vector, using STLAllocator<> as allocator using Coast::Storage::Global()
+	MemChecker aChecker("STLStorageTest.GlobalStorageTest", Coast::Storage::Global());
 	{
 		std::vector<int, STLStorage::STLAllocator<int> > v;
 
@@ -76,7 +76,7 @@ void STLStorageTest::PoolStorageTest()
 	// create a vector, using MyAlloc<> as allocator
 	PoolAllocator pa(1, 1024, 12);
 	pa.PrintStatistic(3L);
-	MemChecker aChecker("STLStorageTest.PoolStorageTest", Storage::Global());
+	MemChecker aChecker("STLStorageTest.PoolStorageTest", Coast::Storage::Global());
 	{
 		STLStorage::STLAllocator<int> stlalloc(&pa);
 		std::vector<int, STLStorage::STLAllocator<int> > v(stlalloc);
@@ -142,7 +142,7 @@ void STLStorageTest::AllocatorUsingSMartPtrTest()
 //	typedef TestStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorCurrent> blaType;
 //	typedef STLStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
 	typedef STLStorage::fast_pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
-	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", Storage::Current());
+	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", Coast::Storage::Current());
 	{
 		blaType pool1;
 	}

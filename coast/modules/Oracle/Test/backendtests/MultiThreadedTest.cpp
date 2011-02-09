@@ -71,7 +71,7 @@ protected:
 void MultiThreadedTest::Run( long id, const char *goodDAName, const char *failDAName, long lLoops, long lWait, ROAnything roaExpected )
 {
 	for ( int i = 0; i < lLoops; i++ ) {
-		Anything aEnv( GetConfig().DeepClone(Storage::Current()) );
+		Anything aEnv( GetConfig().DeepClone(Coast::Storage::Current()) );
 		Context ctx( aEnv );
 
 		DataAccess da( goodDAName );
@@ -120,7 +120,7 @@ void MultiThreadedTest::DoTest( ROAnything roaTestConfig, const char *goodDAName
 	DATestThread **threadArray = new DATestThread*[nThreads];
 	long i = 0;
 	for ( i = 0; i < nThreads; i++ ) {
-		threadArray[i] = new (Storage::Global()) DATestThread( *this, i, goodDAName, failDAName, roaTestConfig["ThreadDALoops"].AsLong(10L), roaTestConfig["ThreadLoopWait"].AsLong(0L), roaTestConfig["Result"] );
+		threadArray[i] = new (Coast::Storage::Global()) DATestThread( *this, i, goodDAName, failDAName, roaTestConfig["ThreadDALoops"].AsLong(10L), roaTestConfig["ThreadLoopWait"].AsLong(0L), roaTestConfig["Result"] );
 		threadArray[i]->Start( MT_Storage::MakePoolAllocator( lPoolSize, lPoolBuckets, i ) );
 	}
 	for ( i = 0; i < nThreads; i++ ) {

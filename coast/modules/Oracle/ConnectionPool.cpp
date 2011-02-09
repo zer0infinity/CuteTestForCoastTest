@@ -28,8 +28,8 @@ namespace Coast
 
 //---- ConnectionPool ----------------------------------------------------------------
 		ConnectionPool::ConnectionPool( const char *name ) :
-			fStructureMutex( String( name ).Append( "StructureMutex" ), Storage::Global() ), fListOfConnections(
-				Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)
+			fStructureMutex( String( name ).Append( "StructureMutex" ), Coast::Storage::Global() ), fListOfConnections(
+				Coast::Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)
 		{
 			StartTrace(ConnectionPool.ConnectionPool);
 		}
@@ -60,7 +60,7 @@ namespace Coast
 		protected:
 			//:close and destruct OraclePooledConnection
 			virtual bool DoCleanup() {
-				StatTrace(ThreadSpecificConnectionCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
+				StatTrace(ThreadSpecificConnectionCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Coast::Storage::Global());
 				OraclePooledConnection *pConnection = 0;
 				if (GETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection, OraclePooledConnection)) {
 					if ( pConnection->isOpen() ) {
@@ -79,18 +79,18 @@ namespace Coast
 
 		static Allocator *getListAllocator( const ROAnything roaConfig )
 		{
-			Allocator *pAlloc = Storage::Global();
+			Allocator *pAlloc = Coast::Storage::Global();
 			if ( roaConfig["UsePoolStorage"].AsLong( 1 ) == 1 ) {
 				// create unique allocator id based on a pointer value
 				long lAllocatorId = 0x011e0FFF;
 				pAlloc = MT_Storage::MakePoolAllocator( roaConfig["PoolStorageSize"].AsLong( 99 ),
 														roaConfig["NumOfPoolBucketSizes"].AsLong( 26 ), lAllocatorId );
 				if ( pAlloc == NULL ) {
-					StatTrace(ConnectionPool.getListAllocator, "failed to create PoolAllocator, using Storage::Global()", Storage::Current());
+					StatTrace(ConnectionPool.getListAllocator, "failed to create PoolAllocator, using Coast::Storage::Global()", Coast::Storage::Current());
 					SYSWARNING("was not able to create PoolAllocator with Id:" << lAllocatorId);
-					pAlloc = Storage::Global();
+					pAlloc = Coast::Storage::Global();
 				} else {
-					StatTrace(ConnectionPool.getListAllocator, "created PoolAllocator", Storage::Current());
+					StatTrace(ConnectionPool.getListAllocator, "created PoolAllocator", Coast::Storage::Current());
 					// store allocator pointer for later deletion
 					MT_Storage::RefAllocator( pAlloc );
 				}
@@ -120,13 +120,13 @@ namespace Coast
 					fListOfConnections["Size"] = nrOfConnections;
 					fpResourcesSema = new Semaphore( nrOfConnections );
 					for ( long i = 0; i < nrOfConnections; ++i ) {
-						OraclePooledConnection *pConnection = new ( Storage::Global() ) OraclePooledConnection( i,
+						OraclePooledConnection *pConnection = new ( Coast::Storage::Global() ) OraclePooledConnection( i,
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
 						IntReleaseConnection( pConnection );
 					}
 					fpStatEvtHandlerPool = StatEvtHandlerPtrType( new WPMStatHandler( nrOfConnections ) );
 					if ( !fpPeriodicAction ) {
-						fpPeriodicAction = new (Storage::Global()) PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
+						fpPeriodicAction = new (Coast::Storage::Global()) PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
 															   lCloseConnectionTimeout );
 						fpPeriodicAction->Start();
 					}
@@ -138,8 +138,8 @@ namespace Coast
 
 		static void releaseListAllocator( Allocator *pAlloc )
 		{
-			if ( pAlloc != Storage::Global() ) {
-				StatTrace(ConnectionPool.releaseListAllocator, "unreferencing Allocator", Storage::Current());
+			if ( pAlloc != Coast::Storage::Global() ) {
+				StatTrace(ConnectionPool.releaseListAllocator, "unreferencing Allocator", Coast::Storage::Current());
 				MT_Storage::UnrefAllocator( pAlloc );
 			}
 		}
@@ -182,7 +182,7 @@ namespace Coast
 				}
 				Allocator *pAlloc = fListOfConnections.GetAllocator();
 				fListOfConnections.clear();
-				fListOfConnections.SetAllocator(Storage::Global());
+				fListOfConnections.SetAllocator(Coast::Storage::Global());
 				releaseListAllocator(pAlloc);
 			}
 			return !fInitialized;
@@ -203,7 +203,7 @@ namespace Coast
 				} else {
 					Trace("need to create new Connection")
 					Thread::RegisterCleaner(&fgTSCCleaner);
-					pConnection = new ( Storage::Global() ) OraclePooledConnection( Thread::MyId(), 2048L, 26L );
+					pConnection = new ( Coast::Storage::Global() ) OraclePooledConnection( Thread::MyId(), 2048L, 26L );
 					if ( pConnection != NULL ) {
 						bRet = SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection);
 						Trace("connection stored in TLS:" << (bRet ? "true" : "false"));

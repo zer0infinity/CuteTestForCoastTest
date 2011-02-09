@@ -33,7 +33,7 @@ public:
 	typedef typename BaseClass::ListTypeReference ListTypeReference;
 	typedef typename BaseClass::ListTypeValueType ListTypeValueType;
 
-	ObjectList_r(const char *name, Allocator *a = Storage::Global())
+	ObjectList_r(const char *name, Allocator *a = Coast::Storage::Global())
 		: BaseClass(name, a)
 		, fMutex(name, a)
 	{}

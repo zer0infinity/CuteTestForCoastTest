@@ -37,7 +37,7 @@ public:
 	//! \param a Allocator to use for allocation
 	//! \pre  socket is a valid connected socket file descriptor
 	//! \post  a usable socket object which allocates the stream on demand
-	Socket(int socket, const Anything &clientInfo = Anything(), bool doClose = true, long timeout = 300L * 1000L /* 5 minutes */, Allocator *a = Storage::Global());
+	Socket(int socket, const Anything &clientInfo = Anything(), bool doClose = true, long timeout = 300L * 1000L /* 5 minutes */, Allocator *a = Coast::Storage::Global());
 
 	//! destructor
 	//! \pre  socket contains a valid connected socket file descriptor and potentially a stream object
@@ -258,7 +258,7 @@ public:
 	//! \param ipAdr defines the ip adress of the other endpoint in dot notation like 127.0.0.1
 	//! \param port defines the port number of the connection: a 16-bit integer
 	EndPoint(const String &ipAdr, long port)
-		: fIPAddress(ipAdr, Storage::Global()), fPort(port), fSockFd(-1), fThreadLocal(false) {}
+		: fIPAddress(ipAdr, Coast::Storage::Global()), fPort(port), fSockFd(-1), fThreadLocal(false) {}
 
 	//! deletes the internal socket object if allocated
 	virtual ~EndPoint() {}

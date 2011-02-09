@@ -19,7 +19,7 @@ StresserThread::StresserThread()
 	, fCond(0)
 	, fMutex(0)
 	, fMyId(-1)
-	, fResult(Storage::Global())
+	, fResult(Coast::Storage::Global())
 {
 	StartTrace(StresserThread.Ctor);
 }

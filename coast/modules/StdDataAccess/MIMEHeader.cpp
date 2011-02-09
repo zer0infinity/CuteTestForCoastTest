@@ -46,7 +46,7 @@ namespace {
 	char const *cookieSlotname = "COOKIE";
 	char const *setCookieSlotname = "SET-COOKIE";
 	char const *userAgentSlotname = "USER-AGENT";
-	String const boundaryToken("boundary=", Storage::Global());
+	String const boundaryToken("boundary=", Coast::Storage::Global());
 
 	char const cookieArgumentsDelimiter = ';';
 	char const headerArgumentsDelimiter = ',';
@@ -59,7 +59,7 @@ namespace {
 	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag const shift = Coast::URLUtils::eUpshift) {
 		Anything values;
 		Coast::URLUtils::Split(line, cookieArgumentsDelimiter, values, '=', shift);
-		StatTraceAny(MIMEHeader.SplitLine, values, "input line [" << line << "] split into:", Storage::Current());
+		StatTraceAny(MIMEHeader.SplitLine, values, "input line [" << line << "] split into:", Coast::Storage::Current());
 		return values;
 	}
 	long GetNormalizedFieldName(String const &line, String &fieldname, Coast::URLUtils::NormalizeTag const normTag) {
@@ -172,13 +172,13 @@ bool MIMEHeader::IsMultiPart() {
 
 String MIMEHeader::GetBoundary() const {
 	String boundary = Lookup(boundarySlotname).AsString();
-	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, Storage::Current());
+	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, Coast::Storage::Current());
 	return boundary;
 }
 
 long MIMEHeader::GetContentLength() const {
 	long contentLength = Lookup(contentLengthSlotname).AsLong(-1L);
-	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, Storage::Current());
+	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, Coast::Storage::Current());
 	return contentLength;
 }
 

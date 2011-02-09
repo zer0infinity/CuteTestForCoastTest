@@ -25,7 +25,7 @@ bool RegisterableObject::fgResetCache = false;
 
 RegisterableObject::RegisterableObject(const char *name)
 	: NamedObject()
-	, fName(name, -1, Storage::Global())
+	, fName(name, -1, Coast::Storage::Global())
 	, fStaticallyInitialized(false)
 	, fbInitialized(false)
 {
@@ -105,7 +105,7 @@ void RegisterableObject::Unregister(const char *name, const char *category)
 
 bool RegisterableObject::Initialize(const char *category)
 {
-	StatTrace(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">", Storage::Current());
+	StatTrace(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">", Coast::Storage::Current());
 	if ( category != NULL ) {
 		if ( !fCategory.Length() ) {
 			fCategory = category;
@@ -174,7 +174,7 @@ ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const ch
 ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(ConfNamedObject.DoConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
-	ConfNamedObject *cno = (ConfNamedObject *)this->Clone(Storage::Global());
+	ConfNamedObject *cno = (ConfNamedObject *)this->Clone(Coast::Storage::Global());
 	if ( cno ) {
 		cno->SetName(name);
 		cno->fCategory = fCategory;

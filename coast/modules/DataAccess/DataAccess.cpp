@@ -107,7 +107,7 @@ bool DataAccess::GetMyParameterMapper(Context &c, ParameterMapper *&pm)
 		isScriptInterpreter = true;
 
 		Trace("Parameter script found. Using interpreter.");
-		pm = new (Storage::Current()) EagerParameterMapper(String("ParamScriptInterpreterFor") << fName, script);
+		pm = new (Coast::Storage::Current()) EagerParameterMapper(String("ParamScriptInterpreterFor") << fName, script);
 	} else {
 		// no script present, check if a named mapper can be found
 		isScriptInterpreter = false;
@@ -143,7 +143,7 @@ bool DataAccess::GetMyResultMapper(Context &c, ResultMapper *&rm)
 		isScriptInterpreter = true;
 
 		Trace("Result script found. Using interpreter.");
-		rm = new (Storage::Current()) EagerResultMapper(String("ResultScriptInterpreterFor") << fName, script);
+		rm = new (Coast::Storage::Current()) EagerResultMapper(String("ResultScriptInterpreterFor") << fName, script);
 	} else {
 		// no script present, check if a named mapper can be found
 		isScriptInterpreter = false;

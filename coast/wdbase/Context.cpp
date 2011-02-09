@@ -31,23 +31,23 @@ const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -
 
 //---- Context ------------------------------------------------------------------
 Context::Context() :
-	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(0),
+	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Coast::Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
+			Coast::Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(0),
 			fCopySessionStore(false) {
 	InitTmpStore();
 }
 
 Context::Context(Anything &request) :
-	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(request), fSocket(0),
+	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Coast::Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
+			Coast::Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(request), fSocket(0),
 			fCopySessionStore(false) {
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 
 Context::Context(Socket *socket) :
-	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(
+	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Coast::Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
+			Coast::Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(
 			socket), fCopySessionStore(false) {
 	// the arguments we get for this request
 	if (fSocket) {
@@ -61,8 +61,8 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 			fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
 			// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
 			// while InitSession handels the refcounting correctly.
-			fSessionStoreGlobal(Anything::ArrayMarker(), Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
-					Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fSocket(0),
+			fSessionStoreGlobal(Anything::ArrayMarker(), Coast::Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
+					Coast::Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fSocket(0),
 			fCopySessionStore(false) {
 	InitSession(s);
 	InitTmpStore();
@@ -173,7 +173,7 @@ Role *Context::GetRole() const {
 }
 
 void Context::SetPage(Page *p) {
-	StatTrace(Context.SetPage, "New Page [" << (p?p->GetName():"null") << "]", Storage::Current());
+	StatTrace(Context.SetPage, "New Page [" << (p?p->GetName():"null") << "]", Coast::Storage::Current());
 	Replace("Page", p);
 }
 
@@ -539,7 +539,7 @@ bool Context::LookupRequest(const char *key, ROAnything &result, char delim, cha
 		if (!(bRet = ROAnything(fRequest)["query"].LookupPath(result, key, delim, indexdelim))) {
 			bRet = ROAnything(fRequest).LookupPath(result, key, delim, indexdelim);
 		}
-	} StatTrace(Context.LookupRequest, "key:<" << NotNull(key) << "> " << (bRet ? "" : "not ") << "found", Storage::Current());
+	} StatTrace(Context.LookupRequest, "key:<" << NotNull(key) << "> " << (bRet ? "" : "not ") << "found", Coast::Storage::Current());
 	return bRet;
 }
 

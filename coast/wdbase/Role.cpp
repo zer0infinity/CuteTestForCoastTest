@@ -50,7 +50,7 @@ Role::Role(const char *name) :
 }
 
 Role::~Role() {
-	StatTrace(Role.Misc, "~Role: <" << fName << ">", Storage::Current());
+	StatTrace(Role.Misc, "~Role: <" << fName << ">", Coast::Storage::Current());
 }
 
 IFAObject *Role::Clone(Allocator *a) const {
@@ -58,16 +58,16 @@ IFAObject *Role::Clone(Allocator *a) const {
 }
 
 bool Role::Init(Context &) {
-	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Storage::Current());
+	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Coast::Storage::Current());
 	return true;
 }
 
 void Role::Finis(Session &, Role *) {
-	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Storage::Current());
+	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Coast::Storage::Current());
 }
 
 bool Role::Synchronize(Context &) const {
-	StatTrace(Role.Synchronize, fName << ": abstract returning true", Storage::Current());
+	StatTrace(Role.Synchronize, fName << ": abstract returning true", Coast::Storage::Current());
 	return true;
 }
 
@@ -261,10 +261,10 @@ String Role::GetRequestRoleName(Context &ctx) {
 	Anything query = ctx.GetQuery();
 	if (query.IsDefined("role")) {
 		name = query["role"].AsString(name);
-		StatTrace(Role.GetRequestRoleName, "got query role <" << name << ">", Storage::Current());
+		StatTrace(Role.GetRequestRoleName, "got query role <" << name << ">", Coast::Storage::Current());
 	} else {
 		name = GetDefaultRoleName(ctx);
-		StatTrace(Role.GetRequestRoleName, "got default role <" << name << ">", Storage::Current());
+		StatTrace(Role.GetRequestRoleName, "got default role <" << name << ">", Coast::Storage::Current());
 	}
 	return name;
 }
@@ -300,7 +300,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const {
 }
 
 bool Role::DoVerify(Context &, String &, String &) const {
-	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", Storage::Current());
+	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", Coast::Storage::Current());
 	return true;
 }
 

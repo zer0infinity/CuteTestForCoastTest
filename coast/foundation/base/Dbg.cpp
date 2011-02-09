@@ -33,7 +33,7 @@ namespace {
 	char const *fgMainSwitchName = "MainSwitch";
 	char const *fgEnableAllName = "EnableAll";
 	int fgLevel = 0;
-	Anything fgTriggerMap(Storage::Global());
+	Anything fgTriggerMap(Coast::Storage::Global());
 	ROAnything fgROTriggerMap;
 	long fgLowerBound = 0;
 	long fgUpperBound = 0;
@@ -226,7 +226,7 @@ Tracer::Tracer(const char *trigger)
 	: fTrigger(trigger)
 	, fTriggered(false)
 	, fpMsg(NULL)
-	, fpAlloc(Storage::Current())
+	, fpAlloc(Coast::Storage::Current())
 {
 	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {
@@ -240,7 +240,7 @@ Tracer::Tracer(const char *trigger, const char *msg)
 	: fTrigger(trigger)
 	, fTriggered(false)
 	, fpMsg(msg)
-	, fpAlloc(Storage::Current())
+	, fpAlloc(Coast::Storage::Current())
 {
 	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {

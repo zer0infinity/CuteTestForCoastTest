@@ -37,16 +37,17 @@ public:
 	virtual bool ResetInit(const ROAnything );
 	virtual bool ResetFinis(const ROAnything );
 	// access implicitely protected by Server::fgReInitMutex
-	static	Server *GetServerForReInit() {
+	static Server *GetServerForReInit() {
 		return fgServerForReInit;
 	}
-	static 	void SetServerForReInit(Server *runningGlobalReInit) {
+	static void SetServerForReInit(Server *runningGlobalReInit) {
 		fgServerForReInit = runningGlobalReInit;
 	}
 
 protected:
 	static Server *fgServerForReInit;
 };
+
 
 //---- Server -----------------------------------------------------------
 //!manages the components of the process

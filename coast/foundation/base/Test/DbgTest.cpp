@@ -315,9 +315,9 @@ void DbgTest::CheckMacrosCompile()
 	SubTrace("test", "a sub trace message");
 	SubTraceAny("test", a, "a sub trace any");
 	SubTraceBuf("test", "a subtrace buffer", 10);
-	StatTrace("test", "a stat trace", Storage::Current());
-	StatTraceBuf("bli.bla", "0123456789012345", 10, Storage::Current());
-	StatTraceAny("test.x", a, "an any", Storage::Current());
+	StatTrace("test", "a stat trace", Coast::Storage::Current());
+	StatTraceBuf("bli.bla", "0123456789012345", 10, Coast::Storage::Current());
+	StatTraceAny("test.x", a, "an any", Coast::Storage::Current());
 	TriggerEnabled(SectionNotDefined.SlotNotDefined);
 }
 

@@ -44,7 +44,7 @@ class SybCTnewDA : public IFAObject
 	// Define structure where row data is bound.
 	// Allow for column arrays - for array binding.
 	typedef struct ColumnData {
-		ColumnData(Allocator *a = Storage::Current());
+		ColumnData(Allocator *a = Coast::Storage::Current());
 		~ColumnData();
 		CS_SMALLINT	*indicator;
 		CS_CHAR		*value;

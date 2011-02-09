@@ -16,7 +16,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Storage::Global());
+static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Coast::Storage::Global());
 //---- ListAction ---------------------------------------------------------------
 
 RegisterAction(ListAction);

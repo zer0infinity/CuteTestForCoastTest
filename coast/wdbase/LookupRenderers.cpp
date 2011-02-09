@@ -97,7 +97,7 @@ ContextLookupRenderer::ContextLookupRenderer(const char *name)
 ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
 	ROAnything roaRet = context.Lookup(name, delim, indexdelim);
-	StatTraceAny(ContextLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Storage::Current() );
+	StatTraceAny(ContextLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Coast::Storage::Current() );
 	return roaRet;
 }
 
@@ -113,7 +113,7 @@ ROAnything StoreLookupRenderer::DoLookup(Context &context, const char *name, cha
 {
 	ROAnything roaRet;
 	((ROAnything)context.GetTmpStore()).LookupPath(roaRet, name, delim, indexdelim);
-	StatTraceAny(StoreLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Storage::Current() );
+	StatTraceAny(StoreLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Coast::Storage::Current() );
 	return roaRet;
 }
 
@@ -129,6 +129,6 @@ ROAnything QueryLookupRenderer::DoLookup(Context &context, const char *name, cha
 {
 	ROAnything roaRet;
 	((ROAnything)context.GetQuery()).LookupPath(roaRet, name, delim, indexdelim);
-	StatTraceAny(QueryLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Storage::Current() );
+	StatTraceAny(QueryLookupRenderer.DoLookup, roaRet, "specification for [" << NotNull(name) << "]", Coast::Storage::Current() );
 	return roaRet;
 }

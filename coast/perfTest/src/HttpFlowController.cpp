@@ -680,7 +680,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			stream.flush();
 			SystemLog::WriteToStderr(strbuf);
 		}
-		SimpleMutex mtx("delay", Storage::Current());
+		SimpleMutex mtx("delay", Coast::Storage::Current());
 		SimpleMutex::ConditionType cond;
 		{
 			LockUnlockEntry me(mtx);

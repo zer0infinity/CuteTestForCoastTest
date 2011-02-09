@@ -24,8 +24,8 @@ HTTPRequestReader::HTTPRequestReader(MIMEHeader &header)
 }
 
 namespace {
-	String const strGET("GET", Storage::Global());
-	String const strPOST("POST", Storage::Global());
+	String const strGET("GET", Coast::Storage::Global());
+	String const strPOST("POST", Coast::Storage::Global());
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
 		Anything anyMessage;

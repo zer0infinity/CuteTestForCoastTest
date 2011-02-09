@@ -23,7 +23,7 @@
 
 PulldownMenuRendererTest::PulldownMenuRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Storage::Global()) PulldownMenuRenderer("PulldownMenuRenderer");
+	fFieldRenderer = new (Coast::Storage::Global()) PulldownMenuRenderer("PulldownMenuRenderer");
 };
 
 PulldownMenuRendererTest::~PulldownMenuRendererTest()

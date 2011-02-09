@@ -237,7 +237,7 @@ void PipeExecutorTest::PrepareParamTest()
 	PipeExecutor Execute;
 	Anything pm;
 	Execute.ParseParam("/bin/cat /etc/passwd", pm);
-	PipeExecutor::CgiParam cgiParams(pm, Storage::Current());
+	PipeExecutor::CgiParam cgiParams(pm, Coast::Storage::Current());
 	char **p = cgiParams.GetParams();
 	assertCharPtrEqual("/bin/cat", p[0]);
 	assertCharPtrEqual("/etc/passwd", p[1]);
@@ -251,7 +251,7 @@ void PipeExecutorTest::PrepareEnvTest()
 	Anything pm;
 	pm["Hallo"] = "Peter";
 	pm["Servus"] = "Marcel";
-	PipeExecutor::CgiEnv cgiEnv(pm, Storage::Current());
+	PipeExecutor::CgiEnv cgiEnv(pm, Coast::Storage::Current());
 #if defined(WIN32)
 	String expected("Hallo=Peter");
 	expected.Append('\0').Append("Servus=Marcel").Append('\0').Append('\0');

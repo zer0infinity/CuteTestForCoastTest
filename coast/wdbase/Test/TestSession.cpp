@@ -56,7 +56,7 @@ TestSessionFactory::~TestSessionFactory()
 Session *TestSessionFactory::DoMakeSession(Context &ctx)
 {
 	StartTrace(TestSessionFactory.Ctor);
-	return new (Storage::Global()) TestSession("Test", ctx, fTest);
+	return new (Coast::Storage::Global()) TestSession("Test", ctx, fTest);
 }
 //:custom steps to prepare a session
 Session *TestSessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy)

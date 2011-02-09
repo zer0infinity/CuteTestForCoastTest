@@ -19,9 +19,9 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 
-Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", Storage::Global());
+Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", Coast::Storage::Global());
 bool	LocalizationUtils::fgLanguageMapIsInit = false;
-Anything LocalizationUtils::fgLanguageMap(Storage::Global());
+Anything LocalizationUtils::fgLanguageMap(Coast::Storage::Global());
 //---- LocalizationUtils ----------------------------------------------------------------
 const char *LocalizationUtils::Eval(const char *lang, const ROAnything &config)
 {

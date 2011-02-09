@@ -20,7 +20,7 @@ public:
 	//! \param os wrapped output stream
 	//! \param chunklength max length of a single chunk
 	//! \param a memory allocator
-	HTTPChunkedStreamBuf(std::ostream &os, long chunklength, Allocator *a = Storage::Current());
+	HTTPChunkedStreamBuf(std::ostream &os, long chunklength, Allocator *a = Coast::Storage::Current());
 
 	virtual ~HTTPChunkedStreamBuf();
 

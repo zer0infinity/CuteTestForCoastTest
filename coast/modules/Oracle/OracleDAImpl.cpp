@@ -34,17 +34,17 @@ RegisterDataAccessImpl( OracleDAImpl);
 OracleDAImpl::OracleDAImpl( const char *name ) :
 	DataAccessImpl( name )
 {
-	StatTrace(OracleDAImpl.OracleDAImpl, name, Storage::Current());
+	StatTrace(OracleDAImpl.OracleDAImpl, name, Coast::Storage::Current());
 }
 
 OracleDAImpl::~OracleDAImpl()
 {
-	StatTrace(OracleDAImpl.~OracleDAImpl, "nothing to do", Storage::Current());
+	StatTrace(OracleDAImpl.~OracleDAImpl, "nothing to do", Coast::Storage::Current());
 }
 
 IFAObject *OracleDAImpl::Clone(Allocator *a) const
 {
-	StatTrace(OracleDAImpl.Clone, fName, Storage::Current());
+	StatTrace(OracleDAImpl.Clone, fName, Coast::Storage::Current());
 	return new (a) OracleDAImpl( fName );
 }
 

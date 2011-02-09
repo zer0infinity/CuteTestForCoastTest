@@ -16,12 +16,12 @@
 OraclePooledConnection::OraclePooledConnection( u_long lId, u_long lPoolSize, u_long lPoolBuckets ) :
 	fId( lId ), fPoolSize(lPoolSize), fPoolBuckets(lPoolBuckets)
 {
-	StatTrace(OraclePooledConnection.OraclePooledConnection, "empty", Storage::Current());
+	StatTrace(OraclePooledConnection.OraclePooledConnection, "empty", Coast::Storage::Current());
 }
 
 OraclePooledConnection::~OraclePooledConnection()
 {
-	StatTrace(OraclePooledConnection.~OraclePooledConnection, "closing connection", Storage::Current());
+	StatTrace(OraclePooledConnection.~OraclePooledConnection, "closing connection", Coast::Storage::Current());
 	// disconnect if OracleConnection exists
 	Close( true );
 }
@@ -30,7 +30,7 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 {
 	StartTrace1(OraclePooledConnection.Open, "server [" << strServer << "] user [" << strUsername << "]");
 	if ( !fEnvironment.get() ) {
-		fEnvironment = OracleEnvironmentPtr( new (Storage::Global()) OracleEnvironment(
+		fEnvironment = OracleEnvironmentPtr( new (Coast::Storage::Global()) OracleEnvironment(
 				OracleEnvironment::THREADED_UNMUTEXED, fId, fPoolSize, fPoolBuckets ) );
 	}
 	if ( fEnvironment.get() && fEnvironment->valid() ) {
@@ -48,7 +48,7 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 
 bool OraclePooledConnection::Close( bool bForce )
 {
-	StatTrace(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing", Storage::Current());
+	StatTrace(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing", Coast::Storage::Current());
 	if ( fConnection.get() ) {
 		fConnection->Close();
 	}

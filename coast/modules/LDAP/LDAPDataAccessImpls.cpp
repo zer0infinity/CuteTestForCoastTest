@@ -265,7 +265,7 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 
 int LDAPAddDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods, int &iMsgId)
 {
-	StatTrace(LDAPAddDAI.DoSpecificOperation, "sending add request", Storage::Current() );
+	StatTrace(LDAPAddDAI.DoSpecificOperation, "sending add request", Coast::Storage::Current() );
 	return ldap_add_ext(lc->GetConnection(), base, ldapmods, NULL, NULL, &iMsgId );
 }
 
@@ -408,7 +408,7 @@ int LDAPModifyDAI::IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lMod
 	for ( long sza = attrmods.GetSize(); lCurrentAttribute < sza; ++lCurrentAttribute, ++lModsCounter ) {
 		char **vals( NULL );
 		struct berval **bvals( NULL );
-		LDAPMod *mod = (LDAPMod *)Storage::Current()->Calloc( 1, sizeof( LDAPMod ) );
+		LDAPMod *mod = (LDAPMod *)Coast::Storage::Current()->Calloc( 1, sizeof( LDAPMod ) );
 		mod->mod_op = modcode;
 		mod->mod_type = (char *)attrmods.SlotName(lCurrentAttribute);	// name of attribute
 
@@ -422,17 +422,17 @@ int LDAPModifyDAI::IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lMod
 		} else {
 			long vsize = attrmods[lCurrentAttribute].GetSize();	// # values for attribute
 			if ( bBinaryOperation ) {
-				bvals = (berval **)Storage::Current()->Calloc( ( vsize + 1 ), sizeof( berval * ) );
+				bvals = (berval **)Coast::Storage::Current()->Calloc( ( vsize + 1 ), sizeof( berval * ) );
 				for ( long k = 0; k < vsize; ++k ) {
 					// do not use AsString() in the next assignment because we need a non-temporary reference
 					//  until the ldap-call is done
-					bvals[k] = (berval *)Storage::Current()->Calloc( 1, sizeof( berval ) );
+					bvals[k] = (berval *)Coast::Storage::Current()->Calloc( 1, sizeof( berval ) );
 					bvals[k]->bv_val = (char *)attrmods[lCurrentAttribute][k].AsCharPtr();
 					bvals[k]->bv_len = attrmods[lCurrentAttribute][k].AsString().Length();
 				}
 				bvals[vsize] = NULL;	// terminate list of values
 			} else {
-				vals = (char **)Storage::Current()->Calloc( ( vsize + 1 ), sizeof( char * ) );
+				vals = (char **)Coast::Storage::Current()->Calloc( ( vsize + 1 ), sizeof( char * ) );
 				for ( long k = 0; k < vsize; ++k ) {
 					vals[k] = (char *)attrmods[lCurrentAttribute][k].AsCharPtr();
 				}
@@ -471,7 +471,7 @@ int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 	}
 
 	// init ldapmod structures for modify request
-	LDAPMod **ldapmods = (LDAPMod **)Storage::Current()->Calloc( ( totalmods + 1 ), sizeof( LDAPMod * ) );
+	LDAPMod **ldapmods = (LDAPMod **)Coast::Storage::Current()->Calloc( ( totalmods + 1 ), sizeof( LDAPMod * ) );
 	ROAnything attrmods;
 	String modname;
 	int modcode, counter( 0 ), iTotalMods( 0 );
@@ -511,20 +511,20 @@ int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 				int mod_bvaluesIndex( 0 );
 				while ( ldapmods[i]->mod_bvalues != NULL && ldapmods[i]->mod_bvalues[mod_bvaluesIndex] != NULL ) {
 					SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_bvalues[" << (long)mod_bvaluesIndex << "]");
-					Storage::Current()->Free( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] );
+					Coast::Storage::Current()->Free( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] );
 					++mod_bvaluesIndex;
 				}
 				SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_bvalues");
-				Storage::Current()->Free( ldapmods[i]->mod_bvalues );
+				Coast::Storage::Current()->Free( ldapmods[i]->mod_bvalues );
 			} else {
 				SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_values");
-				Storage::Current()->Free( ldapmods[i]->mod_values );
+				Coast::Storage::Current()->Free( ldapmods[i]->mod_values );
 			}
 			SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]");
-			Storage::Current()->Free( ldapmods[i] );
+			Coast::Storage::Current()->Free( ldapmods[i] );
 		}
 		SubTrace(TraceMallocFree, "freeing ldapmods");
-		Storage::Current()->Free( ldapmods );
+		Coast::Storage::Current()->Free( ldapmods );
 	}
 	return iRc;
 }

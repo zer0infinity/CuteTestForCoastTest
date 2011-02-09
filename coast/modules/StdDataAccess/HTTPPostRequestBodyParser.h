@@ -13,7 +13,7 @@
 
 namespace Coast {
 	namespace HTTP {
-		String const contentTypeAnything("application/x-coast-anything", Storage::Global());
+		String const contentTypeAnything("application/x-coast-anything", Coast::Storage::Global());
 	}
 }
 

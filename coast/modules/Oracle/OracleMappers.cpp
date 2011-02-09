@@ -17,12 +17,12 @@ RegisterParameterMapper(OracleParameterMapper);
 OracleParameterMapper::OracleParameterMapper( const char *name ) :
 	ParameterMapper( name )
 {
-	StatTrace(OracleParameterMapper.Ctor, name, Storage::Current());
+	StatTrace(OracleParameterMapper.Ctor, name, Coast::Storage::Current());
 }
 
 IFAObject *OracleParameterMapper::Clone(Allocator *a) const
 {
-	StatTrace(OracleParameterMapper.Clone, fName, Storage::Current());
+	StatTrace(OracleParameterMapper.Clone, fName, Coast::Storage::Current());
 	return new (a) OracleParameterMapper( fName );
 }
 
@@ -44,12 +44,12 @@ RegisterResultMapper(OracleResultMapper);
 OracleResultMapper::OracleResultMapper( const char *name ) :
 	ResultMapper( name )
 {
-	StatTrace(OracleResultMapper.Ctor, name, Storage::Current());
+	StatTrace(OracleResultMapper.Ctor, name, Coast::Storage::Current());
 }
 
 IFAObject *OracleResultMapper::Clone(Allocator *a) const
 {
-	StatTrace(OracleResultMapper.Clone, fName, Storage::Current());
+	StatTrace(OracleResultMapper.Clone, fName, Coast::Storage::Current());
 	return new (a) OracleResultMapper( fName );
 }
 

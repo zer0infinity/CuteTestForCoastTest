@@ -36,7 +36,7 @@ ObjectList_rTest::~ObjectList_rTest()
 {\
 	TraceMemDelta("before allocation");\
 	const long lCount=200;\
-	MemChecker mc("ObjectList_rTest.CtorTest", Storage::Global());\
+	MemChecker mc("ObjectList_rTest.CtorTest", Coast::Storage::Global());\
 	{\
 		Trace(_QUOTE_( testing listtype##allocatortype ));\
 		ObjectList_r<String*, listtype, allocatortype> aStringList(_QUOTE_( listtype##allocatortype ));\
@@ -84,15 +84,15 @@ ObjectList_rTest::~ObjectList_rTest()
 
 void ObjectList_rTest::CtorTest()
 {
-	std::auto_ptr<MemTracker> newTracker( Storage::MakeMemTracker("GlobalAllocator", false) );
-	MemTracker *oldTracker = Storage::Global()->ReplaceMemTracker( newTracker.get() );
+	std::auto_ptr<MemTracker> newTracker( Coast::Storage::MakeMemTracker("GlobalAllocator", false) );
+	MemTracker *oldTracker = Coast::Storage::Global()->ReplaceMemTracker( newTracker.get() );
 
 	StartTrace(ObjectList_rTest.CtorTest);
 	StartTraceMem(ObjectList_rTest.CtorTest);
 	{
 		// Allocate several tester objects.  Delete two.
 		Trace("with deque. . .");
-		MemChecker mc("deque-test", Storage::Global());
+		MemChecker mc("deque-test", Coast::Storage::Global());
 		{
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
 			std::deque<String *, STLStorage::fast_pool_allocator_global<String *> > l;
@@ -128,7 +128,7 @@ void ObjectList_rTest::CtorTest()
 	{
 		// Allocate several tester objects.  Delete two.
 		Trace("with list. . .");
-		MemChecker mc("list-test", Storage::Global());
+		MemChecker mc("list-test", Coast::Storage::Global());
 		{
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
 			std::list<String *, STLStorage::fast_pool_allocator_global<String *> > l;
@@ -172,7 +172,7 @@ void ObjectList_rTest::CtorTest()
 #endif
 	TraceMemDelta("before terminating");
 
-	Storage::Global()->ReplaceMemTracker( oldTracker );
+	Coast::Storage::Global()->ReplaceMemTracker( oldTracker );
 }
 
 // builds up a suite of testcases, add a line for each testmethod

@@ -36,7 +36,7 @@ void AnyImplsTest::ThisToHexTest()
 {
 	StartTrace(AnyImplsTest.ThisToHexTest);
 	{
-		std::auto_ptr<AnyImpl> d = std::auto_ptr<AnyImpl>(new(Storage::Current())AnyLongImpl(123L, Storage::Current()));
+		std::auto_ptr<AnyImpl> d = std::auto_ptr<AnyImpl>(new(Coast::Storage::Current())AnyLongImpl(123L, Coast::Storage::Current()));
 		String res = d->ThisToHex();
 		assertCompare(sizeof(void *)*2L,equal_to,static_cast<unsigned long>(res.Length()));
 		StringStream os;

@@ -39,8 +39,8 @@
 #define aimplTraceAny(any, msg)
 #endif
 
-static const String fgStrEmpty(Storage::Global()); //avoid temporary
-static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
+static const String fgStrEmpty(Coast::Storage::Global()); //avoid temporary
+static const Anything fgAnyEmpty(Coast::Storage::Global()); // avoid temporary
 
 //---- AnyImpl --------------------------------------------------------------
 
@@ -49,7 +49,7 @@ String AnyImpl::ThisToHex(Allocator *a) const {
 	static char const *const fmt = (sizeof(this)>4)?"%016.16llx":"%08.8lx"; // assume large pointers are 64bit = 8 Bytes large
 	int iSize=snprintf(buf,sizeof(buf),fmt,this);
 	String hexStr(buf, iSize, a);
-	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Storage::Current());
+	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Coast::Storage::Current());
 	return hexStr;
 	}
 
@@ -101,7 +101,7 @@ void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const {
 }
 
 IFAObject *AnyLongImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 }
 
 //---- AnyObjectImpl -----------------------------------------------------------------
@@ -121,7 +121,7 @@ String AnyObjectImpl::AsString(const char *) const {
 }
 
 IFAObject *AnyObjectImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyObjectImpl(this->fObject, a);
 }
 
 void AnyObjectImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const {
@@ -148,7 +148,7 @@ const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const {
 }
 
 IFAObject *AnyDoubleImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
 }
 
 void AnyDoubleImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const {
@@ -171,7 +171,7 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 }
 
 IFAObject *AnyBinaryBufImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 }
 
 //---- AnyStringImpl -----------------------------------------------------------------
@@ -208,7 +208,7 @@ void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 }
 
 IFAObject *AnyStringImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyStringImpl(this->fString, a);
 }
 
 //---- AnyKeyAssoc --------------------------------------------------
@@ -1012,7 +1012,7 @@ void AnyArrayImpl::PrintHash() const {
 }
 
 IFAObject *AnyArrayImpl::Clone(Allocator *a) const {
-	return new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
+	return new ((a) ? a : Coast::Storage::Current()) AnyArrayImpl(a);
 	}
 
 AnyImpl *AnyArrayImpl::DoDeepClone(IFAObject *pObj, Allocator *a, Anything &xreftable) const {

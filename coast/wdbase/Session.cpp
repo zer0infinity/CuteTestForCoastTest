@@ -47,13 +47,13 @@ Session::Session(const char *name)
 	: NotCloned(name)
 	, fMutex("Session")
 	, fTerminated(false)
-	, fStore(Storage::Global())
-	, fId(Storage::Global())
-	, fAddress(Storage::Global())
+	, fStore(Coast::Storage::Global())
+	, fId(Coast::Storage::Global())
+	, fAddress(Coast::Storage::Global())
 	, fAccessCounter(1)
 	, fAccessTime(time(NULL))
-	, fRemoteAddr(Storage::Global())
-	, fBrowser(Storage::Global())
+	, fRemoteAddr(Coast::Storage::Global())
+	, fBrowser(Coast::Storage::Global())
 	, fRefCount(0L)
 {
 	StartTrace(Session.Session);
@@ -249,7 +249,7 @@ void Session::Notify(ESessionEvt evt, Context &ctx)
 
 void Session::IntNotify(ESessionEvt evt, Context &ctx)
 {
-	StatTrace(Session.IntNotify, "virtual function not overridden!", Storage::Current());
+	StatTrace(Session.IntNotify, "virtual function not overridden!", Coast::Storage::Current());
 }
 
 //--- immutable context
@@ -597,7 +597,7 @@ void Session::SetInReauthenticate(Context &context)
 	if (r) {
 		r->GetName(roleName);
 	}
-	StatTrace(Session.SetInReauthenticate, "Role [" << roleName << "]", Storage::Current());
+	StatTrace(Session.SetInReauthenticate, "Role [" << roleName << "]", Coast::Storage::Current());
 	tmpStore["InReauthenticate"] = roleName;
 }
 
@@ -607,7 +607,7 @@ void Session::ForcedLogin(Context &context, String &transition, String &currentp
 	transition = "Login";
 	// and start this transition from the /StartPage or HomePage
 	currentpage = context.Lookup("StartPage", "HomePage");
-	StatTrace(Session.ForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Storage::Current());
+	StatTrace(Session.ForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Coast::Storage::Current());
 }
 
 bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage)
@@ -620,7 +620,7 @@ bool Session::NeedsPageInsert(Context &context, String &transition, String &curr
 		// the role is insufficient
 		ForcedLogin(context, transition, currentpage);
 	}
-	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", Storage::Current());
+	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", Coast::Storage::Current());
 	return bNeedsInsert;
 }
 
@@ -638,7 +638,7 @@ bool Session::RequirePageInsert(Context &context, String &transition, String &cu
 //            return true;
 //        }
 //    }
-	StatTrace(Session.RequirePageInsert,"transition [" << transition << "] current page [" << currentpage << "] returning false", Storage::Current());
+	StatTrace(Session.RequirePageInsert,"transition [" << transition << "] current page [" << currentpage << "] returning false", Coast::Storage::Current());
 	return false;
 }
 

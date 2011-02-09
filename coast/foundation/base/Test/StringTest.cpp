@@ -2905,12 +2905,12 @@ void StringTest::OptimizedConstructorOrAssignment()
 void StringTest::EmptyAllocatorTest()
 {
 	String str(0L);
-	t_assert(str.GetAllocator() == Storage::Current());
+	t_assert(str.GetAllocator() == Coast::Storage::Current());
 	str = "foo";
 	assertEqual("foo", str);
 
 	String str1((Allocator *)0);
-	t_assert(str1.GetAllocator() == Storage::Current());
+	t_assert(str1.GetAllocator() == Coast::Storage::Current());
 	t_assert(str1.GetAllocator() != 0);
 	str1 = "bah";
 	assertEqual("bah", str1);

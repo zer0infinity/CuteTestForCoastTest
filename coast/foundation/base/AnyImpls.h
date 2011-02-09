@@ -22,7 +22,7 @@ class AnyVisitor;
 class AnyImpl: public IFAObject {
 public:
 	AnyImpl(Allocator *a) :
-		fRefCount(1), fAllocator((a) ? a : Storage::Current()) {
+		fRefCount(1), fAllocator((a) ? a : Coast::Storage::Current()) {
 	}
 	virtual ~AnyImpl() {
 		Assert(fRefCount <= 0);
@@ -70,7 +70,7 @@ public:
 		return fRefCount;
 	}
 
-	String ThisToHex(Allocator *a = Storage::Current()) const;
+	String ThisToHex(Allocator *a = Coast::Storage::Current()) const;
 
 	Allocator *MyAllocator() const {
 		return fAllocator;

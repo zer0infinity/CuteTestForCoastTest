@@ -23,6 +23,7 @@
 #include <signal.h>
 #endif
 
+
 //---- InterruptHandlerTest ----------------------------------------------------------------
 InterruptHandlerTest::InterruptHandlerTest(TString tname)
 	: TestCaseType(tname)
@@ -106,3 +107,4 @@ Test *InterruptHandlerTest::suite ()
 	ADD_CASE(testSuite, InterruptHandlerTest, PidFileHandlingTest);
 	return testSuite;
 }
+

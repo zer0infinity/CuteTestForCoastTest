@@ -23,7 +23,7 @@
 
 TextAreaRendererTest::TextAreaRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Storage::Global()) TextAreaRenderer("TextAreaRenderer");
+	fFieldRenderer = new (Coast::Storage::Global()) TextAreaRenderer("TextAreaRenderer");
 }
 TextAreaRendererTest::~TextAreaRendererTest()
 {

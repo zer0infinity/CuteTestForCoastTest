@@ -42,7 +42,7 @@ private:
 	static struct OraTerminator {
 		OracleEnvironmentPtr fEnvironment;
 		OraTerminator() {
-			fEnvironment = OracleEnvironmentPtr( new (Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
+			fEnvironment = OracleEnvironmentPtr( new (Coast::Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
 												 16 ) );
 		}
 		~OraTerminator() {

@@ -17,7 +17,7 @@
 
 //---- HTTPChunkedStreamBuf ----------------------------------------------------------------
 HTTPChunkedStreamBuf::HTTPChunkedStreamBuf(std::ostream &os, long chunklength, Allocator *alloc)
-	: fAllocator(alloc ? alloc : Storage::Current())
+	: fAllocator(alloc ? alloc : Coast::Storage::Current())
 	, fStore(chunklength, fAllocator)
 	, fOs(&os)
 	, fBufSize(chunklength)

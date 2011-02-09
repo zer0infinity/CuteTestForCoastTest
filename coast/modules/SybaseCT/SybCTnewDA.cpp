@@ -26,7 +26,7 @@
 #include <cstring>
 
 //---- SybCTnewDA ----------------------------------------------------------------
-SimpleMutex SybCTnewDA::fgSybaseLocker("SybaseLocker", Storage::Global());
+SimpleMutex SybCTnewDA::fgSybaseLocker("SybaseLocker", Coast::Storage::Global());
 
 CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg);
 CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *connection, CS_CLIENTMSG *errmsg);
@@ -94,7 +94,7 @@ SybCTnewDA::ColumnData::ColumnData(Allocator *a)
 	: indicator(NULL)
 	, value(NULL)
 	, valuelen(NULL)
-	, fAllocator((a) ? a : Storage::Current())
+	, fAllocator((a) ? a : Coast::Storage::Current())
 {
 }
 
@@ -647,13 +647,13 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	// array binding.
 	//
 	// First, allocate memory for the data element to process.
-	coldata = new (Storage::Current()) EX_COLUMN_DATA[num_cols];
+	coldata = new (Coast::Storage::Current()) EX_COLUMN_DATA[num_cols];
 	if (coldata == NULL) {
 		Error(params, "DoFetchData: new EX_COLUMN_DATA failed");
 		return CS_MEM_ERROR;
 	}
 
-	datafmt = (CS_DATAFMT *)(Storage::Current())->Malloc(num_cols * sizeof (CS_DATAFMT));
+	datafmt = (CS_DATAFMT *)(Coast::Storage::Current())->Malloc(num_cols * sizeof (CS_DATAFMT));
 	if (datafmt == NULL) {
 		Error(params, "DoFetchData: Malloc of datafmt failed");
 		delete[] coldata;
@@ -703,7 +703,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	Trace("total rowsize needed: " << (long)rowsize << " bytes");
 	if (retcode != CS_SUCCEED) {
 		delete[] coldata;
-		(Storage::Current())->Free(datafmt);
+		(Coast::Storage::Current())->Free(datafmt);
 		return retcode;
 	}
 
@@ -717,7 +717,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 		Error(params, String("DoFetchData: MAX_MEM_BLOCK_SIZE (") << (long)MAX_MEM_BLOCK_SIZE << " bytes) too small for query, needs " << rowsize << " bytes!");
 		retcode = CS_CMD_FAIL;
 		delete[] coldata;
-		(Storage::Current())->Free(datafmt);
+		(Coast::Storage::Current())->Free(datafmt);
 		return retcode;
 	} else {
 		num_rows = MAX_MEM_BLOCK_SIZE / rowsize;
@@ -772,7 +772,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	}
 	if (retcode != CS_SUCCEED) {
 		delete[] coldata;
-		(Storage::Current())->Free(datafmt);
+		(Coast::Storage::Current())->Free(datafmt);
 		return retcode;
 	}
 
@@ -834,7 +834,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 
 	// Free allocated space.
 	delete[] coldata;
-	(Storage::Current())->Free(datafmt);
+	(Coast::Storage::Current())->Free(datafmt);
 
 	// We're done processing rows.  Let's check the final return value of ct_fetch().
 	switch ((int)retcode) {

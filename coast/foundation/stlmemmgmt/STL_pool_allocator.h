@@ -76,7 +76,7 @@ namespace STLStorage
 		}
 
 		~pool_allocator() {
-			_StatTrace(pool_allocator.~pool_allocator, "this:" << (long)this << " IntPool:" << (long)GetImplRef(fpIntPool), Storage::Current());
+			_StatTrace(pool_allocator.~pool_allocator, "this:" << (long)this << " IntPool:" << (long)GetImplRef(fpIntPool), Coast::Storage::Current());
 		}
 
 		static pointer address(reference r) {
@@ -105,18 +105,18 @@ namespace STLStorage
 
 		pointer allocate(const size_type n) throw(std::bad_alloc) {
 			const pointer ptr = static_cast<pointer>( fpIntPool->ordered_malloc(n) );
-			_StatTrace(pool_allocator.allocate_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
+			_StatTrace(pool_allocator.allocate_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
 			if (ptr == 0) {
 				throw std::bad_alloc();
 			}
 			return ptr;
 		}
 		pointer allocate(const size_type n, const void *const) throw(std::bad_alloc) {
-			_StatTrace(pool_allocator.allocate_n_void, "this:" << (long)this << " size:" << (long)n << '*' << (long)sizeof(T) << " void*", Storage::Current());
+			_StatTrace(pool_allocator.allocate_n_void, "this:" << (long)this << " size:" << (long)n << '*' << (long)sizeof(T) << " void*", Coast::Storage::Current());
 			return allocate(n);
 		}
 		void deallocate(const pointer ptr, const size_type n) {
-			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
+			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
 			if (ptr == 0 || n == 0) {
 				return;

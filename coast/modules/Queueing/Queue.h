@@ -58,7 +58,7 @@ public:
 	typedef QueueBase<ElementType, ListStorageType> ThisType;
 
 	//--- constructors
-	QueueBase(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Storage::Global())
+	QueueBase(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
 		: fName(name, -1, pAlloc)
 		, fAllocator(pAlloc)
 		, fSemaFullSlots(0L)
@@ -459,9 +459,9 @@ public:
 	typedef QueueBase<ElementType, ListStorageType> BaseType;
 	typedef Queue<ElementType, ListStorageType> ThisType;
 
-	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Storage::Global())
+	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
-		StatTrace(Queue.Queue, "generic", Storage::Current());
+		StatTrace(Queue.Queue, "generic", Coast::Storage::Current());
 	}
 };
 
@@ -480,9 +480,9 @@ public:
 	typedef QueueBase<ElementType, ListStorageType> BaseType;
 	typedef Queue<ElementType, ListStorageType> ThisType;
 
-	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Storage::Global())
+	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
-		StatTrace(Queue.Queue, "Anything", Storage::Current());
+		StatTrace(Queue.Queue, "Anything", Coast::Storage::Current());
 		this->fContainer.SetAllocator(pAlloc);
 	}
 };

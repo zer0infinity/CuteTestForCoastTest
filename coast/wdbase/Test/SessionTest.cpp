@@ -258,7 +258,7 @@ void SessionTest::UseSessionStoreTest()
 		Context ctx;
 
 		Anything local;
-		Anything global(Storage::Global());
+		Anything global(Coast::Storage::Global());
 		ctx.Push(&s);
 
 		//--- manipulate session store trough context

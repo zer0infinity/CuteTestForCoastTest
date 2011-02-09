@@ -393,7 +393,7 @@ bool ParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Contex
 String ParameterMapper::DoGetSourceSlot(Context &ctx) const
 {
 	ROAnything slotname;
-	String slotnamename(fName, Storage::Current());
+	String slotnamename(fName, Coast::Storage::Current());
 	slotnamename.Append(".SourceSlot");
 	return (Lookup("SourceSlot", slotname) || ctx.Lookup(slotnamename, slotname)) ? slotname.AsString() : String();
 }
@@ -715,7 +715,7 @@ String ResultMapper::DoGetDestinationSlot(Context &ctx, const char *pcDefault)
 {
 	StartTrace1(ResultMapper.DoGetDestinationSlot, "fName [" << fName << "] default value [" << pcDefault << "]");
 	ROAnything roaDest;
-	String slotnamename(fName, Storage::Current());
+	String slotnamename(fName, Coast::Storage::Current());
 	slotnamename.Append(".DestinationSlot");
 	TraceAny(fConfig, "my configuration for Lookup");
 	if ( !Lookup("DestinationSlot", roaDest) ) {

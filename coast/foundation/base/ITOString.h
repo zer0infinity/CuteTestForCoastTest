@@ -34,30 +34,30 @@ class String
 public:
 	//! default ctor, makes an empty string
 	/*! \param a Allocator to allocate memory from */
-	String( Allocator *a = Storage::Current());
+	String( Allocator *a = Coast::Storage::Current());
 
 	//! ctor, reserves buffer spaces with capacity bytes
 	/*! \param capacity number of bytes reserved
 		\param a Allocator to allocate memory from */
-	String(long capacity, Allocator *a = Storage::Current());
+	String(long capacity, Allocator *a = Coast::Storage::Current());
 
 	//! ctor, creates string with a copy of s
 	/*! \param s initial value of String object, may be 0
 		\param length take at most length characters from s, if negative use strlen(s)
 		\param a Allocator to allocate memory from */
-	String(const char *s, long length = -1,  Allocator *a = Storage::Current());
+	String(const char *s, long length = -1,  Allocator *a = Coast::Storage::Current());
 
 	//! ctor, creates string with a copy of binary buffer s
 	/*! \param s initial value of String object
 		\param length take exactly length bytes from s
 		\param a Allocator to allocate memory from
 		\pre length >= 0 AND s != 0, false implies empty string */
-	String(void const *s, long length,  Allocator *a = Storage::Current());
+	String(void const *s, long length,  Allocator *a = Coast::Storage::Current());
 
 	//! copy ctor
 	/*! \param s initial value of String object
 		\param a Allocator to allocate memory from */
-	String(const String &s, Allocator *a = Storage::Current());
+	String(const String &s, Allocator *a = Coast::Storage::Current());
 
 	//! dtor, deallocates memory used by string content
 	~String();
@@ -468,9 +468,9 @@ public:
 		return SubString(pos, n);
 	}
 	template <typename InputIterator>
-	String(InputIterator first, InputIterator last, Allocator *a = Storage::Current())
+	String(InputIterator first, InputIterator last, Allocator *a = Coast::Storage::Current())
 		: fStringImpl(0)
-		, fAllocator((a) ? a : Storage::Current()) {
+		, fAllocator((a) ? a : Coast::Storage::Current()) {
 		for (; first != last; ++first) {
 			Append(*first);
 		}

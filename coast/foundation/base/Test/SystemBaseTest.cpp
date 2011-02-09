@@ -91,9 +91,9 @@ void SystemBaseTest::GetProcessEnvironmentTest()
 
 void SystemBaseTest::allocFreeTests()
 {
-	void *vp = Storage::Current()->Calloc(32, sizeof(char));
+	void *vp = Coast::Storage::Current()->Calloc(32, sizeof(char));
 	t_assert(vp != 0);
-	Storage::Current()->Free(vp);
+	Coast::Storage::Current()->Free(vp);
 }
 
 void SystemBaseTest::TimeTest ()

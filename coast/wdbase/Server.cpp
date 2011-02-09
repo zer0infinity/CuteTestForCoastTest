@@ -159,6 +159,7 @@ RegisterServer(Server);
 Mutex Server::fgReInitMutex("Reinit");
 bool Server::fgInReInit = false;
 
+
 //RegCacheImpl(Server);	// FindServer()
 // implement FindServer by hand since it uses Application's registry entries
 // guard against misuse by SafeCast
@@ -175,7 +176,7 @@ Server::Server(const char *name)
 	, fPidFileName("pid")
 	, fPid(System::getpid())	// on linux this pid can't be used to stop the server
 	, fStoreMutex("Store")
-	, fStore(Storage::Global())
+	, fStore(Coast::Storage::Global())
 	, fStatisticObserver(0)
 {
 	StartTrace1(Server.Server, "<" << GetName() << ">");
@@ -434,7 +435,7 @@ RequestProcessor *Server::MakeProcessor()
 		PrepareShutdown(-1);
 	} else {
 		// create processor that is connected to this server
-		rp = (RequestProcessor *)rp->Clone(Storage::Global());
+		rp = (RequestProcessor *)rp->Clone(Coast::Storage::Global());
 		rp->Init(this);
 	}
 	return rp;
@@ -679,13 +680,13 @@ int MasterServer::DoInit()
 			while ( aServersIterator.Next(roaServerConfig) && bStartSuccess ) {
 				TraceAny(roaServerConfig, "initializing server");
 				// Start serverthread which internally waits on setting to work
-				Allocator *pAlloc = Storage::Global();
+				Allocator *pAlloc = Coast::Storage::Global();
 				if ( !roaServerConfig.IsNull() && ( roaServerConfig["UsePoolStorage"].AsLong(0) == 1 ) ) {
 					TraceAny(roaServerConfig, "creating PoolAllocator for server");
 					pAlloc = MT_Storage::MakePoolAllocator(roaServerConfig["PoolStorageSize"].AsLong(10240), roaServerConfig["NumOfPoolBucketSizes"].AsLong(10), 0);
 					if ( pAlloc == NULL ) {
 						SYSERROR("was not able to create PoolAllocator for [" << roaServerConfig["ServerName"].AsString() << "], check config!");
-						pAlloc = Storage::Global();
+						pAlloc = Coast::Storage::Global();
 					}
 				}
 				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig);
@@ -837,7 +838,7 @@ ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
 	, fbServerIsInitialized(false)
-	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
+	, fTerminationMutex( "ServerThreadTerminationMutex", Coast::Storage::Global() )
 {
 }
 
@@ -845,7 +846,7 @@ ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
 	, fbServerIsInitialized(false)
-	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
+	, fTerminationMutex( "ServerThreadTerminationMutex", Coast::Storage::Global() )
 {
 }
 
@@ -865,7 +866,7 @@ void ServerThread::DoStartedHook(ROAnything config)
 	} else {
 		serverName = fServer->GetName();
 	}
-	String strName("ServerThread: ", Storage::Global());
+	String strName("ServerThread: ", Coast::Storage::Global());
 	strName.Append(serverName);
 	SetName(strName);
 	if ( fServer ) {

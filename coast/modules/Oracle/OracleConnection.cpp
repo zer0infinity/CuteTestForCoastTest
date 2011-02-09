@@ -15,9 +15,9 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
-Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Storage::Global() );
+Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
 ROAnything OracleConnection::fgDescriptionCacheRO( fgDescriptionCache );
-RWLock OracleConnection::fgDescriptionLock( "OracleDescriptorLock", Storage::Global() );
+RWLock OracleConnection::fgDescriptionLock( "OracleDescriptorLock", Coast::Storage::Global() );
 
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fStatus( eUnitialized ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
@@ -150,7 +150,7 @@ bool OracleConnection::checkError( sword status )
 	if ( status == OCI_SUCCESS || status == OCI_NO_DATA ) {
 		bRet = false;
 	}
-	StatTrace(OracleConnection.checkError, "status: " << (long) status << " retcode: " << (bRet ? "true" : "false"), Storage::Current());
+	StatTrace(OracleConnection.checkError, "status: " << (long) status << " retcode: " << (bRet ? "true" : "false"), Coast::Storage::Current());
 	return bRet;
 }
 
@@ -159,7 +159,7 @@ bool OracleConnection::checkError( sword status, String &message )
 	bool bError( checkError( status ) );
 	if ( bError ) {
 		message = errorMessage( status );
-		StatTrace(OracleConnection.checkError, "status: " << (long) status << " message [" << message << "]", Storage::Current());
+		StatTrace(OracleConnection.checkError, "status: " << (long) status << " message [" << message << "]", Coast::Storage::Current());
 	}
 	return bError;
 }
@@ -222,7 +222,7 @@ OracleStatementPtr OracleConnection::createStatement( String strStatement, long 
 			throw ex;
 		}
 	}
-	OracleStatementPtr pStmt( new (Storage::Current()) OracleStatement( this, strStatement ) );
+	OracleStatementPtr pStmt( new (Coast::Storage::Current()) OracleStatement( this, strStatement ) );
 	if ( pStmt.get() ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
 		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
@@ -457,7 +457,7 @@ String OracleConnection::ConstructSPStr( String const &command, bool pIsFunction
 		strParams.Append( ':' ).Append( roaEntry["Name"].AsString() );
 	}
 	plsql << command << "(" << strParams << "); END;";
-	StatTrace(OracleConnection.ConstructSPStr, "SP string [" << plsql << "]", Storage::Current());
+	StatTrace(OracleConnection.ConstructSPStr, "SP string [" << plsql << "]", Coast::Storage::Current());
 	return plsql;
 }
 

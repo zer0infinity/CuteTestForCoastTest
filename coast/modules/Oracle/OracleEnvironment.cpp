@@ -16,31 +16,31 @@
 #if (1)
 dvoid *malloc_func( void *ctxp, size_t size )
 {
-	Allocator *pAlloc( Storage::Global() );
+	Allocator *pAlloc( Coast::Storage::Global() );
 	if ( ctxp != 0 ) {
 		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
 	}
 	dvoid *ptr( pAlloc->Malloc( size ) );
-	StatTrace(OracleEnvironment.mem_alloc, "size: " << (long)size << " ptr: &" << (long)ptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
+	StatTrace(OracleEnvironment.mem_alloc, "size: " << (long)size << " ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
 	return ptr;
 }
 dvoid *realloc_func( void *ctxp, void *ptr, size_t size )
 {
-	Allocator *pAlloc( Storage::Global() );
+	Allocator *pAlloc( Coast::Storage::Global() );
 	if ( ctxp != 0 ) {
 		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
 	}
 	dvoid *nptr( realloc( ptr, size ) );
-	StatTrace(OracleEnvironment.mem_realloc, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
+	StatTrace(OracleEnvironment.mem_realloc, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
 	return ( nptr );
 }
 void free_func( void *ctxp, dvoid *ptr )
 {
-	Allocator *pAlloc( Storage::Global() );
+	Allocator *pAlloc( Coast::Storage::Global() );
 	if ( ctxp != 0 ) {
 		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
 	}
-	StatTrace(OracleEnvironment.mem_free, "ptr: &" << (long)ptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
+	StatTrace(OracleEnvironment.mem_free, "ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
 	pAlloc->Free( ptr );
 }
 #define ctx_ptr this
@@ -58,7 +58,7 @@ OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPool
 	fEnvhp(), fMemPool( new PoolAllocator( (0xac1e << 16) | ulPoolId, ulPoolSize, ulBuckets ) )
 {
 	StartTrace(OracleEnvironment.OracleEnvironment);
-	// caution: the following memory handles supplied must allocate on Storage::Global()
+	// caution: the following memory handles supplied must allocate on Coast::Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
 	// lifetime of the connection, mutliple threads could share the same connection and so we
 	// must take care not to allocate on the first Thread opening the connection

@@ -27,16 +27,16 @@ CacheLoadPolicy::~CacheLoadPolicy() { }
 
 Anything CacheLoadPolicy::Load(const char *)
 {
-	return Anything(Storage::Global());
+	return Anything(Coast::Storage::Global());
 }
 
 //--- CacheLoadPolicy -----------------------------------------------
 AnythingLoaderPolicy::AnythingLoaderPolicy(const Anything &anyToCache)
-	: fCachedAny(anyToCache, Storage::Global())
+	: fCachedAny(anyToCache, Coast::Storage::Global())
 { }
 
 AnythingLoaderPolicy::AnythingLoaderPolicy(const ROAnything roaToCache)
-	: fCachedAny(roaToCache.DeepClone(Storage::Global()))
+	: fCachedAny(roaToCache.DeepClone(Coast::Storage::Global()))
 {}
 
 AnythingLoaderPolicy::~AnythingLoaderPolicy() { }
@@ -53,7 +53,7 @@ SimpleAnyLoader::~SimpleAnyLoader() { }
 Anything SimpleAnyLoader::Load(const char *key)
 {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
-	Anything toLoad(Storage::Global());
+	Anything toLoad(Coast::Storage::Global());
 	std::istream *ifp = Coast::System::OpenStream(key, "any");
 
 	if (ifp) {
@@ -83,7 +83,7 @@ public:
 	virtual void DoInit() {
 		IFMTrace("CacheHandlerMutexAllocator::DoInit\n");
 		if ( !CacheHandler::fgCacheHandlerMutex ) {
-			CacheHandler::fgCacheHandlerMutex = new Mutex("CacheHandlerMutex", Storage::Global());
+			CacheHandler::fgCacheHandlerMutex = new Mutex("CacheHandlerMutex", Coast::Storage::Global());
 		}
 	}
 
@@ -98,13 +98,13 @@ static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHand
 
 CacheHandler::CacheHandler()
 	: NotCloned("CacheHandler")
-	, fCache(Storage::Global())
+	, fCache(Coast::Storage::Global())
 {
 }
 
 CacheHandler::~CacheHandler()
 {
-	fCache = Anything(Storage::Global());
+	fCache = Anything(Coast::Storage::Global());
 }
 
 void CacheHandler::Finis()
@@ -138,7 +138,7 @@ ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPoli
 	if ( IsLoaded(group, key) ) {
 		return Get(group, key);
 	} else {
-		Anything toCache(clp->Load(key), Storage::Global());
+		Anything toCache(clp->Load(key), Coast::Storage::Global());
 		if (! toCache.IsNull() ) {
 			fCache[group][key] = toCache;
 		}
@@ -176,7 +176,7 @@ CacheHandler *CacheHandler::Get()
 		LockUnlockEntry me(*fgCacheHandlerMutex);
 		// test again if changed while waiting for mutex
 		if ( !fgCacheHandler ) {
-			fgCacheHandler = new (Storage::Global()) CacheHandler();
+			fgCacheHandler = new (Coast::Storage::Global()) CacheHandler();
 		}
 	}
 	return fgCacheHandler;

@@ -33,11 +33,11 @@ SybCTnewDATest::~SybCTnewDATest()
 
 void SybCTnewDATest::InitOpenSetConPropTest()
 {
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 	{
 		StartTrace(SybCTnewDATest.InitOpenSetConPropTest);
 		StartTraceMem(SybCTnewDATest.InitOpenSetConPropTest);
-		Anything anyCtxMessages(Storage::Global());
+		Anything anyCtxMessages(Coast::Storage::Global());
 		ROAnything roaDbParams( GetConfig()["Sybase"] );
 		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
@@ -84,16 +84,16 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 			}
 		}
 	}
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 }
 
 void SybCTnewDATest::SimpleQueryTest()
 {
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 	{
 		StartTrace(SybCTnewDATest.SimpleQueryTest);
 		StartTraceMem(SybCTnewDATest.SimpleQueryTest);
-		Anything anyCtxMessages(Storage::Global());
+		Anything anyCtxMessages(Coast::Storage::Global());
 		ROAnything roaDbParams( GetConfig()["Sybase"] );
 		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
@@ -132,16 +132,16 @@ void SybCTnewDATest::SimpleQueryTest()
 			}
 		}
 	}
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 }
 
 void SybCTnewDATest::LimitedMemoryTest()
 {
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 	{
 		StartTrace(SybCTnewDATest.LimitedMemoryTest);
 		StartTraceMem(SybCTnewDATest.LimitedMemoryTest);
-		Anything anyCtxMessages(Storage::Global());
+		Anything anyCtxMessages(Coast::Storage::Global());
 		ROAnything roaDbParams( GetConfig()["Sybase"] );
 		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
@@ -187,13 +187,13 @@ void SybCTnewDATest::LimitedMemoryTest()
 			}
 		}
 	}
-	Storage::PrintStatistic();
+	Coast::Storage::PrintStatistic();
 }
 
 void SybCTnewDATest::LoginTimeoutTest()
 {
 	StartTrace(SybCTnewDATest.LoginTimeoutTest);
-	Anything anyCtxMessages(Storage::Global());
+	Anything anyCtxMessages(Coast::Storage::Global());
 	String strInterfacesFileName = GetConfig()["Sybase"]["InterfacesFile"].AsString();
 	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 		long lMaxConnections = GetTestCaseConfig()["Connections"].AsLong(26L);
@@ -249,7 +249,7 @@ void SybCTnewDATest::IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, l
 void SybCTnewDATest::ResultTimeoutTest()
 {
 	StartTrace(SybCTnewDATest.ResultTimeoutTest);
-	Anything anyCtxMessages(Storage::Global());
+	Anything anyCtxMessages(Coast::Storage::Global());
 	ROAnything roaDbParams( GetConfig()["Sybase"] );
 	String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {

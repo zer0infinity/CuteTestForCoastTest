@@ -50,7 +50,7 @@ public:
 	typedef typename tObserverList::value_type tObserverListValueType;
 
 	//--- constructors
-	Observable(const char *name, Allocator *a = Storage::Global())
+	Observable(const char *name, Allocator *a = Coast::Storage::Global())
 		: fObserversMutex(name, a)
 	{}
 	virtual ~Observable() {}

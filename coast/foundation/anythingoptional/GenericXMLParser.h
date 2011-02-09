@@ -32,8 +32,8 @@ public:
 	//! \param reader the input source
 	//! \param filename for giving convenient error messages when reading from a real file
 	//! \param startline the line number when starting the parsing for convenient error messages
-	//! \param a the allocator to use, provide Storage::Global() for config data
-	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current());
+	//! \param a the allocator to use, provide Coast::Storage::Global() for config data
+	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Coast::Storage::Current());
 protected:
 	virtual void DoParse(String endTag, Anything &tag);
 	virtual Anything ParseComment();

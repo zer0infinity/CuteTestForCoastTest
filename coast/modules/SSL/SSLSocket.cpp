@@ -407,7 +407,7 @@ SSLClientSocket::~SSLClientSocket()
 int SSLClientSocket::PrepareSocket(SSL *ssl)
 {
 	int res = SSL_connect( ssl );
-	StatTrace(SSLClientSocket.PrepareSocket, "res:" << (long)res, Storage::Current());
+	StatTrace(SSLClientSocket.PrepareSocket, "res:" << (long)res, Coast::Storage::Current());
 	return res;
 }
 

@@ -18,12 +18,12 @@ RegisterParameterMapper(NullParameterMapper);
 NullParameterMapper::NullParameterMapper( const char *name ) :
 	ParameterMapper( name )
 {
-	StatTrace(NullParameterMapper.Ctor, name, Storage::Current());
+	StatTrace(NullParameterMapper.Ctor, name, Coast::Storage::Current());
 }
 
 IFAObject *NullParameterMapper::Clone(Allocator *a) const
 {
-	StatTrace(NullParameterMapper.Clone, fName, Storage::Current());
+	StatTrace(NullParameterMapper.Clone, fName, Coast::Storage::Current());
 	return new (a) NullParameterMapper( fName );
 }
 

@@ -317,7 +317,7 @@ private:
 	void IntInitQueue(const ROAnything roaConfig) {
 		StartTrace(QueueWorkingModule.IntInitQueue);
 		long lQueueSize = roaConfig["QueueSize"].AsLong(100L);
-		Allocator *pAlloc = Storage::Global();
+		Allocator *pAlloc = Coast::Storage::Global();
 
 		if ( roaConfig["UsePoolStorage"].AsLong(0) == 1 ) {
 			// create unique allocator id based on a pointer value

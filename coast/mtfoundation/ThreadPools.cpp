@@ -22,8 +22,8 @@
 //---- ThreadPoolManager ---------------------------------------------------------
 ThreadPoolManager::ThreadPoolManager(const char *name)
 	: fTerminated(true)
-	, fMutex( name, Storage::Global() )
-	, fName( name, Storage::Global() )
+	, fMutex( name, Coast::Storage::Global() )
+	, fName( name, Coast::Storage::Global() )
 	, fRunningThreads(0L)
 	, fStartedThreads(0L)
 	, fTerminatedThreads(0L)
@@ -81,7 +81,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 		for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 			Thread *t = DoGetThread(i);
 			if ( t ) {
-				Allocator *pAlloc = Storage::Global();
+				Allocator *pAlloc = Coast::Storage::Global();
 				if (usePoolStorage) {
 					// use different memory manager for each thread
 					pAlloc = MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes, 0);
@@ -348,7 +348,7 @@ Thread *ThreadPoolManager::DoGetThread(long i)
 	if ( i >= 0 && i < GetPoolSize() ) {
 		pThr = (Thread *)fThreadPool[i].AsIFAObject(0);
 	}
-	StatTrace(ThreadPoolManager.DoGetThread, "idx: " << i << " ThrdId: " << ( ( pThr != NULL ) ? pThr->GetId() : -1 ), Storage::Current() );
+	StatTrace(ThreadPoolManager.DoGetThread, "idx: " << i << " ThrdId: " << ( ( pThr != NULL ) ? pThr->GetId() : -1 ), Coast::Storage::Current() );
 	return pThr;
 }
 
@@ -398,7 +398,7 @@ void WorkerThread::DoReadyHook(ROAnything)
 {
 	if ( fRefreshAllocator ) {
 		// StatTrace memory can still be on current storage because its code will be inserted in a subscope
-		StatTrace(WorkerThread.DoReadyHook, "WorkerThread [" << GetName() << "] fAllocator->Refresh", Storage::Current());
+		StatTrace(WorkerThread.DoReadyHook, "WorkerThread [" << GetName() << "] fAllocator->Refresh", Coast::Storage::Current());
 		// reorganize allocator memory and hope that no more memory is allocated anymore
 		if ( fAllocator ) {
 			fAllocator->Refresh();
@@ -408,8 +408,8 @@ void WorkerThread::DoReadyHook(ROAnything)
 
 //---- WorkerPoolManager ------------------------------------------------
 WorkerPoolManager::WorkerPoolManager(const char *name)
-	: fMutex( name, Storage::Global() )
-	, fName( name, Storage::Global() )
+	: fMutex( name, Coast::Storage::Global() )
+	, fName( name, Coast::Storage::Global() )
 	, fPoolSize(0)
 	, fBlockRequestHandling(false)
 	, fpStatEvtHandler()
@@ -522,7 +522,7 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 			// use different memory manager for each thread
 			wt->Start(MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes), roaWorkerArgs);
 		} else {
-			wt->Start(Storage::Global(), roaWorkerArgs);
+			wt->Start(Coast::Storage::Global(), roaWorkerArgs);
 		}
 		Trace("Start done");
 		wt->CheckState(Thread::eRunning);
@@ -571,7 +571,7 @@ long WorkerPoolManager::ResourcesUsed()
 void WorkerPoolManager::BlockRequests()
 {
 	// accessor to current active requests
-	StatTrace(WorkerPoolManager.BlockRequests, "Blocking requests", Storage::Current());
+	StatTrace(WorkerPoolManager.BlockRequests, "Blocking requests", Coast::Storage::Current());
 	{
 		LockUnlockEntry me(fMutex);
 		fBlockRequestHandling = true;
@@ -582,7 +582,7 @@ void WorkerPoolManager::BlockRequests()
 void WorkerPoolManager::UnblockRequests()
 {
 	// accessor to current active requests
-	StatTrace(WorkerPoolManager.UnblockRequests, "Unblocking requests", Storage::Current());
+	StatTrace(WorkerPoolManager.UnblockRequests, "Unblocking requests", Coast::Storage::Current());
 	{
 		LockUnlockEntry me(fMutex);
 		fBlockRequestHandling = false;
@@ -650,7 +650,7 @@ WorkerThread *WorkerPoolManager::FindNextRunnable(long lFindWorkerHint)
 	}
 	while ( ( hs = DoGetWorker( lFindWorkerHint ) ) ) {
 		if ( hs->IsReady( bIsReady ) && bIsReady ) {
-			StatTrace( WorkerPoolManager.FindNextRunnable, "ready worker[" << lFindWorkerHint << "] found", Storage::Current() );
+			StatTrace( WorkerPoolManager.FindNextRunnable, "ready worker[" << lFindWorkerHint << "] found", Coast::Storage::Current() );
 			break;
 		}
 		++lFindWorkerHint;

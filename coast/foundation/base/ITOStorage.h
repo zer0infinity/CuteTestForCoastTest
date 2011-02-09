@@ -119,7 +119,7 @@ protected:
 	const char *fScope;
 };
 
-#define StartTraceMem(scope) MemChecker rekcehc(_QUOTE_(scope), Storage::Current())
+#define StartTraceMem(scope) MemChecker rekcehc(_QUOTE_(scope), Coast::Storage::Current())
 #define TraceMemDelta(message) rekcehc.TraceDelta(message)
 
 #define StartTraceMem1(scope, allocator) MemChecker rekcehc1(_QUOTE_(scope), allocator)
@@ -291,81 +291,53 @@ private:
 	StorageHooks *fpOldHook;
 };
 
-//! a wrapper for memory allocations and deallocations that allows to dispatch memory management to allocator policies
-//!a wrapper for basic memory management functions. This allows dispatching of memory management to specialized allocator objects.
-class Storage
-{
-public:
-	//!initalize memory management depending on memory management strategy set
-	static void Initialize();
+namespace Coast {
+	namespace Storage {
+		//!initalize memory management depending on memory management strategy set
+		void Initialize();
 
-	//!cleanup memory management
-	static void Finalize();
+		//!cleanup memory management
+		void Finalize();
 
-	//!prints memory management statistics
-	static void PrintStatistic(long lLevel = -1);
+		//!prints memory management statistics
+		void PrintStatistic(long lLevel = -1);
 
-	/*! allocate a memory tracker object
-		\param name name of the tracker
-		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-		\return poniter to a newly created MemTracker object */
-	static MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
+		/*! allocate a memory tracker object
+			\param name name of the tracker
+			\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+			\return poniter to a newly created MemTracker object */
+		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
 
-	//! get the global allocator
-	static Allocator *Global();
+		//! get the global allocator
+		Allocator *Global();
 
-	//! get currently used allocator (thread specific)
-	static Allocator *Current();
+		//! get currently used allocator (thread specific)
+		Allocator *Current();
 
-	/*! get statistic level which was initialized by getting value of COAST_TRACE_STORAGE environment variable
-		\return logging level, see description of fglStatisticLevel */
-	static long GetStatisticLevel() {
-		return fglStatisticLevel;
-	}
+		/*! get statistic level which was initialized by getting value of COAST_TRACE_STORAGE environment variable
+			\return logging level, see description of fglStatisticLevel */
+		long GetStatisticLevel();
 
-protected:
-	// somewhat silly the need to declare all storage hook derivations as friend
-	friend class MT_Storage;
-	friend class MTStorageHooks;
-	friend class TestStorageHooks;
-	friend class Server;	// needs ForceGlobalStorage() for re-initialization
-	friend class BatchServer;
+		//! used by mt system to redefine the hooks for mt-local storage policy
+		StorageHooks *SetHooks(StorageHooks *h);
 
-	//! used by mt system to redefine the hooks for mt-local storage policy
-	static StorageHooks *SetHooks(StorageHooks *h);
+		//!temporarily disable thread local storage policies e.g. to reinitialize server
+		void ForceGlobalStorage(bool b);
 
-	//!temporarily disable thread local storage policies e.g. to reinitialize server
-	static void ForceGlobalStorage(bool b) {
-		fgForceGlobal = b;
-	}
+		//!access the global allocator
+		Allocator *DoGlobal();
 
-	//!access the global allocator
-	static Allocator *DoGlobal();
+		//!do nothing; print statistics
+		void DoInitialize();
 
-	//!do nothing; print statistics
-	static void DoInitialize();
+		//!do nothing; print statistics
+		void DoFinalize();
 
-	//!do nothing; print statistics
-	static void DoFinalize();
-	//!factory method to allocate MemTracker
-	static MemTracker *DoMakeMemTracker(const char *name);
+		//!factory method to allocate MemTracker
+		MemTracker *DoMakeMemTracker(const char *name);
+	} // namespace Storage
+} // namespace Coast
 
-	//!exchange this object when MT_Storage is used
-	static StorageHooks *fgHooks;
-
-	//!flag to force global store temporarily
-	static bool fgForceGlobal;
-
-	/*! define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
-		0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
-		1: Trace overall statistics
-		2: + trace detailed statistics
-		3: + keep track of allocated blocks to trace them in case they were not freed */
-	static long fglStatisticLevel;
-
-	//! the global allocator
-	static Allocator *fgGlobalPool;
-};
 
 class TestStorageHooks : public StorageHooks
 {

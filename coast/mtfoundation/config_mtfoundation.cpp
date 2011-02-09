@@ -46,7 +46,7 @@ namespace {
 
 DWORD fgThreadPtrKey;
 Anything fgThreads;
-SimpleMutex fgThreadsMutex("fgThreadsMutex", Storage::Global());
+SimpleMutex fgThreadsMutex("fgThreadsMutex", Coast::Storage::Global());
 
 void TerminateKilledThreads()
 {

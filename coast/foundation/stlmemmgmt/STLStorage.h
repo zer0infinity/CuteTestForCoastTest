@@ -107,7 +107,7 @@ namespace STLStorage
 		/* constructors and destructor
 		* - initialize fAllocator to requested storage
 		*/
-		STLAllocator(Allocator *pAlloc = Storage::Current()) throw(fAllocatorNotInitialized)
+		STLAllocator(Allocator *pAlloc = Coast::Storage::Current()) throw(fAllocatorNotInitialized)
 			: fAllocator(pAlloc) {
 			_StartTrace(STLAllocator.STLAllocator);
 			if ( !fAllocator ) {
@@ -145,7 +145,7 @@ namespace STLStorage
 		size_type max_size () const throw() {
 			//XXX in case of PoolAllocators, we could determine the max number somewhow
 			size_type tSz = std::numeric_limits<std::size_t>::max() / sizeof(T);
-			_StatTrace(STLAllocator.max_size, "maximal size:" << (long)tSz, Storage::Current());
+			_StatTrace(STLAllocator.max_size, "maximal size:" << (long)tSz, Coast::Storage::Current());
 			return tSz;
 		}
 
@@ -233,12 +233,12 @@ namespace STLStorage
 	{
 	public:
 		RefCountedWithFinalDestroy() {
-			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "default sizeof(P):" << (long)sizeof(P), Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "default sizeof(P):" << (long)sizeof(P), Coast::Storage::Current());
 		}
 
 		template <class U>
 		RefCountedWithFinalDestroy(const RefCountedWithFinalDestroy<U>&) {
-			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "copy other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U), Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "copy other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U), Coast::Storage::Current());
 		}
 
 		template <class U>
@@ -252,7 +252,7 @@ namespace STLStorage
 		}
 
 		static P Clone(const P &val) {
-			_StatTrace(RefCountedWithFinalDestroy.Clone, "@" << (long)val, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Clone, "@" << (long)val, Coast::Storage::Current());
 			if (val != 0) {
 				val->AddRef();
 			}
@@ -260,7 +260,7 @@ namespace STLStorage
 		}
 
 		static bool Release(const P &val) {
-			_StatTrace(RefCountedWithFinalDestroy.Release, "@" << (long)val, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Release, "@" << (long)val, Coast::Storage::Current());
 			if (val != 0) {
 				return val->Release();
 			}
@@ -271,7 +271,7 @@ namespace STLStorage
 
 		//! nothing to swap because fRefcount is intrusively managed by pointee
 		void Swap(RefCountedWithFinalDestroy &rhs) {
-			_StatTrace(RefCountedWithFinalDestroy.Swap, "@" << (long)this << " <> " << (long)&rhs, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Swap, "@" << (long)this << " <> " << (long)&rhs, Coast::Storage::Current());
 		}
 	};
 
@@ -296,22 +296,22 @@ namespace STLStorage
 		typedef SPT &ReferenceType;   /// type returned by operator*
 
 		WDAllocatorStorage() : pointee_(Default()) {
-			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "default ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "default ctor", Coast::Storage::Current());
 		}
 
 		// The storage policy doesn't initialize the stored pointer
 		//     which will be initialized by the OwnershipPolicy's Clone fn
 		WDAllocatorStorage(const WDAllocatorStorage &) : pointee_(0) {
-			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "copy ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "copy ctor", Coast::Storage::Current());
 		}
 
 		template <class U>
 		WDAllocatorStorage(const WDAllocatorStorage<U>&) : pointee_(0) {
-			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "other type copy ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "other type copy ctor", Coast::Storage::Current());
 		}
 
 		WDAllocatorStorage(const StoredType &p) : pointee_(p) {
-			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "pointer ctor pointee:" << (long)p, Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "pointer ctor pointee:" << (long)p, Coast::Storage::Current());
 		}
 
 		PointerType operator->() const {
@@ -419,7 +419,7 @@ namespace STLStorage
 			, fNextSz(nnext_size)
 			, fpPool(0)
 			, fOtherPools() {
-			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Coast::Storage::Current());
 			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
 			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
 		}
@@ -486,12 +486,12 @@ namespace STLStorage
 
 		void AddRef() {
 			++fRefcount;
-			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Coast::Storage::Current());
 		}
 
 		bool Release() {
 			--fRefcount;
-			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Coast::Storage::Current());
 			return ( fRefcount <= 0 );
 		}
 

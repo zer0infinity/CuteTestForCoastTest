@@ -158,7 +158,7 @@ void ConnectorDAImplTest::setUp() {
 	StartTrace(ConnectorDAImplTest.setUp);
 	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
 	fCallBack = new EchoMsgCallBack();
-	fAcceptorThread = new (Storage::Global()) AcceptorThread(new Acceptor(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong(), 2, fCallBack));
+	fAcceptorThread = new (Coast::Storage::Global()) AcceptorThread(new Acceptor(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong(), 2, fCallBack));
 	t_assert(fCallBack != 0);
 	t_assert(fAcceptorThread != 0);
 	if ((fCallBack) && (fAcceptorThread)) {

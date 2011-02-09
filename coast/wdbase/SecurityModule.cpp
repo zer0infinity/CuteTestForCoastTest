@@ -165,10 +165,10 @@ String SecurityItem::GenerateRandomString(long length)
 }
 
 //----
-String	SecurityModule::fgScrambler(Storage::Global());
-String	SecurityModule::fgEncoder(Storage::Global());
-String	SecurityModule::fgSigner(Storage::Global());
-String	SecurityModule::fgCompressor(Storage::Global());
+String	SecurityModule::fgScrambler(Coast::Storage::Global());
+String	SecurityModule::fgEncoder(Coast::Storage::Global());
+String	SecurityModule::fgSigner(Coast::Storage::Global());
+String	SecurityModule::fgCompressor(Coast::Storage::Global());
 
 SecurityModule::SecurityModule(const char *name) : WDModule(name)
 {

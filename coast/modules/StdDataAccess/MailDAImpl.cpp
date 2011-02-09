@@ -343,7 +343,7 @@ bool MailSTARTState::ProduceMsg(Anything &context, std::ostream &os)
 	os << context["Helo"].AsCharPtr(DEF_UNKNOWN);
 	os << CRLF; //!@FIXME should test whether this always works
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailSTARTState " << context["Helo"].AsCharPtr(DEF_UNKNOWN), Storage::Current());
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailSTARTState " << context["Helo"].AsCharPtr(DEF_UNKNOWN), Coast::Storage::Current());
 	return (os.good() != 0);
 }
 
@@ -370,7 +370,7 @@ bool MailFROMState::ProduceMsg(Anything &context, std::ostream &os)
 	}
 
 	os << CRLF; //!@FIXME should test whether this always works
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailFROMState " << context["From"].AsCharPtr("?"), Storage::Current());
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailFROMState " << context["From"].AsCharPtr("?"), Coast::Storage::Current());
 	return (os.good() != 0);
 }
 
@@ -419,7 +419,7 @@ bool MailRCPTState::ProduceMsg(Anything &context, std::ostream &os)
 
 	os << CRLF; //!@FIXME check whether this work always
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailRCPTState " << context["To"].AsCharPtr("?"), Storage::Current());
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailRCPTState " << context["To"].AsCharPtr("?"), Coast::Storage::Current());
 	return (!!os);
 }
 
@@ -436,7 +436,7 @@ bool MailDATAState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "DATA";
 	os << CRLF;
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailDATAState", Storage::Current());
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailDATAState", Coast::Storage::Current());
 	return (!!os);
 }
 
@@ -469,7 +469,7 @@ bool MailSENDState::ProduceMsg(Anything &context, std::ostream &os)
 		os << CRLF;
 		os << '.';
 		os << CRLF;
-		StatTrace(MailDAImpl.ProduceMsg, "Produce MailSENDState " << context["Message"].AsCharPtr(""), Storage::Current());
+		StatTrace(MailDAImpl.ProduceMsg, "Produce MailSENDState " << context["Message"].AsCharPtr(""), Coast::Storage::Current());
 	}
 	return (!!os);
 }
@@ -527,7 +527,7 @@ bool MailERRORState::ProduceMsg(Anything &context, std::ostream &os)
 	os << "QUIT";
 	os << CRLF;
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailERRORState", Storage::Current());
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailERRORState", Coast::Storage::Current());
 	return (!!os);
 }
 

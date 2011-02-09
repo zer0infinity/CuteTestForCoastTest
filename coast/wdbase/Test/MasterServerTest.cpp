@@ -24,6 +24,7 @@
 
 #define TESTHOST "localhost"
 
+
 //---- MasterServerTest ----------------------------------------------------------------
 MasterServerTest::MasterServerTest(TString tname)
 	: TestCaseType(tname)

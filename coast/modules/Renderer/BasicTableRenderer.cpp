@@ -353,7 +353,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 
 	(*rowSize) = rowMeta.GetSize();
 
-	Allocator *wdallocator = Storage::Global();
+	Allocator *wdallocator = Coast::Storage::Global();
 	RowAccessor *accessors = new (wdallocator) RowAccessor[(*rowSize)];
 
 	for (long i = 0; i < (*rowSize); ++i) {

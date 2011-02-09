@@ -147,7 +147,7 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 				}
 				AppLogChannel *pChannel = NULL, *pCloneChannel = AppLogChannel::FindAppLogChannel(channel["ChannelClass"].AsString("AppLogChannel"));
 				if ( pCloneChannel ) {
-					pChannel = SafeCast(pCloneChannel->Clone(Storage::Global()), AppLogChannel);
+					pChannel = SafeCast(pCloneChannel->Clone(Coast::Storage::Global()), AppLogChannel);
 					if ( pChannel ) {
 						pChannel->InitClone(strChannelName, channel);
 					}
@@ -226,7 +226,7 @@ bool AppLogModule::DoRotateLogs()
 
 bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond,  const char *everyNSecondsTime, long lEveryNSeconds, bool isGmTime)
 {
-	fRotator = new (Storage::Global()) LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
+	fRotator = new (Coast::Storage::Global()) LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
 	if (fRotator) {
 		return fRotator->Start();
 	}
@@ -383,16 +383,16 @@ RegCacheImpl(AppLogChannel);
 AppLogChannel::AppLogChannel(const char *name)
 	: RegisterableObject(name)
 	, fLogStream(NULL)
-	, fChannelInfo( Storage::Global() )
+	, fChannelInfo( Coast::Storage::Global() )
 	, fSuppressEmptyLines(false)
 	, fRendering(true)
 	, fLogMsgSizeHint(128L)
 	, fDoNotRotate(false)
 	, fNoLogItemsWrite(false)
-	, fFormat( Storage::Global() )
-	, fChannelMutex(name, Storage::Global())
+	, fFormat( Coast::Storage::Global() )
+	, fChannelMutex(name, Coast::Storage::Global())
 	, fBufferItems(0L)
-	, fBuffer( Storage::Global() )
+	, fBuffer( Coast::Storage::Global() )
 	, fItemsWritten(0L)
 	, fSeverity(AppLogModule::eINFO)
 {

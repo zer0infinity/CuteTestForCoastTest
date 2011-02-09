@@ -286,7 +286,7 @@ static String ReadStream(std::istream &is)
 {
 	StartTrace(ZipStreamTest.ReadStream);
 
-	String ret(Storage::Global());
+	String ret(Coast::Storage::Global());
 
 	while (is.good() && !is.eof()) {
 		char buff[4096];

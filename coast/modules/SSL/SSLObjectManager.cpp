@@ -43,8 +43,8 @@ SSLObjectManager::SSLObjectManager(const char *name)
 	: WDModule(name)
 	, fSSLCtxStoreMutex("SSLCtxStoreMutex")
 	, fSSLSessionIdStoreMutex("SSLSessionIdStoreMutex")
-	, fSSLCtxStore(Anything::ArrayMarker(), Storage::Global())
-	, fSSLSessionIdStore(Anything::ArrayMarker(), Storage::Global())
+	, fSSLCtxStore(Anything::ArrayMarker(), Coast::Storage::Global())
+	, fSSLSessionIdStore(Anything::ArrayMarker(), Coast::Storage::Global())
 {
 	StartTrace1(SSLObjectManager.SSLObjectManager, "Name:<" << NotNull(name) << ">");
 	SystemLog::Info("SSLObjectManager: <unblocked>");

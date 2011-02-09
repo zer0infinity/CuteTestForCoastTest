@@ -137,7 +137,7 @@ void ConnectorAcceptorTest::setUp() {
 	long lPort = GetTestCaseConfig()["Port"].AsLong();
 
 	fCallBack = new EBCDICEchoMsgCallBack();
-	fAcceptorThread = new (Storage::Global()) AcceptorThread(new Acceptor(strHost, lPort, 2, fCallBack));
+	fAcceptorThread = new (Coast::Storage::Global()) AcceptorThread(new Acceptor(strHost, lPort, 2, fCallBack));
 	t_assert(fCallBack != 0);
 	t_assert(fAcceptorThread != 0);
 	if ((fCallBack) && (fAcceptorThread)) {

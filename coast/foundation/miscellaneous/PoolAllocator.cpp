@@ -203,7 +203,7 @@ MemTracker *ExcessTrackerElt::operator[](u_long ulPayloadSize)
 		char buf[80] = { 0 };
 		snprintf(buf, sizeof(buf), "PoolExcessTracker[%lu]", ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
-		pTracker = Storage::MakeMemTracker(buf, false);
+		pTracker = Coast::Storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
 	}
 	return pTracker;
@@ -244,8 +244,8 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 	, fpPoolTotalExcessTracker(NULL)
 	, fpExcessTrackerList(NULL)
 {
-	StatTrace(PoolAllocator.PoolAllocator, "initializing PoolAllocator with id:" << poolid, Storage::Current());
-	switch ( Storage::GetStatisticLevel() ) {
+	StatTrace(PoolAllocator.PoolAllocator, "initializing PoolAllocator with id:" << poolid, Coast::Storage::Current());
+	switch ( Coast::Storage::GetStatisticLevel() ) {
 			// dummy entry, just in case the level gets extended
 		case 4:
 			// enable tracking of non-freed blocks
@@ -256,8 +256,8 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 
 			// overall statistics requested
 		case 1:
-			fpPoolTotalTracker = Storage::MakeMemTracker("PoolTotal", false);
-			fpPoolTotalExcessTracker = Storage::MakeMemTracker("ExcessTotal", false);
+			fpPoolTotalTracker = Coast::Storage::MakeMemTracker("PoolTotal", false);
+			fpPoolTotalExcessTracker = Coast::Storage::MakeMemTracker("ExcessTotal", false);
 			fpPoolTotalTracker->SetId(poolid);
 			fpPoolTotalExcessTracker->SetId(poolid);
 
@@ -284,7 +284,7 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 
 long PoolAllocator::SetId(long lId)
 {
-	StatTrace(PoolAllocator.SetId, "setting id from fAllocatorId:" << fAllocatorId << " to:" << lId, Storage::Current());
+	StatTrace(PoolAllocator.SetId, "setting id from fAllocatorId:" << fAllocatorId << " to:" << lId, Coast::Storage::Current());
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker ) {
@@ -313,10 +313,10 @@ void PoolAllocator::Initialize()
 		fPoolBuckets[i].fUsableSize = sz;
 		fPoolBuckets[i].fFirstFree = NULL;
 		// only create new trackers once
-		if ( fPoolBuckets[i].fpBucketTracker == NULL && Storage::GetStatisticLevel() >= 2 ) {
+		if ( fPoolBuckets[i].fpBucketTracker == NULL && Coast::Storage::GetStatisticLevel() >= 2 ) {
 			char buf[80] = { 0 };
 			snprintf(buf, sizeof(buf), "PoolBucketTracker[%ld]", sz);
-			fPoolBuckets[i].fpBucketTracker = Storage::MakeMemTracker(buf, false);
+			fPoolBuckets[i].fpBucketTracker = Coast::Storage::MakeMemTracker(buf, false);
 			fPoolBuckets[i].fpBucketTracker->SetId(fAllocatorId);
 		}
 		sz <<= 1;
@@ -327,9 +327,9 @@ void PoolAllocator::Initialize()
 
 PoolAllocator::~PoolAllocator()
 {
-	String strUsedPoolSize("Pool usage: ", Storage::Global()), strUnusedBucketSizes("Unused bucket sizes: [", Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Storage::Global());
+	String strUsedPoolSize("Pool usage: ", Coast::Storage::Global()), strUnusedBucketSizes("Unused bucket sizes: [", Coast::Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Coast::Storage::Global());
 	long lNumUsed = 0, lNumUnused = 0, lMaxUsedBucket = 0, lMaxExcessBit = 0;
-	long lStatisticLevel = Storage::GetStatisticLevel();
+	long lStatisticLevel = Coast::Storage::GetStatisticLevel();
 	bool bFirst = true;
 	// override user settings if excess memory was used
 	if ( fpPoolTotalExcessTracker && fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
@@ -370,7 +370,7 @@ PoolAllocator::~PoolAllocator()
 		delete fpExcessTrackerList;
 		fpExcessTrackerList = NULL;
 	}
-	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " ExcessTrackerList deleted", Storage::Global());
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " ExcessTrackerList deleted", Coast::Storage::Global());
 	if ( lStatisticLevel >= 1 ) {
 		// totals
 		if ( fpPoolTotalTracker && fpPoolTotalTracker->PeakAllocated() > 0 ) {
@@ -392,10 +392,10 @@ PoolAllocator::~PoolAllocator()
 		fpPoolTotalExcessTracker = NULL;
 	}
 
-	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " PoolTotalTrackers deleted", Storage::Global());
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " PoolTotalTrackers deleted", Coast::Storage::Global());
 
 	if ( lStatisticLevel >= 1 ) {
-		SystemLog::WriteToStderr(String("\nAllocator [", Storage::Global()).Append(fAllocatorId).Append("]\n"));
+		SystemLog::WriteToStderr(String("\nAllocator [", Coast::Storage::Global()).Append(fAllocatorId).Append("]\n"));
 		SystemLog::WriteToStderr(strUsedPoolSize.Append("\n"));
 		if ( lNumUsed > 0  ) {
 			strUsedBucketSizes.Append("]");
@@ -410,11 +410,11 @@ PoolAllocator::~PoolAllocator()
 			SystemLog::WriteToStderr(strUnusedBucketSizes);
 		}
 	}
-	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Storage::Global());
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Coast::Storage::Global());
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		delete (fPoolBuckets[i].fpBucketTracker);
 	}
-	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Storage::Global());
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Coast::Storage::Global());
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
 }
@@ -497,11 +497,11 @@ size_t PoolAllocator::Free(void *vp)
 		} else  {
 			// something wrong happened, double free
 			SystemLog::Error("wrong header status, double free?");
-			String strBuf(Storage::Global());
+			String strBuf(Coast::Storage::Global());
 			strBuf << "MemoryHeader [";
 			{
 				const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
-				String strContent((void *)header, alignedSize, Storage::Global());
+				String strContent((void *)header, alignedSize, Coast::Storage::Global());
 				OStringStream stream(strBuf);
 				strContent.DumpAsHex(stream, alignedSize);
 			}
@@ -510,7 +510,7 @@ size_t PoolAllocator::Free(void *vp)
 			strBuf.Trim(0L);
 			strBuf << "Buffer, Size:" << (l_long)header->fUsableSize << " [";
 			{
-				String strContent((void *)ExtMemStart(header), header->fUsableSize, Storage::Global());
+				String strContent((void *)ExtMemStart(header), header->fUsableSize, Coast::Storage::Global());
 				OStringStream stream(strBuf);
 				strContent.DumpAsHex(stream, 16L);
 			}
@@ -680,7 +680,7 @@ PoolBucket *PoolAllocator::FindBucketBySize( u_long allocSize)
 
 void PoolAllocator::PrintStatistic(long lLevel)
 {
-	long lStatisticLevel = ( ( lLevel >= 0 ) ? lLevel : Storage::GetStatisticLevel() );
+	long lStatisticLevel = ( ( lLevel >= 0 ) ? lLevel : Coast::Storage::GetStatisticLevel() );
 	// override user setting if excess memory was used
 	if ( fpPoolTotalExcessTracker && fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
 		lStatisticLevel = 2;

@@ -285,7 +285,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				fStderr = new Pipe(fTimeout);
 			}
 
-			Allocator *alloc = Storage::Current();
+			Allocator *alloc = Coast::Storage::Current();
 			TraceAny(env, "env");
 			CgiEnv cgiEnv(env, alloc);
 			TraceAny(parm, "parm");

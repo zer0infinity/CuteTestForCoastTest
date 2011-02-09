@@ -42,10 +42,10 @@ namespace {
 	#endif
 
 	//!contains the root directory path that is used to locate files, it can be relative or absolute
-	String fgRootDir(0L, Storage::Global());
+	String fgRootDir(0L, Coast::Storage::Global());
 
 	//!contains a search path list that is ':' delimited, it is used to search for files
-	String fgPathList(0L, Storage::Global());
+	String fgPathList(0L, Coast::Storage::Global());
 
 	class PathInitializer : public InitFinisManagerFoundation
 	{
@@ -646,7 +646,7 @@ namespace Coast {
 				logMsg << rPath << ">";
 				SystemLog::Info(logMsg);
 
-				fgRootDir.SetAllocator(Storage::Global());
+				fgRootDir.SetAllocator(Coast::Storage::Global());
 				fgRootDir = rPath;
 			}
 		}
@@ -662,7 +662,7 @@ namespace Coast {
 				logMsg << pathlist << ">";
 				SystemLog::Info(logMsg);
 
-				fgPathList.SetAllocator(Storage::Global());
+				fgPathList.SetAllocator(Coast::Storage::Global());
 				fgPathList = pathlist;
 			}
 		}

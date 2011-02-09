@@ -155,11 +155,11 @@ protected:
 
 //!creates static variable of type RegisterableObjectInstaller
 #define RegisterObject(name, category) \
-	static RegisterableObjectInstaller _NAME3_(name,category,Registerer) (_QUOTE_(name), _QUOTE_(category), new (Storage::Global()) name(_QUOTE_(name)))
+	static RegisterableObjectInstaller _NAME3_(name,category,Registerer) (_QUOTE_(name), _QUOTE_(category), new (Coast::Storage::Global()) name(_QUOTE_(name)))
 
 //!creates static variable of type RegisterableObjectInstaller with a short name
 #define RegisterShortName(sname, name, instname) \
-	static RegisterableObjectInstaller _NAME3_(sname,instname,Registerer) (_QUOTE_(sname), _QUOTE_(instname), new (Storage::Global()) name(_QUOTE_(sname)))
+	static RegisterableObjectInstaller _NAME3_(sname,instname,Registerer) (_QUOTE_(sname), _QUOTE_(instname), new (Coast::Storage::Global()) name(_QUOTE_(sname)))
 
 //!creates definition for a Find method for category
 #define RegCacheDef(category) 										\
@@ -175,7 +175,7 @@ protected:
 		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
-		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Storage::Current());\
+		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Coast::Storage::Current());\
 		return catMember;																		\
 	}
 
@@ -188,7 +188,7 @@ protected:
 		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
-		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Storage::Current());\
+		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Coast::Storage::Current());\
 		return catMember;																		\
 	}
 

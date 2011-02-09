@@ -78,7 +78,7 @@ RegisterableObject *Registry::Find(const char *name)
 
 void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *o)
 {
-	StatTrace(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]", Storage::Current());
+	StatTrace(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]", Coast::Storage::Current());
 	Assert(name && o);
 	// make it robust
 	if ( name && o ) {
@@ -117,7 +117,7 @@ void Registry::RemoveAliases(RegisterableObject *obj)
 Anything &Registry::GetTable()
 {
 	if ( !fTable && !fgFinalize ) {
-		fTable = new Anything(Anything::ArrayMarker(),Storage::Global());
+		fTable = new Anything(Anything::ArrayMarker(),Coast::Storage::Global());
 	}
 	static Anything fake; // just to let the compiler be happy
 	if ( fgFinalize || !fTable ) {
@@ -131,7 +131,7 @@ Anything &Registry::GetTable()
 
 Registry *Registry::GetRegistry(const char *category)
 {
-	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Storage::Current());
+	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
 	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
 	if ( !r && !fgFinalize ) {
 		r = MakeRegistry(category);
@@ -141,13 +141,13 @@ Registry *Registry::GetRegistry(const char *category)
 
 Registry *Registry::MakeRegistry(const char *category)
 {
-	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Storage::Current());
+	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
 	String msg("Creating Registry for: <");
 	msg.Append(NotNull(category)).Append('>');
 	SystemLog::Info(msg);
 
-	Registry *r = new (Storage::Global()) Registry(category);
-	GetRegTable()[category] = Anything(r, Storage::Global()); // r stored as pointer to IFAObject (AB)
+	Registry *r = new (Coast::Storage::Global()) Registry(category);
+	GetRegTable()[category] = Anything(r, Coast::Storage::Global()); // r stored as pointer to IFAObject (AB)
 	return r;
 }
 
@@ -199,7 +199,7 @@ Anything &Registry::GetRegTable()
 	// during installation phase, which causes it to fail
 	static Anything fake; // just to let the compiler be happy
 	if ( !fgRegistryArray && !fgFinalize ) {
-		fgRegistryArray = new Anything(Anything::ArrayMarker(),Storage::Global()); // this is the registry of Registry s
+		fgRegistryArray = new Anything(Anything::ArrayMarker(),Coast::Storage::Global()); // this is the registry of Registry s
 	}
 	if ( fgFinalize || !fgRegistryArray ) {
 		return fake;

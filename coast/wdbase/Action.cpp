@@ -134,7 +134,7 @@ PreprocessAction::PreprocessAction(const char *name)
 
 bool PreprocessAction::DoAction(String &action, Context &c)
 {
-	StatTrace(PreprocessAction.DoAction, "<" << action << ">", Storage::Current());
+	StatTrace(PreprocessAction.DoAction, "<" << action << ">", Coast::Storage::Current());
 	Page *s( c.GetPage() );
 	if ( s ) {
 		s->Preprocess(c);

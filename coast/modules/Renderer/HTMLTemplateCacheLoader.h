@@ -111,7 +111,7 @@ private:
 class HTMLTemplateNameMapLoader : public CacheLoadPolicy
 {
 public:
-	HTMLTemplateNameMapLoader(const Anything &nameMap) : fNameMap(nameMap, Storage::Global())  { }
+	HTMLTemplateNameMapLoader(const Anything &nameMap) : fNameMap(nameMap, Coast::Storage::Global())  { }
 	virtual ~HTMLTemplateNameMapLoader() { }
 	virtual Anything Load(const char *)	{
 		return fNameMap;

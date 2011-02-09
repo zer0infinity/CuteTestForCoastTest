@@ -30,10 +30,10 @@ RegisterModule(LDAPConnectionManager);
 //---- LDAPConnectionManager ----------------------------------------------------------------
 LDAPConnectionManager::LDAPConnectionManager(const char *name)
 	: WDModule(name)
-	, fLdapConnectionStoreMutex("LdapConnectionStoreMutex", Storage::Global())
-	, fFreeListMutex("FreeListMutex", Storage::Global())
-	, fLdapConnectionStore(Storage::Global())
-	, fFreeList(Storage::Global())
+	, fLdapConnectionStoreMutex("LdapConnectionStoreMutex", Coast::Storage::Global())
+	, fFreeListMutex("FreeListMutex", Coast::Storage::Global())
+	, fLdapConnectionStore(Coast::Storage::Global())
+	, fFreeList(Coast::Storage::Global())
 	, fDefMaxConnections(0L)
 {
 	StartTrace1(LDAPConnectionManager.LDAPConnectionManager, "Name:<" << NotNull(name) << ">");
@@ -238,7 +238,7 @@ long LDAPConnectionManager::GetAndLockSlot(long maxConnections, const String &po
 				String name;
 				name << "Mutex_" << poolId << "_Index_" << l;
 				// We are the first ones and must create the mutex on the heap
-				mutex = new Mutex(name, Storage::Global());
+				mutex = new Mutex(name, Coast::Storage::Global());
 				if ( mutex != ( Mutex *) NULL ) {
 					fLdapConnectionStore[poolId]["Mutexes"][l] = (IFAObject *) mutex;
 					TRACE_LOCK_START("GetAndLockSlot");
@@ -403,7 +403,7 @@ bool LDAPConnectionManager::Finis()
 				}
 			}
 		}
-		fLdapConnectionStore = Anything(Storage::Global());
+		fLdapConnectionStore = Anything(Coast::Storage::Global());
 	}
 	THRKEYDELETE(LDAPConnectionManager::fgErrnoKey);
 	return ret;
@@ -414,7 +414,7 @@ void LDAPConnectionManager::EmptyLdapConnectionStore()
 	StartTrace(LDAPConnectionManager.EmptyLdapConnectionStore);
 	LockUnlockEntry me(fLdapConnectionStoreMutex);
 	{
-		fLdapConnectionStore = Anything(Storage::Global());
+		fLdapConnectionStore = Anything(Coast::Storage::Global());
 	}
 }
 
