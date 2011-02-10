@@ -214,7 +214,7 @@ public:
 				LockUnlockEntry me(fQueueLock);
 				// must pass a DeepClone because of reference counting
 				anyStatistics = fAnyStatistics.DeepClone(anyStatistics.GetAllocator());
-				// this Anything uses Storage::Current as default allocator so we must take care
+				// this Anything uses Coast::Storage::Current as default allocator so we must take care
 				// when we use a Thread specific PoolAllocator because the Pool access is not locked
 				Anything anyTime;
 				DateTime::GetTimeOfDay(anyTime);

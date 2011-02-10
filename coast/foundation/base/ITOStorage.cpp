@@ -502,7 +502,7 @@ TestStorageHooks::~TestStorageHooks()
 {
 	StorageHooks *pHook = Coast::Storage::SetHooks(NULL);
 	(void)pHook;
-	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
+	Assert( pHook == fpOldHook && "another Coast::Storage::SetHook() was called without restoring old Hook!");
 }
 
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)

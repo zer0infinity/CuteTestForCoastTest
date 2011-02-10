@@ -529,7 +529,7 @@ Socket *EndPoint::DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose)
 	clientInfo["HTTPS"] = false;
 	Allocator *a = GetSocketAllocator();
 
-	Trace("allocating with Storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << (long)a << "]");
+	Trace("allocating with Coast::Storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << (long)a << "]");
 	return new (a) Socket(socketfd, clientInfo, doClose, GetDefaultSocketTimeout(), a);
 }
 

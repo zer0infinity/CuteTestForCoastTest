@@ -583,7 +583,7 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqual(AnyQueueType::eFull, Q1.Put(anyTest2, true));
 			t_assert(Q1.GetSize() == 1L);
 
-			if ( Storage::GetStatisticLevel() >= 1 ) {
+			if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
 			}
 
@@ -600,7 +600,7 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqual(1L, anyOut["MaxLoad"].AsLong(0L));
 			TraceAny(anyOut, "statistics");
 		}
-		if ( Storage::GetStatisticLevel() >= 1 ) {
+		if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}
@@ -624,7 +624,7 @@ void QueueTest::QueueWithAllocatorTest()
 			Q1.Put(pEventWrapper2);
 			assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
 
-			if ( Storage::GetStatisticLevel() >= 1 ) {
+			if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
 			}
 
@@ -636,7 +636,7 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
 			delete pEventWrapperOut2;
 		}
-		if ( Storage::GetStatisticLevel() >= 1 ) {
+		if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}

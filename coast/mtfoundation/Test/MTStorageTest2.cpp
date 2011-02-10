@@ -128,7 +128,7 @@ void MTStorageTest2::twoThreadTest()
 	t1->CheckState(Thread::eTerminated);
 
 	// everything should have been allocated within pool!
-	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Coast::Storage::GetStatisticLevel() >= 1
 	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		assertComparem( fPool->CurrentlyAllocated(), greater, 0LL, "everything should have been allocated within pool XXX: changes when semantic of Thread::eStarted changes!");
 	}
@@ -152,7 +152,7 @@ void MTStorageTest2::twoThreadAssignmentTest()
 	// data should have been copied to global store now
 
 	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Coast::Storage::GetStatisticLevel() >= 1
 	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
 	}
@@ -174,7 +174,7 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 	// data should have been copied to global store now
 
 	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Coast::Storage::GetStatisticLevel() >= 1
 	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
 	}
@@ -199,7 +199,7 @@ void MTStorageTest2::twoThreadArrayAccessTest()
 		assertEqual( "ok", sub.AsCharPtr("") );
 
 		Anything copy(t1->GetData()["Sub"]["2"]);	// must be copied since allocators dont match
-		// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+		// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Coast::Storage::GetStatisticLevel() >= 1
 		if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 			assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
 		}
@@ -208,7 +208,7 @@ void MTStorageTest2::twoThreadArrayAccessTest()
 	}
 	// new we should be back where we started
 	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Coast::Storage::GetStatisticLevel() >= 1
 	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
 		assertCompare( fGlobal->CurrentlyAllocated(), equal_to, l);
 	}

@@ -519,7 +519,7 @@ protected:
 #include "ObserverIf.h"
 
 //---- Thread ------------------------------------------------------------
-//! thread abstraction implementing its own thread state model using EThreadState and the available nativ thread api
+//! thread abstraction implementing its own thread state model using EThreadState and the available native thread api
 /*!
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
@@ -531,7 +531,7 @@ public:
 	/*! possible thread states; there is an implicit ordering in these states<br> eThreadCreated < eStartRequested < eStarted < eRunning < eTerminationRequested < eTerminated. Only well defined transitions are possible
 		These states exist:<br>
 		<b>eCreated</b><br>thread exists; but Start has not yet been called<p>
-		<b>eStartRequested</b><br>Thread::Start has been called, thread is beeing initialized for start<p>
+		<b>eStartRequested</b><br>Thread::Start has been called, thread is being initialized for start<p>
 		<b>eStarted</b><br>Thread::Start has been called, thread was successfully initialized; the new thread of control is forked<p>
 		<b>eRunning</b><br>Thread::Run has been entered in its own thread of control<p>
 		<b>eTerminationRequested</b><br>thread is still in Thread::Run but somebody has termination signaled; thread will eventually terminate its own thread of control<p>
@@ -567,7 +567,7 @@ public:
 
 	/*! Constructor geared towards solaris thread api
 		\param name identify the thread with a more or less unique name, used for debugging etc
-		\param daemon sets the daomon flag
+		\param daemon sets the daemon flag
 		\param detached if set to true the thread is not joinable by other threads
 		\param suspended creates this thread in suspended mode
 		\param bound bounds this thread to a lwp

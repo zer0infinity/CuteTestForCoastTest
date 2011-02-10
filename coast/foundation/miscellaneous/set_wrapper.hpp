@@ -65,7 +65,7 @@ public:
 	LOKI_DEFINE_VISITABLE();
 
 	set_wrapper(const char *pName = "set_wrapper_lock") :
-		fpList(NULL), fLock(pName, Storage::Global()) {
+		fpList(NULL), fLock(pName, Coast::Storage::Global()) {
 	}
 	~set_wrapper() {
 		LockUnlockEntry aGuard( fLock );
@@ -260,19 +260,19 @@ public:
 protected:
 	bool IntHasList() const {
 		const Type *pList( fpList );
-		swStatTrace(set_wrapper.IntHasList, "ptr is:" << (long)pList, Storage::Current());
+		swStatTrace(set_wrapper.IntHasList, "ptr is:" << (long)pList, Coast::Storage::Current());
 		return ( pList != NULL );
 	}
 
 	Type *IntGetListPtr() {
 		Type *pList( fpList );
-		swStatTrace(set_wrapper.IntGetListPtr, "ptr is:" << (long)pList, Storage::Current());
+		swStatTrace(set_wrapper.IntGetListPtr, "ptr is:" << (long)pList, Coast::Storage::Current());
 		return pList;
 	}
 
 	const Type *IntGetConstListPtr() const {
 		const Type *pList( fpList );
-		swStatTrace(set_wrapper.IntGetConstListPtr, "ptr is:" << (long)pList, Storage::Current());
+		swStatTrace(set_wrapper.IntGetConstListPtr, "ptr is:" << (long)pList, Coast::Storage::Current());
 		return pList;
 	}
 
@@ -337,7 +337,7 @@ protected:
 
 	bool IntAddItem(const ItemType &aItem) {
 		InsertResultType aRetCode( IntGetCreateListPtr()->insert(aItem) );
-		swStatTrace(set_wrapper.IntAddItem, "Item [" << aItem.AsString() << "] was " << (aRetCode.second ? "" : "not " ) << "successful", Storage::Current());
+		swStatTrace(set_wrapper.IntAddItem, "Item [" << aItem.AsString() << "] was " << (aRetCode.second ? "" : "not " ) << "successful", Coast::Storage::Current());
 		// success means it was a new entry, otherwise there is already an item present
 		return aRetCode.second;
 	}

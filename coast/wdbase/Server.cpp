@@ -233,13 +233,13 @@ int Server::GlobalReinit()
 	// assume there are no threads running with pending requests
 	// reinitialization should take place in global storage
 	// otherwise config anys are allocated in thread local storage
-	Storage::ForceGlobalStorage(true);
+	Coast::Storage::ForceGlobalStorage(true);
 	{
 		// block cleaner thread since CheckTimeout of Session
 		// makes Lookup calls to shared configs
 		retCode = DoGlobalReinit();
 	}
-	Storage::ForceGlobalStorage(false);
+	Coast::Storage::ForceGlobalStorage(false);
 	ServersModule::SetServerForReInit(0);
 	if ( retCode == 0 ) {
 		retCode = UnblockRequests();

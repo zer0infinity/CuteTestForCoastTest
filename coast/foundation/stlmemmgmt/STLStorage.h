@@ -202,7 +202,7 @@ namespace STLStorage
 		return left.fAllocator != right.fAllocator;
 	}
 
-	// adaption of Storage::Global / Storage::Current for boost::poolXXX usage
+	// adaption of Coast::Storage::Global / Coast::Storage::Current for boost::poolXXX usage
 	struct BoostPoolUserAllocatorGlobal {
 		typedef std::size_t size_type;
 		typedef std::ptrdiff_t difference_type;
