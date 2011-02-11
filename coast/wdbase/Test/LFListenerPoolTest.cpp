@@ -73,11 +73,9 @@ void LFListenerPoolTest::NoReactorTest()
 {
 	StartTrace(LFListenerPoolTest.NoReactorTest);
 	LFListenerPool lfp(0);
-
 	Trace("ip:" << GetConfig()["Testhost"]["ip"].AsString() << " : port:" << GetConfig()["Testhost"]["port"].AsLong());
-	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig.Append(String("Accept") << GetConfig()["Testhost"]["port"].AsString());
 	if ( t_assertm( !lfp.Init(2, lfpConfig, true), "no reactor is configured; init should fail")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
