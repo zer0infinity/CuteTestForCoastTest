@@ -82,6 +82,7 @@
 	/ThreadPoolManager {
 		/MainSwitch	33
 		/EnableAll	34
+		/Update		-1
 	}
 	/ListenerPool {
 		/MainSwitch	33
@@ -316,7 +317,7 @@
 		/EnableAll	33
 	}
 	/LFListenerPoolTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/LFListenerPool {
@@ -333,7 +334,11 @@
 	}
 	/Acceptor {
 		/MainSwitch	33
-		/EnableAll	0
+		/EnableAll	33
+	}
+	/Connector {
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/Socket {
 		/MainSwitch	7000

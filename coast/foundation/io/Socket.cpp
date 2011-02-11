@@ -924,8 +924,8 @@ bool Acceptor::StopAcceptLoop(bool useConnect)
 	StartTrace(Acceptor.StopAcceptLoop);
 	CallBackLocker cbl( fCallBack );
 	cbl.Use();
+	Trace("fAlive: [" << fAlive << "] fStopped: [" << fStopped << "] useConnect: [" << useConnect << "]");
 	if (fAlive && !fStopped && useConnect) {
-		Trace("fAlive: [" << fAlive << "] fStopped: [" << fStopped << "] useConnect: [" << useConnect << "]");
 		fAlive = false;
 		const char *ipaddress = (fIPAddress.Length() > 0) ? (const char *)fIPAddress : GetLocalHost();
 

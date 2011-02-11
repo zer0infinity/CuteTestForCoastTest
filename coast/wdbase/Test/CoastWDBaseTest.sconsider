@@ -4,6 +4,14 @@ from stat import *
 
 Import('*')
 
+def setUp( target, source, env ):
+#    env['ENV']['COAST_TRACE_INITFINIS'] = '1'
+    env['ENV']['COAST_LOGONCERR'] = '3'
+    env['ENV']['COAST_USE_MMAP_STREAMS'] = '0'
+
+def tearDown( target, source, env ):
+    pass
+
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastWDBase', 'testfwWDBase'],
@@ -12,6 +20,10 @@ buildSettings = {
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [( SConsider.listFiles(['config/*.any', 'config/*.txt']), S_IRUSR | S_IRGRP | S_IROTH ),
                               ( SConsider.listFiles(['TestDir1', 'TestDir2'], recursive=True), S_IRUSR | S_IRGRP | S_IROTH )],
+        'runConfig'        : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+        },
     },
     'TestLib' : {
         'includeSubdir'    : 'TestLib',
