@@ -20,12 +20,12 @@
 	/Representation		String	optional, [*Full*|HostOnly|DomainOnly]
 }
 \endcode */
-class GetThisHostNameRenderer : public Renderer
-{
+class GetThisHostNameRenderer: public Renderer {
 public:
 	//--- constructors
-	GetThisHostNameRenderer(const char *name);
-	~GetThisHostNameRenderer();
+	GetThisHostNameRenderer(const char *name) :
+		Renderer(name) {
+	}
 
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };

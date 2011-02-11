@@ -9,21 +9,13 @@
 //--- interface include --------------------------------------------------------
 #include "GetThisHostNameRenderer.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "Dbg.h"
 #include "Resolver.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- GetThisHostNameRenderer ---------------------------------------------------------------
 RegisterRenderer(GetThisHostNameRenderer);
-
-GetThisHostNameRenderer::GetThisHostNameRenderer(const char *name) : Renderer(name) { }
-
-GetThisHostNameRenderer::~GetThisHostNameRenderer() { }
 
 void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
