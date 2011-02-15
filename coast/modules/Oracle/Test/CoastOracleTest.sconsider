@@ -8,8 +8,7 @@ Import('*')
 defaults = None
 
 def setUp(target, source, env):
-    targets = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
-    target = targets['target']
+    target = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
     if not target:
         raise SConsider.SkipTest('required sqlplus executable not found, skipping test')
 

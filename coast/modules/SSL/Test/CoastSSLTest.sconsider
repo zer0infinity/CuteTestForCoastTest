@@ -46,8 +46,7 @@ def startServer(host, port, server_class, handler_class, **kw):
 def prepareMkCaParams(env, commandargs, tdirabs, certdir):
     mkcaScriptName = os.path.join(tdirabs, 'mkca-new.sh')
     ## set writable cfgfilename
-    targets = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
-    target = targets['target']
+    target = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
     if not os.path.isfile(mkcaScriptName):
         return False
     commandargs.extend([mkcaScriptName])
@@ -87,8 +86,7 @@ def createCertificates(env):
         # get list of copied certificates
         certFileNodesList=SConsider.findFiles([certOutDir], ['.pem','.p12'])
         certDict=createCertDict(certFileNodesList)
-        targets = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
-        target = targets['target']
+        target = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
         sslbin='openssl'
         if target:
             sslbin=''+target.abspath+' -S --'

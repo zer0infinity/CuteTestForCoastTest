@@ -8,8 +8,7 @@ Import('*')
 defaults = None
 
 def setUp(target, source, env):
-    targets = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
-    target = targets['target']
+    target = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
     if not target:
         raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
 

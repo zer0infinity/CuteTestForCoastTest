@@ -19,8 +19,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             os.chmod(fname, oldmode)
 
 def setUp(target, source, env):
-    targets = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
-    target = targets['target']
+    target = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
     if not target:
         raise SConsider.SkipTest('required isql executable not found, skipping test')
 
