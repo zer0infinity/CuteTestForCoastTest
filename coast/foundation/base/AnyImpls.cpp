@@ -15,6 +15,7 @@
 #include "AnyVisitor.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+#include "AllocatorNewDelete.h"
 #include <algorithm>
 #include <iostream>
 
@@ -212,7 +213,7 @@ IFAObject *AnyStringImpl::Clone(Allocator *a) const {
 }
 
 //---- AnyKeyAssoc --------------------------------------------------
-class AnyKeyAssoc {
+class AnyKeyAssoc : public Coast::AllocatorNewDelete {
 public:
 	AnyKeyAssoc(const Anything &value, const char *key = 0) :
 		fValue(value), fKey(key, -1, value.GetAllocator()) {
@@ -248,29 +249,6 @@ public:
 			fKey = aka.Key();
 		}
 		return *this;
-	}
-
-	// new[] is needed to properly initialize instance variables (i.e. Anything)
-	static void *operator new[](size_t size, Allocator *a) {
-		if (a) {
-			void *mem = a->Calloc(1, size + Coast::Memory::AlignedSize<Allocator *>::value);
-			(reinterpret_cast<Allocator **> (mem))[0L] = a; // remember address of responsible Allocator
-			return reinterpret_cast<char *> (mem) + Coast::Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
-		} else { //SOP: untested, make compiler happy
-			size += Coast::Memory::AlignedSize<Allocator *>::value;
-			return reinterpret_cast<char *> (::operator new(size)) + Coast::Memory::AlignedSize<Allocator *>::value;
-		}
-	}
-	static void operator delete[](void *ptr) {
-		if (ptr) {
-			void *realPtr = reinterpret_cast<char *> (ptr) - Coast::Memory::AlignedSize<Allocator *>::value;
-			Allocator *a = reinterpret_cast<Allocator **> (realPtr)[0L]; // retrieve Allocator
-			if (a)
-				a->Free(realPtr);
-			else
-				::operator delete(realPtr);
-		}
-		return;
 	}
 
 private:

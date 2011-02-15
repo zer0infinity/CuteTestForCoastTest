@@ -13,6 +13,7 @@
 #include "SystemLog.h"
 #include "Timers.h"
 #include "Dbg.h"
+#include "AllocatorNewDelete.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -20,7 +21,7 @@
 // utility class used by BasicTableRenderer to cache the renderers/configuration data
 // used for the creation of table rows
 
-class RowAccessor
+class RowAccessor : public Coast::AllocatorNewDelete
 {
 	// CAUTION: objects of this class are used as a better struct..
 	// they are not initialized properly (using a constructor),
@@ -79,9 +80,6 @@ public:
 
 	RowAccessor &operator=(const RowAccessor &aka);
 
-	static void *operator new[](size_t size, Allocator *a) throw ();
-	static void operator delete[](void *ptr);
-
 protected:
 	const Anything GetIntConfig() const {
 		return fConfig;
@@ -113,27 +111,6 @@ RowAccessor &RowAccessor::operator=(const RowAccessor &ra)
 	fFormat = ra.GetIntFormat();
 	fFontOptions = ra.GetFontOptions();
 	return *this;
-}
-
-void *RowAccessor::operator new[](size_t size, Allocator *a) throw()
-{
-	if (a) {
-		void *mem = a->Calloc(1, size + sizeof(Allocator *));
-		((Allocator **)mem)[0L] = a;				// remember address of responsible Allocator
-		return (char *)mem + sizeof(Allocator *);
-	} else {
-		return 0;
-	}
-}
-
-void RowAccessor::operator delete[](void *ptr)
-{
-	if (ptr) {
-		void *realPtr = (char *)ptr - sizeof(Allocator *);
-		Allocator *a = ((Allocator **)realPtr)[0L];	// retrieve Allocator
-		a->Free(realPtr);
-	}
-	return;
 }
 
 //---- BasicTableRenderer -------------------------------------------------------------------

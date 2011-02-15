@@ -135,42 +135,6 @@ CS_RETCODE SybCTnewDA::ColumnData::AllocateIndicator(CS_INT num_rows)
 	return CS_SUCCEED;
 }
 
-void *SybCTnewDA::ColumnData::operator new[](size_t size, Allocator *a) throw()
-{
-	if (a) {
-		void *mem = a->Calloc(1, size + sizeof(Allocator *));
-		((Allocator **)mem)[0L] = a;				// remember address of responsible Allocator
-		return (char *)mem + sizeof(Allocator *); // needs cast because of pointer arithmetic
-	} else {
-		return 0;
-	}
-}
-
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-void SybCTnewDA::ColumnData::operator delete[](void *ptr, Allocator *a)
-{
-	if (ptr) {
-		void *realPtr = (char *)ptr - sizeof(Allocator *);
-		a->Free(realPtr);
-	}
-	return;
-}
-#endif
-
-void SybCTnewDA::ColumnData::operator delete[](void *ptr)
-{
-	if (ptr) {
-		void *realPtr = (char *)ptr - sizeof(Allocator *);
-		Allocator *a = ((Allocator **)realPtr)[0L];	// retrieve Allocator
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		SybCTnewDA::ColumnData::operator delete[](ptr, a);
-#else
-		a->Free(realPtr);
-#endif
-	}
-	return;
-}
-
 SybCTnewDA::SybCTnewDA(CS_CONTEXT *context)
 	: fContext(context)
 	, fConnection(NULL)

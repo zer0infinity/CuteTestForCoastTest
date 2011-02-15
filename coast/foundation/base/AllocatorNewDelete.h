@@ -15,7 +15,6 @@
 
 namespace Coast
 {
-
 	class AllocatorNewDelete
 	{
 	public:
@@ -27,21 +26,42 @@ namespace Coast
 		 * @param a Allocator used for allocating memory
 		 */
 		static void *operator new(std::size_t sz, Allocator *a) throw();
-		/*! operator used when delete() gets called
+
+		/*! operator used when placement new gets called for arrays
+		 * @param sz size of memory block to allocate
+		 * @param a Allocator used for allocating memory
+		 */
+		static void *operator new[](std::size_t sz, Allocator *a) throw();
+
+		/*! delegate operator used for new arrays
+		 * @param sz size of memory block to allocate
+		 */
+		static void* operator new[](std::size_t size) throw();
+
+		/*! operator used when delete gets called
 		 * @param ptr memory block to delete
 		 */
 		static void operator delete(void *ptr) throw();
+
 		/*! operator used when delete gets called within ctor of allocated class
 		 * @param ptr memory block to delete
 		 * @param a Allocator used for freeing memory
 		 */
 		static void operator delete(void *ptr, Allocator *a) throw();
 
+		/*! operator used when delete gets called for arrays
+		 * @param ptr memory block to delete
+		 */
+		static void operator delete[](void *ptr) throw();
+
 	private:
 		//! disallow unintended creation of non-Allocator instances
-		static void *operator new(std::size_t sz) throw (std::bad_alloc);
-		static void *operator new (std::size_t size, const std::nothrow_t &nothrow_constant) throw();
-		static void operator delete (void *ptr, const std::nothrow_t &nothrow_constant) throw();
+		static void *operator new(std::size_t) throw (std::bad_alloc);
+		static void *operator new (std::size_t, const std::nothrow_t &) throw();
+		static void *operator new[] (std::size_t, const std::nothrow_t &) throw();
+		static void operator delete (void *, const std::nothrow_t &) throw();
+		static void operator delete[] (void *, const std::nothrow_t &) throw();
+		static void operator delete[] (void *, void *) throw();
 	};
 
 	namespace Memory
@@ -53,6 +73,5 @@ namespace Coast
 							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
 		};
 	}
-
 }
 #endif /* ALLOCATORNEWDELETE_H_ */

@@ -10,37 +10,71 @@
 
 namespace Coast
 {
-	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
+	namespace
+	{
+		Allocator* allocatorFor(void* ptr)
+		{
+			return (reinterpret_cast<Allocator **>(ptr))[0L];
+		}
+
+		void *realPtrFor(void *ptr)
+		{
+			return reinterpret_cast<char *>(ptr) - Memory::AlignedSize<Allocator *>::value;
+		}
+
+		void safeFree(Allocator *a, void *ptr)
+		{
+			if (ptr) {
+				a->Free(ptr);
+			}
+		}
+	}
+
+	void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {
-			void *mem = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
-			(reinterpret_cast<Allocator **>( mem))[0L] = a; // remember address of responsible Allocator
-			char *ptr = reinterpret_cast<char *>(mem) + Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
-			return ptr;
+			void *ptr = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
+			(reinterpret_cast<Allocator **>(ptr))[0L] = a; // remember address of responsible Allocator
+			return reinterpret_cast<char *>(ptr) + Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
 		}
 		return a;
 	}
-	//TODO: refactor to DRY, check if alignedSize is an issue with pointers (might be with 32bit pointers)
-	static void AllocatorNewDelete::operator delete(void *ptr) throw()
+
+	void *AllocatorNewDelete::operator new[](size_t sz, Allocator *a) throw()
 	{
-		if (ptr) {
-			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
-			Allocator *a = (reinterpret_cast<Allocator **>(realPtr))[0L]; // retrieve Allocator
-			size_t sz; // separate assignment to avoid compiler warning of unused variable
-			sz=(a->Free(realPtr));
+		if (a) {
+			return operator new(sz, a);
+		} else {
+			sz += Memory::AlignedSize<Allocator *>::value;
+			return reinterpret_cast<char *>(calloc(sz, 1)) + Memory::AlignedSize<Allocator *>::value;
 		}
 	}
-	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
+
+	void *AllocatorNewDelete::operator new[](std::size_t sz) throw()
 	{
-		if (ptr && a) {
-			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>::value;
-			Allocator *aStored = (reinterpret_cast<Allocator **>( realPtr))[0L]; // retrieve Allocator
-			assert(aStored == a);
-			size_t sz;// separate assignment to avoid compiler warning of unused variable
-			sz=(aStored->Free(realPtr));
+		return operator new[](sz, static_cast<Allocator*>(0L));
+	}
+
+	void AllocatorNewDelete::operator delete(void *ptr) throw()
+	{
+		void *realPtr = realPtrFor(ptr);
+		Allocator *a = allocatorFor(realPtr);
+		if (a) {
+			safeFree(a, realPtr);
+		} else {
+			free(realPtr);
 		}
+	}
+
+	void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
+	{
+		safeFree(a, ptr);
+	}
+
+	void AllocatorNewDelete::operator delete[](void *ptr) throw()
+	{
+		operator delete(ptr);
 	}
 
 	AllocatorNewDelete::~AllocatorNewDelete() {}
-
 }

@@ -79,11 +79,7 @@ namespace AnyExtensions
 //			if (hi < m+1 || lo > m) return; // nothing to merge
 //			long i, j, k;
 //			const long sz=m-lo+1;
-//		#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
-//			long *a = new long[sz];		// temporary array of lower half
-//		#else
 //			long a[sz];					// temporary array of lower half
-//		#endif
 //			for (k=0,i=lo; i <=m && k < sz;++i, ++k)
 //				a[k]=aImpl.IntAt(i);
 //			Assert(k == sz);
@@ -114,9 +110,6 @@ namespace AnyExtensions
 //			}
 //			Assert(i == j);
 //			Assert(k == sz);
-//		#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
-//			delete[] a;
-//		#endif
 //		}
 //	};
 

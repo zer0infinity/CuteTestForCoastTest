@@ -475,12 +475,7 @@ private:
 
 public:
 	/// Throwing single-object new throws bad_alloc when allocation fails.
-#ifdef _MSC_VER
-	/// @note MSVC complains about non-empty exception specification lists.
-	static void *operator new ( std::size_t )
-#else
 	static void *operator new ( std::size_t ) throw ( std::bad_alloc )
-#endif
 	{
 		return BoostPoolType::malloc();
 	}

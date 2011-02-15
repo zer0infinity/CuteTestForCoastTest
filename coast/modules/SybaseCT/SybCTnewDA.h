@@ -43,17 +43,12 @@ class SybCTnewDA : public IFAObject
 {
 	// Define structure where row data is bound.
 	// Allow for column arrays - for array binding.
-	typedef struct ColumnData {
+	typedef struct ColumnData : public Coast::AllocatorNewDelete {
 		ColumnData(Allocator *a = Coast::Storage::Current());
 		~ColumnData();
 		CS_SMALLINT	*indicator;
 		CS_CHAR		*value;
 		CS_INT		*valuelen;
-		static void *operator new[](size_t size, Allocator *a) throw();
-		static void operator delete[](void *ptr);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-		static void operator delete[](void *ptr, Allocator *a);
-#endif
 		CS_RETCODE AllocateValue(size_t lSize);
 		CS_RETCODE AllocateValuelen(CS_INT num_rows);
 		CS_RETCODE AllocateIndicator(CS_INT num_rows);
