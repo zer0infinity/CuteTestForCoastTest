@@ -6,9 +6,8 @@
 # the license that is included with this library/application in the file license.txt.
 #--------------------------------------------------------------------
 {
-	/HostName				"##HOSTNAME##"
-	/DomainName				"##DOMAINONLY##"
-	/HttpPort				##HTTPPORT##
-	/FaultyHttpPort			##FAULTYHTTPPORT##
-	/StressServerPort		##STRESSSERVERPORT##
+	/HostName				"localhost"
+	/HttpPort				43030
+	/FaultyHttpPort			43031
+	/StressServerPort		43032
 }

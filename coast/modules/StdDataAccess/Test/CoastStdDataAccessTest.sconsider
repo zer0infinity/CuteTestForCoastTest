@@ -1,14 +1,16 @@
-import SConsider
-import os, socket, pdb, re
+import SConsider, Anything
+import os, socket, re
 import threading, shutil, asyncore
-from stat import *
 import ServerExtensions
+from stat import *
+from OpenSSL import SSL, crypto
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
-from OpenSSL import SSL, crypto
 from SomeUtils import runCommand
 
 Import('*')
+
+defaults = None
 
 class SMTPThread(threading.Thread):
     def __init__(self, host, port, path, logfile):
@@ -23,17 +25,6 @@ class MyHTTPServer(HTTPServer):
     """This class wrapper is needed to set allow_reuse_address to True
     prior to initializing it"""
     allow_reuse_address = True
-
-smtpport=43020
-smtpfaultyport=43021
-httpport=43022
-faultyhttpport=43023
-sslport=43024
-sslfaultyport=43025
-cport1=43031
-cport2=43032
-cport3=43033
-hostonly, domain, fqdn = SConsider.getfqdn()
 
 def appendReplaceCommandForCert(key, filename, searchReplace):
     try:
@@ -63,8 +54,8 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             os.chmod(fname, oldmode)
 
 servers = []
-def startServer(host, port, server_class, handlerOrRemote=None, **kw):
-    server = server_class((host, port), handlerOrRemote, **kw)
+def startServer(host, port, server_class, handler_class, **kw):
+    server = server_class((host, port), handler_class, **kw)
     servers.append(server)
     server.serve_forever()
 
@@ -91,9 +82,10 @@ def prepareMkCaParams(env, commandargs, tdirabs, certdir):
     commandargs.extend(['-d', mkcertDirectory])
     # maybe we should do the following step by hand because we do not need cert suffixes
     commandargs.extend(['-c', certOutDir])
-    commandargs.extend(['-C', hostonly])
-    commandargs.extend(['-S', hostonly])
-    if domain:
+    commandargs.extend(['-C', defaults['HostName']])
+    commandargs.extend(['-S', defaults['HostName']])
+    fqdn = defaults.get('SSLHost','')
+    if fqdn and fqdn != defaults['HostName']:
         commandargs.extend(['-S', fqdn])
 
 def createCertificates(env):
@@ -125,34 +117,30 @@ def createCertDict(certFileNodesList):
     certDict={}
     for cname in ['servercrt', 'serverkey', 'clientcrt', 'clientkey', 'fullchain', 'serverchain','chainwoservercrt', 'subCA1crt', 'subCA1key', 'rootCA1crt', 'rootCA1key']:
         try:
-            filename=[c.abspath for c in certFileNodesList if re.match(r''+cname+'(_'+hostonly+')?\.pem', os.path.split(c.abspath)[1])][0]
+            filename=[c.abspath for c in certFileNodesList if re.match(r''+cname+'(_'+defaults['HostName']+')?\.pem', os.path.split(c.abspath)[1])][0]
             certDict[cname]=filename
         except: pass
     return certDict
 
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
+
+    global defaults
+    try: defaults = Anything.loadFromFile('Defaults.any')
+    except IOError: pass
+
     tdirabs = tdir.abspath
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
     configdir = tdir.Dir('config')
-
+    #FIXME: the following setting is needed to let CgiCallerTest succeed
+    env['ENV']['COAST_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    env['ENV']['COAST_LOGONCERR'] = 2
+#    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
+    searchReplace = []
     # create certificate files
     certOutDir,certFileNodesList,certDict=createCertificates(env)
     if certDict:
-        searchReplace = [
-            (r"##FQDN##", fqdn),
-            (r"##HOSTNAME##", hostonly),
-            (r"##DOMAINONLY##", domain),
-            (r"##HTTPPORT##", str(httpport)),
-            (r"##CPORT1##", str(cport1)),
-            (r"##CPORT2##", str(cport2)),
-            (r"##CPORT3##", str(cport3)),
-            (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
-            (r"##SSLPORT##", str(sslport)),
-            (r"##FAULTYSSLPORT##", str(sslfaultyport)),
-            (r"##SMTPPORT##", str(smtpport)),
-            (r"##SMTPFAULTYPORT##", str(smtpfaultyport)),
-        ]
         for key,value in certDict.items():
             searchReplace.append((r"##"+key+"_abs##",value));
             searchReplace.append((r"##"+key+"_rel##",os.path.relpath(value, tdirabs)));
@@ -161,14 +149,9 @@ def setUp(target, source, env):
         searchReplace.append((r"##certdir_abs##",certOutDir));
         searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
         ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
-        threading.Thread(target=startServer, args=[hostonly, sslport, ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
-        threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
-        SMTPThread(hostonly, smtpport, env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(env['LOGDIR']).Dir(env['VARIANTDIR']).abspath, 'smtp.log').start()
-
-    #FIXME: the following setting is needed to let CgiCallerTest succeed
-    env['ENV']['COAST_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    env['ENV']['COAST_LOGONCERR'] = 2
-#    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
+        threading.Thread(target=startServer, args=[defaults['HostName'], defaults['SSLPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+        threading.Thread(target=startServer, args=[defaults['HostName'], defaults['HttpPort'], MyHTTPServer, SimpleHTTPRequestHandler]).start()
+        SMTPThread(defaults['HostName'], defaults['SMTPMailhostPort'], env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(env['LOGDIR']).Dir(env['VARIANTDIR']).abspath, 'smtp.log').start()
 
 def tearDown(target, source, env):
     for server in servers:
@@ -191,8 +174,8 @@ buildSettings = {
             ( SConsider.findFiles( ['.'], matchfiles=['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
         ],
         'runConfig' : {
-            'setUp'        : setUp,
-            'tearDown'     : tearDown,
+            'setUp' : setUp,
+            'tearDown' : tearDown,
         },
     }
 }

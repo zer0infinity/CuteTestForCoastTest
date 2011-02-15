@@ -6,17 +6,16 @@
 # the license that is included with this library/application in the file license.txt.
 #--------------------------------------------------------------------
 {
-	/HostName				"##HOSTNAME##"
-	/DomainName				"##DOMAINONLY##"
-	/HttpPort				"##HTTPPORT##"
-	/FaultyHttpPort			"##FAULTYHTTPPORT##"
+	/HostName				"localhost"
+	/HttpPort				43010
+	/FaultyHttpPort			43011
 
-	/SSLHost				"##FQDN##"
-	/SSLPort				"##SSLPORT##"
+	/SSLHost				"localhost"		# fqdn if available
+	/SSLPort				43012
 
 	/RemoteSSLHost			%SSLHost
 	/RemoteSSLPort			%SSLPort
-	/FaultySSLPort			"##FAULTYSSLPORT##"
+	/FaultySSLPort			43013
 
 	/CertDirRelative		"##certdir_rel##"
 	/CertDirAbsolute		"##certdir_abs##"
@@ -28,7 +27,9 @@
 	/CertFileServerAbsolute	"##servercrt_abs##"
 	/CertFileServerIssuer	"##servercrt_issuer##"
 	/CertFileServerSubject	"##servercrt_subject##"
-	/CertFileServerSubjectParts	{ ##servercrt_subject_parts## }
+	/CertFileServerSubjectParts	{
+		##servercrt_subject_parts##
+	}
 
 #! client section
 	/KeyFileClientRelative	"##clientkey_rel##"
@@ -37,7 +38,9 @@
 	/CertFileClientAbsolute	"##clientcrt_abs##"
 	/CertFileClientIssuer	"##clientcrt_issuer##"
 	/CertFileClientSubject	"##clientcrt_subject##"
-	/CertFileClientSubjectParts	{ ##clientcrt_subject_parts## }
+	/CertFileClientSubjectParts	{
+		##clientcrt_subject_parts##
+	}
 
 #! root and sub CA files
 	/RootCACertFileRelative	"##rootCA1crt_rel##"

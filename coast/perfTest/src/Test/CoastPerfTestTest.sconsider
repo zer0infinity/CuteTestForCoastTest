@@ -1,5 +1,5 @@
-import SConsider
-import os, socket, pdb, re
+import SConsider, Anything
+import os, socket, re
 import threading, shutil
 from stat import *
 import ServerExtensions
@@ -8,10 +8,7 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 Import('*')
 
-httpport=43030
-faultyhttpport=43031
-stressserverport=43032
-hostonly, domain, fqdn = SConsider.getfqdn()
+defaults = None
 
 class MyHTTPServer(HTTPServer):
     """This class wrapper is needed to set allow_reuse_address to True
@@ -24,21 +21,18 @@ def startServer(host, port, server_class, handler_class, **kw):
     servers.append(server)
     server.serve_forever()
 
-searchReplace = {
-    "FQDN": fqdn,
-    "HOSTNAME": hostonly,
-    "DOMAINONLY": domain,
-    "HTTPPORT": str(httpport),
-    "FAULTYHTTPPORT": str(faultyhttpport),
-    "STRESSSERVERPORT": str(stressserverport),
-}
-
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
+
+    global defaults
+    try: defaults = Anything.loadFromFile('Defaults.any')
+    except IOError: pass
+
     tdirabs = tdir.abspath
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
     configdir = tdir.Dir('config')
-    threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
+    threading.Thread(target=startServer, args=[defaults['HostName'], defaults['HttpPort'], MyHTTPServer, SimpleHTTPRequestHandler]).start()
 
 def tearDown(target, source, env):
     for server in servers:
@@ -68,7 +62,7 @@ buildSettings = {
         'usedTarget'       : 'coastd.coastd',
         'copyFiles' : [
             (SConsider.findFiles(['.'],['.txt', '.html']), S_IRUSR|S_IRGRP|S_IROTH),
-            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH, searchReplace),
+            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH),
         ],
         'runConfig' : {
             'setUp': setUp,
