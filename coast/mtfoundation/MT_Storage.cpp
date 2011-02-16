@@ -336,7 +336,8 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 
 void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 {
-	StatTrace(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L) << " --- entering ---", Coast::Storage::Global());
+	long const allocId = wdallocator ? wdallocator->GetId() : -1L;
+	StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", Coast::Storage::Global());
 	if ( fgInitialized ) {
 		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
 			LockUnlockEntry me(*fgpAllocatorInit);
@@ -367,7 +368,7 @@ void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 	} else {
 		SYSERROR("MT_Storage not initialized!");
 	}
-	StatTrace(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L) << " --- leaving ---", Coast::Storage::Global());
+	StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- leaving ---", Coast::Storage::Global());
 }
 
 bool MT_Storage::RegisterThread(Allocator *wdallocator)
