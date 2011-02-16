@@ -10,31 +10,11 @@
 
 namespace Coast
 {
-	namespace
-	{
-		Allocator* allocatorFor(void* ptr)
-		{
-			return (reinterpret_cast<Allocator **>(ptr))[0L];
-		}
-
-		void *realPtrFor(void *ptr)
-		{
-			return reinterpret_cast<char *>(ptr) - Memory::AlignedSize<Allocator *>::value;
-		}
-
-		void safeFree(Allocator *a, void *ptr)
-		{
-			if (ptr) {
-				a->Free(ptr);
-			}
-		}
-	}
-
 	void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {
 			void *ptr = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
-			(reinterpret_cast<Allocator **>(ptr))[0L] = a; // remember address of responsible Allocator
+			Memory::allocatorFor(ptr) = a; // remember address of responsible Allocator
 			return reinterpret_cast<char *>(ptr) + Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
 		}
 		return a;
@@ -57,10 +37,10 @@ namespace Coast
 
 	void AllocatorNewDelete::operator delete(void *ptr) throw()
 	{
-		void *realPtr = realPtrFor(ptr);
-		Allocator *a = allocatorFor(realPtr);
+		void *realPtr = Memory::realPtrFor(ptr);
+		Allocator *a = Memory::allocatorFor(realPtr);
 		if (a) {
-			safeFree(a, realPtr);
+			Memory::safeFree(a, realPtr);
 		} else {
 			free(realPtr);
 		}
@@ -68,7 +48,7 @@ namespace Coast
 
 	void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
 	{
-		safeFree(a, ptr);
+		Memory::safeFree(a, ptr);
 	}
 
 	void AllocatorNewDelete::operator delete[](void *ptr) throw()

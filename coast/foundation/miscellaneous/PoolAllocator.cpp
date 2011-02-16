@@ -21,16 +21,13 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
-extern void *operator new(size_t size, void *vp);
-extern void operator delete(void *ptr);
-
 //! smallest size of allocation unit: 16UL for the usable memory block
-static const u_long fgMinPayloadSize = 16UL;
+static const size_t fgMinPayloadSize = 16UL;
 
 //---- PoolAllocator ------------------------------------------
 struct PoolBucket {
-	u_long fSize;
-	u_long fUsableSize;
+	size_t fSize;
+	size_t fUsableSize;
 	void *fFirstFree;
 	MemTracker *fpBucketTracker;
 };
@@ -42,14 +39,14 @@ ExcessTrackerElt::ExcessTrackerElt()
 {
 }
 
-ExcessTrackerElt::ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize)
+ExcessTrackerElt::ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, size_t ulPayloadSize)
 	: fpTracker(pTracker)
 	, fpNext(pNext)
 	, fulPayloadSize(ulPayloadSize)
 {
 }
 
-void ExcessTrackerElt::SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize)
+void ExcessTrackerElt::SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, size_t ulPayloadSize)
 {
 	fpTracker = pTracker;
 	fpNext = pNext;
@@ -94,7 +91,7 @@ void ExcessTrackerElt::PrintStatistic(long lLevel)
 	}
 }
 
-ul_long ExcessTrackerElt::GetSizeToPowerOf2(u_long ulWishSize)
+ul_long ExcessTrackerElt::GetSizeToPowerOf2(size_t ulWishSize)
 {
 	long lBitCnt = 0L, lMaxBit = 0L;
 	while ( ulWishSize > 0 ) {
@@ -128,7 +125,7 @@ long ExcessTrackerElt::GetLargestExcessEltBitNum()
 	return lBitCnt;
 }
 
-MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long ulPayloadSize)
+MemTracker *ExcessTrackerElt::FindTrackerForSize(size_t ulPayloadSize)
 {
 	MemTracker *pTracker = NULL;
 	ExcessTrackerElt *pElt = this;
@@ -137,7 +134,7 @@ MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long ulPayloadSize)
 	while ( pElt != NULL ) {
 		// try if the this tracker is already of correct size
 		if ( ulPayloadSize <= pElt->fulPayloadSize ) {
-			u_long ulNextSmallerBucketPayloadSz = std::max( ( pElt->fulPayloadSize >> 1 ), fgMinPayloadSize );
+			size_t ulNextSmallerBucketPayloadSz = std::max( ( pElt->fulPayloadSize >> 1 ), fgMinPayloadSize );
 			if ( ulPayloadSize > ulNextSmallerBucketPayloadSz ) {
 				// payload fits into this trackers range, return the tracker
 				pTracker = pElt->fpTracker;
@@ -150,7 +147,7 @@ MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long ulPayloadSize)
 	return pTracker;
 }
 
-ExcessTrackerElt *ExcessTrackerElt::InsertTrackerForSize(MemTracker *pTracker, u_long ulPayloadSize)
+ExcessTrackerElt *ExcessTrackerElt::InsertTrackerForSize(MemTracker *pTracker, size_t ulPayloadSize)
 {
 	ExcessTrackerElt *pElt = this, *pSmaller = NULL;
 	ulPayloadSize = std::max( ulPayloadSize, fgMinPayloadSize );
@@ -195,13 +192,13 @@ void ExcessTrackerElt::SetId(long lId)
 	}
 }
 
-MemTracker *ExcessTrackerElt::operator[](u_long ulPayloadSize)
+MemTracker *ExcessTrackerElt::operator[](size_t ulPayloadSize)
 {
-	u_long ulWishSize = std::max<u_long>( GetSizeToPowerOf2(ulPayloadSize), fgMinPayloadSize);
+	size_t ulWishSize = std::max<size_t>( GetSizeToPowerOf2(ulPayloadSize), fgMinPayloadSize);
 	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
 	if ( pTracker == NULL ) {
 		char buf[80] = { 0 };
-		snprintf(buf, sizeof(buf), "PoolExcessTracker[%lu]", ulWishSize);
+		snprintf(buf, sizeof(buf), "PoolExcessTracker[%u]", ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
 		pTracker = Coast::Storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
@@ -237,7 +234,7 @@ void ExcessTrackerElt::Refresh()
 	}
 }
 
-PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets)
+PoolAllocator::PoolAllocator(long poolid, size_t poolSize, size_t maxPoolBuckets)
 	: Allocator(poolid)
 	, fNumOfPoolBucketSizes(maxPoolBuckets)
 	, fpPoolTotalExcessTracker(NULL)
@@ -352,13 +349,13 @@ PoolAllocator::~PoolAllocator()
 				if ( ++lNumUsed > 1 ) {
 					strUsedBucketSizes.Append(", ");
 				}
-				strUsedBucketSizes.Append(fPoolBuckets[i].fUsableSize);
+				strUsedBucketSizes.Append(static_cast<u_long>(fPoolBuckets[i].fUsableSize));
 				lMaxUsedBucket = i + 1;
 			} else {
 				if ( ++lNumUnused > 1 ) {
 					strUnusedBucketSizes.Append(", ");
 				}
-				strUnusedBucketSizes.Append(fPoolBuckets[i].fUsableSize);
+				strUnusedBucketSizes.Append(static_cast<u_long>(fPoolBuckets[i].fUsableSize));
 			}
 		}
 	}
@@ -404,7 +401,7 @@ PoolAllocator::~PoolAllocator()
 				--lMaxExcessBit;
 			}
 			lMaxUsedBucket = std::max(lMaxUsedBucket, lMaxExcessBit);
-			strUnusedBucketSizes.Append("]\n -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n");
+			strUnusedBucketSizes.Append("]\n -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(static_cast<u_long>(fNumOfPoolBucketSizes)).Append("\n");
 			SystemLog::WriteToStderr(strUsedBucketSizes.Append('\n'));
 			SystemLog::WriteToStderr(strUnusedBucketSizes);
 		}
@@ -449,12 +446,16 @@ void PoolAllocator::DumpStillAllocated()
 	}
 }
 
-void PoolAllocator::IntDumpStillAllocated(MemTracker *pTracker, u_long lSize, u_long lUsableSize)
+void PoolAllocator::IntDumpStillAllocated(MemTracker *pTracker, size_t lSize, size_t lUsableSize)
 {
 	// finding unfreed items
 	if ( pTracker ) {
 		pTracker->DumpUsedBlocks();
 	}
+}
+
+void PoolAllocator::Free(void* p, size_t sz) {
+	Free(p);
 }
 
 size_t PoolAllocator::Free(void *vp)
@@ -539,7 +540,7 @@ size_t PoolAllocator::SizeHint(size_t size)
 	}
 }
 
-void *PoolAllocator::Alloc(u_long allocSize)
+void *PoolAllocator::Alloc(size_t allocSize)
 {
 	// allocSize includes the size of the necessary MemoryHeader!
 
@@ -633,7 +634,7 @@ void *PoolAllocator::Alloc(u_long allocSize)
 		return ExtMemStart(mh);
 	}
 	static char crashmsg[255] = { 0 };
-	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%lub failed. I will crash :-(\n", allocSize);
+	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%ub failed. I will crash :-(\n", allocSize);
 	SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 
 	return 0;
@@ -665,10 +666,10 @@ void PoolAllocator::InsertFreeHeaderIntoBucket(MemoryHeader *mh, PoolBucket *buc
 	bucket->fFirstFree = mh;
 }
 
-PoolBucket *PoolAllocator::FindBucketBySize( u_long allocSize)
+PoolBucket *PoolAllocator::FindBucketBySize( size_t allocSize)
 {
 	// find smallest bucket suitable to store allocSize
-	for (u_long order = 0; order < fNumOfPoolBucketSizes; ++order) {
+	for (size_t order = 0; order < fNumOfPoolBucketSizes; ++order) {
 		if (fPoolBuckets[order].fSize >= allocSize ) {
 			// yeah it fits
 			return fPoolBuckets + order;

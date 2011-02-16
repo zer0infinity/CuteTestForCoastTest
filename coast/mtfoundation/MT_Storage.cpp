@@ -195,8 +195,12 @@ public:
 		\return poniter to a newly created MemTracker object */
 	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
 
+	virtual void Lock() { fMutex.Lock(); }
+	virtual void Unlock() { fMutex.Unlock(); }
+
 private:
 	bool fgInitialized;
+    SimpleMutex fMutex;
 };
 
 MemTracker *MT_Storage::fOldTracker = NULL;
@@ -421,8 +425,12 @@ Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoo
 	return newPoolAllocator;
 }
 
+
+//---- MTStorageHooks ------------------------------------------
+
 MTStorageHooks::MTStorageHooks()
 	: fgInitialized(false)
+	, fMutex("MTStorageHooksGlobalAccessMutex", Coast::Storage::Global())
 {
 }
 

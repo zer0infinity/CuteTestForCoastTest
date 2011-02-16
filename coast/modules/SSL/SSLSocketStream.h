@@ -39,7 +39,7 @@ private:
 // adapts ios to a SSL Socket Stream buffer
 //
 
-class iosITOSSLSocket : virtual public std::ios
+class iosITOSSLSocket : virtual public std::ios, public Coast::AllocatorNewDelete
 {
 public:
 	iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -49,10 +49,6 @@ public:
 		return &fSSLSockBuf;
 	}
 
-	//!allocate object with optimized allocator strategy
-	static void *operator new(size_t size, Allocator *a);
-	//!delete object with optimized allocator strategy
-	static void operator delete(void *d);
 protected:
 	SSLSocketStreamBuf fSSLSockBuf;   // the buffer with its underlying string
 	Allocator *fAllocator;

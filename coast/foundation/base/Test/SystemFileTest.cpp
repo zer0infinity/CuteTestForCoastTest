@@ -484,7 +484,6 @@ void SystemFileTest::OpenStreamTest()
 	t_assert( Ios == NULL ); // should not be found!
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// open file with relative path
@@ -492,7 +491,6 @@ void SystemFileTest::OpenStreamTest()
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// deprecated:
@@ -502,7 +500,6 @@ void SystemFileTest::OpenStreamTest()
 	t_assert( Ios != NULL ); // should be found
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// open file with relative path
@@ -510,7 +507,6 @@ void SystemFileTest::OpenStreamTest()
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// open file with relative path for writing
@@ -520,7 +516,6 @@ void SystemFileTest::OpenStreamTest()
 		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
-		Ios = 0;
 	}
 }
 
@@ -530,7 +525,6 @@ void SystemFileTest::OpenStreamWithSearchTest()
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// open file with relative path
@@ -538,7 +532,6 @@ void SystemFileTest::OpenStreamWithSearchTest()
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
-		Ios = 0;
 	}
 
 	// open file with relative path for writing
@@ -548,7 +541,6 @@ void SystemFileTest::OpenStreamWithSearchTest()
 		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
-		Ios = 0;
 	}
 }
 
@@ -564,7 +556,6 @@ void SystemFileTest::OpenIStreamTest()
 		t_assert(!!(*Ios));
 		t_assert(dbgTest.GetSize() > 0);
 		delete Ios;
-		Ios = 0;
 	}
 
 	// deprecated:
@@ -579,7 +570,6 @@ void SystemFileTest::OpenIStreamTest()
 		t_assert(!!(*Ios));
 		t_assert(dbgTest.GetSize() > 0);
 		delete Ios;
-		Ios = 0;
 	}
 }
 
@@ -593,7 +583,6 @@ void SystemFileTest::OpenOStreamTest()
 		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
-		Ios = 0;
 	}
 
 	// deprecated:
@@ -606,7 +595,6 @@ void SystemFileTest::OpenOStreamTest()
 		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
-		Ios = 0;
 	}
 }
 
@@ -1062,7 +1050,7 @@ void SystemFileTest::IOStreamTest ()
 	// Mehrfaches ">>"-Operator
 	// Bei jedem Aufruf wird die Datei tmp/strChain.tst geloescht und neu geschrieben
 	String str6;
-	std::istream *is2  = System::OpenStream("tmp/buchst", "tst");
+	std::istream *is2 = System::OpenStream("tmp/buchst", "tst");
 	std::istream *is3 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is2 && is3 ) {
@@ -1079,11 +1067,13 @@ void SystemFileTest::IOStreamTest ()
 		delete is2;
 		delete is3;
 	}
-	if (!is2) {
-		assertEqual("'read file tmp/buchst.tst'", "'could not read tmp/buchst.tst'");
-	}
-	if (!is3) {
-		assertEqual("'read file tmp/zahlen.tst'", "'could not read tmp/zahlen.tst'");
+	else {
+		if (!is2) {
+			assertEqual("'read file tmp/buchst.tst'", "'could not read tmp/buchst.tst'");
+		}
+		if (!is3) {
+			assertEqual("'read file tmp/zahlen.tst'", "'could not read tmp/zahlen.tst'");
+		}
 	}
 
 	// Einfluss von (char)0:  Length() = 5 ABER strlen = 2
@@ -1362,11 +1352,10 @@ void SystemFileTest::MakeDirectoryTest()
 		assertComparem( System::eSuccess, equal_to, System::MakeDirectory(strStartDir, 0755, true) , "expected creation of directory to succeed");
 	}
 	if ( t_assertm( System::IsDirectory(strStartDir), "expected start directory to be valid") ) {
-		System::DirStatusCode aDirStatus = System::eSuccess;
 		for ( ; lIdx < lNumDirsMax; ++lIdx) {
 			strDirToCreate.Trim(0L);
 			strDirToCreate.Append(strStartDir).Append(System::Sep()).Append(lIdx);
-			if ( ( aDirStatus = System::MakeDirectory(strDirToCreate, 0755, false) ) != System::eSuccess ) {
+			if ( System::MakeDirectory(strDirToCreate, 0755, false) != System::eSuccess ) {
 				SYSERROR("failed at index: " << lIdx);
 				break;
 			}
@@ -1391,7 +1380,6 @@ void SystemFileTest::MakeDirectoryExtendTest()
 	bool bCreatedDirs( false );
 	if ( strBaseDir.Length() > 0L ) {
 		long lIdx(1L);
-		System::DirStatusCode aStatusCode(System::eSuccess);
 		if ( !System::IsDirectory(strBaseDir) ) {
 			System::MakeDirectory(strBaseDir, 0755, true, false);
 		}
@@ -1399,7 +1387,7 @@ void SystemFileTest::MakeDirectoryExtendTest()
 		strFillerDir.Append(System::Sep()).Append(pcFillerPrefix);
 		long lTrimLen(strFillerDir.Length());
 		strFillerDir.Append(lIdx);
-		while ( ( aStatusCode = System::MakeDirectory(strFillerDir, 0755, true, false) ) == System::eSuccess ) {
+		while ( System::MakeDirectory(strFillerDir, 0755, true, false) == System::eSuccess ) {
 			strFillerDir.Trim(lTrimLen);
 			strFillerDir.Append(++lIdx);
 			if ( ( lIdx % 1000 ) == 0 ) {

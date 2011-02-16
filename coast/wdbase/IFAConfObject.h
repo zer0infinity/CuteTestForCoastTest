@@ -9,7 +9,6 @@
 #ifndef _IFACONFOBJECT_H
 #define _IFACONFOBJECT_H
 
-
 #include "IFAObject.h"
 #include "LookupInterface.h"
 #include "Anything.h"
@@ -20,7 +19,7 @@ class TerminationPolicy;
 
 //---- RegisterableObject ----------------------------------------------------------
 //!defines api to support registerable objects; objects registered with a name in a category
-class RegisterableObject : public NamedObject
+class RegisterableObject : public NamedObject, public Coast::AllocatorNewDelete
 {
 public:
 	//! Named object constructor
@@ -209,8 +208,7 @@ public:
 	//! Public api to return reference to this object instead of cloning, e.g. like a singleton
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
-		NotCloned *nonconst_this = (NotCloned *) this;
-		return nonconst_this;
+		return const_cast<NotCloned*>(this);
 	}
 
 private:

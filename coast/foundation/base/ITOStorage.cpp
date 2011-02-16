@@ -16,8 +16,6 @@
 #include "InitFinisManagerFoundation.h"
 #include "AllocatorNewDelete.h"
 
-#include <algorithm>
-
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
@@ -207,9 +205,12 @@ public:
 
 static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 
-namespace Coast {
-	namespace Storage {
-		namespace {
+namespace Coast
+{
+	namespace Storage
+	{
+		namespace
+		{
 			//exchange this object when MT_Storage is used
 			StorageHooks *hooks = 0;  // exchange this object when MT_Storage is used
 
@@ -332,6 +333,26 @@ namespace Coast {
 			return DoMakeMemTracker(name);
 		}
 	} // namespace Storage
+
+	namespace Memory
+	{
+		Allocator*& allocatorFor(void* ptr)
+		{
+			return (reinterpret_cast<Allocator **>(ptr))[0L];
+		}
+
+		void *realPtrFor(void *ptr)
+		{
+			return reinterpret_cast<char *>(ptr) - AlignedSize<Allocator *>::value;
+		}
+
+		void safeFree(Allocator *a, void *ptr)
+		{
+			if (ptr) {
+				a->Free(ptr);
+			}
+		}
+	} // namespace Memory
 } // namespace Coast
 
 //--- Allocator -------------------------------------------------
@@ -366,7 +387,7 @@ void Allocator::Refresh()
 	// give the allocator opportunity to reorganize
 }
 
-u_long Allocator::AllocSize(u_long n, size_t size)
+size_t Allocator::AllocSize(size_t n, size_t size)
 {
 	return (n * size) + Coast::Memory::AlignedSize<MemoryHeader>::value;
 }
@@ -411,6 +432,10 @@ GlobalAllocator::~GlobalAllocator()
 	}
 }
 
+void GlobalAllocator::Free(void* p, size_t sz) {
+	Free(p);
+}
+
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 {
 	MemTracker *pOld = fTracker;
@@ -433,7 +458,7 @@ void GlobalAllocator::PrintStatistic(long lLevel)
 	}
 }
 
-void *GlobalAllocator::Alloc(u_long allocSize)
+void *GlobalAllocator::Alloc(size_t allocSize)
 {
 	void *vp = ::malloc(allocSize);
 	if (vp) {
@@ -503,9 +528,67 @@ TestStorageHooks::~TestStorageHooks()
 	StorageHooks *pHook = Coast::Storage::SetHooks(NULL);
 	(void)pHook;
 	Assert( pHook == fpOldHook && "another Coast::Storage::SetHook() was called without restoring old Hook!");
+	fAllocator = 0;
 }
 
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)
 {
 	return new MemTracker(name);
+}
+
+char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes)
+{
+	char *pRet = reinterpret_cast<char *>(Coast::Storage::Global()->Malloc(bytes));
+//	_StatTrace(BoostPoolUserAllocatorGlobal.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Global());
+	return pRet;
+}
+
+void ITOStorage::BoostPoolUserAllocatorGlobal::free(char *const block)
+{
+	size_t sz(Coast::Storage::Global()->Free(block));
+//	_StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block << " sz:" << (long)sz, Storage::Global());
+	(void) sz; // avoid unused variable warning
+}
+
+char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
+{
+	char *pRet = reinterpret_cast<char *>(Coast::Storage::Current()->Malloc(bytes));
+//	_StatTrace(BoostPoolUserAllocatorCurrent.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Current());
+	return pRet;
+}
+
+void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
+{
+	size_t sz(Coast::Storage::Current()->Free(block));
+//	_StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block << " sz:" << (long)sz, Storage::Current());
+	(void) sz; // avoid unused variable warning
+}
+
+Allocator *FoundationStorageHooks::Global()
+{
+	return Coast::Storage::DoGlobal();
+}
+
+MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool)
+{
+	return new MemTracker(name);
+}
+
+Allocator *FoundationStorageHooks::Current()
+{
+	return Global();
+}
+
+void FoundationStorageHooks::Initialize()
+{
+	if ( !fgInitialized ) {
+		fgInitialized = true;
+	}
+}
+
+void FoundationStorageHooks::Finalize()
+{
+	if ( fgInitialized ) {
+		fgInitialized = false;
+	}
 }

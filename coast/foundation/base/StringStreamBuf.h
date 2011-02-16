@@ -15,7 +15,7 @@
 namespace NSStringStream
 {
 	enum IoDirectionValues { eIn, eOut };
-};
+}
 
 using std::streambuf;
 

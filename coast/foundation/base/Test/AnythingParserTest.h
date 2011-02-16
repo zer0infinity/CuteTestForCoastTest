@@ -34,7 +34,6 @@ public:
 	virtual void			setUp ();
 	static Test				*suite ();
 
-	void	anythingTests();
 	void		parseSimpleTypeLong();
 	void 		IntParseSimpleTypeLong(const String &inp, long exp);
 	void		parseSimpleTypeDouble();

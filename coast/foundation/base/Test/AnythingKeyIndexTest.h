@@ -28,10 +28,6 @@ public:
 
 	void 		SimpleRemove ();
 	void 		RemoveInvKeys ();
-	void		KeyDeletion0 ();
-	void		KeyDeletion1 ();
-	void		KeyDeletion2 ();
-	void 		KeyDeletion3 ();
 
 	void		IndexAccess ();
 

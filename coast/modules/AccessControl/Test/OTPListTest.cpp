@@ -38,7 +38,7 @@ public:
 	}
 	bool IncCount(String tokenid, long by) {
 		unsigned long old = GetCount(tokenid);
-		fList->SetCount(GetCount(tokenid), by);
+		fList->SetCount(tokenid, old + by);
 		return (GetCount(tokenid) == old + by);
 	}
 

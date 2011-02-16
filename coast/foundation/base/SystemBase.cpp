@@ -73,8 +73,8 @@ namespace Coast {
 			timeval t;
 
 			// initialize the descriptor sets
-			FD_ZERO(&readfds);
-			FD_ZERO(&writefds);
+			FD_ZERO(&readfds); //lint -esym(530, readfds)
+			FD_ZERO(&writefds); //lint -esym(530, writefds)
 			FD_ZERO(&exceptfds);
 
 			// set the descriptor sets

@@ -10,8 +10,6 @@
 #define ALLOCATORNEWDELETE_H_
 
 #include "ITOStorage.h"
-#include <new>
-#include <cassert>
 
 namespace Coast
 {
@@ -63,15 +61,5 @@ namespace Coast
 		static void operator delete[] (void *, const std::nothrow_t &) throw();
 		static void operator delete[] (void *, void *) throw();
 	};
-
-	namespace Memory
-	{
-		template<typename T>
-		struct AlignedSize {
-			static const size_t value = sizeof(T) +
-					( sizeof(T) % sizeof(long double) ?
-							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
-		};
-	}
 }
 #endif /* ALLOCATORNEWDELETE_H_ */

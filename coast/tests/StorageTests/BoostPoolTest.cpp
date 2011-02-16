@@ -23,6 +23,7 @@
 #include "SystemLog.h"
 #define COAST_DISABLE_TRACE
 #include "STLStorage.h"
+#include "ITOStorage.h"
 #include "Threads.h"
 #include "Dbg.h"
 #include "ThreadPools.h"
@@ -315,7 +316,7 @@ void BoostPoolTest::MemUsageTest()
 	t_assertm(track_alloc::ok(), "Memory error");
 }
 
-typedef TrackAlloc<STLStorage::BoostPoolUserAllocatorGlobal> track_allocWD;
+typedef TrackAlloc<ITOStorage::BoostPoolUserAllocatorGlobal> track_allocWD;
 
 void BoostPoolTest::GlobalStorageMemUsageTest()
 {
@@ -396,7 +397,7 @@ void BoostPoolTest::CurrentStorageMemUsageTest()
 	}
 }
 
-typedef TrackAlloc<STLStorage::BoostPoolUserAllocatorCurrent> track_allocWDCurr;
+typedef TrackAlloc<ITOStorage::BoostPoolUserAllocatorCurrent> track_allocWDCurr;
 
 void BoostPoolTest::TestFuncCurrent()
 {
@@ -677,10 +678,10 @@ struct singleton_pool_default_malloc_free_tag {};
 struct singleton_pool_StorageGlobal_tag {};
 struct singleton_pool_StorageCurrent_tag {};
 
-template < typename T > struct tst_pool_allocator_global : public STLStorage::pool_allocator<T, STLStorage::BoostPoolUserAllocatorGlobal, 32 > {};
-template < typename T > struct tst_pool_allocator_current : public STLStorage::pool_allocator<T, STLStorage::BoostPoolUserAllocatorCurrent, 32 > {};
-template < typename T > struct tst_fast_pool_allocator_global : public STLStorage::fast_pool_allocator<T, STLStorage::BoostPoolUserAllocatorGlobal, 32 > {};
-template < typename T > struct tst_fast_pool_allocator_current : public STLStorage::fast_pool_allocator<T, STLStorage::BoostPoolUserAllocatorCurrent, 32 > {};
+template < typename T > struct tst_pool_allocator_global : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorGlobal, 32 > {};
+template < typename T > struct tst_pool_allocator_current : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorCurrent, 32 > {};
+template < typename T > struct tst_fast_pool_allocator_global : public STLStorage::fast_pool_allocator<T, ITOStorage::BoostPoolUserAllocatorGlobal, 32 > {};
+template < typename T > struct tst_fast_pool_allocator_current : public STLStorage::fast_pool_allocator<T, ITOStorage::BoostPoolUserAllocatorCurrent, 32 > {};
 
 #define FUNCIMPLEMENTOR(TSTFUNC, NTHREADS, NSIZE) \
 void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()\
@@ -695,7 +696,7 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 		typedef Loki::AllocatorSingleton< ::Loki::ClassLevelLockable, 4096, 128, 4, ::Loki::NoDestroy, ::Loki::Mutex > AllocatorSingleton;\
 		typedef BoostSingletonPool<singleton_pool_default_new_delete_tag, NSIZE> tBoostSingletonPool_def_new_delete;\
 		typedef BoostSingletonPool<singleton_pool_default_malloc_free_tag, NSIZE> tBoostSingletonPool_def_malloc_free;\
-		typedef BoostSingletonPool<singleton_pool_StorageGlobal_tag, NSIZE, STLStorage::BoostPoolUserAllocatorGlobal> tBoostSingletonPoolStorageGlobal;\
+		typedef BoostSingletonPool<singleton_pool_StorageGlobal_tag, NSIZE, ITOStorage::BoostPoolUserAllocatorGlobal> tBoostSingletonPoolStorageGlobal;\
 		TestTimer aTestTimer(0);\
 		TestTimer::tTimeType aRefTime(0), aRefTime2(0);\
 		{\

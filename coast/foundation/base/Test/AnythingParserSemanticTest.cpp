@@ -23,8 +23,8 @@ using namespace Coast;
 #include <ctype.h>
 
 //---- AnythingParserSemanticTest ---------------------------------------------------------
-AnythingParserSemanticTest::AnythingParserSemanticTest (TString tname) : TestCaseType(tname)
-{
+AnythingParserSemanticTest::AnythingParserSemanticTest(TString tname) :
+	TestCaseType(tname), lineCounter(0) {
 }
 
 void AnythingParserSemanticTest::setUp ()
@@ -1882,8 +1882,6 @@ void AnythingParserSemanticTest::testSemantic28Prep( Anything *any ) {
 
 	delete anyHlp0;
 	delete anyHlp1;
-	anyHlp0 = 0;
-	anyHlp1 = 0;
 }
 //	testSemantic28Prep
 

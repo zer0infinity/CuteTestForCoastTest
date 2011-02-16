@@ -18,34 +18,6 @@
 
 #undef Free
 
-void *iosITOSSLSocket::operator new(size_t size, Allocator *a)
-{
-	StartTrace(iosITOSSLSocket.operatornew);
-	if (a) {
-		Trace("allocating with allocator:[" << (long)a << "]");
-		return a->Calloc(1, size);
-	} else {
-		Trace("using global new");
-		return ::operator new(size);
-	}
-}
-
-void iosITOSSLSocket::operator delete(void *d)
-{
-	StartTrace(iosITOSSLSocket.operatorndelete);
-	if (d) {
-		Allocator *a = ((iosITOSSLSocket *)d)->fAllocator;
-
-		if (a) {
-			Trace("deleting with allocator:[" << (long)a << "]");
-			a->Free(d);
-		} else {
-			Trace("deleting with global delete");
-			::operator delete(d);
-		}
-	}
-}
-
 iosITOSSLSocket::iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout)
 	: 	fSSLSockBuf(ctx, ssl, timeout),
 		fAllocator(ssl->GetAllocator())

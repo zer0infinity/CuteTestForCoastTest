@@ -23,10 +23,6 @@ public:
 	void setUp ();
 	void simpleAppendTest();
 	void umlauteTest();
-
-protected:
-	// utility
-	void Dump(std::ostream &os, const Anything &data, const String &str);
 };
 
 #endif

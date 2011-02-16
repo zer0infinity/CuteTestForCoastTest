@@ -24,32 +24,6 @@ using namespace Coast;
 #include <errno.h>
 #endif
 
-void *iosITOSocket::operator new(size_t size, Allocator *a)
-{
-	StartTrace(iosITOSocket.operatornew);
-	if (a) {
-		Trace("allocating with allocator:[" << (long)a << "]");
-		return a->Calloc(1, size);
-	} else {
-		Trace("using global new");
-		return ::operator new(size);
-	}
-}
-
-void iosITOSocket::operator delete(void *d)
-{
-	StartTrace(iosITOSocket.operatordelete);
-	if (d) {
-		Allocator *a = ((iosITOSocket *)d)->fAllocator;
-		if (a) {
-			Trace("deleting with allocator:[" << (long)a << "]");
-			a->Free(d);
-		} else {
-			Trace("deleting with global delete");
-			::operator delete(d);
-		}
-	}
-}
 
 iosITOSocket::iosITOSocket(Socket *s, long timeout, long sockbufsz, int mode )
 	: fSocketBuf(s, timeout, sockbufsz, mode)

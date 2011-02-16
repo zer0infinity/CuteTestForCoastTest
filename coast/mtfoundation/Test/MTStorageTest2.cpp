@@ -49,7 +49,6 @@ class DataProviderThread : public TestWorkerThread
 {
 public:
 	DataProviderThread(Allocator *a);
-	~DataProviderThread() {}
 
 	Anything &GetData() {
 		return fData;
@@ -61,7 +60,7 @@ protected:
 };
 
 DataProviderThread::DataProviderThread(Allocator *a)
-	: TestWorkerThread(a), fData(a)
+	: TestWorkerThread(a), fData(Coast::Storage::Global())
 {
 }
 

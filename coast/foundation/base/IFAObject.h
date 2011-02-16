@@ -18,7 +18,7 @@ class String;
 //! This is the abstract root class for all IFAObjects
 /*! It defines the cloning API IFAObject.Clone(), that is needed for the prototype pattern.
  */
-class IFAObject : public Coast::AllocatorNewDelete {
+class IFAObject {
 public:
 	/*! virtual destructor to nicely cleanup derived types */
 	virtual ~IFAObject() {

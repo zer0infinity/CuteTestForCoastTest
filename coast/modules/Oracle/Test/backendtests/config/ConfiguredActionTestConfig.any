@@ -378,7 +378,7 @@
 				/CallDA {
 					/DataAccess SimpleSQLAccess
 					/Parameters {
-						/SQL	"select STOR_ID,ORD_NUM,DISCOUNT from SALESDETAIL where STOR_ID=7131 and ORD_NUM='Fsoap867'
+						/SQL	"select STOR_ID,ORD_NUM,DISCOUNT from SALESDETAIL where STOR_ID=7131 and ORD_NUM='Fsoap867'"
 					}
 				}
 			}

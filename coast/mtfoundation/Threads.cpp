@@ -60,9 +60,6 @@ AllocatorUnref::~AllocatorUnref()
 class MutexCountTableCleaner : public CleanupHandler
 {
 public:
-	//:Constructor
-	MutexCountTableCleaner() {}
-
 	static MutexCountTableCleaner fgCleaner;
 
 protected:
@@ -750,7 +747,7 @@ bool Thread::RegisterCleaner(CleanupHandler *handler)
 	}
 	String adrKey;
 	adrKey << (long)handler;
-	(*handlerList)[adrKey] = (IFAObject *)handler;
+	(*handlerList)[adrKey] = Anything(reinterpret_cast<IFAObject *>(handler), Coast::Storage::Global());
 
 	return true;
 }
@@ -763,7 +760,7 @@ bool Thread::CleanupThreadStorage()
 	Anything *handlerList = 0;
 	if (GETTLSDATA(fgCleanerKey, handlerList, Anything) && handlerList) {
 		for (long i = (handlerList->GetSize() - 1); i >= 0; --i) {
-			CleanupHandler *handler = (CleanupHandler *)((*handlerList)[i].AsIFAObject(0));
+			CleanupHandler *handler = reinterpret_cast<CleanupHandler *>((*handlerList)[i].AsIFAObject(0));
 			if (handler) {
 				handler->Cleanup();
 			}

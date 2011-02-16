@@ -47,7 +47,7 @@ template <
 class TElementType,
 	  class TListStorageType
 	  >
-class QueueBase : public IFAObject
+class QueueBase : public IFAObject, public Coast::AllocatorNewDelete
 {
 	friend class QueueTest;
 public:

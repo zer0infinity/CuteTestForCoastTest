@@ -19,7 +19,8 @@ def SystemTestMakeDirectoryExtendCleanup(env):
         shutil.rmtree(basepath, ignore_errors=True)
 
 def setUp(target, source, env):
-#    env['ENV']['COAST_LOGONCERR'] = '1'
+    env['ENV']['COAST_LOGONCERR'] = '1'
+    env['ENV']['COAST_TRACE_STORAGE'] = '1'
     pass
 
 def tearDown(target, source, env):

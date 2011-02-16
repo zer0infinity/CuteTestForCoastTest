@@ -19,6 +19,7 @@
 #include "PoolAllocator.h"
 #include "MemHeader.h"
 #include "Dbg.h"
+#include "ITOStorage.h"
 
 #include <vector>
 #include <list>
@@ -141,7 +142,7 @@ void STLStorageTest::AllocatorUsingSMartPtrTest()
 	typedef something listType;
 //	typedef TestStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorCurrent> blaType;
 //	typedef STLStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
-	typedef STLStorage::fast_pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
+	typedef STLStorage::fast_pool_allocator<listType, ITOStorage::BoostPoolUserAllocatorGlobal> blaType;
 	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", Coast::Storage::Current());
 	{
 		blaType pool1;

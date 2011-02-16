@@ -473,6 +473,7 @@ public:
 		return (found < 0 ? const_range(end(), end())
 				: const_range(const_iterator(*this, found), const_iterator(*this, found + 1)));
 	}
+
 protected:
 	// same impl for both value inserts
 	iterator do_insert(iterator pos, size_type n, const value_type &v);
@@ -506,6 +507,7 @@ protected:
 	friend class AnyArrayImpl; //!@FIXME: needed because of DeepClone(Allocator,Anything) above from within AnyArrayImpl
 	friend class ROAnything;
 	friend struct Sorter;
+	friend class AnyImpl;
 
 	Anything(AnyImpl *);
 	AnyImpl *GetImpl(); // TODO: this is a loophole that discards const-ness

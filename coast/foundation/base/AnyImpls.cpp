@@ -56,24 +56,23 @@ String AnyImpl::ThisToHex(Allocator *a) const {
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const {
 	aimplStartTrace1(AnyImpl.DeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a);
-	IFAObject *pObj = 0;
+	AnyImpl *pObj = 0;
 	// SOP: only use xreftable if 'this' has more than one reference on it, otherwise it does not make sense
 	if ( RefCount() > 1L ) {
 		String adr = ThisToHex();
 		Anything &pRefEntry = (xreftable[adr]);
-		pObj = pRefEntry.AsIFAObject(0);
+		pObj = reinterpret_cast<AnyImpl*>(pRefEntry.AsIFAObject()); //TODO might not be the best way to do it (requires friendship of Anything and AnyImpl)
 		if (pObj != 0) {
-			AnyImpl* pImpl = dynamic_cast<AnyImpl*>(pObj);
-			aimplTraceAny(pRefEntry, "found existing entry, adding reference " << (pImpl?pImpl->ThisToHex():"0"));
-			pImpl->Ref(); // do not forget to count
-			return pImpl;
+			aimplTraceAny(pRefEntry, "found existing entry, adding reference " << (pObj?pObj->ThisToHex():"0"));
+			pObj->Ref(); // do not forget to count
+			return pObj;
 		}
 		pObj = this->Clone(a);
-		pRefEntry = pObj;
-		aimplTrace("stored xref entry for adr: " << adr << " is " << dynamic_cast<AnyImpl*>(pObj)->ThisToHex());
-		} else {
+		pRefEntry = reinterpret_cast<IFAObject*>(pObj);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << pObj->ThisToHex());
+	} else {
 		pObj = this->Clone(a);
-		}
+	}
 	// let the specific impl modify the cloned entry if it needs to (like in AnyArrayImpl)
 	return this->DoDeepClone(pObj, a, xreftable);
 }
@@ -101,7 +100,7 @@ void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const {
 	v.VisitLong(fLong, this, lIdx, slotname);
 }
 
-IFAObject *AnyLongImpl::Clone(Allocator *a) const {
+AnyImpl *AnyLongImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 }
 
@@ -121,7 +120,7 @@ String AnyObjectImpl::AsString(const char *) const {
 	return gcObjectText;
 }
 
-IFAObject *AnyObjectImpl::Clone(Allocator *a) const {
+AnyImpl *AnyObjectImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyObjectImpl(this->fObject, a);
 }
 
@@ -148,7 +147,7 @@ const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const {
 	return fBuf.cstr();
 }
 
-IFAObject *AnyDoubleImpl::Clone(Allocator *a) const {
+AnyImpl *AnyDoubleImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
 }
 
@@ -171,7 +170,7 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 	v.VisitVoidBuf(fBuf, this, lIdx, slotname);
 }
 
-IFAObject *AnyBinaryBufImpl::Clone(Allocator *a) const {
+AnyImpl *AnyBinaryBufImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 }
 
@@ -208,12 +207,12 @@ void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	v.VisitCharPtr(fString, this, lIdx, slotname);
 }
 
-IFAObject *AnyStringImpl::Clone(Allocator *a) const {
+AnyImpl *AnyStringImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyStringImpl(this->fString, a);
 }
 
 //---- AnyKeyAssoc --------------------------------------------------
-class AnyKeyAssoc : public Coast::AllocatorNewDelete {
+class AnyKeyAssoc : public Coast::SegStorAllocatorNewDelete<AnyKeyAssoc> {
 public:
 	AnyKeyAssoc(const Anything &value, const char *key = 0) :
 		fValue(value), fKey(key, -1, value.GetAllocator()) {
@@ -250,7 +249,9 @@ public:
 		}
 		return *this;
 	}
-
+	Allocator *MyAllocator() {
+		return fValue.GetAllocator();
+	}
 private:
 	Anything fValue;
 	String fKey;
@@ -315,7 +316,7 @@ long AnyKeyTable::DoHash(const char *key, bool append, long sizehint, u_long has
 
 	// look for next free slot
 	// do wrap around search
-	long bufSz = fKeyTable->fBufSize;
+	long bufSz = AnyArrayImpl::ARRAY_BUF_SIZE;
 
 	long i = hash;
 	do {
@@ -434,27 +435,6 @@ void AnyKeyTable::PrintHash() const {
 		}
 	}
 	SystemLog::WriteToStderr("\n", 1);
-}
-
-void *AnyKeyTable::operator new(size_t size, Allocator *a)
-{
-	if (a) {
-		return a->Calloc(1, size);
-	} else {
-		return ::operator new(size);
-	}
-}
-
-void AnyKeyTable::operator delete(void *d)
-{
-	if (d) {
-		Allocator *a = reinterpret_cast<AnyKeyTable *>(d)->fAllocator;
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
 }
 
 //---- AnyIndTable --------------------------------------------------
@@ -623,32 +603,11 @@ void AnyIndTable::PrintTable() const {
 	SystemLog::WriteToStderr(m);
 }
 
-void *AnyIndTable::operator new(size_t size, Allocator *a)
-{
-	if (a) {
-		return a->Calloc(1, size);
-	} else {
-		return ::operator new(size);
-	}
-}
-
-void AnyIndTable::operator delete(void *d)
-{
-	if (d) {
-		Allocator *a = static_cast<AnyIndTable *>(d)->fAllocator;
-		if (a) {
-			a->Free(d);
-		} else {
-			::operator delete(d);
-		}
-	}
-}
-
 //---- AnyArrayImpl -----------------------------------------------------------------
 static const char *gcArrayText = "AnyArrayImpl";
 
 AnyArrayImpl::AnyArrayImpl(Allocator *a) :
-	AnyImpl(a), fContents(0), fKeys(0), fInd(0), fCapacity(4), fSize(0), fBufSize(4), fNumOfBufs(0) {
+	AnyImpl(a), fContents(0), fKeys(0), fInd(0), fCapacity(4), fSize(0), fNumOfBufs(0) {
 	// allocate a default size structure without keys
 	fCapacity = AdjustCapacity(fCapacity);
 	AllocMemory();
@@ -870,7 +829,6 @@ const String &AnyArrayImpl::VisitSlotName(long slot) const {
 }
 
 void AnyArrayImpl::Expand(long newsize) {
-	bool allocOk = true;
 	long oldCap = fCapacity;
 
 	// set the new capacity
@@ -881,13 +839,13 @@ void AnyArrayImpl::Expand(long newsize) {
 	}
 
 	// check for the range of the capacity
-	Assert((fCapacity % fBufSize) == 0);
+	Assert((fCapacity % ARRAY_BUF_SIZE) == 0);
 
 	// calculate the number of buffers needed for the expansion
 	long numOfExistingBufs = fNumOfBufs;
-	long numOfNewBufs = fCapacity / fBufSize; //fCapacity / fBufSize + 1;
+	long numOfNewBufs = fCapacity / ARRAY_BUF_SIZE; //fCapacity / ARRAY_BUF_SIZE + 1;
 
-	Assert(numOfNewBufs *fBufSize >= newsize);
+	Assert(numOfNewBufs *ARRAY_BUF_SIZE >= newsize);
 
 	// allocate new ptr buffer if necessary
 	if ( numOfNewBufs > fNumOfBufs ) {
@@ -897,37 +855,39 @@ void AnyArrayImpl::Expand(long newsize) {
 		// allocate the new size
 		AnyKeyAssoc **old = fContents;
 		fContents = reinterpret_cast<AnyKeyAssoc **>(MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *)));
-		if (fContents) {
-			for (long bufs = 0; bufs < numOfExistingBufs; ++bufs) {
-				fContents[bufs] = old[bufs];
-			}
-			MyAllocator()->Free(old); // frees the old ptr buffer array not the contents buffer
-		} else {
+		if (fContents == 0) {
 			static const char crashmsg[] = "FATAL: AnyArrayImpl::Expand calloc failed (increasing pointer buffer). I will crash :-(\n";
 			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 
 			fContents = old;
 			fCapacity = oldCap;
-			allocOk = false;
+			return;
 		}
+
+		for (long bufs = 0; bufs < numOfExistingBufs; ++bufs) {
+			fContents[bufs] = old[bufs];
+		}
+		MyAllocator()->Free(old); // frees the old ptr buffer array not the contents buffer
 	}
 
-	// allocate the needed buffers
-	if (allocOk) {
-		for (long i = numOfExistingBufs; i < fNumOfBufs && allocOk; ++i) {
-			Assert(MyAllocator() != 0);
-			fContents[i] = new (MyAllocator()) AnyKeyAssoc[fBufSize];
-			if (fContents[i] == 0) {
-				static const char crashmsg[] =
-						"FATAL: AnyArrayImpl::Expand calloc failed (assigning memory to increased pointer buffers).\nI will crash :-(\n";
-				SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+	AllocBuffersFrom(numOfExistingBufs);
+}
 
-				allocOk = false;
-			} else {
-				for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; ++keyAssocKeyCnt ) {
-					fContents[i][keyAssocKeyCnt].Init(MyAllocator());
-				}
-			}
+void AnyArrayImpl::AllocBuffersFrom(size_t idx) {
+	for (size_t i = idx; i < fNumOfBufs; ++i) {
+		// must not use calloc to ensure proper initialization of Anything instance variables
+		Assert(MyAllocator() != 0);
+		fContents[i] = new (MyAllocator()) AnyKeyAssoc[ARRAY_BUF_SIZE];
+
+		if ( fContents[i] == 0 ) {
+			static const char crashmsg[] =
+					"FATAL: AnyArrayImpl::Expand calloc failed (assigning memory to increased pointer buffers).\nI will crash :-(\n";
+			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+			return;
+		}
+
+		for ( size_t keyAssocKeyCnt = 0L; keyAssocKeyCnt < ARRAY_BUF_SIZE; ++keyAssocKeyCnt ) {
+			fContents[i][keyAssocKeyCnt].Init(MyAllocator());
 		}
 	}
 }
@@ -942,9 +902,9 @@ void AnyArrayImpl::InsertReserve(long pos, long size) {
 
 void AnyArrayImpl::AllocMemory() {
 	// calculate the number of needed buffers
-	// allocate at least fBufSize buffers of the size fBufSize
-	fNumOfBufs = fCapacity / fBufSize; // round to the next multiple
-	//(fCapacity / fBufSize > fBufSize) ? fCapacity/fBufSize : fBufSize;
+	// allocate at least ARRAY_BUF_SIZE buffers of the size ARRAY_BUF_SIZE
+	fNumOfBufs = fCapacity / ARRAY_BUF_SIZE; // round to the next multiple
+	//(fCapacity / ARRAY_BUF_SIZE > ARRAY_BUF_SIZE) ? fCapacity/ARRAY_BUF_SIZE : ARRAY_BUF_SIZE;
 	fContents = static_cast<AnyKeyAssoc **>( MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *)));
 
 	// allocate the index table
@@ -952,20 +912,7 @@ void AnyArrayImpl::AllocMemory() {
 
 	// allocate the buffers holding the
 	// Any Key Assocs
-	for (long i = 0; i < fNumOfBufs; ++i) {
-		// must not use calloc to ensure proper initialization of Anything instance variables
-		Assert(MyAllocator() != 0);
-
-		fContents[i] = new (MyAllocator()) AnyKeyAssoc[fBufSize];		// (MyAllocator());
-		if ( fContents[i] == 0 ) {
-			String msg("Memory allocation failed!");
-			SYSERROR(msg);
-		} else {
-			for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; ++keyAssocKeyCnt ) {
-				fContents[i][keyAssocKeyCnt].Init(MyAllocator());
-			}
-		}
-	}
+	AllocBuffersFrom(0);
 }
 
 void AnyArrayImpl::PrintKeys() const {
@@ -989,11 +936,11 @@ void AnyArrayImpl::PrintHash() const {
 	}
 }
 
-IFAObject *AnyArrayImpl::Clone(Allocator *a) const {
+AnyImpl *AnyArrayImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyArrayImpl(a);
-	}
+}
 
-AnyImpl *AnyArrayImpl::DoDeepClone(IFAObject *pObj, Allocator *a, Anything &xreftable) const {
+AnyImpl *AnyArrayImpl::DoDeepClone(AnyImpl *pObj, Allocator *a, Anything &xreftable) const {
 	aimplStartTrace(AnyArrayImpl.DoDeepClone);
 	long count = this->GetSize();
 	AnyArrayImpl *pImpl = dynamic_cast<AnyArrayImpl*> (pObj);
@@ -1001,7 +948,7 @@ AnyImpl *AnyArrayImpl::DoDeepClone(IFAObject *pObj, Allocator *a, Anything &xref
 		pImpl->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return pImpl;
-			}
+}
 
 void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare &comparer) {
 	if (hi < m + 1 || lo > m) {

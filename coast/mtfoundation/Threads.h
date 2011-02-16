@@ -326,7 +326,7 @@ private:
 //!syntactic sugar to ease acquiring and releasing a mutex in one scope
 class LockUnlockEntry
 {
-	struct WrapperBase {
+	struct WrapperBase : public Coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
 			StatTrace(LockUnlockEntry.WrapperBase, "", Coast::Storage::Current());
@@ -334,28 +334,6 @@ class LockUnlockEntry
 		virtual ~WrapperBase() {
 			StatTrace(LockUnlockEntry.~WrapperBase, "", Coast::Storage::Current());
 		}
-
-		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockUnlockEntry.new, "allocator:" << (long)size, Coast::Storage::Current());
-			if (a) {
-				return a->Calloc(1, size);
-			} else {
-				return ::operator new(size);
-			}
-		}
-
-		static void operator delete(void *d) {
-			StatTrace(LockUnlockEntry.delete, "", Coast::Storage::Current());
-			if (d) {
-				Allocator *a = ((WrapperBase *)d)->fAllocator;
-				if (a) {
-					a->Free(d);
-				} else {
-					::operator delete(d);
-				}
-			}
-		}
-
 		Allocator *fAllocator;
 	};
 
@@ -412,34 +390,13 @@ public:
 
 class LockedValueIncrementDecrementEntry
 {
-	struct WrapperBase {
+	struct WrapperBase : public Coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
 			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Coast::Storage::Current());
 		}
 		virtual ~WrapperBase() {
 			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Coast::Storage::Current());
-		}
-
-		static void *operator new(size_t size, Allocator *a) {
-			StatTrace(LockedValueIncrementDecrementEntry.new, "allocator:" << (long)size, Coast::Storage::Current());
-			if (a) {
-				return a->Calloc(1, size);
-			} else {
-				return ::operator new(size);
-			}
-		}
-
-		static void operator delete(void *d) {
-			StatTrace(LockedValueIncrementDecrementEntry.delete, "", Coast::Storage::Current());
-			if (d) {
-				Allocator *a = ((WrapperBase *)d)->fAllocator;
-				if (a) {
-					a->Free(d);
-				} else {
-					::operator delete(d);
-				}
-			}
 		}
 
 		Allocator *fAllocator;
@@ -517,6 +474,7 @@ protected:
 };
 
 #include "ObserverIf.h"
+#include "AllocatorNewDelete.h"
 
 //---- Thread ------------------------------------------------------------
 //! thread abstraction implementing its own thread state model using EThreadState and the available native thread api
@@ -524,7 +482,7 @@ protected:
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
 With this means it is possible to reliably control starting and stopping of a thread */
-class Thread : public NamedObject, public Observable<Thread, ROAnything>
+class Thread : public NamedObject, public Observable<Thread, ROAnything>, public Coast::AllocatorNewDelete
 {
 	typedef Observable<Thread, ROAnything> tObservableBase;
 public:

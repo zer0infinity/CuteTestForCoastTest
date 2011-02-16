@@ -14,6 +14,7 @@
 #endif
 
 #include "Anything.h"
+#include "AllocatorNewDelete.h"
 
 //--- forward declarations ------------------------------------------------------------
 class AcceptorCallBack;
@@ -26,7 +27,7 @@ int closeSocket(int sd);
 //! it is a <B>communication end point</B> for read/write sockets.
 //! it has an api that allows the manipulation of the socket and
 //! the generation of an iostream which is a SocketStream.
-class Socket
+class Socket : public Coast::AllocatorNewDelete
 {
 public:
 	//! constructor sets the variables
@@ -120,10 +121,6 @@ public:
 		return fAllocator;
 	}
 
-	//! allocate object with optimized allocator strategy
-	static void *operator new(size_t size, Allocator *a);
-	//! delete object with optimized allocator strategy
-	static void operator delete(void *d);
 
 	/*! Wrapper function to read from a socket filedescriptor. Win32 handles socket filedescriptors different than normal file descriptors
 		\param fd socket filedescriptor to read from
