@@ -9,24 +9,6 @@
 #ifndef _FOUNDATION_H
 #define _FOUNDATION_H
 
-#if defined(COAST_OPT)
-#define STR_MODE	"OPT"
-#else
-#define STR_MODE	"DBG"
-#endif
-#if defined(COAST_TRACE)
-#define STR_TRACE	"_TRACE"
-#else
-#define STR_TRACE	""
-#endif
-#define COAST_BUILDFLAGS	STR_MODE STR_TRACE
-
-#if defined(__GNUG__)
-#define COAST_COMPILER		"GCC_"  __VERSION__
-#else
-#define COAST_COMPILER		"CompilerUnknown"
-#endif
-
 // symbol concatenation operator
 #define _NAME1_(name) name
 #define _NAME2_(name1,name2) name1##name2
