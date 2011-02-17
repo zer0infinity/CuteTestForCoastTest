@@ -542,7 +542,7 @@ public:
 
 private:
 	AnyImpl *DoDeepClone(AnyImpl *res, Allocator *a, Anything &xreftable) const;
-	void AllocBuffersFrom(size_t idx);
+	void AllocBuffersFrom(long idx);
 };
 
 // convenience macros for AnyImpl simplification

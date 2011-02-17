@@ -873,8 +873,8 @@ void AnyArrayImpl::Expand(long newsize) {
 	AllocBuffersFrom(numOfExistingBufs);
 }
 
-void AnyArrayImpl::AllocBuffersFrom(size_t idx) {
-	for (size_t i = idx; i < fNumOfBufs; ++i) {
+void AnyArrayImpl::AllocBuffersFrom(long idx) {
+	for (long i = idx; i < fNumOfBufs; ++i) {
 		// must not use calloc to ensure proper initialization of Anything instance variables
 		Assert(MyAllocator() != 0);
 		fContents[i] = new (MyAllocator()) AnyKeyAssoc[ARRAY_BUF_SIZE];
@@ -912,7 +912,7 @@ void AnyArrayImpl::AllocMemory() {
 
 	// allocate the buffers holding the
 	// Any Key Assocs
-	AllocBuffersFrom(0);
+	AllocBuffersFrom(0L);
 }
 
 void AnyArrayImpl::PrintKeys() const {

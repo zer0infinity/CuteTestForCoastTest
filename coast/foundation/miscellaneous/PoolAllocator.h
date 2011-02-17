@@ -72,9 +72,8 @@ public:
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
 	//! implement hook for freeing memory
-	virtual size_t Free(void *vp);
-
-	//TODO
+	virtual void Free(void *vp);
+	//! implement hook for freeing memory
 	virtual void Free(void *vp, size_t sz);
 
 	/*! Hook to allow allocators to optimize allocation of string buffers for example.

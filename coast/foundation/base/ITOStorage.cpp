@@ -469,13 +469,13 @@ void *GlobalAllocator::Alloc(size_t allocSize)
 		return ExtMemStart(mh);
 	} else {
 		static char crashmsg[255] = { 0 };
-		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%lub failed. I will crash :-(\n", allocSize);
+		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
 		SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 	}
 	return NULL;
 }
 
-size_t GlobalAllocator::Free(void *vp)
+void GlobalAllocator::Free(void *vp)
 {
 	size_t sz(0);
 	if ( vp ) {
@@ -491,7 +491,6 @@ size_t GlobalAllocator::Free(void *vp)
 		}
 		::free(vp);
 	}
-	return sz;
 }
 
 Allocator *TestStorageHooks::Global()
@@ -538,30 +537,22 @@ MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)
 
 char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes)
 {
-	char *pRet = reinterpret_cast<char *>(Coast::Storage::Global()->Malloc(bytes));
-//	_StatTrace(BoostPoolUserAllocatorGlobal.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Global());
-	return pRet;
+	return reinterpret_cast<char *>(Coast::Storage::Global()->Malloc(bytes));
 }
 
 void ITOStorage::BoostPoolUserAllocatorGlobal::free(char *const block)
 {
-	size_t sz(Coast::Storage::Global()->Free(block));
-//	_StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block << " sz:" << (long)sz, Storage::Global());
-	(void) sz; // avoid unused variable warning
+	Coast::Storage::Global()->Free(block);
 }
 
 char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
 {
-	char *pRet = reinterpret_cast<char *>(Coast::Storage::Current()->Malloc(bytes));
-//	_StatTrace(BoostPoolUserAllocatorCurrent.malloc, "@" << (long)pRet << " sz:" << (long)bytes, Storage::Current());
-	return pRet;
+	return reinterpret_cast<char *>(Coast::Storage::Current()->Malloc(bytes));
 }
 
 void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
 {
-	size_t sz(Coast::Storage::Current()->Free(block));
-//	_StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block << " sz:" << (long)sz, Storage::Current());
-	(void) sz; // avoid unused variable warning
+	Coast::Storage::Current()->Free(block);
 }
 
 Allocator *FoundationStorageHooks::Global()

@@ -71,16 +71,19 @@ public:
 		: PoolAllocator(poolid, poolSize, maxKindOfBucket) TrackLockerInit(fCurrLockerId) {}
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~MTPoolAllocator() { }
+	virtual inline void Free(void *vp, size_t sz) {
+		PoolAllocator::Free(vp, sz);
+	}
 	//! implement hook for freeing memory
-	virtual inline size_t Free(void *vp) {
+	virtual inline void Free(void *vp) {
 		TrackLocker(fCurrLockerId);
-		return PoolAllocator::Free(vp);
+		PoolAllocator::Free(vp);
 	}
 
 protected:
 	TrackLockerDef(fCurrLockerId);
 	//!implement hook for allocating memory using bucketing
-	virtual inline void *Alloc(u_long allocSize) {
+	virtual inline void *Alloc(size_t allocSize) {
 		TrackLocker(fCurrLockerId);
 		return PoolAllocator::Alloc(allocSize);
 	}
@@ -336,7 +339,8 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 
 void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 {
-	long const allocId = wdallocator ? wdallocator->GetId() : -1L;
+	const long allocId = wdallocator ? wdallocator->GetId() : -1L;
+	(void)allocId;  // to prevent unused compiler warning occurring when trace is disabled
 	StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", Coast::Storage::Global());
 	if ( fgInitialized ) {
 		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen

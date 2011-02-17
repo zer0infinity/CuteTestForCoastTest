@@ -458,7 +458,7 @@ void PoolAllocator::Free(void* p, size_t sz) {
 	Free(p);
 }
 
-size_t PoolAllocator::Free(void *vp)
+void PoolAllocator::Free(void *vp)
 {
 	MemoryHeader *header = RealMemStart(vp);
 	size_t sz(0);
@@ -522,7 +522,6 @@ size_t PoolAllocator::Free(void *vp)
 		// something wrong, either 0 ptr, invalid pointer or corrupted memory
 		Assert(0 == vp);
 	}
-	return sz;
 }
 
 // users of sizeHint pay a price for optimal sizing...

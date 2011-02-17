@@ -15,7 +15,6 @@
 #include <map>
 
 class SegStoreAllocator : public Allocator {
-//	typedef boost::pool<boost::default_user_allocator_new_delete> CurrentPoolType;
 	typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
 	typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
 	typedef std::map<size_t, CurrentPoolTypePtr> AllocPoolMapping;
@@ -23,9 +22,7 @@ class SegStoreAllocator : public Allocator {
 	AllocPoolMapping allocPoolMap;
 
 	//FIXME actually breaks LSP
-	size_t Free(void *vp) {
-		return 0;
-	}
+	void Free(void *vp) {}
 public:
 	SegStoreAllocator(long allocatorid) : Allocator(allocatorid) {}
 

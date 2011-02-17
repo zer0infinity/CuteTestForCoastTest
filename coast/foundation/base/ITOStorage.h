@@ -173,7 +173,7 @@ public:
 	virtual void Free(void *vp, size_t sz) = 0;
 
 	//!analogous api to built in c function free
-	virtual size_t Free(void *vp) = 0;
+	virtual void Free(void *vp) = 0;
 
 	//!refcounting support
 	virtual void Ref() 		{
@@ -262,9 +262,9 @@ public:
 	virtual ~GlobalAllocator();
 
 	//!frees memory allocated by global allocator
-	virtual size_t Free(void *vp);
+	virtual void Free(void *vp);
 
-	//TODO
+	//!frees memory allocated by global allocator
 	virtual void Free(void *vp, size_t sz);
 
 	//!reference counting is disabled global allocator always exists (but only once)
