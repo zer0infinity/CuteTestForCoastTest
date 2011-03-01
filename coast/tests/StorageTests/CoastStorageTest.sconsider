@@ -12,7 +12,7 @@ def tearDown(target, source, env):
 buildSettings = {
     packagename : {
         'includeSubdir'    : '',
-        'linkDependencies' : ['CoastMTFoundation', 'loki.objects', 'testfwFoundation'],
+        'linkDependencies' : ['CoastMTFoundation', 'testfwFoundation'],
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [(SConsider.findFiles(['config'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH)],

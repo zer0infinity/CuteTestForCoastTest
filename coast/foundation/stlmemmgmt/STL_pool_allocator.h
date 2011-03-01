@@ -54,31 +54,31 @@ namespace STLStorage
 			_StartTrace1(pool_allocator.pool_allocator, "this:" << (long)this << " sizeof(T):" << (long)sizeof(T));
 			void *pMem = (void *)UserAllocator::malloc(sizeof(pool_refcounted_type));
 			fpIntPool = int_pool_instance_type( new (pMem) pool_refcounted_type(sizeof(T), NextSize) );
-			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
+			_Trace("IntPool @" << (long)fpIntPool.get());
 		}
 
 		pool_allocator(const ThisType &aAllocator)
 			: fpIntPool(aAllocator.fpIntPool) {
 			_StartTrace1(pool_allocator.pool_allocator, "copy this:" << (long)this << " sizeof(T):" << (long)sizeof(T) << " other:" << (long)&aAllocator << " sizeof(other):" << (long)sizeof(typename ThisType::value_type));
-			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
+			_Trace("IntPool @" << (long)fpIntPool.get());
 		}
 
 		template <typename U>
 		pool_allocator(const pool_allocator<U, UserAllocator, NextSize>& aAllocator)
 			: fpIntPool() {
 			_StartTrace1(pool_allocator.pool_allocator, "copy other type this:" << (long)this << " sizeof(T):" << (long)sizeof(T) << " other:" << (long)&aAllocator << " sizeof(U):" << (long)sizeof(typename pool_allocator<U, UserAllocator, NextSize>::value_type));
-			if ( GetImplRef(aAllocator.fpIntPool) ) {
+			if ( aAllocator.fpIntPool.get() ) {
 				fpIntPool = aAllocator.fpIntPool->Clone(sizeof(T), NextSize);
 			} else {
 				_Trace("no pool created for other type ??");
 				void *pMem = (void *)UserAllocator::malloc(sizeof(pool_refcounted_type));
 				fpIntPool = int_pool_instance_type( new (pMem) pool_refcounted_type(sizeof(T), NextSize) );
 			}
-			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
+			_Trace("IntPool @" << (long)fpIntPool.get());
 		}
 
 		~pool_allocator() {
-			_StatTrace(pool_allocator.~pool_allocator, "this:" << (long)this << " IntPool:" << (long)GetImplRef(fpIntPool), Coast::Storage::Current());
+			_StatTrace(pool_allocator.~pool_allocator, "this:" << (long)this << " IntPool:" << (long)fpIntPool.get(), Coast::Storage::Current());
 		}
 
 		static pointer address(reference r) {

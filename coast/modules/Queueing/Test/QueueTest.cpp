@@ -19,10 +19,9 @@
 #include "PoolAllocator.h"
 #include "Dbg.h"
 #include "SystemBase.h"
+#include <typeinfo>
 
 using namespace Coast;
-
-//--- c-modules used -----------------------------------------------------------
 
 class DCDStateMachine
 {

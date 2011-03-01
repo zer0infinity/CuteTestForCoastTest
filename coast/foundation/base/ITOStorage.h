@@ -18,6 +18,7 @@
 class MemoryHeader;
 
 namespace ITOStorage {
+
 	// adaption of Storage::Global / Storage::Current for boost::poolXXX usage
 	struct BoostPoolUserAllocatorGlobal {
 		typedef std::size_t size_type;
