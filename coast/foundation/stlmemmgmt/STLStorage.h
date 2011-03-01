@@ -340,8 +340,8 @@ namespace boost
 	inline void intrusive_ptr_release(STLStorage::pool_refcounted<T>* p)
 	{
 		if (p->Release()) {
-			p->~pool_refcounted();
-			T::free( (char *)p );
+			p->STLStorage::pool_refcounted<T>::~pool_refcounted();
+			T::free( reinterpret_cast<char *>(p) );
 		}
 	}
 } // namespace boost
