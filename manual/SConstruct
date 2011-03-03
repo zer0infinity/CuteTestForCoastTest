@@ -174,7 +174,7 @@ class LatexBuilder(object):
         self._build_msc(self.figures['msc'])
 
 
-def copy_images():
+def copy_images(baseoutdir):
     """Copies all images needed for the documentation of the COAST project.
     Every image is copied according to the configuration file into the image 
     directory of the corresponding chapter number.
@@ -186,7 +186,7 @@ def copy_images():
 
     for chapter in config.sections():
         for mapping in config.options(chapter):
-            img_src_file = os.path.join('..', mapping)
+            img_src_file = os.path.join(baseoutdir, mapping)
             img_dest_suffix = config.get(chapter, mapping) if config.has_option(chapter, mapping) \
                               else os.path.basename(img_src_file)
             img_dest_file = os.path.join(build_config.IMAGES_DIRECTORY, chapter, img_dest_suffix)
@@ -197,16 +197,19 @@ def copy_images():
                 print "Warning: File %s does not exist!" % img_src_file
 
 
-def main():
+def build(baseoutdir):
     """Do the magic of building the LaTeX document."""
     
     # Set the number of maximum LaTeX retries to 4, as we need it here.
     env['LATEXRETRIES'] = 4
-    
-    copy_images()
+    copy_images(baseoutdir)
     builder = LatexBuilder(build_config.LATEX_PROJECT)
     builder.build_config()
     builder.build_figures()
 
-
-main()
+import SCons
+from SCons.Script import AddOption, Dir, GetOption, Flatten
+AddOption('--baseoutdir', dest='baseoutdir', action='store', nargs=1, type='string', default='..', metavar='DIR', help='Directory containing packages superseding installed ones. Relative paths not supported!')
+baseoutdir = Dir(GetOption('baseoutdir'))
+print 'base output dir [%s]' % baseoutdir.abspath
+build(baseoutdir.abspath)
