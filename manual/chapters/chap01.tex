@@ -286,7 +286,7 @@ or create a new one.
   \centering
   \includegraphics[width=0.5\hsize]{chap01/Acceptor}
   \caption{Acceptor.}
-  \label{fig:zipstream}
+  \label{fig:acceptor}
 \end{figure}
 
 \begin{figure}[hbt]
@@ -295,3 +295,32 @@ or create a new one.
   \caption{MscGen example.}
   \label{fig:mscgen_example}
 \end{figure}
+
+\begin{figure}[hbt]
+  \centering
+    %% Start of dot diagram
+    \digraph[width=0.35\textwidth]{BuildDependencies}
+    {
+      margin="0 0 0 0";
+      rankdir=BT;
+      node [shape=Mrecord];
+      prepare [label="prepare",fillcolor="/spectral11/3",style=filled];
+      compile [label="compile",fillcolor="/spectral11/4",style=filled];
+      compileT [label="compile-tests",fillcolor="/spectral11/1",style=filled];
+      runtest [label="run tests",fillcolor="/spectral11/5",style=filled];
+      runapp [label="run app",fillcolor="/spectral11/9",style=filled];
+      package [label="create pkg",fillcolor="/spectral11/6",style=filled];
+      deploy [fillcolor="/spectral11/7",style=filled];
+      edge [arrowhead=vee];
+      compile->prepare;
+      compileT->compile;
+      runapp->compile;
+      runtest->compileT;
+      package->runtest;
+      deploy->package;
+    }
+    %% End of dot diagram
+  \caption{Graphviz - inline dot example.}
+  \label{fig:graphviz_inline_sample}
+\end{figure}
+
