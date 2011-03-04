@@ -200,8 +200,10 @@ def copy_images(baseoutdir):
 def build(baseoutdir):
     """Do the magic of building the LaTeX document."""
     
-    # Set the number of maximum LaTeX retries to 4, as we need it here.
+    # Set LaTeX options
     env['LATEXRETRIES'] = 4
+    env['PDFLATEXFLAGS'] = ['-interaction=nonstopmode','-shell-escape']
+
     copy_images(baseoutdir)
     builder = LatexBuilder(build_config.LATEX_PROJECT)
     builder.build_config()

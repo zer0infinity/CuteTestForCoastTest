@@ -11,41 +11,18 @@
 % \usepackage[pdftex]{graphicx}
 % \usepackage{graphvizzz}
 
-% parameters to \digraph:
+% parameters to \Dot:
 % 1 - parameters for \includegraphics (optional; default value is "scale=1")
 % 2 - name of the digraph
 % 3 - body of the digraph
+% 4 - kind of dot graph (either graph or di(rected)graph)
 
 \ProvidesPackage{graphvizzz}
 
-\newcommand{\digraph}[3][scale=1]{
+\newcommand{\Dot}[4][scale=1]{
   \newwrite\dotfile
   \immediate\openout\dotfile=#2.dot
-  \immediate\write\dotfile{digraph #2 {\string#3}}
-  \immediate\closeout\dotfile
-  \immediate\write18{dot -Tpng #2.dot -o #2.png}
-  \IfFileExists{#2.png}
-  % the pdf exists: include it
-  { \includegraphics[#1]{#2.png} }
-  % the pdf was not created - show a hint
-  {
-      The PDF file displaying your dot graph could not be created.
-      This usually means one of these things:
-        \begin{itemize}
-        \item dot is not in your path
-        \item write18 is not enabled
-        \item use \textit{--shell-escape} as pdflatex argument
-        \end{itemize}
-        Please check http://code.google.com/p/graphvizzz/ for more
-        information.
-
-  }
-}
-
-\newcommand{\graph}[3][scale=1]{
-  \newwrite\dotfile
-  \immediate\openout\dotfile=#2.dot
-  \immediate\write\dotfile{graph #2 {\string#3}}
+  \immediate\write\dotfile{#4 #2 {\string#3}}
   \immediate\closeout\dotfile
   \immediate\write18{dot -Tpdf #2.dot > #2.pdf}
   \IfFileExists{#2.pdf}

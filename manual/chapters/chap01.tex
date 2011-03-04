@@ -299,7 +299,7 @@ or create a new one.
 \begin{figure}[hbt]
   \centering
     %% Start of dot diagram
-    \digraph[width=0.35\textwidth]{BuildDependencies}
+    \Dot[width=0.35\textwidth]{BuildDependencies}
     {
       margin="0 0 0 0";
       rankdir=BT;
@@ -318,7 +318,7 @@ or create a new one.
       runtest->compileT;
       package->runtest;
       deploy->package;
-    }
+    }{digraph}
     %% End of dot diagram
   \caption{Graphviz - inline dot example.}
   \label{fig:graphviz_inline_sample}
