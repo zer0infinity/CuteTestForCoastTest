@@ -21,8 +21,9 @@ class ROAnything;
 //! Macros to simplify the task of printing out messages to the console together with full control of what to print.
 /*! \file
 The trace facility of Coast is very powerful due to its flexibility based on configuration in a file. To enable/disable
-trace output, no recompilation of code is necessary. Simple changes in a file named \b Dbg.any are necessary. Due to some overhead
-to evaluate if trace messages are to be printed or not, the facility will only be enabled when flag \em COAST_TRACE was enabled at compile time.
+trace output, no recompilation of code is necessary as long as \em COAST_TRACE was defined at compile time.
+Due to evaluation of the trace calls at runtime, expect a slight overhead. To globally disable tracing when executing a
+program, set \em COAST_NO_TRACE environment variable prior to starting.
 
 \par Preprocessor Flags
 If the preprocessor flag \em COAST_TRACE is not set, the macros described here expand into nothing. To keep the trace output at acceptable levels we introduced a config

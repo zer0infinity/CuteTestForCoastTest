@@ -133,7 +133,7 @@ def setUp(target, source, env):
     configdir = tdir.Dir('config')
     #FIXME: the following setting is needed to let CgiCallerTest succeed
     env['ENV']['COAST_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    env['ENV']['COAST_LOGONCERR'] = 2
+    env['ENV']['COAST_LOGONCERR'] = 5	# ignore ERRORS and below
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
     searchReplace = []
     # create certificate files

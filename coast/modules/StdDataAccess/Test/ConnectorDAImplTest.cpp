@@ -29,14 +29,16 @@
 #endif
 
 class EchoMsgCallBack: public AcceptorCallBack {
+	// no locking as only one thread initiates actions and the second thread
+	// only accesses while the first one waits for I/O
+	Anything fLastRequest;
+	Anything fReplyMessage;
+	SimpleCondition fCond;
+	SimpleMutex fMutex;
 public:
 	//!default constructor is empty since class provides only protocol no implementation
 	EchoMsgCallBack() :
-		fReplyMessage("Accepted") {
-	}
-
-	//!default destructor is empty since class provides only protocol no implementation
-	virtual ~EchoMsgCallBack() {
+		fReplyMessage("Accepted"), fMutex("EchoMsgCallBackMutex", Coast::Storage::Current()) {
 	}
 
 	//!call back functionality provides the socket object
@@ -44,6 +46,7 @@ public:
 	virtual void CallBack(Socket *pSocket) {
 		StartTrace(EchoMsgCallBack.CallBack);
 		if (pSocket != 0) { // might be 0 if we run out of memory, not likely
+			LockUnlockEntry aMtxEntry(fMutex);
 			while (true) {
 				std::iostream *Ios = pSocket->GetStream();
 				if (Ios != 0 && (*Ios)) {
@@ -51,7 +54,9 @@ public:
 					aTimeoutModifier.Use();
 					Trace("stream valid");
 					// get character from stream, blocking call
+					fMutex.Unlock();
 					int ch = Ios->get();
+					fMutex.Lock();
 					if ((ch == EOF) || !Ios->good()) {
 						SYSINFO("termination requested due to closed or bad stream");
 						break;
@@ -67,7 +72,8 @@ public:
 					long lRetCode;
 					if (pSocket->IsReadyForWriting(10 * 1000, lRetCode)) {
 						Trace("sending back reply message");
-						fReplyMessage.PrintOn(*Ios, false) << std::flush;
+						fReplyMessage.PrintOn(*Ios, false).flush();
+						Trace("message sent");
 					} else {
 						SYSWARNING("socket not ready for writing!");
 					}
@@ -78,13 +84,14 @@ public:
 				}
 			}
 			pSocket->ShutDown();
+			delete pSocket;
 		}
-		delete pSocket;
 	}
 
 	//!I return the last message I read
 	virtual Anything &GetLastRequest() {
 		StartTrace(EchoMsgCallBack.GetLastRequest);
+		LockUnlockEntry aMtxEntry(fMutex);
 		return fLastRequest;
 	}
 
@@ -93,12 +100,6 @@ public:
 		StartTrace(EchoMsgCallBack.SetReplyMessage);
 		fReplyMessage = reply;
 	}
-
-protected:
-	// no locking as only one thread initiates actions and the second thread
-	// only accesses while the first one waits for I/O
-	Anything fLastRequest;
-	Anything fReplyMessage;
 };
 
 class AcceptorThread: public Thread {
@@ -106,7 +107,7 @@ public:
 	AcceptorThread(Acceptor *acceptor) :
 		Thread("AcceptorThread"), fAcceptor(acceptor) {
 	}
-	~AcceptorThread() {
+	virtual ~AcceptorThread() {
 		StartTrace(AcceptorThread.Dtor);
 		if (fAcceptor) {
 			delete fAcceptor;

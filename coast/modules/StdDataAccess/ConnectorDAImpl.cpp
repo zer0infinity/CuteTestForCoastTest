@@ -9,8 +9,6 @@
 //--- interface include --------------------------------------------------------
 #include "ConnectorDAImpl.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SSLSocket.h"
@@ -28,14 +26,6 @@
 
 //--- ConnectorDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(ConnectorDAImpl);
-
-ConnectorDAImpl::ConnectorDAImpl(const char *name) : DataAccessImpl(name)
-{
-}
-
-ConnectorDAImpl::~ConnectorDAImpl()
-{
-}
 
 IFAObject *ConnectorDAImpl::Clone(Allocator *a) const
 {

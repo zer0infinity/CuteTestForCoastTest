@@ -38,8 +38,7 @@ class ConnectorDAImpl: public DataAccessImpl
 {
 public:
 	/*! \param name defines the name of the data access */
-	ConnectorDAImpl(const char *name);
-	~ConnectorDAImpl();
+	ConnectorDAImpl(const char *name) : DataAccessImpl(name) {}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;

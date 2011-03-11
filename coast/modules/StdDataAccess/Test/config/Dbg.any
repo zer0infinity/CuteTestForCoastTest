@@ -278,6 +278,10 @@
 		/MainSwitch			20
 		/EnableAll			20
 	}
+	/AcceptorThread {
+		/MainSwitch			20
+		/EnableAll			20
+	}
 	/EchoMsgCallBack {
 		/MainSwitch			20
 		/EnableAll			20
