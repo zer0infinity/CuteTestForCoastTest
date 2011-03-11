@@ -19,7 +19,6 @@
 #include "StringStreamSocket.h"
 #include "Context.h"
 #include "URLUtils.h"
-#include "MIMEHeader.h"
 #include "Dbg.h"
 #include "Server.h"
 #include "AnyLookupInterfaceAdapter.h"

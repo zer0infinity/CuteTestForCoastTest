@@ -18,7 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "HTTPProcessorWithChecks.h"
-#include "MIMEHeader.h"
 #include "Dbg.h"
 #include "StringStream.h"
 #include "StringStreamSocket.h"

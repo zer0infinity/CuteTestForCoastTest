@@ -99,7 +99,7 @@ namespace {
 	void SplitAndAddHeaderLine(Anything &headers, String const &line, MIMEHeader::ProcessMode splitHeaderFields,
 			Coast::URLUtils::NormalizeTag const normTag) {
 		StartTrace1(MIMEHeader.SplitAndAddHeaderLine, "Line: <<<" << line << ">>>");
-		// following headerfield specification of HTTP/1.1 RFC 2068
+		// following headerfield specification of HTTP/1.1 RFC 2616 (obsoletes 2068)
 		String fieldname;
 		long pos = GetNormalizedFieldName(line, fieldname, normTag);
 		if (pos <= 0) {

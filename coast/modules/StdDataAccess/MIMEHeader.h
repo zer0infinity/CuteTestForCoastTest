@@ -19,12 +19,12 @@ static const long cDefaultMaxHeaderSz = 4096;
 //!default max of line length
 static const long cDefaultMaxLineSz = 1024;
 
-//! parse and store a MIME header as given from a HTTP request
-//! special treatment of multipart MIME used for form data and
-//! file upload by a POST request
-//! usually all header fields should be treated case-insensitive.
-//! because our infrastructure (Anything) is case sensitive
-//! we normalize all strings used as header-field indexes to uppercase.
+//! Parse and store a MIME header as given from an HTTP request
+/*! special treatment of multipart MIME used for form data and
+	file upload by a POST request.
+	Usually all header fields should be treated case-insensitive.
+	Because our infrastructure (Anything) is case sensitive
+	we normalize all strings used as header-field indexes to uppercase. */
 class MIMEHeader : public LookupInterface
 {
 public:
@@ -38,23 +38,24 @@ public:
 	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift, ProcessMode splitHeaderFields = eDoSplitHeaderFields);
 
 	//! read the MIME header from is
-	//! reads MIME header from is withlimit the line size to
-	//! detect misuse of server
+	/*! reads MIME header from is withlimit the line size to detect misuse of server */
 	bool ParseHeaders(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
 
 	//! answer if we are a header of a multipart MIME message
 	bool IsMultiPart() const;
 
-	//! return the cached boundary string that separate multipart MIME messages
-	//! is only useful if Content-Type is multipart/form-data
+	//! return the cached boundary string that separates multipart MIME messages
+	/*! This function is only useful if Content-Type is multipart/form-data
+	 * \return boundary String
+	 */
 	String GetBoundary() const;
 
-	//! special case for the canonical "content-length" header field
-	//! only valid if set
-	//! \return returns the length as set in the header or -1 if none set
+	//! Get value of "content-length" header field
+	/*! Only valid if the canonical "content-length" header field was set
+		\return length as set in the header or -1 if none set */
 	long GetContentLength() const;
 
-	// the complete header information as an Anything
+	//! the complete header information as an Anything
 	Anything GetInfo() const {
 		return fHeader;
 	}
@@ -85,8 +86,8 @@ public:
 	};
 
 protected:
-	// method to subclass if the lookup behaviour shall deviate from the standard
-	// implementation (i.e. allow more Anys to be searched, hierarchical, etc)
+	//! method to subclass if the lookup behaviour shall deviate from the standard
+	/*! implementation (i.e. allow more Anys to be searched, hierarchical, etc) */
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
 private:
