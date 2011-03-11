@@ -49,7 +49,7 @@
 	/DestinationSlot SomeWhere
 	/MatchFlags		1
 	/CodeExample {
-		/"^content"	{			# execute Mapper script for entries starting with accept
+		/"^content"	{			# execute Mapper script for entries starting with "content"
 			/RootMapper	*
 		}
 		/"^server"	"-"			# do not map this entry
