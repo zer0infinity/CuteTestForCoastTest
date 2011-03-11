@@ -18,120 +18,32 @@
 #include "Dbg.h"
 #include "StringStream.h"
 
-//---- HTTPMimeHeaderMapperTest ----------------------------------------------------------------
-HTTPMimeHeaderMapperTest::HTTPMimeHeaderMapperTest(TString tstrName)
-	: TestCaseType(tstrName)
+void HTTPMimeHeaderMapperTest::ConfiguredTests()
 {
-	StartTrace(HTTPMimeHeaderMapperTest.HTTPMimeHeaderMapperTest);
-}
-
-TString HTTPMimeHeaderMapperTest::getConfigFileName()
-{
-	return "HTTPMimeHeaderMapperTestConfig";
-}
-
-HTTPMimeHeaderMapperTest::~HTTPMimeHeaderMapperTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.Dtor);
-}
-
-void HTTPMimeHeaderMapperTest::SimpleHeader()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.SimpleHeader);
-	String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapper");
-	m.Initialize("ResultMapper");
-	Context ctx;
-	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["simpleHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-}
-
-void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.FieldsOccursMoreThanOnceHeaderTest);
-	String strIn(GetConfig()["fieldsOccursMoreThanOnceHeader"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapper");
-	m.Initialize("ResultMapper");
-	Context ctx;
-	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["fieldsOccursMoreThanOnceHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-}
-
-void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTestDoSplit()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.FieldsOccursMoreThanOnceHeaderTest);
-	String strIn(GetConfig()["fieldsOccursMoreThanOnceHeaderDoSplit"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapperDoSplitHeaderFields");
-	m.Initialize("ResultMapper");
-	Context ctx;
-	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["fieldsOccursMoreThanOnceHeaderDoSplitResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
+	StartTrace(HTTPMimeHeaderMapperTest.ConfiguredTests);
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while (aEntryIterator.Next(caseConfig)) {
+		TString caseName;
+		if ( !aEntryIterator.SlotName(caseName) ) {
+			caseName << "At index: " << aEntryIterator.Index();
+		}
+		String strIn = caseConfig["Input"].AsString();
+		IStringStream is(strIn);
+		HTTPMimeHeaderMapper m(caseConfig["MapperName"].AsString("mapper name missing"));
+		m.Initialize("ResultMapper");
+		Context ctx;
+		t_assertm(((ResultMapper &)m).Put("", is, ctx), caseName);
+		assertAnyEqualm(caseConfig["Expected"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"], caseName);
+	}
 }
 
 void HTTPMimeHeaderMapperTest::CorrectedDateHeadersTest()
 {
 	StartTrace(HTTPMimeHeaderMapperTest.CorrectedDateHeadersTest);
-	Anything dateformats2correct(GetConfig()["DateHeaderFullyParsed"].DeepClone());
+	Anything dateformats2correct(GetTestCaseConfig()["Input"].DeepClone());
 	HTTPMimeHeaderMapper::CorrectDateFormats(dateformats2correct);
-	assertAnyEqual(GetConfig()["DateHeaderOk"], dateformats2correct);
-}
-void HTTPMimeHeaderMapperTest::SuppressedHeadersTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.SuppressedHeadersTest);
-	String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppress");
-	t_assert(m.Initialize("ResultMapper"));
-	Context ctx;
-	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["suppressedHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-}
-void HTTPMimeHeaderMapperTest::LiteralSuppressedHeadersTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.LiteralSuppressedHeadersTest);
-	String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("literalSuppressedHeader");
-	t_assert(m.Initialize("ResultMapper"));
-	Context ctx;
-	t_assert(m.Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["suppressedHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-}
-void HTTPMimeHeaderMapperTest::AddHeadersTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.AddHeadersTest);
-	String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithAdd");
-	t_assert(m.Initialize("ResultMapper"));
-	Context ctx;
-	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-	assertAnyEqual(GetConfig()["addResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-}
-void HTTPMimeHeaderMapperTest::SuppressAndAddHeadersTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.AddHeadersTest);
-	{
-		String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-		IStringStream is(strIn);
-		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAdd");
-		t_assert(m.Initialize("ResultMapper"));
-		Context ctx;
-		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-		assertAnyEqual(GetConfig()["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-	}
-	{
-		String strIn(GetConfig()["simpleHeader"].AsCharPtr());
-		IStringStream is(strIn);
-		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAddNoHeaderFieldSplit");
-		t_assert(m.Initialize("ResultMapper"));
-		Context ctx;
-		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
-		assertAnyEqual(GetConfig()["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
-	}
+	assertAnyEqual(GetTestCaseConfig()["Expected"], dateformats2correct);
 }
 
 // builds up a suite of tests, add a line for each testmethod
@@ -139,14 +51,7 @@ Test *HTTPMimeHeaderMapperTest::suite ()
 {
 	StartTrace(HTTPMimeHeaderMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, SimpleHeader);
+	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, ConfiguredTests);
 	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, CorrectedDateHeadersTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, SuppressedHeadersTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, AddHeadersTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, SuppressAndAddHeadersTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, LiteralSuppressedHeadersTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, FieldsOccursMoreThanOnceHeaderTest);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, FieldsOccursMoreThanOnceHeaderTestDoSplit);
 	return testSuite;
 }

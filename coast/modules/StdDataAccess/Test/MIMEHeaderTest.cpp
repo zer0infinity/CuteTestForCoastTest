@@ -19,28 +19,18 @@
 #include "Anything.h"
 #include "StringStream.h"
 #include "URLUtils.h"
+#include "AnyUtils.h"
 #include "Dbg.h"
 
 //---- MIMEHeaderTest ----------------------------------------------------------------
-MIMEHeaderTest::MIMEHeaderTest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(MIMEHeaderTest.Ctor);
-}
-
-MIMEHeaderTest::~MIMEHeaderTest()
-{
-	StartTrace(MIMEHeaderTest.Dtor);
-}
-
 void MIMEHeaderTest::SimpleHeaderTest()
 {
 	StartTrace(MIMEHeaderTest.SimpleHeaderTest);
 
-	String testinput;
 	Anything result, result1;
 
 	// some bad data tests
-	testinput = "nonsense";
+	String testinput = "nonsense";
 	{
 		MIMEHeader mh;
 		StringStream is(testinput);
@@ -62,377 +52,35 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		assertAnyEqual(result, mh.GetInfo());
 		TraceAny(mh.GetInfo(), "Header: ");
 	}
-
-	// test a simple header
-	testinput =
-		"Connection: Keep-Alive\r\n"
-		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
-		"Host: sentosa.hsr.loc:2929\r\n"
-		"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\n"
-		"Accept-Encoding: gzip\r\n"
-		"Accept-Language: de-CH,en\r\n"
-		"Accept-Charset: iso-8859-1,*,utf-8\r\n"
-		"\r\n";
-	Trace("TestInput: <" << testinput << ">");
-	result["CONNECTION"] = "Keep-Alive";
-	result["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result["HOST"] = "sentosa.hsr.loc:2929";
-	result["ACCEPT"].Append("image/gif");
-	result["ACCEPT"].Append("image/x-xbitmap");
-	result["ACCEPT"].Append("image/jpeg");
-	result["ACCEPT"].Append("image/pjpeg");
-	result["ACCEPT"].Append("image/png");
-	result["ACCEPT"].Append("*/*");
-	result["ACCEPT-ENCODING"] = "gzip";
-	result["ACCEPT-LANGUAGE"].Append("de-CH");
-	result["ACCEPT-LANGUAGE"].Append("en");
-	result["ACCEPT-CHARSET"].Append("iso-8859-1");
-	result["ACCEPT-CHARSET"].Append("*");
-	result["ACCEPT-CHARSET"].Append("utf-8");
-
-	result1["CONNECTION"] = "Keep-Alive";
-	result1["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result1["HOST"] = "sentosa.hsr.loc:2929";
-	result1["ACCEPT"] = "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*";
-	result1["ACCEPT-ENCODING"] = "gzip";
-	result1["ACCEPT-LANGUAGE"] = "de-CH,en";
-	result1["ACCEPT-CHARSET"] = "iso-8859-1,*,utf-8";
-
-	{
-		MIMEHeader mh;
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
-		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-		assertAnyEqual(result, mh.GetInfo());
-	}
-	{
-		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
-		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-		assertAnyEqual(result1, mh.GetInfo());
-	}
 }
 
-void MIMEHeaderTest::SetCookieTest()
+void MIMEHeaderTest::ConfiguredTests()
 {
-	StartTrace(MIMEHeaderTest.SetCookieTest);
+	StartTrace(MIMEHeaderTest.ConfiguredTests);
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while (aEntryIterator.Next(caseConfig)) {
+		TString caseName;
+		if ( !aEntryIterator.SlotName(caseName) ) {
+			caseName << "At index: " << aEntryIterator.Index();
+		}
+		Coast::URLUtils::NormalizeTag normalizeKey = (Coast::URLUtils::NormalizeTag)(caseConfig["NormalizeTag"].AsLong((long)Coast::URLUtils::eUpshift));
+		MIMEHeader::ProcessMode splitHeaderFields = (MIMEHeader::ProcessMode)(caseConfig["SplitMode"].AsLong((long)MIMEHeader::eDoSplitHeaderFields));
+		MIMEHeader mh(normalizeKey, splitHeaderFields);
 
-	String testinput;
-	Anything result;
-
-	// test a simple header
-	testinput =
-		"Connection: Keep-Alive\r\n"
-		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
-		"Host: sentosa.hsr.ch:2929\r\n"
-		"Set-Cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\n"
-		"Set-Cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\n"
-		"Set-Cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\n"
-		"Set-Cookie2: Test4=test_value4; expires=Sat, 04-Jan-2001 01:01:01 GMT; path=/;\r\n"
-		"Set-Cookie2: Test5=test_value5; expires=Sat, 05-Jan-2002 02:02:02 GMT; path=/;\r\n"
-		"Set-Cookie2: Test6=test_value6; expires=Sat, 06-Jan-2003 03:03:03 GMT; path=/;\r\n"
-		"\r\n";
-	Trace("TestInput: <" << testinput << ">");
-	result["CONNECTION"] = "Keep-Alive";
-	result["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result["HOST"] = "sentosa.hsr.ch:2929";
-	result["SET-COOKIE"][0L] = "Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;";
-	result["SET-COOKIE"][1L] = "Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;";
-	result["SET-COOKIE"][2L] = "Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;";
-	result["SET-COOKIE2"][0L] = "Test4=test_value4; expires=Sat";
-	result["SET-COOKIE2"][1L] = "04-Jan-2001 01:01:01 GMT; path=/;";
-	result["SET-COOKIE2"][2L] = "Test5=test_value5; expires=Sat";
-	result["SET-COOKIE2"][3L] = "05-Jan-2002 02:02:02 GMT; path=/;";
-	result["SET-COOKIE2"][4L] = "Test6=test_value6; expires=Sat";
-	result["SET-COOKIE2"][5L] = "06-Jan-2003 03:03:03 GMT; path=/;";
-	{
-		MIMEHeader mh;
+		String testinput = caseConfig["Input"].AsString();
+		Trace("TestInput: <" << testinput << ">");
 		StringStream is(testinput);
-
 		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
+		t_assertm(mh.ParseHeaders(is), TString("expected header parsing to succeed at ") << caseName);
 
 		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
-		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result, mh.GetInfo());
-	}
-	Anything anyCookie2;
-	anyCookie2.Append("Test4=test_value4; expires=Sat, 04-Jan-2001 01:01:01 GMT; path=/;");
-	anyCookie2.Append("Test5=test_value5; expires=Sat, 05-Jan-2002 02:02:02 GMT; path=/;");
-	anyCookie2.Append("Test6=test_value6; expires=Sat, 06-Jan-2003 03:03:03 GMT; path=/;");
-	result["SET-COOKIE2"] = anyCookie2;
-	{
-		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
-		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result, mh.GetInfo());
-	}
-}
-
-void MIMEHeaderTest::MultiPartHeaderTest()
-{
-	StartTrace(MIMEHeaderTest.MultiPartHeaderTest);
-
-	String testinput, testinput1;
-
-	// test a simple header
-	testinput =
-		"Referer: http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html\r\n"
-		"Connection: Keep-Alive\r\n"
-		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
-		"Host: sentosa.hsr.loc:2929\r\n"
-		"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\n"
-		"Accept-Encoding: gzip\r\n"
-		"Accept-Language: de-CH,en\r\n"
-		"Accept-Charset: iso-8859-1,*,utf-8\r\n"
-		"Cookie: Cookie1=Value1\r\n"
-		"Cookie: Cookie2=Value2\r\n"
-		"Cookie: FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB\r\n"
-		"Cookie: Cookie3=Value3\r\n"
-		"Content-type: multipart/form-data; boundary=---------------------------61400283883149348477195787\r\n"
-		"Content-Length: 542\r\n"
-		"\r\n";
-
-	// Accept-Encoding appears twice and contains field delimiter (,)
-	testinput1 =
-		"Referer: http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html\r\n"
-		"Connection: Keep-Alive\r\n"
-		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
-		"Host: sentosa.hsr.loc:2929\r\n"
-		"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\n"
-		"Accept-Encoding: gzip\r\n"
-		"Accept-Encoding: super-gzip,super-gzip-param=1,2.3\r\n"
-		"Accept-Language: de-CH,en\r\n"
-		"Accept-Charset: iso-8859-1,*,utf-8\r\n"
-		"Cookie: Cookie1=Value1\r\n"
-		"Cookie: Cookie2=Value2\r\n"
-		"Cookie: FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB\r\n"
-		"Cookie: Cookie3=Value3\r\n"
-		"Content-type: multipart/form-data; boundary=---------------------------61400283883149348477195787\r\n"
-		"Content-Length: 542\r\n"
-		"\r\n";
-
-	Trace("TestInput: <" << testinput << ">");
-	Anything result, result1, result2, result3;
-
-	result["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
-	result["CONNECTION"] = "Keep-Alive";
-	result["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result["HOST"] = "sentosa.hsr.loc:2929";
-	result["ACCEPT"].Append("image/gif");
-	result["ACCEPT"].Append("image/x-xbitmap");
-	result["ACCEPT"].Append("image/jpeg");
-	result["ACCEPT"].Append("image/pjpeg");
-	result["ACCEPT"].Append("image/png");
-	result["ACCEPT"].Append("*/*");
-	result["ACCEPT-ENCODING"] = "gzip";
-	result["ACCEPT-LANGUAGE"].Append("de-CH");
-	result["ACCEPT-LANGUAGE"].Append("en");
-	result["ACCEPT-CHARSET"].Append("iso-8859-1");
-	result["ACCEPT-CHARSET"].Append("*");
-	result["ACCEPT-CHARSET"].Append("utf-8");
-	result["COOKIE"]["Cookie1"] = "Value1";
-	result["COOKIE"]["Cookie2"] = "Value2";
-	result["COOKIE"]["FDState"] = "b64-U2VzY==";
-	result["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
-	result["COOKIE"]["sk"] = "209243665E644DFB";
-	result["COOKIE"]["Cookie3"] = "Value3";
-	result["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result["BOUNDARY"] = "---------------------------61400283883149348477195787";
-	result["CONTENT-LENGTH"] = "542";
-
-	result1["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
-	result1["CONNECTION"] = "Keep-Alive";
-	result1["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result1["HOST"] = "sentosa.hsr.loc:2929";
-	result1["ACCEPT"].Append("image/gif");
-	result1["ACCEPT"].Append("image/x-xbitmap");
-	result1["ACCEPT"].Append("image/jpeg");
-	result1["ACCEPT"].Append("image/pjpeg");
-	result1["ACCEPT"].Append("image/png");
-	result1["ACCEPT"].Append("*/*");
-	result1["ACCEPT-ENCODING"].Append("gzip");
-	result1["ACCEPT-ENCODING"].Append("super-gzip");
-	result1["ACCEPT-ENCODING"].Append("super-gzip-param=1");
-	result1["ACCEPT-ENCODING"].Append("2.3");
-	result1["ACCEPT-LANGUAGE"].Append("de-CH");
-	result1["ACCEPT-LANGUAGE"].Append("en");
-	result1["ACCEPT-CHARSET"].Append("iso-8859-1");
-	result1["ACCEPT-CHARSET"].Append("*");
-	result1["ACCEPT-CHARSET"].Append("utf-8");
-	result1["COOKIE"]["Cookie1"] = "Value1";
-	result1["COOKIE"]["Cookie2"] = "Value2";
-	result1["COOKIE"]["FDState"] = "b64-U2VzY==";
-	result1["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
-	result1["COOKIE"]["sk"] = "209243665E644DFB";
-	result1["COOKIE"]["Cookie3"] = "Value3";
-	result1["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result1["BOUNDARY"] = "---------------------------61400283883149348477195787";
-	result1["CONTENT-LENGTH"] = "542";
-
-	result2["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
-	result2["CONNECTION"] = "Keep-Alive";
-	result2["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result2["HOST"] = "sentosa.hsr.loc:2929";
-	result2["ACCEPT"] =  "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*";
-	result2["ACCEPT-ENCODING"] =  "gzip";
-	result2["ACCEPT-LANGUAGE"] =  "de-CH,en";
-	result2["ACCEPT-CHARSET"] =  "iso-8859-1,*,utf-8";
-	result2["COOKIE"]["Cookie1"] = "Value1";
-	result2["COOKIE"]["Cookie2"] = "Value2";
-	result2["COOKIE"]["FDState"] = "b64-U2VzY==";
-	result2["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
-	result2["COOKIE"]["sk"] = "209243665E644DFB";
-	result2["COOKIE"]["Cookie3"] = "Value3";
-	result2["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result2["BOUNDARY"] = "---------------------------61400283883149348477195787";
-	result2["CONTENT-LENGTH"] = "542";
-
-	result3["REFERER"] = "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html";
-	result3["CONNECTION"] = "Keep-Alive";
-	result3["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result3["HOST"] = "sentosa.hsr.loc:2929";
-	result3["ACCEPT"] =  "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*";
-	result3["ACCEPT-ENCODING"].Append("gzip");
-	result3["ACCEPT-ENCODING"].Append("super-gzip,super-gzip-param=1,2.3");
-	result3["ACCEPT-LANGUAGE"] =  "de-CH,en";
-	result3["ACCEPT-CHARSET"] =  "iso-8859-1,*,utf-8";
-	result3["COOKIE"]["Cookie1"] = "Value1";
-	result3["COOKIE"]["Cookie2"] = "Value2";
-	result3["COOKIE"]["FDState"] = "b64-U2VzY==";
-	result3["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
-	result3["COOKIE"]["sk"] = "209243665E644DFB";
-	result3["COOKIE"]["Cookie3"] = "Value3";
-	result3["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
-	result3["BOUNDARY"] = "---------------------------61400283883149348477195787";
-	result3["CONTENT-LENGTH"] = "542";
-
-	{
-		MIMEHeader mh;
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
-		assertEqualm("---------------------------61400283883149348477195787", mh.GetBoundary(), "expected multipart seperator");
-		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result, mh.GetInfo());
-		TraceAny(mh.GetInfo(), "mh.GetInfo()");
-	}
-	{
-		MIMEHeader mh;
-		StringStream is(testinput1);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
-		assertEqualm("---------------------------61400283883149348477195787", mh.GetBoundary(), "expected multipart seperator");
-		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result1, mh.GetInfo());
-	}
-	{
-		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
-		assertEqualm("---------------------------61400283883149348477195787", mh.GetBoundary(), "expected multipart seperator");
-		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result2, mh.GetInfo());
-	}
-	{
-		MIMEHeader mh(Coast::URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
-		StringStream is(testinput1);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == true, "expected to be multipart");
-		assertEqualm("---------------------------61400283883149348477195787", mh.GetBoundary(), "expected multipart seperator");
-		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result3, mh.GetInfo());
-	}
-
-}
-
-void MIMEHeaderTest::PartHeaderTest()
-{
-	StartTrace(MIMEHeaderTest.PartHeaderTest);
-
-	String testinput;
-	MIMEHeader mh;
-
-	// test a multipart/form-data part header
-	testinput =
-		"Content-Disposition: form-data; name=Datei; "
-		"filename=G:\\DEVELOP\\coast\\wdbase\\Application.h\r\n"
-		"Content-Type: application/x-unknown-content-type-hfile\r\n"
-		"\r\n";
-
-	Trace("TestInput: <" << testinput << ">");
-	Anything result;
-	result["CONTENT-DISPOSITION"][0L] = "form-data";
-	result["CONTENT-DISPOSITION"]["NAME"] = "Datei";
-	result["CONTENT-DISPOSITION"]["FILENAME"] = "G:\\DEVELOP\\coast\\wdbase\\Application.h";
-	result["CONTENT-TYPE"] = "application/x-unknown-content-type-hfile";
-
-	{
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.ParseHeaders(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected not to be multipart");
-		assertEqualm("", mh.GetBoundary(), "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-		assertEqualm("application/x-unknown-content-type-hfile", mh.Lookup("CONTENT-TYPE", ""), "expected Content-type to be set");
-		assertAnyEqual(result, mh.GetInfo());
+		assertEqualm(caseConfig["IsMultiPart"].AsBool(false), mh.IsMultiPart(), caseName);
+		assertComparem(caseConfig["BoundaryLength"].AsLong(0), equal_to, mh.GetBoundary().Length(), caseName);
+		assertCharPtrEqualm(caseConfig["Boundary"].AsString(), mh.GetBoundary(), caseName);
+		assertComparem(caseConfig["ContentLength"].AsLong(-1), equal_to, mh.GetContentLength(), caseName);
+		assertEqualm("", mh.Lookup("NotThere", ""), caseName);
+		assertAnyCompareEqual(caseConfig["Expected"], mh.GetInfo(), caseName, '.', ':');
 	}
 }
 
@@ -442,8 +90,6 @@ Test *MIMEHeaderTest::suite ()
 	StartTrace(MIMEHeaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, MIMEHeaderTest, SimpleHeaderTest);
-	ADD_CASE(testSuite, MIMEHeaderTest, SetCookieTest);
-	ADD_CASE(testSuite, MIMEHeaderTest, MultiPartHeaderTest);
-	ADD_CASE(testSuite, MIMEHeaderTest, PartHeaderTest);
+	ADD_CASE(testSuite, MIMEHeaderTest, ConfiguredTests);
 	return testSuite;
 }

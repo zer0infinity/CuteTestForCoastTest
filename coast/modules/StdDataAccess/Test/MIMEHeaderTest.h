@@ -10,31 +10,22 @@
 #define _MIMEHeaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- MIMEHeaderTest ----------------------------------------------------------
-//!TestCases description
-class MIMEHeaderTest : public TestFramework::TestCase
-{
+class MIMEHeaderTest: public TestFramework::TestCaseWithConfig {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
-	MIMEHeaderTest(TString tstrName);
-
-	//!destroys the test case
-	~MIMEHeaderTest();
-
-	//--- public api
+	MIMEHeaderTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	void SimpleHeaderTest();
-	void SetCookieTest();
-	void MultiPartHeaderTest();
-	void PartHeaderTest();
+	void ConfiguredTests();
 };
 
 #endif

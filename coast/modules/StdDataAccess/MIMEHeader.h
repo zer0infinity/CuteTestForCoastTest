@@ -35,7 +35,7 @@ public:
 	};
 
 	//! represent a mime header
-	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift, ProcessMode = eDoSplitHeaderFields);
+	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift, ProcessMode splitHeaderFields = eDoSplitHeaderFields);
 
 	//! read the MIME header from is
 	//! reads MIME header from is withlimit the line size to

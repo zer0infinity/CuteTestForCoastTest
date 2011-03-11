@@ -13,46 +13,21 @@
 #include "FoundationTestTypes.h"
 
 //---- HTTPMimeHeaderMapperTest ----------------------------------------------------------
-//! <B>single line description of the class</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class HTTPMimeHeaderMapperTest : public TestFramework::TestCaseWithConfig
-{
+class HTTPMimeHeaderMapperTest: public TestFramework::TestCaseWithConfig {
 public:
-	//--- constructors
-
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	HTTPMimeHeaderMapperTest(TString tstrName);
-
-	//! destroys the test case
-	~HTTPMimeHeaderMapperTest();
-
-	//--- public api
+	HTTPMimeHeaderMapperTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//! builds up a suite of tests
-	static Test *suite ();
-
-	TString getConfigFileName();
+	static Test *suite();
 
 	//! take a simple http response and parse it
-	void SimpleHeader();
+	void ConfiguredTests();
 	//! check the fixing of wrongly parsed Date fields regarding RFC 2068
 	void CorrectedDateHeadersTest();
-	//! test suppress config of HTTPMimeHeaderMapper
-	void SuppressedHeadersTest();
-	//! test suppress with literal config of HTTPMimeHeaderMapper
-	void LiteralSuppressedHeadersTest();
-	//! test add with config of HTTPMimeHeaderMapper
-	void AddHeadersTest();
-	//! test suppress and add with config of HTTPMimeHeaderMapper
-	void SuppressAndAddHeadersTest();
-	//! test fields which occur more then once
-	void FieldsOccursMoreThanOnceHeaderTest();
-	//! show effect of DoNotSplitHeaderFields set off (do split header fields, default)
-	void FieldsOccursMoreThanOnceHeaderTestDoSplit();
 };
 
 #endif
