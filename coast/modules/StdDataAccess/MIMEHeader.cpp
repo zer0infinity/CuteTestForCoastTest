@@ -165,7 +165,7 @@ bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long cons
 
 //================= multipart specific section
 
-bool MIMEHeader::IsMultiPart() {
+bool MIMEHeader::IsMultiPart() const {
 	StartTrace(MIMEHeader.IsMultiPart);
 	return (Lookup(boundarySlotname).AsString().Length() > 0);
 }

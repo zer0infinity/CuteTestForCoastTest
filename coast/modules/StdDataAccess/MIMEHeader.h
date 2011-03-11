@@ -43,7 +43,7 @@ public:
 	bool ParseHeaders(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
 
 	//! answer if we are a header of a multipart MIME message
-	bool IsMultiPart();
+	bool IsMultiPart() const;
 
 	//! return the cached boundary string that separate multipart MIME messages
 	//! is only useful if Content-Type is multipart/form-data
