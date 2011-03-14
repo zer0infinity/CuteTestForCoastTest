@@ -23,10 +23,14 @@ bool MimeHeaderResultMapper::DoPutStream(const char *key, std::istream &is, Cont
 		eProcMode = MIMEHeader::eDoNotSplitHeaderFields;
 	}
 	MIMEHeader mh(Coast::URLUtils::eDownshift, eProcMode);
-	if (mh.ParseHeaders(is) && is.good()) {
-		Anything header(mh.GetInfo());
-		TraceAny(header, "header");
-		return DoPutAny(key, header, ctx, script);
+	try {
+		if (mh.ParseHeaders(is) && is.good()) {
+			Anything header(mh.GetInfo());
+			TraceAny(header, "header");
+			return DoPutAny(key, header, ctx, script);
+		}
+	} catch (MIMEHeader::StreamNotGoodException &e) {
+		;
 	}
 	return false;
 }

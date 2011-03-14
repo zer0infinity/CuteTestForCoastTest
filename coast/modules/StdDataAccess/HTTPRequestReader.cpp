@@ -84,7 +84,6 @@ namespace {
 		}
 		ParseRequestLine(ctx, request, line);
 	}
-
 }
 
 bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
@@ -115,6 +114,8 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 		PutErrorMessageIntoContext(ctx, e.fCode, e.what(), e.fLine);
 	} catch (MIMEHeader::InvalidLineException &e) {
 		PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine);
+	} catch (MIMEHeader::MIMEHeader::StreamNotGoodException &e) {
+		PutErrorMessageIntoContext(ctx, 400, e.what(), "");
 	}
 	return false;
 }

@@ -159,19 +159,23 @@ bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &b
 		if ( body.Length() ) {
 			IStringStream innerpart(body);
 			MIMEHeader hinner;
-			if (hinner.ParseHeaders(innerpart)) {
-				Anything partInfo;
-				if (!hinner.GetInfo().IsDefined("CONTENT-TYPE") ) {
-					hinner.GetInfo()["CONTENT-TYPE"] = "multipart/part";
+			try {
+				if (hinner.ParseHeaders(innerpart)) {
+					Anything partInfo;
+					if (!hinner.GetInfo().IsDefined("CONTENT-TYPE") ) {
+						hinner.GetInfo()["CONTENT-TYPE"] = "multipart/part";
+					}
+					partInfo["header"] = hinner.GetInfo();
+					TraceAny(hinner.GetInfo(), "Header: ");
+
+					HTTPPostRequestBodyParser part(hinner, innerpart);
+					part.Parse(); // if we found a boundary, could we unget it?
+
+					partInfo["body"] = part.GetContent();
+					fContent.Append(partInfo);
 				}
-				partInfo["header"] = hinner.GetInfo();
-				TraceAny(hinner.GetInfo(), "Header: ");
-
-				HTTPPostRequestBodyParser part(hinner, innerpart);
-				part.Parse(); // if we found a boundary, could we unget it?
-
-				partInfo["body"] = part.GetContent();
-				fContent.Append(partInfo);
+			} catch (MIMEHeader::StreamNotGoodException &e) {
+				;
 			}
 		}
 	}
