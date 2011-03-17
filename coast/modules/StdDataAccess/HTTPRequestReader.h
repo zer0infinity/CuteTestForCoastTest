@@ -17,8 +17,15 @@ class Context;
 
 //--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
-class HTTPRequestReader
-{
+class HTTPRequestReader {
+	//!product output a request anything
+	Anything fRequest;
+
+	//!subpart of output a header, containing all http headers
+	MIMEHeader &fHeader;
+
+	//!contains the current requests size
+	long fRequestBufferSize;
 public:
 	//!reads request from ios on behalf of processor
 	HTTPRequestReader(MIMEHeader &header);
@@ -28,16 +35,6 @@ public:
 
 	//!get the resulting anything if read request was successful
 	Anything const& GetRequest();
-
-private:
-	//!product output a request anything
-	Anything fRequest;
-
-	//!subpart of output a header, containing all http headers
-	MIMEHeader &fHeader;
-
-	//!contains the current requests size
-	long fRequestBufferSize;
 };
 
 #endif

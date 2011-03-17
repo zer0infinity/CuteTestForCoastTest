@@ -12,33 +12,37 @@
 #include "Context.h"
 #include "WDModule.h"
 
-class ServiceHandler;
-
 //---- ServiceDispatchersModule -----------------------------------------------------------
-class ServiceDispatchersModule : public WDModule
-{
+class ServiceDispatchersModule: public WDModule {
 public:
-	ServiceDispatchersModule(const char *);
-	virtual ~ServiceDispatchersModule();
+	ServiceDispatchersModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
+class ServiceHandler;
 //---- ServiceDispatcher -----------------------------------------------------------
 //!dispatches handling of the request to a service handler using context information
 //!standard implementation looks for "DefaultService" entry in Context and uses "WebAppService" if nothing is found<br>
 //!no rendering takes place for efficiency reason
-class ServiceDispatcher : public HierarchConfNamed
-{
+class ServiceDispatcher: public HierarchConfNamed {
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceDispatcher();
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceDispatcher(const ServiceDispatcher &);
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceDispatcher &operator=(const ServiceDispatcher &);
 public:
 	//!standard named object constructor
 	ServiceDispatcher(const char *serviceDispatcherName);
 	virtual ~ServiceDispatcher();
 
 	//!registry interface
-	RegCacheDef(ServiceDispatcher);	// FindServiceDispatcher()
+	RegCacheDef(ServiceDispatcher); // FindServiceDispatcher()
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) ServiceDispatcher(fName);
@@ -52,14 +56,6 @@ public:
 
 	//!finds service name in context it looks up the "DefaultService" tag in the context; no rendering is used
 	virtual String FindServiceName(Context &ctx);
-
-private:
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceDispatcher();
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceDispatcher(const ServiceDispatcher &);
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceDispatcher &operator=(const ServiceDispatcher &);
 };
 
 //---- RendererDispatcher -----------------------------------------------------------
@@ -68,11 +64,16 @@ private:
 //!the uri prefix of the request is mapped to a service name using a map defined in the context with the tag <b>URIPrefix2ServiceMap</b><br>
 //!the service name can be a renderer specification<br>
 //!if nothing matches the <b>DefaultService</b> Entry is used
-class RendererDispatcher : public ServiceDispatcher
-{
+class RendererDispatcher: public ServiceDispatcher {
+	// block the following default elements of this class
+	// because they're not allowed to be used
+	RendererDispatcher();
+	RendererDispatcher(const RendererDispatcher &);
+	RendererDispatcher &operator=(const RendererDispatcher &);
 public:
-	RendererDispatcher(const char *RendererDispatcherName);
-	virtual ~RendererDispatcher();
+	RendererDispatcher(const char *rendererDispatcherName) :
+		ServiceDispatcher(rendererDispatcherName) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -85,13 +86,6 @@ public:
 protected:
 	//!Workhorse of FindServiceName
 	long FindURIPrefixInList(const String &requestURI, const ROAnything &uriPrefixList);
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	RendererDispatcher();
-	RendererDispatcher(const RendererDispatcher &);
-	RendererDispatcher &operator=(const RendererDispatcher &);
 };
 
 #define RegisterServiceDispatcher(name) RegisterObject(name, ServiceDispatcher)

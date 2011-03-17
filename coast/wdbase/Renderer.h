@@ -14,14 +14,14 @@
 #include "WDModule.h"
 
 //---- RenderersModule -----------------------------------------------------------
-class RenderersModule : public WDModule
-{
+class RenderersModule: public WDModule {
 public:
-	RenderersModule(const char *name);
-	virtual ~RenderersModule();
+	RenderersModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
@@ -32,9 +32,9 @@ class Renderer : public NotCloned
 {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	Renderer(const char *name);
-	//!destructor does nothing
-	virtual ~Renderer();
+	Renderer(const char *name) :
+		NotCloned(name) {
+	}
 
 	/*! Main Rendering hook; overwrite this method in subclasses
 	 * Generates output on reply driven by configuration using the Context

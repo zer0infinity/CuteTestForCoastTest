@@ -22,14 +22,6 @@
 //---- PagesModule -----------------------------------------------------------
 RegisterModule(PagesModule);
 
-PagesModule::PagesModule(const char *name) : WDModule(name)
-{
-}
-
-PagesModule::~PagesModule()
-{
-}
-
 bool PagesModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Pages")) {
@@ -56,10 +48,6 @@ RegisterPage(Page);
 Page::Page(const char *title) :  HierarchConfNamed(title)
 {
 	SetName(title);
-}
-
-Page::~Page()
-{
 }
 
 IFAObject *Page::Clone(Allocator *a) const

@@ -29,10 +29,6 @@ HttpFlowController::HttpFlowController(const char *HttpFlowControllerName) : Flo
 	StartTrace1(HttpFlowController.HttpFlowController, "<" << HttpFlowControllerName << ">");
 }
 
-HttpFlowController::~HttpFlowController()
-{
-}
-
 void HttpFlowController::ProcessSetCookie(Context &ctx)
 {
 	StartTrace(HttpFlowController.ProcessSetCookie);

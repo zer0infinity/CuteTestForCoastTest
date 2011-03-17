@@ -22,7 +22,6 @@ class HttpFlowController : public FlowController
 {
 public:
 	HttpFlowController(const char *HttpFlowControllerName);
-	virtual ~HttpFlowController();
 
 	//!Input data for the DataAccess are placed into the context.
 	//! \param ctx Context of the stress run

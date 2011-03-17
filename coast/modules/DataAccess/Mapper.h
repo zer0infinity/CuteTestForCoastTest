@@ -15,14 +15,14 @@
 class Registry;
 
 //---- MappersModule -----------------------------------------------------------
-class MappersModule : public WDModule
-{
+class MappersModule: public WDModule {
 public:
-	MappersModule(const char *name);
-	~MappersModule();
+	MappersModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
@@ -441,11 +441,15 @@ private:
 
 //---------------- EagerResultMapper ------------------------------
 //! A ResultMapper eager to do something with its config, interprets full config if key is not found
-class EagerResultMapper : public ResultMapper
-{
+class EagerResultMapper: public ResultMapper {
+	EagerResultMapper();
+	EagerResultMapper(const EagerResultMapper &);
+	EagerResultMapper &operator=(const EagerResultMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	EagerResultMapper(const char *name): ResultMapper(name) {}
+	EagerResultMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	EagerResultMapper(const char *name, ROAnything config);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -454,11 +458,6 @@ public:
 
 protected:
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
-
-private:
-	EagerResultMapper();
-	EagerResultMapper(const EagerResultMapper &);
-	EagerResultMapper &operator=(const EagerResultMapper &);
 };
 
 #define RegisterParameterMapper(name) RegisterObject(name, ParameterMapper)

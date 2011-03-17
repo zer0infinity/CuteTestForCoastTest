@@ -15,19 +15,18 @@
 //---- HTTPResponseMapper ------------------------------------------------------------------
 RegisterResultMapper(HTTPResponseMapper);
 
-HTTPResponseMapper::HTTPResponseMapper(const char *name) : ResultMapper(name)
-{
+HTTPResponseMapper::HTTPResponseMapper(const char *name) :
+	ResultMapper(name) {
 	StartTrace(HTTPResponseMapper.Ctor);
 }
 
-IFAObject *HTTPResponseMapper::Clone(Allocator *a) const
-{
+IFAObject *HTTPResponseMapper::Clone(Allocator *a) const {
 	return new (a) HTTPResponseMapper(fName);
 }
-static void TrimMessage(String &message)
-{
+
+static void TrimMessage(String &message) {
 	message.TrimFront(1); // cut blank
-	if (message[message.Length()-1L] == '\r') {
+	if (message[message.Length() - 1L] == '\r') {
 		message.Trim(message.Length() - 1L);
 	}
 }
@@ -35,10 +34,7 @@ static void TrimMessage(String &message)
 bool HTTPResponseMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything conf)
 {
 	StartTrace1(HTTPResponseMapper.DoPutStream, NotNull(key));
-	// ignore the key, assume a correct response line. Ignore conf, too.
-
 	Anything response;
-
 	// get version
 	String version;
 	is >> version;

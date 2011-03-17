@@ -19,14 +19,6 @@
 //---- ServiceDispatchersModule -----------------------------------------------------------
 RegisterModule(ServiceDispatchersModule);
 
-ServiceDispatchersModule::ServiceDispatchersModule(const char *name) : WDModule(name)
-{
-}
-
-ServiceDispatchersModule::~ServiceDispatchersModule()
-{
-}
-
 bool ServiceDispatchersModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("ServiceDispatchers")) {
@@ -97,13 +89,6 @@ String ServiceDispatcher::FindServiceName(Context &ctx)
 
 RegisterServiceDispatcher(RendererDispatcher);
 //--- RendererDispatcher ---------------------------------------------------
-RendererDispatcher::RendererDispatcher(const char *rendererDispatcherName)
-	: ServiceDispatcher(rendererDispatcherName)
-{}
-
-RendererDispatcher::~RendererDispatcher()
-{}
-
 long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROAnything &uriPrefixList)
 {
 	StartTrace(RendererDispatcher.FindURIPrefixInList);

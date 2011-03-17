@@ -11,21 +11,7 @@
 
 #include "ServiceDispatcher.h"
 
-class VHostServiceDispatcher: public RendererDispatcher
-{
-public:
-	VHostServiceDispatcher(const char *dispatcherName);
-	virtual ~VHostServiceDispatcher() {
-	}
-
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const {
-		return new (a) VHostServiceDispatcher(fName);
-	}
-
-	ServiceHandler *FindServiceHandler(Context &ctx);
-
-private:
+class VHostServiceDispatcher: public RendererDispatcher {
 	ServiceHandler *findServiceBasedOnLongestURIPrefixMatch(Context &ctx, String& requestURI);
 
 	// block the following default elements of this class
@@ -33,6 +19,15 @@ private:
 	VHostServiceDispatcher();
 	VHostServiceDispatcher(const VHostServiceDispatcher &);
 	VHostServiceDispatcher &operator=(const VHostServiceDispatcher &);
+public:
+	VHostServiceDispatcher(const char *dispatcherName) : RendererDispatcher(dispatcherName) {}
+
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) VHostServiceDispatcher(fName);
+	}
+
+	ServiceHandler *FindServiceHandler(Context &ctx);
 };
 
 #endif /* VHOSTSERVICEDISPATCHER_H_ */

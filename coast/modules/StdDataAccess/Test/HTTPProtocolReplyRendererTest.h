@@ -14,22 +14,16 @@
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------
 //! TestCases description
-class HTTPProtocolReplyRendererTest : public TestFramework::TestCase
-{
+class HTTPProtocolReplyRendererTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPProtocolReplyRendererTest(TString tstrName);
-
-	//! destroys the test case
-	~HTTPProtocolReplyRendererTest();
-
-	//--- public api
+	HTTPProtocolReplyRendererTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//! check if a success HTTP reply can be rendered
 	void RequestSuccessfulReplyLine();

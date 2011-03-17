@@ -17,14 +17,6 @@
 //---- RenderersModule -----------------------------------------------------------
 RegisterModule(RenderersModule);
 
-RenderersModule::RenderersModule(const char *name) : WDModule(name)
-{
-}
-
-RenderersModule::~RenderersModule()
-{
-}
-
 bool RenderersModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Renderers")) {
@@ -48,14 +40,6 @@ bool RenderersModule::Finis()
 //---- Renderer ---------------------------------------------------------
 RegisterRenderer(Renderer);
 RegCacheImpl(Renderer);	// FindRenderer()
-
-Renderer::Renderer(const char *name) : NotCloned(name)
-{
-}
-
-Renderer::~Renderer()
-{
-}
 
 void Renderer::RenderAll(std::ostream &reply, Context &, const ROAnything &)
 {

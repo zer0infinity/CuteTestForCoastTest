@@ -69,7 +69,6 @@ class HTTPHeaderParameterMapper : public ParameterMapper
 {
 public:
 	HTTPHeaderParameterMapper(const char *name) : ParameterMapper(name) { }
-	~HTTPHeaderParameterMapper()	{ }
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -99,7 +98,6 @@ class HTTPBodyResultMapper : public ResultMapper
 {
 public:
 	HTTPBodyResultMapper(const char *name) : ResultMapper(name) { }
-	~HTTPBodyResultMapper()	{ }
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -122,7 +120,6 @@ class HTTPBodyParameterMapper : public ParameterMapper
 {
 public:
 	HTTPBodyParameterMapper(const char *name) : ParameterMapper(name) { }
-	~HTTPBodyParameterMapper()	{ }
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

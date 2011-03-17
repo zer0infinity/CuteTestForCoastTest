@@ -45,15 +45,6 @@ RegCacheImpl(ServiceHandler);	// FindServiceHandler()
 //---- ServiceHandlersModule -----------------------------------------------------------
 RegisterModule(ServiceHandlersModule);
 
-ServiceHandlersModule::ServiceHandlersModule(const char *name)
-	: WDModule(name)
-{
-}
-
-ServiceHandlersModule::~ServiceHandlersModule()
-{
-}
-
 bool ServiceHandlersModule::Init(const ROAnything config)
 {
 	ROAnything roaHandlerConfig;

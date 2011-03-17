@@ -6,16 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 
 //--- interface include --------------------------------------------------------
 #include "HTTPProtocolReplyRendererTest.h"
@@ -24,16 +20,6 @@
 #include "Context.h"
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------------
-HTTPProtocolReplyRendererTest::HTTPProtocolReplyRendererTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(HTTPProtocolReplyRendererTest.Ctor);
-}
-
-HTTPProtocolReplyRendererTest::~HTTPProtocolReplyRendererTest()
-{
-	StartTrace(HTTPProtocolReplyRendererTest.Dtor);
-}
-
 void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine()
 {
 	StartTrace(HTTPProtocolReplyRendererTest.ReasonLessErrorReplyLine);
@@ -44,7 +30,6 @@ void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine()
 	r.RenderAll(response, c, ROAnything());
 	assertEqual("HTTP/1.1 500 Server Error\r\nConnection: close\r\n", response.str());
 	assertEqual(500L, c.Lookup("HTTPStatus.ResponseCode", -1L));
-
 }
 
 void HTTPProtocolReplyRendererTest::ReasonLessReplyLine()

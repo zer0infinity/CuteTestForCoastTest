@@ -15,11 +15,6 @@
 
 RegisterServiceDispatcher(VHostServiceDispatcher);
 //--- VHostServiceDispatcher ---------------------------------------------------
-VHostServiceDispatcher::VHostServiceDispatcher(const char *dispatcherName) :
-	RendererDispatcher(dispatcherName)
-{
-}
-
 namespace {
 	Anything buildPathSegmentList(String requestURI) {
 		StartTrace1(VHostServiceDispatcher.buildPathSegmentList, "input URI [" << requestURI << "]");

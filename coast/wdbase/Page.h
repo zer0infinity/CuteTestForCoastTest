@@ -13,14 +13,14 @@
 #include "WDModule.h"
 
 //---- PagesModule -----------------------------------------------------------
-class PagesModule : public WDModule
-{
+class PagesModule: public WDModule {
 public:
-	PagesModule(const char *name);
-	virtual ~PagesModule();
+	PagesModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
@@ -35,9 +35,6 @@ class Page : public HierarchConfNamed
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	Page(const char *name);
-
-	//!destructor does nothing
-	~Page();
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;

@@ -14,25 +14,22 @@
 
 //---- HTTPResponseMapper ----------------------------------------------------------
 //! Parses a http response from a stream and puts it under Mapper.HTTPResponse
-class HTTPResponseMapper : public ResultMapper
-{
+class HTTPResponseMapper: public ResultMapper {
+	HTTPResponseMapper();
+	HTTPResponseMapper(const HTTPResponseMapper &);
+	HTTPResponseMapper &operator=(const HTTPResponseMapper &);
 public:
 	//--- constructors
 	HTTPResponseMapper(const char *name);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
 	//! reads a http response from istream and puts it under Mapper.HTTPResponse
-	//! \param key not used
-	//! \param is the stream to be read
-	//! \param ctx the thread context of the invocation
-	//! \param conf not used
-	//! \return returns true if the mapping was successful otherwise false
+	/*! \param key not used
+		\param is the stream to be read
+		\param ctx the thread context of the invocation
+		\param conf not used
+		\return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything conf);
-
-private:
-	HTTPResponseMapper();
-	HTTPResponseMapper(const HTTPResponseMapper &);
-	HTTPResponseMapper &operator=(const HTTPResponseMapper &);
 };
 
 #endif

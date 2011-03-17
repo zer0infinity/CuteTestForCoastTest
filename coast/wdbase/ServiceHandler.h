@@ -13,21 +13,26 @@
 #include "Context.h"
 
 //---- ServiceHandlersModule -----------------------------------------------------------
-class ServiceHandlersModule : public WDModule
-{
+class ServiceHandlersModule: public WDModule {
 public:
-	ServiceHandlersModule(const char *);
-	virtual ~ServiceHandlersModule();
+	ServiceHandlersModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
 //---- ServiceHandler -----------------------------------------------------------
 //!handles requests of a certain kind by providing a service
-class ServiceHandler : public HierarchConfNamed
-{
+class ServiceHandler: public HierarchConfNamed {
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceHandler();
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceHandler(const ServiceHandler &);
+	//! block the following default elements of this class because they're not allowed to be used
+	ServiceHandler &operator=(const ServiceHandler &);
 public:
 	//!default named object constructor
 	ServiceHandler(const char *serviceHandlerName);
@@ -36,7 +41,7 @@ public:
 	virtual ~ServiceHandler();
 
 	//!registry interface
-	RegCacheDef(ServiceHandler);	// FindServiceHandler()
+	RegCacheDef(ServiceHandler); // FindServiceHandler()
 
 	//!handles requested service
 	bool HandleService(std::ostream &os, Context &ctx);
@@ -47,14 +52,6 @@ public:
 protected:
 	//!subclass hook to implement service handling
 	virtual bool DoHandleService(std::ostream &os, Context &ctx) = 0;
-
-private:
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceHandler();
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceHandler(const ServiceHandler &);
-	//! block the following default elements of this class because they're not allowed to be used
-	ServiceHandler &operator=(const ServiceHandler &);
 };
 
 #define RegisterServiceHandler(name) RegisterObject(name, ServiceHandler)

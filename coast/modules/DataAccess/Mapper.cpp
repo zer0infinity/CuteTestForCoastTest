@@ -18,14 +18,6 @@
 //---- MappersModule -----------------------------------------------------------
 RegisterModule(MappersModule);
 
-MappersModule::MappersModule(const char *name) : WDModule(name)
-{
-}
-
-MappersModule::~MappersModule()
-{
-}
-
 bool MappersModule::Init(const ROAnything config)
 {
 	StartTrace(MappersModule.Init);
