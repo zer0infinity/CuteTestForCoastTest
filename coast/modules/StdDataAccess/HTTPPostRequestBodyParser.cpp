@@ -16,36 +16,36 @@
 #include "MIMEHeader.h"
 #include "Dbg.h"
 
-HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input)
-	: fIn(&input), fHeader(mainheader)
+HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader)
+	: fHeader(mainheader)
 {
 	StartTrace(HTTPPostRequestBodyParser.Ctor);
 }
 
-bool HTTPPostRequestBodyParser::Parse()
+bool HTTPPostRequestBodyParser::Parse(std::istream &input)
 {
 	StartTrace(HTTPPostRequestBodyParser.Parse);
 	TraceAny(fHeader.GetInfo(), "Header: ");
 
 	if (fHeader.IsMultiPart()) {
 		Trace("Multipart detected");
-		return ParseMultiPart(fIn, fHeader.GetBoundary());
+		return ParseMultiPart(input, fHeader.GetBoundary());
 	} else {
 		Trace("Parsing simple body");
-		return ParseBody();
+		return ParseBody(input);
 	}
 }
 
-bool HTTPPostRequestBodyParser::ParseBody() {
+bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.ParseBody);
 	ROAnything contenttype;
 	if (!fHeader.Lookup("CONTENT-TYPE", contenttype)) {
 		return false;
 	}
-	if ( contenttype.Contains(Coast::HTTP::contentTypeAnything) ) {
+	if ( contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1 ) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
-		if (not a.Import(*fIn) || a.IsNull()) {
+		if (not a.Import(input) || a.IsNull()) {
 			Trace("" << Coast::HTTP::contentTypeAnything << " - syntax error");
 			return false;
 		}
@@ -57,14 +57,14 @@ bool HTTPPostRequestBodyParser::ParseBody() {
 	bool readSuccess = false;
 	long contentLength = fHeader.GetContentLength();
 	if (contentLength >= 0) {
-		fUnparsedContent.Append(*fIn, contentLength);
+		fUnparsedContent.Append(input, contentLength);
 		readSuccess = (fUnparsedContent.Length() == contentLength);
 	} else {
 		// get everything
-		while (fIn->good()) {
-			fUnparsedContent.Append(*fIn, 4096);
+		while (input.good()) {
+			fUnparsedContent.Append(input, 4096);
 		}
-		readSuccess = fIn->eof();
+		readSuccess = input.eof();
 	}
 	Trace("Body: <" << fUnparsedContent << ">");
 	ROAnything contentdisp;
@@ -87,22 +87,19 @@ void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
 	Coast::URLUtils::DecodeAll(result);
 }
 
-bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, String &body)
+bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String &bound, String &body)
 {
 	StartTrace1(HTTPPostRequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
-	if ( !is ) {
-		return true;
-	}
 	char c = '\0';
 	bool newLineFoundLastLine = false;
-	while (is->good()) {
+	while (input.good()) {
 		bool boundaryseen = false;
 		bool newLineFoundThisLine = false;
 
 		String line;
-		line.Append(*is, 4096L, Coast::StreamUtils::LF);
+		line.Append(input, 4096L, Coast::StreamUtils::LF);
 		fUnparsedContent.Append(line);
-		if ( Coast::StreamUtils::LF == is->peek() && is->get(c).good() ) {
+		if ( Coast::StreamUtils::LF == input.peek() && input.get(c).good() ) {
 			fUnparsedContent.Append(c);
 			newLineFoundThisLine = true;
 		}
@@ -140,21 +137,21 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &b
 		newLineFoundLastLine = newLineFoundThisLine;
 	}
 	Trace("Body in Multipart: <" << body << ">");
-	Assert(!is->good());
+	Assert(!input.good());
 	return false;
 }
 
-bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)
+bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream &input, const String &bound)
 {
 	// assume next on input is bound and a line separator
 	StartTrace(HTTPPostRequestBodyParser.ParseMultiPart);
 	bool endReached = false;
 
 	// ignore value of shouldbeempty
-	while (!endReached && is->good()) {
+	while (!endReached && input.good()) {
 		// reaching eof is an error since end of input is determined by seperators
 		String body;
-		endReached = ReadToBoundary(is, bound, body);
+		endReached = ReadToBoundary(input, bound, body);
 		Trace("Body: <" << body << ">");
 		if ( body.Length() ) {
 			IStringStream innerpart(body);
@@ -168,8 +165,8 @@ bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &b
 					partInfo["header"] = hinner.GetInfo();
 					TraceAny(hinner.GetInfo(), "Header: ");
 
-					HTTPPostRequestBodyParser part(hinner, innerpart);
-					part.Parse(); // if we found a boundary, could we unget it?
+					HTTPPostRequestBodyParser part(hinner);
+					part.Parse(innerpart); // if we found a boundary, could we unget it?
 
 					partInfo["body"] = part.GetContent();
 					fContent.Append(partInfo);

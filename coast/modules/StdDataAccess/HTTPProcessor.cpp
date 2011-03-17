@@ -77,9 +77,9 @@ bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
 	StartTrace(HTTPProcessor.ReadRequestBody);
 	if ( strPOST.IsEqual(request["REQUEST_METHOD"].AsCharPtr()) ) {
-		HTTPPostRequestBodyParser sm(header, Ios);
+		HTTPPostRequestBodyParser sm(header);
 		try {
-			sm.Parse();
+			sm.Parse(Ios);
 		} catch (MIMEHeader::LineSizeExceededException &e) {
 			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
 		} catch (MIMEHeader::HeaderSizeExceededException &e) {
@@ -197,7 +197,7 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 		ROAnything roaCurrAny;
 		while (iter.Next(roaCurrAny)) {
 			String enc = roaCurrAny.AsString("---");
-			if (enc.ToLower().IsEqual("gzip")) {
+			if (enc.ToLower().Contains("gzip") != -1 ) {
 				Trace("accepting gzip");
 				return true;
 			}
@@ -212,6 +212,7 @@ bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 	String protocol = ctx.Lookup("SERVER_PROTOCOL", "");
 	String connection = ctx.Lookup("header.CONNECTION", "");
 	Trace("Protocol [" << protocol << "] connection [" << connection << "]");
+	//!@FIXME: should use parsedHeaders and check if contained within
 	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.ToLower().IsEqual("keep-alive");
 	Trace("Keep connection alive: " << keepAlive ? "Yes" : "No");
 	return keepAlive;

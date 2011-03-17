@@ -52,9 +52,8 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	if ( is ) {
 		MIMEHeader mh;
 		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
-
-		HTTPPostRequestBodyParser sm(mh, *is);
-		t_assert(sm.Parse());
+		HTTPPostRequestBodyParser sm(mh);
+		t_assert(sm.Parse(*is));
 		Anything expected;
 		Anything result = sm.GetContent();
 
@@ -73,9 +72,8 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	if ( is ) {
 		MIMEHeader mh;
 		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
-
-		HTTPPostRequestBodyParser sm(mh, *is);
-		t_assert(sm.Parse());
+		HTTPPostRequestBodyParser sm(mh);
+		t_assert(sm.Parse(*is));
 		String unparsedContent = sm.GetUnparsedContent();
 		delete is;
 
@@ -107,14 +105,14 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		Trace("input to parse [" << strInput << "]");
 		StringStream tiss(strInput);
 		MIMEHeader mh;
-		HTTPPostRequestBodyParser sm(mh, tiss);
+		HTTPPostRequestBodyParser sm(mh);
 		std::ios::iostate iState = tiss.rdstate();
 		Trace("original iState:" << (long)(iState));
 
 		// test failbit detection
 		tiss.clear(std::ios::failbit | iState);
 		Trace("iState with failbit:" << (long)(iState | std::ios::failbit));
-		bool res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
+		bool res = sm.ReadToBoundary(tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
 		iState = tiss.rdstate() ^ std::ios::failbit;
@@ -125,7 +123,7 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		iState = iState | std::ios::badbit;
 		tiss.clear(iState);
 		Trace("iState with badbit:" << (long)iState);
-		res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
+		res = sm.ReadToBoundary(tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
 		iState = tiss.rdstate() ^ std::ios::badbit;
@@ -136,7 +134,7 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		iState = iState | std::ios::eofbit;
 		tiss.clear(iState);
 		Trace("iState with eofbit:" << (long)iState);
-		res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
+		res = sm.ReadToBoundary(tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
 		iState = tiss.rdstate() ^ std::ios::eofbit;
@@ -144,7 +142,7 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		tiss.clear(iState);
 
 		// clean tests
-		res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
+		res = sm.ReadToBoundary(tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm(cConfig["ExpectedResult"].AsCharPtr(), result, cName);
 		assertEqualm(cConfig["ExpectedEndReached"].AsLong(), (long) res, cName);
 		assertEqualm(cConfig["ExpectedUnparsedContent"].AsCharPtr(), sm.GetUnparsedContent(), cName);
@@ -162,9 +160,9 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTest()
 		String result, strIn(Renderer::RenderToString(ctx, cConfig["Input"]));
 		IStringStream tiss(strIn);
 		MIMEHeader mh;
-		HTTPPostRequestBodyParser sm(mh, tiss);
+		HTTPPostRequestBodyParser sm(mh);
 
-		bool res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsString(), result);
+		bool res = sm.ReadToBoundary(tiss, cConfig["Boundary"].AsString(), result);
 		assertEqualm(Renderer::RenderToString(ctx, cConfig["ExpectedResult"]), result, cName);
 		assertEqualm(cConfig["ExpectedEndReached"].AsLong(), (long) res, cName);
 
@@ -194,24 +192,24 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			HTTPPostRequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh);
 
-			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected end reached with simple input");
+			t_assertm(!sm.ReadToBoundary(is, testboundary, result), "expected end reached with simple input");
 			assertEqual("some content1", result);
 
 			result = "";
-			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected end reached with simple input");
+			t_assertm(!sm.ReadToBoundary(is, testboundary, result), "expected end reached with simple input");
 			assertEqual("some content2", result);
 		}
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			HTTPPostRequestBodyParser sm(mh, is);
-			sm.ReadToBoundary(&is, testboundary, result);
+			HTTPPostRequestBodyParser sm(mh);
+			sm.ReadToBoundary(is, testboundary, result);
 			String unparsedContent;
 			unparsedContent = sm.GetUnparsedContent();
 			assertEqual("--980\r\n", unparsedContent);
-			sm.ReadToBoundary(&is, testboundary, result);
+			sm.ReadToBoundary(is, testboundary, result);
 			unparsedContent = sm.GetUnparsedContent();
 			assertEqual("--980\r\nsome content1\r\n--980\r\n", unparsedContent);
 		}
@@ -225,27 +223,27 @@ void HTTPPostRequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			HTTPPostRequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh);
 
-			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected  end not reached with simple input");
+			t_assertm(!sm.ReadToBoundary(is, testboundary, result), "expected  end not reached with simple input");
 			assertEqual("some content1", result);
 
 			result = "";
-			t_assertm(sm.ReadToBoundary(&is, testboundary, result), "expected end reached with simple input");
+			t_assertm(sm.ReadToBoundary(is, testboundary, result), "expected end reached with simple input");
 			assertEqual("some content2", result);
 		}
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			HTTPPostRequestBodyParser sm(mh, is);
-			sm.ReadToBoundary(&is, testboundary, result);
+			HTTPPostRequestBodyParser sm(mh);
+			sm.ReadToBoundary(is, testboundary, result);
 			String unparsedContent;
 			unparsedContent = sm.GetUnparsedContent();
 			assertEqual("--980\r\n", unparsedContent);
-			sm.ReadToBoundary(&is, testboundary, result);
+			sm.ReadToBoundary(is, testboundary, result);
 			unparsedContent = sm.GetUnparsedContent();
 			assertEqual("--980\r\nsome content1\r\n--980\r\n", unparsedContent);
-			sm.ReadToBoundary(&is, testboundary, result);
+			sm.ReadToBoundary(is, testboundary, result);
 			unparsedContent = sm.GetUnparsedContent();
 			assertEqual("--980\r\nsome content1\r\n--980\r\nsome content2\r\n--980--", unparsedContent);
 		}
@@ -285,18 +283,17 @@ void HTTPPostRequestBodyParserTest::ParseMultiPartTest()
 	{
 		IStringStream is(testinput);
 		MIMEHeader mh;
-		HTTPPostRequestBodyParser sm(mh, is);
-
+		HTTPPostRequestBodyParser sm(mh);
 		assertAnyEqualm(Anything(), sm.GetContent(), "expected fContent to be empty" );
-		t_assert(sm.ParseMultiPart(&is, testboundary));
+		t_assert(sm.ParseMultiPart(is, testboundary));
 		assertAnyEqualm(result, sm.GetContent(), "expected valid Content" );
 	}
 	{
 		IStringStream is(testinput1);
 		MIMEHeader mh;
-		HTTPPostRequestBodyParser sm(mh, is);
+		HTTPPostRequestBodyParser sm(mh);
 		try {
-			sm.ParseMultiPart(&is, testboundary);
+			sm.ParseMultiPart(is, testboundary);
 		} catch (MIMEHeader::InvalidLineException &e) {
 			t_assertm(true, "expected invalid line exception to happen");
 		} catch (...) {

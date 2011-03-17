@@ -27,10 +27,10 @@ class HTTPPostRequestBodyParser
 {
 public:
 	//! ctor requires a header for parameters on length and decoding
-	HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input);
+	HTTPPostRequestBodyParser(MIMEHeader &mainheader);
 
 	//! do the parsing, read everything
-	bool Parse();
+	bool Parse(std::istream &input);
 	//! return the decoded result after parsing
 	Anything &GetContent() {
 		return fContent;
@@ -44,20 +44,19 @@ protected:
 	// operational methods
 	//! do the multi-part mime parsing, using boundary-string bound
 	//! \return whether multipart body was read successfully
-	bool ParseMultiPart(std::istream *is, const String &bound);
+	bool ParseMultiPart(std::istream &input, const String &bound);
 	//! parse the mime body, usually xxx-form-urlencoded
 	//! \return indicates whether body was successfully read
-	bool ParseBody();
+	bool ParseBody(std::istream &input);
 	//! auxiliary for ParseMultiPart
 	//! \return indicates whether body was successfully read
-	bool ReadToBoundary(std::istream *is, const String &bound, String &body);
+	bool ReadToBoundary(std::istream &input, const String &bound, String &body);
 	//! do the url-decoding of str
 	void Decode(String str, Anything &result);
 
 private:
 	HTTPPostRequestBodyParser();
 	HTTPPostRequestBodyParser(const HTTPPostRequestBodyParser &);
-	std::istream *fIn;	// to parse from
 	MIMEHeader &fHeader;
 	Anything fContent;
 	String fUnparsedContent;
