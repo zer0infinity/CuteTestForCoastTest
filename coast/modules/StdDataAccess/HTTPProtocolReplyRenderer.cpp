@@ -69,7 +69,12 @@ namespace {
 void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(HTTPProtocolReplyRenderer.RenderAll);
 
-	ROAnything realConfig(config.IsNull() ? ctx.Lookup("HTTPStatus") : config);
+	ROAnything realConfig;
+	if ( config.GetType() == AnyCharPtrType ) {
+		realConfig = ctx.Lookup(config.AsString());
+	} else {
+		realConfig = (config.IsNull() ? ctx.Lookup("HTTPStatus") : config);
+	}
 
 	String httpVersion = Renderer::RenderToString(ctx, realConfig["HTTPVersion"]);
 	if (not httpVersion.Length()) {

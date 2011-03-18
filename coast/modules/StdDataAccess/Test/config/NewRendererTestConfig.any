@@ -51,5 +51,22 @@
 			}
 			/Expected "HTTP/1.3 302 FoundMaybe\r\n"
 		}
+		/HTTPProtocolReplyRendererLookup
+		{
+			/Env {
+				/Output {
+					/HTTPResponse {
+						/HTTPVersion	"HTTP/1.3"
+						/ResponseCode	302
+						/ResponseMsg	FoundMaybe
+					}
+				}
+			}
+			/Renderer
+			{
+				/HTTPProtocolReplyRenderer Output.HTTPResponse
+			}
+			/Expected "HTTP/1.3 302 FoundMaybe\r\n"
+		}
 	}
 }

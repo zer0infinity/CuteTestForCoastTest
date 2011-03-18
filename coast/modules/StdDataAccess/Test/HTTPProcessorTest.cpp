@@ -99,23 +99,36 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	Context ctx;
 	Anything anyProcessorName = httpProcessor->GetName();
 	Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyProcessorName, "RequestProcessor");
-	OStringStream os1;
-	httpProcessor->RenderProtocolStatus(os1, ctx);
-	assertCharPtrEqual( "HTTP/1.1 200 OK" ENDL "Connection: close" ENDL, os1.str() );
-
-	Anything tmpStore = ctx.GetTmpStore();
-	tmpStore["HTTPStatus"]["ResponseCode"] = 599L;
-	OStringStream os2;
-	httpProcessor->RenderProtocolStatus(os2, ctx);
-	assertCharPtrEqual( "HTTP/1.1 599 Unknown Error" ENDL "Connection: close" ENDL, os2.str() );
-
-	tmpStore["HTTPStatus"]["ResponseCode"] = 413L;
-
-	OStringStream os3;
-	tmpStore["HTTPStatus"]["ResponseMsg"] = "BlaBla";
-
-	httpProcessor->RenderProtocolStatus(os3, ctx);
-	assertCharPtrEqual( "HTTP/1.1 413 BlaBla" ENDL "Connection: close" ENDL, os3.str() );
+	{
+		OStringStream os;
+		httpProcessor->RenderProtocolStatus(os, ctx);
+		assertCharPtrEqual( "HTTP/1.1 200 OK" ENDL "Connection: close" ENDL, os.str() );
+	}
+	{
+		Anything tmpStore;
+		OStringStream os;
+		tmpStore["ResponseCode"] = 599L;
+		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
+		httpProcessor->RenderProtocolStatus(os, ctx);
+		assertCharPtrEqual( "HTTP/1.1 599 Unknown Error" ENDL "Connection: close" ENDL, os.str() );
+	}
+	{
+		OStringStream os;
+		Anything tmpStore;
+		tmpStore["ResponseCode"] = 413L;
+		tmpStore["ResponseMsg"] = "BlaBla";
+		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
+		httpProcessor->RenderProtocolStatus(os, ctx);
+		assertCharPtrEqual( "HTTP/1.1 413 BlaBla" ENDL "Connection: close" ENDL, os.str() );
+	}
+	{
+		OStringStream os;
+		Anything tmpStore;
+		tmpStore["ProtocolReplyRenderer"] = "HTTP/8.7 768 BLUB" ENDL;
+		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore);
+		httpProcessor->RenderProtocolStatus(os, ctx);
+		assertCharPtrEqual( "HTTP/8.7 768 BLUB" ENDL, os.str() );
+	}
 }
 
 void HTTPProcessorTest::KeepConnection() {
