@@ -18,7 +18,7 @@ RegisterResultMapper(MimeHeaderResultMapper);
 
 bool MimeHeaderResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {
 	StartTrace1(MimeHeaderResultMapper.DoPutStream, "key [" << NotNull(key) << "]");
-	MIMEHeader mh(Coast::URLUtils::eDownshift);
+	MIMEHeader mh(Coast::URLUtils::eUpshift);
 	try {
 		if (mh.ParseHeaders(is) && is.good()) {
 			Anything header(mh.GetInfo());
