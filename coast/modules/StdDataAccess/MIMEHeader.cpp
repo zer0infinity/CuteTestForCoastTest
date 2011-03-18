@@ -6,16 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MIMEHeader.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
+#include "AnythingUtils.h"
+#include "AnyIterators.h"
+#include "RE.h"
+//#include "RECompiler.h"
 #include <iostream>
 #include <cstdio>	// for EOF
+#include <cstring>  // for strlen
 
-MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields) :
-	fNormalizeKey(normalizeKey), fSplitHeaderFields(splitHeaderFields) {
+MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey) :
+	fNormalizeKey(normalizeKey) {
 	StartTrace(MIMEHeader.Ctor);
 }
 
@@ -40,48 +42,38 @@ namespace Coast {
 
 namespace {
 	char const *boundarySlotname = "BOUNDARY";
-	char const *contentDispositionSlotname = "CONTENT-DISPOSITION";
 	char const *contentLengthSlotname = "CONTENT-LENGTH";
+	char const *contentDispositionSlotname = "CONTENT-DISPOSITION";
 	char const *contentTypeSlotname = "CONTENT-TYPE";
-	char const *cookieSlotname = "COOKIE";
-	char const *setCookieSlotname = "SET-COOKIE";
-	char const *userAgentSlotname = "USER-AGENT";
-	String const boundaryToken("boundary=", Coast::Storage::Global());
-
-	char const cookieArgumentsDelimiter = ';';
-	char const headerArgumentsDelimiter = ',';
+	String const boundaryToken("boundary=", -1, Coast::Storage::Global());
 	char const headerNamedDelimiter = ':';
+
+	char const contentDispositionDelimiter = ';';
+	char const headerArgumentsDelimiter = ',';
+	char const valueArgumentDelimiter = '=';
+	char const *strPreparedPrefix = "preparedHeaders.";
+
+	String const strSplitfields("^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)", -1, Coast::Storage::Global());
+//	Anything const headersREProgram = RECompiler().compile(strSplitfields);
+
+	void StoreKeyValue(Anything &headers, String const& strKey, String const &strValue)
+	{
+		StartTrace(MIMEHeader.StoreKeyValue);
+		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
+		RE multivalueRE(strSplitfields, RE::MATCH_ICASE);
+		if ( multivalueRE.ContainedIn(strKey) ) {
+			Anything &anyValues = headers[strKey];
+			Coast::URLUtils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, Coast::URLUtils::eUpshift);
+		} else if ( strKey.IsEqual(contentDispositionSlotname)) {
+			Anything &anyValues = headers[strKey];
+			Coast::URLUtils::Split(strValue, contentDispositionDelimiter, anyValues, valueArgumentDelimiter, Coast::URLUtils::eUpshift);
+		} else {
+			Coast::URLUtils::AppendValueTo(headers, strKey, strValue);
+		}
+	}
 
 	String shiftedHeaderKey(String const &key, Coast::URLUtils::NormalizeTag const shiftFlag) {
 		return Coast::URLUtils::Normalize(key, shiftFlag);
-	}
-	//!split ';' seperated list of key=value pairs into anything
-	Anything SplitLine(const String &line, Coast::URLUtils::NormalizeTag const shift = Coast::URLUtils::eUpshift) {
-		Anything values;
-		Coast::URLUtils::Split(line, cookieArgumentsDelimiter, values, '=', shift);
-		StatTraceAny(MIMEHeader.SplitLine, values, "input line [" << line << "] split into:", Coast::Storage::Current());
-		return values;
-	}
-	long GetNormalizedFieldName(String const &line, String &fieldname, Coast::URLUtils::NormalizeTag const normTag) {
-		StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
-		// following headerfield specification of HTTP/1.1 RFC 2068
-		long pos = line.StrChr(headerNamedDelimiter);
-		if (pos > 0) {
-			fieldname = shiftedHeaderKey(line.SubString(0, pos), normTag);
-		} Trace("Fieldname: " << fieldname << " Position of " << headerNamedDelimiter << " is: " << pos);
-		return pos;
-	}
-
-	MIMEHeader::ProcessMode GetSplitState(String const &fieldname, MIMEHeader::ProcessMode splitHeaderFields,
-			Coast::URLUtils::NormalizeTag const shiftFlag) {
-		StartTrace(MIMEHeader.GetSplitState);
-		if (fieldname.IsEqual(shiftedHeaderKey(setCookieSlotname, shiftFlag)) || fieldname.IsEqual(shiftedHeaderKey(userAgentSlotname,
-				shiftFlag))) {
-			splitHeaderFields = MIMEHeader::eDoNotSplitHeaderFields;
-		} else if (fieldname.IsEqual(shiftedHeaderKey(cookieSlotname, shiftFlag))) {
-			splitHeaderFields = MIMEHeader::eDoSplitHeaderFieldsCookie;
-		}
-		return splitHeaderFields;
 	}
 
 	void CheckMultipartBoundary(String const &contenttype, Anything &header, Coast::URLUtils::NormalizeTag const shiftFlag) {
@@ -96,8 +88,17 @@ namespace {
 		}
 	}
 
-	void SplitAndAddHeaderLine(Anything &headers, String const &line, MIMEHeader::ProcessMode splitHeaderFields,
-			Coast::URLUtils::NormalizeTag const normTag) {
+	long GetNormalizedFieldName(String const &line, String &fieldname, Coast::URLUtils::NormalizeTag const normTag) {
+		StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
+		// following headerfield specification of HTTP/1.1 RFC 2068
+		long pos = line.StrChr(headerNamedDelimiter);
+		if (pos > 0) {
+			fieldname = shiftedHeaderKey(line.SubString(0, pos), normTag);
+		} Trace("Fieldname: " << fieldname << " Position of " << headerNamedDelimiter << " is: " << pos);
+		return pos;
+	}
+
+	void SplitAndAddHeaderLine(Anything &headers, String const &line, Coast::URLUtils::NormalizeTag const normTag) {
 		StartTrace1(MIMEHeader.SplitAndAddHeaderLine, "Line: <<<" << line << ">>>");
 		// following headerfield specification of HTTP/1.1 RFC 2616 (obsoletes 2068)
 		String fieldname;
@@ -105,38 +106,10 @@ namespace {
 		if (pos <= 0) {
 			throw MIMEHeader::InvalidLineException("Missing header field name", line);
 		}
-		String fieldvalue;
-		splitHeaderFields = GetSplitState(fieldname, splitHeaderFields, normTag);
-		if ((splitHeaderFields == MIMEHeader::eDoSplitHeaderFields) || (splitHeaderFields == MIMEHeader::eDoSplitHeaderFieldsCookie)) {
-			StringTokenizer st1(line.cstr() + pos + 1,
-					(splitHeaderFields == MIMEHeader::eDoSplitHeaderFields ? headerArgumentsDelimiter : cookieArgumentsDelimiter));
-			while (st1.NextToken(fieldvalue)) {
-				Trace("fieldname: [" << fieldname << "] fieldvalue: [" << fieldvalue << "]");
-				if (fieldvalue.Length()) {
-					Coast::URLUtils::TrimBlanks(fieldvalue);
-					Coast::URLUtils::RemoveQuotes(fieldvalue);
-					if (splitHeaderFields == MIMEHeader::eDoSplitHeaderFields) {
-						if (fieldname.IsEqual(shiftedHeaderKey(contentDispositionSlotname, normTag))) {
-							headers[fieldname] = SplitLine(fieldvalue);
-						} else {
-							Coast::URLUtils::AppendValueTo(headers, fieldname, fieldvalue);
-						}
-					} else if (splitHeaderFields == MIMEHeader::eDoSplitHeaderFieldsCookie) {
-						Anything tmp;
-						tmp = SplitLine(fieldvalue, Coast::URLUtils::eUntouched);
-						for (int i = 0; i < tmp.GetSize(); i++) {
-							headers[fieldname][tmp.SlotName(i)] = tmp[i];
-						}
-					}
-				}
-			}
-		}
-		if (splitHeaderFields == MIMEHeader::eDoNotSplitHeaderFields) {
-			fieldvalue = line.SubString(pos + 1);
-			if (fieldvalue.Length()) {
-				Coast::URLUtils::TrimBlanks(fieldvalue);
-				Coast::URLUtils::AppendValueTo(headers, fieldname, fieldvalue);
-			}
+		String fieldvalue = line.SubString(pos + 1);
+		if (fieldvalue.Length()) {
+			Coast::URLUtils::TrimBlanks(fieldvalue);
+			StoreKeyValue(headers, fieldname, fieldvalue);
 		}
 		if (fieldname.IsEqual(shiftedHeaderKey(contentTypeSlotname, normTag))) {
 			CheckMultipartBoundary(fieldvalue, headers, normTag);
@@ -157,7 +130,7 @@ bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long cons
 			return true;	//!< successful header termination with empty line
 		}
 		if (headerlength > maxheaderlen) throw MIMEHeader::HeaderSizeExceededException("Header size exceeded", line, maxheaderlen, headerlength);
-		SplitAndAddHeaderLine(fHeader, line, fSplitHeaderFields, fNormalizeKey);
+		SplitAndAddHeaderLine(fHeader, line, fNormalizeKey);
 	}
 	return false;
 }

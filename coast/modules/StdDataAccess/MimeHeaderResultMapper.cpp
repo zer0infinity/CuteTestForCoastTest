@@ -18,11 +18,7 @@ RegisterResultMapper(MimeHeaderResultMapper);
 
 bool MimeHeaderResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {
 	StartTrace1(MimeHeaderResultMapper.DoPutStream, "key [" << NotNull(key) << "]");
-	MIMEHeader::ProcessMode eProcMode = MIMEHeader::eDoSplitHeaderFields;
-	if ( Lookup("DoNotSplitHeaderFields", 0L) ) {
-		eProcMode = MIMEHeader::eDoNotSplitHeaderFields;
-	}
-	MIMEHeader mh(Coast::URLUtils::eDownshift, eProcMode);
+	MIMEHeader mh(Coast::URLUtils::eDownshift);
 	try {
 		if (mh.ParseHeaders(is) && is.good()) {
 			Anything header(mh.GetInfo());

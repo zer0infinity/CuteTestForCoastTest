@@ -416,7 +416,11 @@
 		/DoTestConnect			33
 	}
 	/WebAppService {
-		/MainSwitch				0
+		/MainSwitch				10
+		/EnableAll				33
+	}
+	/WebAppServiceTest {
+		/MainSwitch				10
 		/EnableAll				33
 	}
 	/LocalizationUtils {

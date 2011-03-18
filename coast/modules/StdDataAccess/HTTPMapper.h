@@ -56,7 +56,9 @@
           "deflate"
         }
         /KEEP-ALIVE "115"
-        /CONNECTION "keep-alive"
+        /CONNECTION {
+          "keep-alive"
+        }
 	}
 }
  * \endcode

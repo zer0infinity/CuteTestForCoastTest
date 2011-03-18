@@ -186,6 +186,19 @@ void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
 	RenderHTTPProtocolStatus(os, ctx);
 }
 
+namespace {
+	bool containsLowercaseValue(ROAnything roaContainer, String const &strValue) {
+		AnyExtensions::LeafIterator<ROAnything> iter(roaContainer);
+		ROAnything roaCurrAny;
+		while (iter.Next(roaCurrAny)) {
+			if (roaCurrAny.AsString().ToLower().Contains(strValue) != -1 ) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
 bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 {
 	StartTrace(HTTPProcessor.IsZipEncodingAcceptedByClient);
@@ -193,15 +206,7 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 	ROAnything roaEncoding;
 	if (!ctx.Lookup("DisableZipEncoding", 0L) && ctx.Lookup("header.ACCEPT-ENCODING", roaEncoding) ) {
 		TraceAny(roaEncoding, "accepted encodings");
-		AnyExtensions::LeafIterator<ROAnything> iter(roaEncoding);
-		ROAnything roaCurrAny;
-		while (iter.Next(roaCurrAny)) {
-			String enc = roaCurrAny.AsString("---");
-			if (enc.ToLower().Contains("gzip") != -1 ) {
-				Trace("accepting gzip");
-				return true;
-			}
-		}
+		return containsLowercaseValue(roaEncoding, "gzip");
 	}
 	return false;
 }
@@ -210,10 +215,9 @@ bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoKeepConnectionAlive);
 	String protocol = ctx.Lookup("SERVER_PROTOCOL", "");
-	String connection = ctx.Lookup("header.CONNECTION", "");
-	Trace("Protocol [" << protocol << "] connection [" << connection << "]");
-	//!@FIXME: should use parsedHeaders and check if contained within
-	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.ToLower().IsEqual("keep-alive");
+	ROAnything roaConnection = ctx.Lookup("header.CONNECTION");
+	TraceAny(roaConnection, "Protocol [" << protocol << "]");
+	bool keepAlive = protocol.IsEqual("HTTP/1.1") && containsLowercaseValue(roaConnection, "keep-alive");
 	Trace("Keep connection alive: " << keepAlive ? "Yes" : "No");
 	return keepAlive;
 }

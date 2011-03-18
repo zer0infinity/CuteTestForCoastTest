@@ -38,20 +38,11 @@ void HTTPMimeHeaderMapperTest::ConfiguredTests()
 	}
 }
 
-void HTTPMimeHeaderMapperTest::CorrectedDateHeadersTest()
-{
-	StartTrace(HTTPMimeHeaderMapperTest.CorrectedDateHeadersTest);
-	Anything dateformats2correct(GetTestCaseConfig()["Input"].DeepClone());
-	HTTPMimeHeaderMapper::CorrectDateFormats(dateformats2correct);
-	assertAnyEqual(GetTestCaseConfig()["Expected"], dateformats2correct);
-}
-
 // builds up a suite of tests, add a line for each testmethod
 Test *HTTPMimeHeaderMapperTest::suite ()
 {
 	StartTrace(HTTPMimeHeaderMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, ConfiguredTests);
-	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, CorrectedDateHeadersTest);
 	return testSuite;
 }

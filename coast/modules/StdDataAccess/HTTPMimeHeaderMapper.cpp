@@ -35,11 +35,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 	// Ignore key, store under Mapper.HTTPHeader by default
 	StartTrace(HTTPMimeHeaderMapper.DoPutStream);
 	TraceAny(config, "My Config");
-	MIMEHeader::ProcessMode eProcMode = MIMEHeader::eDoSplitHeaderFields;
-	if (config.IsDefined("DoNotSplitHeaderFields") && config["DoNotSplitHeaderFields"].AsBool(0) == true) {
-		eProcMode = MIMEHeader::eDoNotSplitHeaderFields;
-	}
-	MIMEHeader mh(Coast::URLUtils::eDownshift, eProcMode);
+	MIMEHeader mh(Coast::URLUtils::eDownshift);
 	bool result = false;
 	try {
 		result = mh.ParseHeaders(is);
@@ -50,9 +46,6 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 	if (result && is.good()) {
 		Anything header(mh.GetInfo());
 		TraceAny(header, "header");
-		if (eProcMode == MIMEHeader::eDoSplitHeaderFields) {
-			CorrectDateFormats(header);
-		}
 		//!@FIXME: all of the following should go to separate mappers
 		if (config["StoreCookies"].AsLong(0)) {
 			StoreCookies(header, ctx);
@@ -73,34 +66,6 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
 	return result && is.good();
-}
-
-void HTTPMimeHeaderMapper::CorrectDateFormats(Anything &header)
-{
-	// we assume to-lower keys
-	const char *keylist[] = {
-		"if-modified-since",
-		"if-range",
-		"if-unmodified-since",
-		"last-modified",
-		"retry-after",
-		"date",
-		"expires"
-	};
-	for (int i = 0; i < (int)(sizeof(keylist) / sizeof(keylist[0])); ++i) {
-		const char *key = keylist[i];
-		if (header.IsDefined(key) && header[key].GetType() == AnyArrayType) {
-			String newvalue;
-			Anything oldvalue(header[key]);
-			for (long j = 0L, sz = oldvalue.GetSize(); j < sz; ++j) {
-				if (newvalue.Length() > 0) {
-					newvalue.Append(", ");
-				}
-				newvalue.Append(oldvalue[j].AsString());
-			}
-			header[key] = newvalue;
-		}
-	}
 }
 
 void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppresslist)

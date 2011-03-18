@@ -26,8 +26,6 @@ public:
 
 	//! take a simple http response and parse it
 	void ConfiguredTests();
-	//! check the fixing of wrongly parsed Date fields regarding RFC 2068
-	void CorrectedDateHeadersTest();
 };
 
 #endif

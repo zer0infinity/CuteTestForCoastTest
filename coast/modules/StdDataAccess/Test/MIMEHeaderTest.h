@@ -26,6 +26,8 @@ public:
 
 	void SimpleHeaderTest();
 	void ConfiguredTests();
+	void spiritTests();
+	void testrfcheaders();
 };
 
 #endif

@@ -295,11 +295,11 @@
 		/EnableAll			20
 	}
 	/StorePutter {
-		/MainSwitch			20
+		/MainSwitch			0
 		/EnableAll			20
 	}
 	/SlotPutter {
-		/MainSwitch			20
+		/MainSwitch			0
 		/EnableAll			20
 	}
 }

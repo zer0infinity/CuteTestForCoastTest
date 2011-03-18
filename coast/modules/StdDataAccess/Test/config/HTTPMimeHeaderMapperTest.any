@@ -36,7 +36,9 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 				/date "Fri, 05 Dec 2003 12:41:30 GMT"
 				/server "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
 				/location "/ch/"
-				/connection "close"
+				/connection {
+					"close"
+				}
 				/content-type "text/html; charset=iso-8859-1"
 			}
 		}
@@ -47,7 +49,9 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 				/date "Fri, 05 Dec 2003 12:41:30 GMT"
 				/server "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
 				/location "/ch/"
-				/connection "close"
+				/connection {
+					"close"
+				}
 				/content-type "text/html; charset=iso-8859-1"
 				/set-cookie {
 					"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
@@ -58,31 +62,6 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 					"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
 					"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
 					"Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
-				}
-			}
-		}
-		/FieldsOccursMoreThanOnceHeaderTestDoSplit {
-			/Input %ExtendedInput
-			/MapperName HTTPMimeHeaderMapperDoSplitHeaderFields
-			/Expected {
-				/date "Fri, 05 Dec 2003 12:41:30 GMT"
-				/server "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
-				/location "/ch/"
-				/connection "close"
-				/content-type "text/html; charset=iso-8859-1"
-				/set-cookie {
-					"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
-					"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
-					"Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
-				}
-				/set-cookie2
-				{
-					"Test1=test_value1; expires=Sat"
-					"01-Jan-2001 01:01:01 GMT; path=/;"
-					"Test2=test_value2; expires=Sat"
-					"02-Jan-2002 02:02:02 GMT; path=/;"
-					"Test1=test_value3; expires=Sat"
-					"03-Jan-2003 03:03:03 GMT; path=/;"
 				}
 			}
 		}
@@ -107,7 +86,9 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 				/date "Fri, 05 Dec 2003 12:41:30 GMT"
 				/server "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
 				/location "/ch/"
-				/connection "close"
+				/connection {
+					"close"
+				}
 				/content-type "text/html; charset=iso-8859-1"
 				/fd-info "foo"
 				/fd-stuff "bar"
@@ -133,56 +114,6 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 				/location "/ch/"
 				/content-type "text/html; charset=iso-8859-1"
 				/fd-format "special"
-			}
-		}
-	}
-
-	/CorrectedDateHeadersTest {
-		/Input {
-			/date {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"if-modified-since" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"if-range" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"if-unmodified-since" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"last-modified" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"retry-after" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/"expires" {
-				"Fri"
-				"05 Dec 2003 12:41:30 GMT"
-			}
-			/unchanged {
-				"Hallo"
-				"Kaspar"
-			}
-		}
-		/Expected {
-			/date "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"if-modified-since" "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"if-range"  "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"if-unmodified-since" "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"last-modified" "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"retry-after" "Fri, 05 Dec 2003 12:41:30 GMT"
-			/"expires"	 "Fri, 05 Dec 2003 12:41:30 GMT"
-			/unchanged {
-				"Hallo"
-				"Kaspar"
 			}
 		}
 	}

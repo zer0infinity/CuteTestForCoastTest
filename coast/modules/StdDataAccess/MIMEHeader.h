@@ -25,17 +25,15 @@ static const long cDefaultMaxLineSz = 1024;
 	Usually all header fields should be treated case-insensitive.
 	Because our infrastructure (Anything) is case sensitive
 	we normalize all strings used as header-field indexes to uppercase. */
-class MIMEHeader : public LookupInterface
-{
-public:
-	enum ProcessMode {
-		eDoNotSplitHeaderFields,
-		eDoSplitHeaderFields,
-		eDoSplitHeaderFieldsCookie
-	};
+class MIMEHeader: public LookupInterface {
+	//!contains the request/reply header
+	Anything fHeader;
+	Coast::URLUtils::NormalizeTag fNormalizeKey;
 
+	MIMEHeader(const MIMEHeader &);
+public:
 	//! represent a mime header
-	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift, ProcessMode splitHeaderFields = eDoSplitHeaderFields);
+	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift);
 
 	//! read the MIME header from is
 	/*! reads MIME header from is withlimit the line size to detect misuse of server */
@@ -52,7 +50,7 @@ public:
 
 	//! Get value of "content-length" header field
 	/*! Only valid if the canonical "content-length" header field was set
-		\return length as set in the header or -1 if none set */
+	 \return length as set in the header or -1 if none set */
 	long GetContentLength() const;
 
 	//! the complete header information as an Anything
@@ -62,12 +60,17 @@ public:
 
 	struct InvalidLineException {
 		String fMessage, fLine;
-		InvalidLineException(String const& msg, String const& line) throw() : fMessage(msg), fLine(line) {}
-		virtual const char* what() const throw() { return fMessage; }
+		InvalidLineException(String const& msg, String const& line) throw () :
+			fMessage(msg), fLine(line) {
+		}
+		virtual const char* what() const throw () {
+			return fMessage;
+		}
 	};
-	struct SizeExceededException : MIMEHeader::InvalidLineException {
+	struct SizeExceededException: MIMEHeader::InvalidLineException {
 		long fMaxSize, fActualSize;
-		SizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw() : MIMEHeader::InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
+		SizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+			MIMEHeader::InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
 			fMessage.Append("; max: ").Append(fMaxSize).Append(" actual: ").Append(fActualSize);
 		}
 	};
@@ -82,22 +85,15 @@ public:
 		}
 	};
 	struct StreamNotGoodException {
-		const char* what() const throw() { return "Stream not good"; }
+		const char* what() const throw () {
+			return "Stream not good";
+		}
 	};
 
 protected:
 	//! method to subclass if the lookup behaviour shall deviate from the standard
 	/*! implementation (i.e. allow more Anys to be searched, hierarchical, etc) */
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
-
-private:
-	//!contains the request/reply header
-	Anything fHeader;
-
-	Coast::URLUtils::NormalizeTag fNormalizeKey;
-	ProcessMode fSplitHeaderFields;
-
-	MIMEHeader(const MIMEHeader &);
 };
 
 namespace Coast {

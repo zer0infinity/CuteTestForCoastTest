@@ -5,12 +5,12 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
       /TestFDPost1 {
 			/HTTPHeader {
-			  /CONNECTION "Keep-Alive"
+			  /CONNECTION {
+				  "Keep-Alive"
+			  }
 			  /USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
 			  /ACCEPT {
 				"image/gif"
@@ -70,7 +70,9 @@
 		  /SERVER_PROTOCOL "HTTP/1.0"
 		  /header {
 			/REFERER "http://sentosa.ifa.ch:1919/finVAL/"
-			/CONNECTION "Keep-Alive"
+			/CONNECTION {
+				"Keep-Alive"
+			}
 			/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
 			/HOST "sentosa.ifa.ch:1919"
 			/ACCEPT {
@@ -127,7 +129,9 @@
 			/REQUEST_URI "/finVAL/"
 			/SERVER_PROTOCOL "HTTP/1.0"
 			/header {
-				/CONNECTION "Keep-Alive"
+				/CONNECTION {
+					"Keep-Alive"
+				}
 				/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
 				/ACCEPT {
 					"image/gif"
@@ -161,7 +165,9 @@
 			/REQUEST_URI "/finVAL/"
 			/SERVER_PROTOCOL "HTTP/1.0"
 			/header {
-				/CONNECTION "Keep-Alive"
+				/CONNECTION {
+					"Keep-Alive"
+				}
 				/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
 				/ACCEPT {
 					"image/gif"

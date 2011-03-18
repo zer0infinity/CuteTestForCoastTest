@@ -130,7 +130,7 @@ void HTTPProcessorTest::KeepConnection() {
 		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyConfig);
 		Anything req;
 		req["env"]["SERVER_PROTOCOL"] = "HTTP/1.0";
-		req["env"]["header"]["CONNECTION"] = "Keep-Alive";
+		req["env"]["header"]["CONNECTION"][0L] = "Keep-Alive";
 		ctx.PushRequest(req);
 		t_assert(!httpProcessor->KeepConnectionAlive(ctx));
 	}
@@ -139,7 +139,7 @@ void HTTPProcessorTest::KeepConnection() {
 		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyConfig);
 		Anything req;
 		req["env"]["SERVER_PROTOCOL"] = "HTTP/1.0";
-		req["env"]["header"]["CONNECTION"] = "Close";
+		req["env"]["header"]["CONNECTION"][0L] = "Close";
 		ctx.PushRequest(req);
 		t_assert(!httpProcessor->KeepConnectionAlive(ctx));
 	}
@@ -148,7 +148,7 @@ void HTTPProcessorTest::KeepConnection() {
 		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyConfig);
 		Anything req;
 		req["env"]["SERVER_PROTOCOL"] = "HTTP/1.1";
-		req["env"]["header"]["CONNECTION"] = "Keep-Alive";
+		req["env"]["header"]["CONNECTION"][0L] = "Keep-Alive";
 		ctx.PushRequest(req);
 		t_assert(httpProcessor->KeepConnectionAlive(ctx));
 	}
@@ -157,7 +157,7 @@ void HTTPProcessorTest::KeepConnection() {
 		Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyConfig);
 		Anything req;
 		req["env"]["SERVER_PROTOCOL"] = "HTTP/1.1";
-		req["env"]["header"]["CONNECTION"] = "Close";
+		req["env"]["header"]["CONNECTION"][0L] = "Close";
 		ctx.PushRequest(req);
 		t_assert(!httpProcessor->KeepConnectionAlive(ctx));
 	}

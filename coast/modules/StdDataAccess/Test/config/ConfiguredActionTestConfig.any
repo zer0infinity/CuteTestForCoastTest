@@ -173,7 +173,9 @@
 	                  "*;q=0.7"
 	                }
 	                /KEEP-ALIVE "115"
-	                /CONNECTION "keep-alive"
+	                /CONNECTION {
+	                	"keep-alive"
+	                }
 				}
 			}
 			/TheAction {
@@ -220,7 +222,9 @@
 	                  "*;q=0.7"
 	                }
 	                /KEEP-ALIVE "115"
-	                /CONNECTION "keep-alive"
+	                /CONNECTION {
+	                	"keep-alive"
+	                }
 				}
 			}
 			/TheAction {

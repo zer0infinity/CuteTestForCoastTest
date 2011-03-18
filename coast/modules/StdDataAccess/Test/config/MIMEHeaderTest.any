@@ -69,12 +69,13 @@ Content-Length: 542\r\n\
 		/SplitHeadersAndFieldsDefaultTest {
 			/Input %CommonInput
 			/NormalizeTag 0
-			/SplitMode 1		# split fields
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/ContentLength	-1
 			/Expected {
-				/CONNECTION	"Keep-Alive"
+				/CONNECTION	{
+					"Keep-Alive"
+				}
 				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
 				/HOST "sentosa.hsr.loc:2929"
 				/ACCEPT {
@@ -85,7 +86,9 @@ Content-Length: 542\r\n\
 					"image/png"
 					"*/*"
 				}
-				/ACCEPT-ENCODING "gzip"
+				/ACCEPT-ENCODING {
+					"gzip"
+				}
 				/ACCEPT-LANGUAGE {
 					"de-CH"
 					"en"
@@ -97,27 +100,9 @@ Content-Length: 542\r\n\
 				}
 			}
 		}
-		/SplitHeadersButNotFieldsTest {
-			/Input %CommonInput
-			/NormalizeTag 0
-			/SplitMode 0		# do not split fields
-			/IsMultiPart	0
-			/BoundaryLength 0
-			/ContentLength	-1
-			/Expected {
-				/CONNECTION "Keep-Alive"
-				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
-				/HOST   "sentosa.hsr.loc:2929"
-				/ACCEPT "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
-				/ACCEPT-ENCODING "gzip"
-				/ACCEPT-LANGUAGE "de-CH,en"
-				/ACCEPT-CHARSET "iso-8859-1,*,utf-8"
-			}
-		}
 		/SetCookieFieldsNotSplitTest {
 			/Input	%ExtendedInput
 			/NormalizeTag 0
-			/SplitMode 0		# do not split fields
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/ContentLength	-1
@@ -125,7 +110,9 @@ Content-Length: 542\r\n\
 				/DATE "Fri, 05 Dec 2003 12:41:30 GMT"
 				/SERVER "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
 				/LOCATION "/ch/"
-				/CONNECTION "close"
+				/CONNECTION {
+					"close"
+				}
 				/CONTENT-TYPE "text/html; charset=iso-8859-1"
 				/SET-COOKIE {
 					"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
@@ -139,49 +126,18 @@ Content-Length: 542\r\n\
 				}
 			}
 		}
-		/SetCookieFieldsSplitTest {
-			/Input %ExtendedInput
-			/NormalizeTag 0
-			/SplitMode 1		# split fields
-			/IsMultiPart	0
-			/BoundaryLength 0
-			/ContentLength	-1
-			/Expected {
-				/DATE {
-					"Fri"
-					"05 Dec 2003 12:41:30 GMT"
-				}
-				/SERVER "Apache/1.3.26 (Unix) Debian GNU/Linux mod_ssl/2.8.9 OpenSSL/0.9.6g"
-				/LOCATION "/ch/"
-				/CONNECTION "close"
-				/CONTENT-TYPE "text/html; charset=iso-8859-1"
-				/SET-COOKIE {
-					"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
-					"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
-					"Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
-				}
-				/SET-COOKIE2
-				{
-					"Test1=test_value1; expires=Sat"
-					"01-Jan-2001 01:01:01 GMT; path=/;"
-					"Test2=test_value2; expires=Sat"
-					"02-Jan-2002 02:02:02 GMT; path=/;"
-					"Test1=test_value3; expires=Sat"
-					"03-Jan-2003 03:03:03 GMT; path=/;"
-				}
-			}
-		}
 		/MultipartWithFieldsSplitTest {
 			/Input %MultipartInput
 			/NormalizeTag 0
-			/SplitMode 1		# split fields
 			/IsMultiPart	1
 			/BoundaryLength 53
 			/Boundary "---------------------------61400283883149348477195787"
 			/ContentLength	542
 			/Expected {
 				/REFERER "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html"
-				/CONNECTION "Keep-Alive"
+				/CONNECTION {
+					"Keep-Alive"
+				}
 				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
 				/HOST "sentosa.hsr.loc:2929"
 				/ACCEPT {
@@ -192,7 +148,9 @@ Content-Length: 542\r\n\
 					"image/png"
 					"*/*"
 				}
-				/ACCEPT-ENCODING "gzip"
+				/ACCEPT-ENCODING {
+					"gzip"
+				}
 				/ACCEPT-LANGUAGE {
 					"de-CH"
 					"en"
@@ -203,42 +161,10 @@ Content-Length: 542\r\n\
 					"utf-8"
 				}
 				/COOKIE {
-					/Cookie1 "Value1"
-					/Cookie2 "Value2"
-					/FDState "b64-U2VzY=="
-					/HyperwaveSession "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue"
-					/sk "209243665E644DFB"
-					/Cookie3 "Value3"
-				}
-				/CONTENT-TYPE "multipart/form-data; boundary=---------------------------61400283883149348477195787"
-				/BOUNDARY "---------------------------61400283883149348477195787"
-				/CONTENT-LENGTH 542
-			}
-		}
-		/MultipartWithFieldsNotSplitTest {
-			/Input %MultipartInput
-			/NormalizeTag 0
-			/SplitMode 0		# do not split fields
-			/IsMultiPart	1
-			/BoundaryLength 53
-			/Boundary "---------------------------61400283883149348477195787"
-			/ContentLength	542
-			/Expected {
-				/REFERER "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html"
-				/CONNECTION "Keep-Alive"
-				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
-				/HOST "sentosa.hsr.loc:2929"
-				/ACCEPT "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
-				/ACCEPT-ENCODING "gzip"
-				/ACCEPT-LANGUAGE "de-CH,en"
-				/ACCEPT-CHARSET "iso-8859-1,*,utf-8"
-				/COOKIE {
-					/Cookie1 "Value1"
-					/Cookie2 "Value2"
-					/FDState "b64-U2VzY=="
-					/HyperwaveSession "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue"
-					/sk "209243665E644DFB"
-					/Cookie3 "Value3"
+					"Cookie1=Value1"
+					"Cookie2=Value2"
+					"FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB"
+					"Cookie3=Value3"
 				}
 				/CONTENT-TYPE "multipart/form-data; boundary=---------------------------61400283883149348477195787"
 				/BOUNDARY "---------------------------61400283883149348477195787"
@@ -248,14 +174,15 @@ Content-Length: 542\r\n\
 		/MultipartExtendedWithFieldsSplitTest {
 			/Input %MultipartInputExtended
 			/NormalizeTag 0
-			/SplitMode 1		# split fields
 			/IsMultiPart	1
 			/BoundaryLength 53
 			/Boundary "---------------------------61400283883149348477195787"
 			/ContentLength	542
 			/Expected {
 				/REFERER "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html"
-				/CONNECTION "Keep-Alive"
+				/CONNECTION {
+					"Keep-Alive"
+				}
 				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
 				/HOST "sentosa.hsr.loc:2929"
 				/ACCEPT {
@@ -282,45 +209,10 @@ Content-Length: 542\r\n\
 					"utf-8"
 				}
 				/COOKIE {
-					/Cookie1 "Value1"
-					/Cookie2 "Value2"
-					/FDState "b64-U2VzY=="
-					/HyperwaveSession "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue"
-					/sk "209243665E644DFB"
-					/Cookie3 "Value3"
-				}
-				/CONTENT-TYPE "multipart/form-data; boundary=---------------------------61400283883149348477195787"
-				/BOUNDARY "---------------------------61400283883149348477195787"
-				/CONTENT-LENGTH 542
-			}
-		}
-		/MultipartExtendedWithFieldsNotSplitTest {
-			/Input %MultipartInputExtended
-			/NormalizeTag 0
-			/SplitMode 0		# do not split fields
-			/IsMultiPart	1
-			/BoundaryLength 53
-			/Boundary "---------------------------61400283883149348477195787"
-			/ContentLength	542
-			/Expected {
-				/REFERER "http://sentosa.hsr.loc:1919/birrer/htdocs/uploadTest.html"
-				/CONNECTION "Keep-Alive"
-				/USER-AGENT "Mozilla/4.7 [en] (WinNT; U)"
-				/HOST "sentosa.hsr.loc:2929"
-				/ACCEPT "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
-				/ACCEPT-ENCODING {
-					"gzip"
-					"super-gzip,super-gzip-param=1,2.3"
-				}
-				/ACCEPT-LANGUAGE "de-CH,en"
-				/ACCEPT-CHARSET "iso-8859-1,*,utf-8"
-				/COOKIE {
-					/Cookie1 "Value1"
-					/Cookie2 "Value2"
-					/FDState "b64-U2VzY=="
-					/HyperwaveSession "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue"
-					/sk "209243665E644DFB"
-					/Cookie3 "Value3"
+					"Cookie1=Value1"
+					"Cookie2=Value2"
+					"FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB"
+					"Cookie3=Value3"
 				}
 				/CONTENT-TYPE "multipart/form-data; boundary=---------------------------61400283883149348477195787"
 				/BOUNDARY "---------------------------61400283883149348477195787"
@@ -335,7 +227,6 @@ Content-Type: application/x-unknown-content-type-hfile\r\n\
 \r\n"
 
 			/NormalizeTag 0
-			/SplitMode 1		# split fields
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/Boundary ""

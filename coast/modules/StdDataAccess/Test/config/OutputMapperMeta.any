@@ -31,11 +31,6 @@
 		/DestinationSlot "Mapper"
 	}
 	/HTTPMimeHeaderMapper { # dummy, but not empty
-		/DoNotSplitHeaderFields 1
-	}
-
-	/HTTPMimeHeaderMapperDoSplitHeaderFields { # dummy, but not empty
-		/DoNotSplitHeaderFields 0
 	}
 
 	/HTTPMimeHeaderWithSuppress {
@@ -67,7 +62,6 @@
 			/server			"Coast 2.0"
 			/fd-format		"special"
 		}
-		/DoNotSplitHeaderFields 1
 	}
 	/SendReceiveOnce {
 		/PutPolicy Put

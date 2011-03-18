@@ -18,6 +18,7 @@
 #include "URLUtils.h"
 #include "Dbg.h"
 #include "AnythingUtils.h"
+#include "AnyIterators.h"
 
 RegisterServiceHandler(WebAppService);
 //---- WebAppService ----------------------------------------------------------------
@@ -64,13 +65,26 @@ bool WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 	return true;
 }
 
+namespace {
+	char const cookieArgumentsDelimiter = ';';
+    char const valueArgumentDelimiter = '=';
+}
+
 void WebAppService::PrepareRequest(Context &ctx)
 {
 	StartTrace(WebAppService.PrepareRequest);
-	Anything anyValue, request(ctx.GetEnvStore());
-	if ( request.LookupPath(anyValue, "header.COOKIE") ) {
-		request["WDCookies"] = anyValue;
+	Anything request(ctx.GetEnvStore());
+	ROAnything roaCookies;
+	if ( ctx.Lookup("header.COOKIE", roaCookies) ) {
+		Anything anyPreparedCookies;
+		AnyExtensions::Iterator<ROAnything> cookieIterator(roaCookies);
+		ROAnything roaCookie;
+		while ( cookieIterator.Next(roaCookie) ) {
+			Coast::URLUtils::Split(roaCookie.AsString(), cookieArgumentsDelimiter, anyPreparedCookies, valueArgumentDelimiter, Coast::URLUtils::eUntouched);
+		}
+		request["WDCookies"] = anyPreparedCookies;
 	}
+	TraceAny(request, "prepared request");
 }
 
 bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
@@ -136,7 +150,7 @@ void WebAppService::DecodeWDQuery(Anything &query, const Anything &request)
 		String contentType = request["header"]["CONTENT-TYPE"].AsString();
 		Trace("Content type:" << contentType);
 		// get the decoded body or the parts of multipart
-		if ( contentType.StartsWith("multipart/form-data;") ) {
+		if ( contentType.StartsWith("multipart/form-data") ) {
 			// extract multi-part
 			ExtractPostBodyFields(query, request["REQUEST_BODY"]);
 		} else {
