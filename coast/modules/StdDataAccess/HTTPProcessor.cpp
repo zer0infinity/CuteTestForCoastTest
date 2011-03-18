@@ -110,19 +110,24 @@ bool HTTPProcessor::DoVerifyRequest(Context &ctx) {
 	return true;
 }
 
-namespace {
-	void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
-		StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
-		Renderer *pRenderer = Renderer::FindRenderer(ctx.Lookup("ProtocolReplyRenderer", "HTTPProtocolReplyRenderer"));
-		if (pRenderer)
-			pRenderer->RenderAll(os, ctx, ROAnything());
+namespace Coast {
+	namespace HTTP {
+		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
+			StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
+			Anything defaultSpec;
+			defaultSpec["HTTPProtocolReplyRenderer"] = Anything();
+			ROAnything protocolRendererSpec;
+			Renderer::Render(os, ctx, ctx.Lookup("ProtocolReplyRenderer", protocolRendererSpec) ? protocolRendererSpec : defaultSpec);
+		}
 	}
+}
 
+namespace {
 	void ErrorReply(std::ostream &reply, const String &msg, Context &ctx) {
 		StartTrace1(HTTPProcessor.ErrorReply, "message [" << msg << "]");
 		long errorCode = ctx.Lookup("HTTPStatus.ResponseCode", 400L);
 		String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
-		RenderHTTPProtocolStatus(reply, ctx);
+		Coast::HTTP::RenderHTTPProtocolStatus(reply, ctx);
 		reply << "content-type: text/html" << ENDL << ENDL;
 		reply << "<html><head>\n";
 		reply << "<title>" << errorCode << " " << errorMsg << "</title>\n";
@@ -183,7 +188,7 @@ bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 }
 
 void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
-	RenderHTTPProtocolStatus(os, ctx);
+	Coast::HTTP::RenderHTTPProtocolStatus(os, ctx);
 }
 
 namespace {

@@ -12,12 +12,11 @@
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SecurityModule.h"
-#include "HTTPProtocolReplyRenderer.h"
+#include "HTTPProcessor.h"	// for Coast::HTTP
+#include "Renderer.h"
 #include "AccessManager.h"
 #include "Dbg.h"
 #include "BasicAuthenticationData.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- AuthenticationService ----------------------------------------------------------------
 RegisterServiceHandler(AuthenticationService);
@@ -117,14 +116,10 @@ void AuthenticationService::ForwardToMainHandler( std::ostream &os, Context &ctx
 void AuthenticationService::Produce401Response( std::ostream &os, Context &ctx )
 {
 	StartTrace(AuthenticationService.Produce401Response);
-
-	ctx.GetTmpStore()["HTTPStatus"]["ResponseCode"] = 401L;
-	Renderer *pRenderer = Renderer::FindRenderer("HTTPProtocolReplyRenderer");
-	if (pRenderer) {
-		ROAnything roaDummy;
-		pRenderer->RenderAll(os, ctx, roaDummy);
-	}
-
+	Anything anyStatus;
+	anyStatus["ResponseCode"] = 401L;
+	Context::PushPopEntry<Anything> aEntry(ctx, "StatusInformation", anyStatus, "HTTPStatus");
+	Coast::HTTP::RenderHTTPProtocolStatus(os, ctx);
 	os << "WWW-Authenticate: Basic realm=\"";
 	ROAnything realmConfig = ctx.Lookup("Realm");
 	if (realmConfig.IsNull()) {

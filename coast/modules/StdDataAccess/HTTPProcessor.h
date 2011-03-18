@@ -14,6 +14,12 @@
 class Context;
 class MIMEHeader;
 
+namespace Coast {
+	namespace HTTP {
+		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx);
+	}
+}
+
 //--- HTTPProcessor ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
 class HTTPProcessor : public RequestProcessor
