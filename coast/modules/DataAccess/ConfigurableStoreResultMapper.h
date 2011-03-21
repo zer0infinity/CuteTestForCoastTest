@@ -9,31 +9,41 @@
 #ifndef _ConfigurableStoreResultMapper_H
 #define _ConfigurableStoreResultMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- ConfigurableStoreResultMapper ----------------------------------------------------------
-
-class ConfigurableStoreResultMapper : public ResultMapper
+//! Store \c Put requests into a store inside Context different from the default \c TmpStore.
+/*! Sometimes it would be nice to store/map values directly into a store different from TmpStore, like the Session or Role store.
+ * This is where this ResultMapper can be used as it just retrieves the target Anything within the store given in the mapper configuration.
+ * @section csrm Mapper configuration
+\code
 {
-public:
-	/*! constructor
-		\param name the objects name */
-	ConfigurableStoreResultMapper(const char *name);
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
-protected:
-	//! Looks up the Anything at key in Context using Slotfinder
-	/*!	\param key the key usually defines the associated kind of output-value
-		\param targetAny Anything reference into TmpStore to finally put values at. It uses DestinationSlot and key to get the correct location in Context.
-		\param ctx the context of the invocation */
-	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
-
-private:
+	/Store 			String
+}
+\endcode
+ * @par \c Store
+ * Optional, defaults to TmpStore\n
+ * Store the rendered key in a specific store in the context: \c Role -> RoleStore, \c Session -> SessionStore, \c Request
+ */
+class ConfigurableStoreResultMapper: public ResultMapper {
 	ConfigurableStoreResultMapper();
 	ConfigurableStoreResultMapper(const ConfigurableStoreResultMapper &);
 	ConfigurableStoreResultMapper &operator=(const ConfigurableStoreResultMapper &);
+public:
+	/*! constructor
+	 \param name the objects name */
+	ConfigurableStoreResultMapper(const char *name) :
+		ResultMapper(name) {
+	}
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ConfigurableStoreResultMapper(fName);
+	}
+
+protected:
+	//! Looks up the destination Anything at key in Context using StoreFinder
+	/*! @copydoc ResultMapper::DoGetDestinationAny(const char *, Anything &, Context &) */
+	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
 };
 
 #endif

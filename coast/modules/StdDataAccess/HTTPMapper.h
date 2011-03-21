@@ -14,7 +14,7 @@
 // --------------------- HTTPHeaderParameterMapper -------------------------
 //! HTTP header parameter mapping
 /*!
- * This mapper will do a Context::Lookup() using the given key. It expectes a list
+ * This mapper will do a Context::Lookup() using the given key. It expects a list
  * (Anything) split into <tt>/headerkey value</tt> pairs. This list will be used as
  * input to write onto the \c ostream argument given in the DoGetStream() function. The
  * contents of every headerkey not listed in the <em>Suppress</em> slot will get

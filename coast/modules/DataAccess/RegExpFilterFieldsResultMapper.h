@@ -9,7 +9,6 @@
 #ifndef _RegExpFilterFieldsResultMapper_H
 #define _RegExpFilterFieldsResultMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- RegExpFilterFieldsResultMapper ----------------------------------------------------------
@@ -86,12 +85,12 @@
 	/content-length "4611"
 }
 @endcode */
-class RegExpFilterFieldsResultMapper : public ResultMapper
-{
+class RegExpFilterFieldsResultMapper: public ResultMapper {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	RegExpFilterFieldsResultMapper(const char *name)
-		: ResultMapper(name) {}
+	RegExpFilterFieldsResultMapper(const char *name) :
+		ResultMapper(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

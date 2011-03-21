@@ -5,21 +5,11 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-//--- interface include --------------------------------------------------------
 #include "ConfigurableStoreResultMapper.h"
-//--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
+
 //---- ConfigurableStoreResultMapper ------------------------------------------------------------------
 RegisterResultMapper(ConfigurableStoreResultMapper);
-
-ConfigurableStoreResultMapper::ConfigurableStoreResultMapper(const char *name) :
-	ResultMapper(name) {
-	StartTrace(ConfigurableStoreResultMapper.Ctor);
-}
-
-IFAObject *ConfigurableStoreResultMapper::Clone(Allocator *a) const {
-	return new (a) ConfigurableStoreResultMapper(fName);
-}
 
 void ConfigurableStoreResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx) {
 	StartTrace1(ConfigurableStoreResultMapper.DoGetDestinationAny, NotNull(key));

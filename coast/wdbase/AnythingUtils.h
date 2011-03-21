@@ -70,7 +70,7 @@ public:
 	//! Gets a specific Store by Key
 	//! \param c the context that provides the stores
 	//! \param storeName name of the store
-	//! \return a Store from the context accroding to storeName  (Role -> RoleStore, Session-> SessionStore, Request, everything else ->TmpStore )
+	//! \return a Store from the context according to storeName  (Role -> RoleStore, Session-> SessionStore, Request, everything else ->TmpStore )
 	static Anything &FindStore(Context &c, String &storeName);
 
 private:
