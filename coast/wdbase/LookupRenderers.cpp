@@ -6,22 +6,21 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ----------------------------------------------------------------
 #include "LookupRenderers.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
 
-static const char *gcSlotName =		"LookupName";
-static const char *gcDelimName =		"Delim";
-static const char *gcIndexDelimName = "IndexDelim";
-
-//---- LookupRenderer ----------------------------------------------------------------
-LookupRenderer::LookupRenderer(const char *name) : Renderer(name)
-{
+namespace {
+	const char *gcSlotName =		"LookupName";
+	const char *gcDefaultName =		"Default";
+	const char *gcDelimName =		"Delim";
+	const char *gcIndexDelimName = "IndexDelim";
+	long const lookupNameIndex = 0L,
+			defaultIndex = 1L,
+			delimIndex = 2L,
+			indexDelimIndex = 3L;
 }
-
+//---- LookupRenderer ----------------------------------------------------------------
 void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(LookupRenderer.Render);
@@ -32,20 +31,20 @@ void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAn
 	ROAnything lookupName;
 	if (!config.LookupPath(lookupName, gcSlotName, '\000')) {		// use new slotname
 		isSimpleArray = true;
-		lookupName = config[0L];
+		lookupName = config[lookupNameIndex];
 	}
 
 	ROAnything delim;
 	if (!config.LookupPath(delim, gcDelimName, '\000')) {
-		if ( isSimpleArray && config.GetSize() > 2 ) {
-			delim = config[2L];
+		if ( isSimpleArray && config.GetSize() > delimIndex ) {
+			delim = config[delimIndex];
 		}
 	}
 
 	ROAnything indexdelim;
 	if (!config.LookupPath(indexdelim, gcIndexDelimName, '\000')) {
-		if ( isSimpleArray && config.GetSize() > 3 ) {
-			indexdelim = config[3L];
+		if ( isSimpleArray && config.GetSize() > indexDelimIndex ) {
+			indexdelim = config[indexDelimIndex];
 		}
 	}
 
@@ -76,9 +75,9 @@ void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAn
 
 	// no data found: render the default
 	ROAnything dft;
-	if (!config.LookupPath(dft, "Default", '\000')) {
-		if ( isSimpleArray && config.GetSize() > 1 ) {
-			dft = config[1L];
+	if (!config.LookupPath(dft, gcDefaultName, '\000')) {
+		if ( isSimpleArray && config.GetSize() > defaultIndex ) {
+			dft = config[defaultIndex];
 		}
 	}
 	if (dft.GetType() != AnyNullType) {
@@ -88,11 +87,6 @@ void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAn
 
 //---- ContextLookupRenderer ----------------------------------------------------------------
 RegisterRenderer(ContextLookupRenderer);
-
-ContextLookupRenderer::ContextLookupRenderer(const char *name)
-	: LookupRenderer(name)
-{
-}
 
 ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
@@ -105,10 +99,6 @@ ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, c
 // lookup is exclusively done in tmpStore
 RegisterRenderer(StoreLookupRenderer);
 
-StoreLookupRenderer::StoreLookupRenderer(const char *name) : LookupRenderer(name)
-{
-}
-
 ROAnything StoreLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
 	ROAnything roaRet;
@@ -120,10 +110,6 @@ ROAnything StoreLookupRenderer::DoLookup(Context &context, const char *name, cha
 //---- QueryLookupRenderer ----------------------------------------------------------------
 // lookup is exclusively done in query
 RegisterRenderer(QueryLookupRenderer);
-
-QueryLookupRenderer::QueryLookupRenderer(const char *name) : LookupRenderer(name)
-{
-}
 
 ROAnything QueryLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
