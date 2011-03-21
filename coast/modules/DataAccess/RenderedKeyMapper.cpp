@@ -6,77 +6,48 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RenderedKeyMapper.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Dbg.h"
 
+namespace {
+	String renderKey(Context &ctx, char const *key, Anything &value) {
+		String strKey(key);
+		ROAnything roaKeySpec;
+		if (Lookup("KeySpec", roaKeySpec)) {
+			Anything anyCurrentKey(key);
+			Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
+			Context::PushPopEntry<Anything> aKeyEntry(ctx, "CurrentPutKey", anyCurrentKey, "MappedKey");
+			strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
+			Trace("new key [" << strKey << "]");
+		}
+		return strKey;
+	}
+	void storeKey(Context &ctx, String const& strKey) {
+		ROAnything roaStoreSpec;
+		if (Lookup("StoreKeyAt", roaStoreSpec)) {
+			Anything anyToPut(strKey);
+			StorePutter::Operate(anyToPut, ctx, Lookup("Store", "TmpStore"), Renderer::RenderToString(ctx, roaStoreSpec), false);
+		}
+	}
+}
 //---- RenderedKeyMapper ------------------------------------------------------------------
 RegisterResultMapper(RenderedKeyMapper);
 
-RenderedKeyMapper::RenderedKeyMapper(const char *name)
-	: ResultMapper(name)
-{
-	StartTrace(RenderedKeyMapper.Ctor);
-}
-
-IFAObject *RenderedKeyMapper::Clone(Allocator *a) const
-{
-	return new (a) RenderedKeyMapper(fName);
-}
-
-bool RenderedKeyMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
-{
+bool RenderedKeyMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
-	String strKey(key);
-	ROAnything roaKeySpec;
-	if ( Lookup("KeySpec", roaKeySpec) ) {
-		Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
-		strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
-		Trace("new key [" << strKey << "]");
-		ROAnything roaStoreSpec;
-		if ( Lookup("StoreKeyAt", roaStoreSpec) ) {
-			Anything anyToPut(strKey);
-			Trace("storing key in TmpStore at [" << roaStoreSpec.AsString() << "]");
-			SlotPutter::Operate(anyToPut, ctx.GetTmpStore(), roaStoreSpec.AsString(), false);
-		}
-	}
+	String strKey = renderKey(ctx, key, value);
+	Trace("new key [" << strKey << "]");
+	storeKey(ctx, strKey, key);
 	return ResultMapper::DoPutAny(strKey, value, ctx, script);
 }
-
 //---- RenderedKeyParameterMapper ------------------------------------------------------------------
 RegisterParameterMapper(RenderedKeyParameterMapper);
 
-RenderedKeyParameterMapper::RenderedKeyParameterMapper(const char *name)
-: ParameterMapper(name)
-{
-	StartTrace(RenderedKeyParameterMapper.Ctor);
-}
-
-IFAObject *RenderedKeyParameterMapper::Clone(Allocator *a) const
-{
-	return new (a) RenderedKeyParameterMapper(fName);
-}
-
-bool RenderedKeyParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script)
-{
-	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
-	String strKey(key);
-	ROAnything roaKeySpec;
-	if ( Lookup("KeySpec", roaKeySpec) )
-	{
-		Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
-		strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
-		Trace("new key [" << strKey << "]");
-		ROAnything roaStoreSpec;
-		if ( Lookup("StoreKeyAt", roaStoreSpec) )
-		{
-			Anything anyToPut(strKey);
-			Trace("storing key in TmpStore at [" << roaStoreSpec.AsString() << "]");
-			SlotPutter::Operate(anyToPut, ctx.GetTmpStore(), roaStoreSpec.AsString(), false);
-		}
-	}
+bool RenderedKeyParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
+	StartTrace1(RenderedKeyParameterMapper.DoGetAny, NotNull(key));
+	String strKey = renderKey(ctx, key, value);
+	Trace("new key [" << strKey << "]");
+	storeKey(ctx, strKey, key);
 	return ParameterMapper::DoGetAny(strKey, value, ctx, script);
 }

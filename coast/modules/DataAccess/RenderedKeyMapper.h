@@ -9,79 +9,100 @@
 #ifndef _RenderedKeyMapper_H
 #define _RenderedKeyMapper_H
 
-//---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- RenderedKeyMapper ----------------------------------------------------------
-//! dynamically create Put-key according to rendererspec
-/*!
-\par Configuration
+//! Dynamically adjust the \c Put key according to Renderer specification
+/*! They key used to put the value will be rendered according to the given specification prior to putting it.
+ * To extend the flexibility of rendering, the value itself will be pushed into the Context to allow using entries of
+ * the current value being put. Additionally the current key is also available in Context as \c MappedKey.
+ * If required, the rendered key can also be stored in the Context, using the specification as given in slot \c StoreKeyAt.
+ * @section rkrm Mapper configuration
 \code
 {
-	/KeySpec		Rendererspec	mandatory, renderer specification to create new key
-	/StoreKeyAt		String			optional, default not stored in context, location in LookupPath semantics to store created key value in context
+	/KeySpec		Renderer specification
+	/StoreKeyAt		Renderer specification
+	/Store 			String
 }
 \endcode
-
-The value Anything to put will be temporarily pushed onto the context to allow lookups within.
-*/
-class RenderedKeyMapper : public ResultMapper
-{
-public:
-	//--- constructors
-	RenderedKeyMapper(const char *name);
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
-protected:
-	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
-
-private:
+ * @par \c KeySpec
+ * Optional, defaults to mapped key\n
+ * Renderer specification resulting in a new key to be used when putting the value Anything\n
+ * The value Anything will be pushed into the Context prior to rendering. In addition, the current mapping key will also be available as \c MappedKey
+ *
+ * @par \c StoreKeyAt
+ * Optional, default is to not store the newly rendered key\n
+ * Renderer specification resulting in a slot name conforming to Anything::LookupPath semantics to store rendered key in Context
+ *
+ * @par \c Store
+ * Optional, defaults to TmpStore\n
+ * Store the rendered key in a specific store in the context: \c Role -> RoleStore, \c Session -> SessionStore, \c Request
+ */
+class RenderedKeyMapper: public ResultMapper {
 	RenderedKeyMapper();
 	RenderedKeyMapper(const RenderedKeyMapper &);
 	RenderedKeyMapper &operator=(const RenderedKeyMapper &);
+public:
+	//--- constructors
+	RenderedKeyMapper(const char *name) :
+		ResultMapper(name) {
+	}
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RenderedKeyMapper(fName);
+	}
+
+protected:
+	//! Put value according to newly rendered key
+	/*! @copydoc ResultMapper::DoPutAny(const char *, Anything &, Context &, ROAnything) */
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 };
 
 //---- RenderedKeyParameterMapper ----------------------------------------------------------
-//! dynamically create Get-key according to rendererspec
-/*!
-\par Configuration
+//! Dynamically adjust the \c Get key according to Renderer specification
+/*! They key used to get the value will be rendered according to the given specification prior to getting it.
+ * To extend the flexibility of rendering the current key is also available in Context as \c MappedKey.
+ * If required, the rendered key can also be stored in the Context, using the specification as given in slot \c StoreKeyAt.
+ * @section rkpm Mapper configuration
 \code
 {
-	/KeySpec		Rendererspec	mandatory, renderer specification to create new key
-	/StoreKeyAt		String			optional, default not stored in context, location in LookupPath semantics to store created key value in context
+	/KeySpec		Renderer specification
+	/StoreKeyAt		Renderer specification
+	/Store 			String
 }
 \endcode
-
-The value Anything to put will be temporarily pushed onto the context to allow lookups within.
-*/
-class RenderedKeyParameterMapper : public ParameterMapper
-{
-public:
-	//--- constructors
-	RenderedKeyParameterMapper(const char *name);
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
-protected:
-	//! Major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of value to get or the slot in the script to use
-		\param value collects data within script
-		\param ctx the thread context of the invocation
-		\param script to be interpreted if any, for subclasses this is the config to use
-		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
-
-private:
+ * @par \c KeySpec
+ * Optional, defaults to mapped key\n
+ * Renderer specification resulting in a new key to be used when getting the value Anything\n
+ * The current mapping key will be available as \c MappedKey
+ *
+ * @par \c StoreKeyAt
+ * Optional, default is to not store the newly rendered key\n
+ * Renderer specification resulting in a slot name conforming to Anything::LookupPath semantics to store rendered key in Context
+ *
+ * @par \c Store
+ * Optional, defaults to TmpStore\n
+ * Store the rendered key in a specific store in the context: \c Role -> RoleStore, \c Session -> SessionStore, \c Request
+ */
+class RenderedKeyParameterMapper: public ParameterMapper {
 	RenderedKeyParameterMapper();
 	RenderedKeyParameterMapper(const RenderedKeyParameterMapper &);
 	RenderedKeyParameterMapper &operator=(const RenderedKeyParameterMapper &);
+public:
+	//--- constructors
+	RenderedKeyParameterMapper(const char *name) :
+		ParameterMapper(name) {
+	}
+
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RenderedKeyParameterMapper(fName);
+	}
+
+protected:
+	//! Get value anything according to newly rendered key
+	/*! @copydoc ParameterMapper::DoGetAny(const char *, Anything &, Context &, ROAnything) */
+	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 };
 
 #endif
