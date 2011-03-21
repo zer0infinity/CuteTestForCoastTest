@@ -1341,9 +1341,11 @@
 			}
 			/TheAction {
 				/ExistsCheckAction {
-					"Basement."
-					{ /ContextLookupRenderer Place } "."
-					{ /ContextLookupRenderer Tool }
+					{
+						"Basement."
+						{ /ContextLookupRenderer Place } "."
+						{ /ContextLookupRenderer Tool }
+					}
 				}
 			}
 			/ExpectedResult 1
@@ -1362,12 +1364,83 @@
 			}
 			/TheAction {
 				/ExistsCheckAction {
-					"Basement."
-					{ /ContextLookupRenderer Place } "."
-					{ /ContextLookupRenderer Tool } ".Phillips"
+					{
+						"Basement."
+						{ /ContextLookupRenderer Place } "."
+						{ /ContextLookupRenderer Tool } ".Phillips"
+					}
 				}
 			}
 			/ExpectedResult 0
+		}
+		/ExistsCheckActionTest_UsingSlotnames {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver "Phillips"
+					}
+				}
+				/Place	"ToolCase"
+				/Tool	"ScrewDriver"
+			}
+			/TheAction {
+				/ExistsCheckAction {
+					/LookupName {
+						"Basement."
+						{ /ContextLookupRenderer Place } "."
+						{ /ContextLookupRenderer Tool }
+					}
+				}
+			}
+			/ExpectedResult 1
+		}
+		/ExistsCheckActionTest_UsingSlotnamesDifferentDelim {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver "Phillips"
+					}
+				}
+				/Place	"ToolCase"
+				/Tool	"ScrewDriver"
+			}
+			/TheAction {
+				/ExistsCheckAction {
+					/LookupName {
+						"Basement_"
+						{ /ContextLookupRenderer Place } "_"
+						{ /ContextLookupRenderer Tool }
+					}
+					/Delim	"_"
+				}
+			}
+			/ExpectedResult 1
+		}
+		/ExistsCheckActionTest_DifferentDelimIndexed {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver {
+							{ "Phillips" }
+						}
+					}
+				}
+				/Place	"ToolCase"
+				/Tool	"ScrewDriver"
+			}
+			/TheAction {
+				/ExistsCheckAction {
+					{
+						"Basement_"
+						{ /ContextLookupRenderer Place } "_"
+						{ /ContextLookupRenderer Tool }
+						"#0"
+					}
+					"_"
+					"#"
+				}
+			}
+			/ExpectedResult 1
 		}
 
 		/CompareActionTest_LiteralStringSuccess {
