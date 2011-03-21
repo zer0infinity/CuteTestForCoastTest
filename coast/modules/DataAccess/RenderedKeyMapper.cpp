@@ -19,7 +19,6 @@ namespace {
 			Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
 			Context::PushPopEntry<Anything> aKeyEntry(ctx, "CurrentPutKey", anyCurrentKey, "MappedKey");
 			strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
-			Trace("new key [" << strKey << "]");
 		}
 		return strKey;
 	}

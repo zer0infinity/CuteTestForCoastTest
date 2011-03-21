@@ -13,7 +13,8 @@
 
 //---- RegExpFilterFieldsResultMapper ----------------------------------------------------------
 //! Calls ResultMapper::DoPutAny() on named value entries matched by regular expressions. Positive and negative filtering can be applied.
-/*! Lookup values in the given Anything and map them again using the given configuration. Provide a MapperScript which extracts and stores either parts of the converted Anything or the whole Anything.
+/*! Lookup values in the given Anything and map them again using the given configuration.
+ * Provide a MapperScript which extracts and stores either parts of the converted Anything or the whole Anything.
  * @section rffrm Mapper configuration
 \code
 {
@@ -98,7 +99,7 @@ public:
 	}
 
 protected:
-	//! override needed to catch emtpy mapper script and put nothing
+	//! override needed to catch empty mapper script and put nothing
 	/*! @copydoc ResultMapper::DoPutAny() */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
