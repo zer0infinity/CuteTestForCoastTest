@@ -116,7 +116,6 @@
 		/Output {
 			/ResultMapper {
 				ExtListingsTest
-				/CompareValuesMapper {}
 				MapperTestDAImpl daTest CallDAOkTest CallDANotOkTest
 				MyTestDAImplMetaConfig
 				/MyTestInputMapperConfig {
@@ -146,6 +145,7 @@
 				SessionStoreResultMapperDA
 				TestRenderedKeyParameterMapperDA
 			}
+			/CompareValuesMapper {}
 			/RootMapper {
 				RegExpFilterFieldsResultMapperDA
 			}
@@ -166,13 +166,13 @@
 				TestFileXMLReadDAImplXMLMapperFour
 			}
 			/RegExpFilterFieldsResultMapper {
-				/RegexFieldsMapperCodeExample *
-				/RegexFieldsMapperPositiveWithCase *
-				/RegexFieldsMapperPositiveCaseless *
-				/RegexFieldsMapperExplicitNoRecursionTest *
-				/RegexFieldsMapperAll *
-				/RegexFieldsMapperNone *
-				/RegexFieldsMapperAllWithoutSome *
+				RegexFieldsMapperCodeExample
+				RegexFieldsMapperPositiveWithCase
+				RegexFieldsMapperPositiveCaseless
+				RegexFieldsMapperExplicitNoRecursionTest
+				RegexFieldsMapperAll
+				RegexFieldsMapperNone
+				RegexFieldsMapperAllWithoutSome
 			}
 		}
 	}
