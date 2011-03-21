@@ -9,12 +9,14 @@
 #include "RenderedKeyMapper.h"
 #include "Renderer.h"
 #include "Dbg.h"
+#include "AnythingUtils.h"
 
 namespace {
-	String renderKey(Context &ctx, char const *key, Anything &value) {
+	template <typename MapperType>
+	String renderKey(MapperType &mapper, Context &ctx, char const *key, Anything &value) {
 		String strKey(key);
 		ROAnything roaKeySpec;
-		if (Lookup("KeySpec", roaKeySpec)) {
+		if (mapper.Lookup("KeySpec", roaKeySpec)) {
 			Anything anyCurrentKey(key);
 			Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
 			Context::PushPopEntry<Anything> aKeyEntry(ctx, "CurrentPutKey", anyCurrentKey, "MappedKey");
@@ -22,11 +24,12 @@ namespace {
 		}
 		return strKey;
 	}
-	void storeKey(Context &ctx, String const& strKey) {
+	template <typename MapperType>
+	void storeKey(MapperType &mapper, Context &ctx, String const& strKey) {
 		ROAnything roaStoreSpec;
-		if (Lookup("StoreKeyAt", roaStoreSpec)) {
+		if (mapper.Lookup("StoreKeyAt", roaStoreSpec)) {
 			Anything anyToPut(strKey);
-			StorePutter::Operate(anyToPut, ctx, Lookup("Store", "TmpStore"), Renderer::RenderToString(ctx, roaStoreSpec), false);
+			StorePutter::Operate(anyToPut, ctx, mapper.Lookup("Store", "TmpStore"), Renderer::RenderToString(ctx, roaStoreSpec), false);
 		}
 	}
 }
@@ -35,9 +38,9 @@ RegisterResultMapper(RenderedKeyMapper);
 
 bool RenderedKeyMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
-	String strKey = renderKey(ctx, key, value);
+	String strKey = renderKey(*this, ctx, key, value);
 	Trace("new key [" << strKey << "]");
-	storeKey(ctx, strKey, key);
+	storeKey(*this, ctx, strKey);
 	return ResultMapper::DoPutAny(strKey, value, ctx, script);
 }
 //---- RenderedKeyParameterMapper ------------------------------------------------------------------
@@ -45,8 +48,8 @@ RegisterParameterMapper(RenderedKeyParameterMapper);
 
 bool RenderedKeyParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(RenderedKeyParameterMapper.DoGetAny, NotNull(key));
-	String strKey = renderKey(ctx, key, value);
+	String strKey = renderKey(*this, ctx, key, value);
 	Trace("new key [" << strKey << "]");
-	storeKey(ctx, strKey, key);
+	storeKey(*this, ctx, strKey);
 	return ParameterMapper::DoGetAny(strKey, value, ctx, script);
 }
