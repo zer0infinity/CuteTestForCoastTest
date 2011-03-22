@@ -78,7 +78,7 @@
 	}
 	/ResultMapper {
 		/MainSwitch						10
-		/EnableAll						0
+		/EnableAll						10
 		/DoLoadConfig					-10
 	}
 	/MapperTestDAImpl {
@@ -106,6 +106,14 @@
 		/EnableAll						10
 	}
 	/SplitCookieResultMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/SplitCookieResultMapperTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/RenderedKeyMapper {
 		/MainSwitch						10
 		/EnableAll						10
 	}

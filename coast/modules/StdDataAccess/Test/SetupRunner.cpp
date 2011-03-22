@@ -6,9 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
 //--- test cases ---------------------------------------------------------------
@@ -33,6 +30,7 @@
 #include "URI2FileNameTest.h"
 #include "HTTPProcessorWithChecksTest.h"
 #include "MimeHeaderResultMapperTest.h"
+#include "SplitCookieResultMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -42,6 +40,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, HTTPProtocolReplyRendererTest);
 	ADD_SUITE(runner, HTTPProcessorTest);
 	ADD_SUITE(runner, HTTPProcessorWithChecksTest);
+	ADD_SUITE(runner, SplitCookieResultMapperTest);
 
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, HTTPResponseMapperTest);

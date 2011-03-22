@@ -1,0 +1,69 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/ConfiguredTests {
+		/SingleCookiePutTest {
+			/Value {
+#				".ASPXAUTH=1D465C16E0F200E2D948F64072EF5762F896AA8F37F22A628F9E67D03A776DCA1BFCF9AACEFB52AEED2852A32817A1D7C8E408EFDD7DC5952DC385CC4A87667C47B84B80D2E642CFE19EDD98EB500B72; path=/"
+				".ASPXAUTH=0B26FEB5F5C9DD90554CC9F6884B1AC57C010401C04A9F1EA6703DD4587C8D76F12F3BC6D3D04E3703165D69B8F33D5F66A037BCB75893BDE1D68A6EBCF92DF9CC4059659A41F8614387AE5E40092B35; path=/; secure; HttpOnly"
+			}
+			/Putkey "HTTPHeader.SET-COOKIE"
+			/MapperConfig {
+				/SplitCookieResultMapper {
+					/Delim ","
+					/HTTPHeader {
+						/SET-COOKIE {
+							/RenderedKeyMapper *
+						}
+					}
+				}
+				/RenderedKeyMapper {
+					/DestinationSlot "StoredCookies"
+					/PutPolicy Append
+					/Delim ","
+					/KeySpec {
+						/ContextLookupRenderer {
+							MappedKey
+						}
+					}
+				}
+			}
+			/Expected {
+				/StoredCookies {
+					/.ASPXAUTH {
+						{
+							/_value_ "0B26FEB5F5C9DD90554CC9F6884B1AC57C010401C04A9F1EA6703DD4587C8D76F12F3BC6D3D04E3703165D69B8F33D5F66A037BCB75893BDE1D68A6EBCF92DF9CC4059659A41F8614387AE5E40092B35"
+							/_attrs_ {
+								/path "/"
+								"secure"
+								"HttpOnly"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/.ASPXAUTH {
+#		{
+#			/_value_ "1D465C16E0F200E2D948F64072EF5762F896AA8F37F22A628F9E67D03A776DCA1BFCF9AACEFB52AEED2852A32817A1D7C8E408EFDD7DC5952DC385CC4A87667C47B84B80D2E642CFE19EDD98EB500B72"
+#			/_attrs_ {
+#				/path "/"
+#			}
+#		}
+		{
+			/_value_ "0B26FEB5F5C9DD90554CC9F6884B1AC57C010401C04A9F1EA6703DD4587C8D76F12F3BC6D3D04E3703165D69B8F33D5F66A037BCB75893BDE1D68A6EBCF92DF9CC4059659A41F8614387AE5E40092B35"
+			/_attrs_ {
+				/path "/"
+				"secure"
+				"HttpOnly"
+			}
+		}
+	}
+}
