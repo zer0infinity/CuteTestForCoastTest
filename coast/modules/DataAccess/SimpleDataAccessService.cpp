@@ -11,6 +11,7 @@
 #include "Renderer.h"
 #include "DataAccess.h"
 #include "RequestProcessor.h"
+#include "StringStream.h"
 
 //---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);

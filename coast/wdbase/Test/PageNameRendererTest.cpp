@@ -10,6 +10,7 @@
 #include "TestSuite.h"
 #include "Page.h"
 #include "PageNameRenderer.h"
+#include "StringStream.h"
 
 //---- PageNameRendererTest ----------------------------------------------------------------
 PageNameRendererTest::PageNameRendererTest(TString tname)

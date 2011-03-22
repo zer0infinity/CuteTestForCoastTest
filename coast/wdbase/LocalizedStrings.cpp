@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LocalizedStrings.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemFile.h"
-#include "StringStream.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- LocalizedStrings ---------------------------------------------------------
 LocalizedStrings *LocalizedStrings::fgLocStrings = 0;

@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LocalizationUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
-#include "StringStream.h"
-#include "Threads.h"
-#include "Dbg.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", Coast::Storage::Global());
 bool	LocalizationUtils::fgLanguageMapIsInit = false;

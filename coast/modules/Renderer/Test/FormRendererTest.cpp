@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FormRendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include <iostream>
-
-//--- module under test --------------------------------------------------------
 
 FormRendererTest::FormRendererTest (TString tname) : TestCaseType(tname),
 	fEnvironment(Anything::ArrayMarker()), fRole("FRTestRole"),

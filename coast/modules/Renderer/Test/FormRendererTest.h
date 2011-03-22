@@ -12,6 +12,7 @@
 #include "TestCase.h"
 #include "Role.h"
 #include "FormRenderer.h"
+#include "StringStream.h"
 
 class TestRole : public Role
 {

@@ -7,8 +7,7 @@
  */
 
 #include "LookupRenderers.h"
-#include "SystemLog.h"
-#include "Dbg.h"
+#include "StringStream.h"
 
 namespace {
 	const char *gcSlotName =		"LookupName";

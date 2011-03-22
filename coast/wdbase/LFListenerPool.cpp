@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LFListenerPool.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Timers.h"
-#include "SystemLog.h"
 #include "RequestProcessor.h"
 #include "RequestListener.h"
 #include "WPMStatHandler.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
 
 LFListenerPool::LFListenerPool(RequestReactor *reactor)

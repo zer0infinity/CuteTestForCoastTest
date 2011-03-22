@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LookupInterface.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 
 ROAnything LookupInterface::Lookup(const char *key, char delim, char indexdelim) const
 {

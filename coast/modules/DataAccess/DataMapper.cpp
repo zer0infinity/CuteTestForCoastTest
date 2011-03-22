@@ -8,6 +8,7 @@
 
 #include "DataMapper.h"
 #include "Renderer.h"
+#include "StringStream.h"
 
 //---- FixedSizeMapper ------------------------------------------------------------------
 RegisterParameterMapper(FixedSizeMapper);

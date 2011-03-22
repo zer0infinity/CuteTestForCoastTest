@@ -6,16 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPProcessorWithChecks.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Timers.h"
 #include "HTTPProtocolReplyRenderer.h"
-#include "Server.h"
 #include "AnyIterators.h"
 #include "AppLog.h"
 #include "AnythingUtils.h"
+#include "StringStream.h"
 
 RegisterRequestProcessor(HTTPProcessorWithChecks);
 

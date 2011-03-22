@@ -9,6 +9,7 @@
 #include "BasicRendererTest.h"
 #include "TestSuite.h"
 #include "Renderer.h"
+#include "StringStream.h"
 
 //---- BasicRendererTest ----------------------------------------------------------------
 BasicRendererTest::BasicRendererTest(TString tstrName) : TestCaseType(tstrName)

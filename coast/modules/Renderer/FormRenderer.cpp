@@ -6,13 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FormRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Session.h"
 #include "TemplateParser.h"
-#include "Dbg.h"
+#include "StringStream.h"
 
 //---- FormRenderer -------------------------------------------------------------------
 RegisterRenderer(FormRenderer);

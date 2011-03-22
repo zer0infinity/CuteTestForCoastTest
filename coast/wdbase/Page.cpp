@@ -6,18 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Page.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Action.h"
 #include "Timers.h"
 #include "Registry.h"
 #include "HTTPStreamStack.h"
 #include "RequestProcessor.h"
-#include "Server.h"
-#include "Dbg.h"
 
 //---- PagesModule -----------------------------------------------------------
 RegisterModule(PagesModule);

@@ -6,15 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PeriodicAction.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Context.h"
-#include "Action.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //--- PeriodicAction ----
 PeriodicAction::PeriodicAction(const String &action, long waitTime)

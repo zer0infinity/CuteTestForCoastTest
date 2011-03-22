@@ -9,8 +9,6 @@
 #ifndef _ACTION_H
 #define _ACTION_H
 
-// superclass include
-#include "IFAConfObject.h"
 #include "WDModule.h"
 
 class Context;

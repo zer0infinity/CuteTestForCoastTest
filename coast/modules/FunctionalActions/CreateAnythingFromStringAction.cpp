@@ -6,14 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface ------------
 #include "CreateAnythingFromStringAction.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
-#include "SystemLog.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "StringStream.h"
 
 //---- CreateAnythingFromStringAction ---------------------------------------------------------------
 RegisterAction(CreateAnythingFromStringAction);

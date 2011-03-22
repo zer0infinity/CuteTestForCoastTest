@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTMLTemplateRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Timers.h"
 #include "LocalizationUtils.h"
 #include "HTMLTemplateCacheLoader.h"
 #include "TemplateParser.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "StringStream.h"
 
 //---- HTMLTemplateRenderer ----------------------------------------------------
 RegisterRenderer(HTMLTemplateRenderer);

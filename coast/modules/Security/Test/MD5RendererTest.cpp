@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MD5RendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "MD5Renderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
+#include "StringStream.h"
 
 //---- MD5RendererTest ----------------------------------------------------------------
 MD5RendererTest::MD5RendererTest(TString tname) : TestCaseType(tname)

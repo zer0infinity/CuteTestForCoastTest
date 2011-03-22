@@ -9,7 +9,6 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
 
-#include "StringStream.h"
 #include "Context.h"
 #include "WDModule.h"
 

@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TableRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "FormRenderer.h"
-#include "Dbg.h"
-
-//--- c modules used ----------------------------------------------------
+#include "StringStream.h"
 #include <cstring>
 
 //---- TableRenderer -------------------------------------------------------------------

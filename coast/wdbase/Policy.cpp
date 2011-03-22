@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
-#include "Policy.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- InstallerPolicy ------------------------------------------------------
 bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)

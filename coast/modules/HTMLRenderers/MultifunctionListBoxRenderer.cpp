@@ -6,12 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface ------------
 #include "MultifunctionListBoxRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
-#include "Dbg.h"
+#include "StringStream.h"
 
 RegisterRenderer(HeaderListRenderer);
 void HeaderListRenderer::RenderEntry(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)

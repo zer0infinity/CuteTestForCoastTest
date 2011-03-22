@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Base64RendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Base64Renderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
+#include "StringStream.h"
 
 //---- Base64RendererTest ----------------------------------------------------------------
 Base64RendererTest::Base64RendererTest(TString tname) : TestCaseType(tname)

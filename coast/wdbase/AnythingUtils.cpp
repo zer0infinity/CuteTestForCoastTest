@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
-#include "SystemLog.h"
-#include "Dbg.h"
 
 //-- StoreCopier ---------------------------------------------------------------
 void StoreCopier::Operate(Context &c, Anything &dest, const Anything &config, char delim, char indexdelim)

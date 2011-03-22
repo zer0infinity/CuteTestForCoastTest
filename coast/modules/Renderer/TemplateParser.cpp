@@ -6,22 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TemplateParser.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Page.h"
 #include "Role.h"
 #include "Registry.h"
 #include "Session.h" /* for field prefixes, may be should be refactored, i.e. to Renderer */
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "StringStream.h"
 #include <cstring>
-#if !defined(WIN32)
-#include <ctype.h>
-#endif
 
 Anything TemplateParser::Parse(std::istream &reader, const char *filename, long startline, Allocator *a, const ROAnything roaParserConfig)
 {

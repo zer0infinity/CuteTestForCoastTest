@@ -6,13 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RequestLineRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
 #include "SecurityModule.h"
-#include "Dbg.h"
+#include "StringStream.h"
 
 //---- RequestLineRenderer ---------------------------------------------------------
 RegisterRenderer(RequestLineRenderer);
