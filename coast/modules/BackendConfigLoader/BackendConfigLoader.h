@@ -14,24 +14,22 @@
 class Context;
 
 //---- BackendConfigLoaderModule -----------------------------------------------------------
-
-class BackendConfigLoaderModule : public WDModule
-{
-	friend class BackendConfigLoaderTest;
-public:
-	BackendConfigLoaderModule(const char *name);
-	~BackendConfigLoaderModule();
-
-	virtual bool Init(const ROAnything config);
-	virtual bool Finis();
-	static ROAnything GetBackendConfig(const String &backendName);
-	static ROAnything GetBackendConfig();
-
-private:
+class BackendConfigLoaderModule: public WDModule {
 	bool RegisterBackend(const String& backendName, ROAnything roaBackendConfig);
 	Anything GetBackendList();
 	static Anything backendConfigurations;
-	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
+	friend class BackendConfigLoaderTest;
+
+public:
+	BackendConfigLoaderModule(const char *name) :
+		WDModule(name) {
+	}
+	static ROAnything GetBackendConfig(const String &backendName);
+	static ROAnything GetBackendConfig();
+
+protected:
+	virtual bool Init(const ROAnything config);
+	virtual bool Finis();
 };
 
 #endif
