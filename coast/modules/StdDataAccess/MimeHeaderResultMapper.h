@@ -9,23 +9,29 @@
 #ifndef _MimeHeaderResultMapper_H
 #define _MimeHeaderResultMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- MimeHeaderResultMapper ----------------------------------------------------------
-//! Parses header fields from stream and stores them under Mapper.HTTPHeader
-//! config: config.Suppress is an optional list of headers to suppress, config.Add is
-//! an optional list of /key "header" entries to add.
-//! Example: { /Suppress { "server", "content-type" } /Add { /server "Mozilla" /FD-Info "blah" } }
-//! will suppress server and content-type headers and add a new server-header with value
-//! "Mozilla" and a new header /fd-info with value "blah". If headers are added that already
-//! exists, the old ones are overwritten (thus the above suppressing of /server is not really
-//! necessary).
-class MimeHeaderResultMapper: public EagerResultMapper {
+//! Parses header fields from stream and calls DoPutAny() to allow further processing
+/*! MimeHeaderResultMapper internally uses MIMEHeader to parse the input stream
+ * @section rffrm Mapper configuration
+\code
+{
+	/Normalize		String
+}
+\endcode
+ *
+ * @par \c Normalize
+ * Optional, default 0 (Coast::URLUtils::eUpshift)\n
+ * Specify if and how header field names should be handled, default is to convert all field names to upper case.\n
+ * Check \ref Coast::URLUtils::NormalizeTag for valid values
+ *
+ */
+class MimeHeaderResultMapper: public ResultMapper {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	MimeHeaderResultMapper(const char *name) :
-		EagerResultMapper(name) {
+		ResultMapper(name) {
 	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -33,7 +39,7 @@ public:
 	}
 
 protected:
-	//! reads from istream a MIME header and putting it with some key
+	//! Reads from std::istream the MIME headers and Put them with the given key
 	/*! @copydoc ResultMapper::DoPutStream() */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 };
