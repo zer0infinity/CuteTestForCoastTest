@@ -32,6 +32,7 @@
 #include "ConnectorDAImplTest.h"
 #include "URI2FileNameTest.h"
 #include "HTTPProcessorWithChecksTest.h"
+#include "MimeHeaderResultMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -45,6 +46,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, HTTPResponseMapperTest);
 	ADD_SUITE(runner, HTTPMimeHeaderMapperTest);
+	ADD_SUITE(runner, MimeHeaderResultMapperTest);
 	ADD_SUITE(runner, XMLBodyMapperTest);
 
 	ADD_SUITE(runner, ConnectorDAImplTest);

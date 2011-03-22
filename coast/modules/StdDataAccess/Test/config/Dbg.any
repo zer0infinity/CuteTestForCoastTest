@@ -21,6 +21,14 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/HierarchConfNamed {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/ConfNamedObject {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/HierarchyInstaller {
 		/MainSwitch						10
 		/EnableAll						10
@@ -90,6 +98,10 @@
 		/EnableAll						0
 	}
 	/MimeHeaderReultMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/MimeHeaderResultMapperTest {
 		/MainSwitch						10
 		/EnableAll						10
 	}
