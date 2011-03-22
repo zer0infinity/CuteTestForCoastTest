@@ -11,15 +11,15 @@
 
 #include "Policy.h"
 
-class HierarchyInstallerWithConfig : public HierarchyInstaller {
+class HierarchyInstallerWithConfig: public HierarchyInstaller {
 	ROAnything fObjectConfig;
+	char fSlotDelim, fIdxDelim;
 public:
-	HierarchyInstallerWithConfig(const char *cat, const ROAnything roaObjectConfig, char delimSlot = '.', char delimIdx = ':');
-	virtual ~HierarchyInstallerWithConfig() {}
+	HierarchyInstallerWithConfig(const char *cat, const ROAnything roaObjectConfig, char delimSlot = '.', char delimIdx = ':') :
+		HierarchyInstaller(cat), fObjectConfig(roaObjectConfig), fSlotDelim(delimSlot), fIdxDelim(delimIdx) {
+	}
 protected:
-    virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
-private:
-    char fSlotDelim, fIdxDelim;
+	virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
 };
 
 #endif /* HIERARCHYINSTALLERWITHCONFIG_H_ */

@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
-//--- test cases ---------------------------------------------------------------
 #include "MapperTest.h"
 #include "ParameterMapperTest.h"
 #include "ResultMapperTest.h"
@@ -22,7 +17,6 @@
 #include "RendererMapperTest.h"
 #include "NameUsingOutputMapperTest.h"
 #include "LoopBackDAImplTest.h"
-#include "ConfiguredActionTest.h"
 #include "SlotnameOutputMapperTest.h"
 #include "SimpleDAServiceTest.h"
 #include "ReadFileDAImplTest.h"

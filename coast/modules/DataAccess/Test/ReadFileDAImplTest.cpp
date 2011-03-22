@@ -6,19 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ReadFileDAImplTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ReadFileDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- ReadFileDAImplTest ----------------------------------------------------------------
 ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCaseType(tstrName)

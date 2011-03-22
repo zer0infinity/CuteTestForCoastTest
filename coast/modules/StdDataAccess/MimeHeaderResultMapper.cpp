@@ -6,7 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "MimeHeaderResultMapper.h"
-#include "Dbg.h"
 #include "MIMEHeader.h"
 //---- MimeHeaderResultMapper ------------------------------------------------------------------
 RegisterResultMapper(MimeHeaderResultMapper);

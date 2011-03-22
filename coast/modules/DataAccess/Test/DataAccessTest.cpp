@@ -6,20 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DataAccessTest.h"
-
-//--- module under test --------------------------------------------------------
-#include "DataAccessImpl.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "DataAccess.h"
 #include "Session.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- DataAccessTest ----------------------------------------------------------------
 Test *DataAccessTest::suite ()

@@ -6,12 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SlotnameOutputMapper.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
-#include "Dbg.h"
 #include "Timers.h"
 
 //---- SlotnameOutputMapper ------------------------------------------------------------------

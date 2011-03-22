@@ -6,16 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ReadXMLFileDAImpl.h"
-
-//--- project modules used -----------------------------------------------------
 #include "GenericXMLParser.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //--- ReadXMLFileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(ReadXMLFileDAImpl);

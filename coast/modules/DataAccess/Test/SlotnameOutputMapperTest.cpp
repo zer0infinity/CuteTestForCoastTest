@@ -6,17 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SlotnameOutputMapperTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SlotnameOutputMapper.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //---- SlotnameOutputMapperTest ----------------------------------------------------------------
 SlotnameOutputMapperTest::SlotnameOutputMapperTest(TString tname)

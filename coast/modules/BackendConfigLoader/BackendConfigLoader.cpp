@@ -7,18 +7,11 @@
  */
 
 #include "BackendConfigLoader.h"
-
-#include "Server.h"
-#include "Renderer.h"
-#include "CacheHandler.h"
-#include "Registry.h"
-#include "Role.h"
 #include "AnyIterators.h"
-#include "SystemLog.h"
 #include "SystemFile.h"
-#include "Dbg.h"
-#include "Policy.h"
-#include <cstdio>
+#include "HierarchyInstallerWithConfig.h"
+#include "DataAccessImpl.h"
+#include "ServiceHandler.h"
 
 using namespace Coast;
 
@@ -89,11 +82,6 @@ Anything BackendConfigLoaderModule::GetBackendList() {
 	TraceAny(backendList, "List of all Backends:");
 	return backendList;
 }
-
-#include "HierarchyInstallerWithConfig.h"
-#include "Mapper.h"
-#include "DataAccessImpl.h"
-#include "ServiceHandler.h"
 
 bool BackendConfigLoaderModule::RegisterBackend(const String& backendName, ROAnything roaBackendConfig) {
 	StartTrace(BackendConfigLoaderModule.RegisterBackend);

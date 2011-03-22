@@ -6,14 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ConfiguredLookupAdapter.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "ITOString.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 ConfiguredLookupAdapter::ConfiguredLookupAdapter(ROAnything config, ROAnything defaultConfig)
 	: fConfig(config), fDefaultConfig(defaultConfig)

@@ -6,23 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Server.h"
-
-//--- interface include --------------------------------------------------------
 #include "ServerTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "Context.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 #define TESTHOST "localhost"
-
 
 //---- ServerTest ----------------------------------------------------------------
 ServerTest::ServerTest(TString tname)

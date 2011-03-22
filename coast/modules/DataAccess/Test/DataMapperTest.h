@@ -9,11 +9,7 @@
 #ifndef _DataMapperTest_H
 #define _DataMapperTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
-#include "Anything.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- DataMapperTest ----------------------------------------------------------
 //!single line description of the class

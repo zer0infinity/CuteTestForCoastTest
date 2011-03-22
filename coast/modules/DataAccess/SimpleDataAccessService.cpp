@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SimpleDataAccessService.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Timers.h"
 #include "Renderer.h"
 #include "DataAccess.h"
 #include "RequestProcessor.h"
-#include "Server.h"
-#include "Dbg.h"
 
 //---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);

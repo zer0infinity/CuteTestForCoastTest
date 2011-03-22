@@ -8,11 +8,7 @@
 
 //#define XML_MAPPER_TRACING // does a lookup with the generated lookup-path
 
-//--- interface include --------------------------------------------------------
 #include "XMLMapper.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //---- XMLMapper ------------------------------------------------------------------
 RegisterResultMapper(XMLMapper);

@@ -9,8 +9,6 @@
 #ifndef _StreamingAnythingMapper_H
 #define _StreamingAnythingMapper_H
 
-//---- Mapper include -------------------------------------------------
-#include "Mapper.h"
 #include "AnythingLookupPathResultMapper.h"
 
 //---- StreamToAnythingMapper ----------------------------------------------------------

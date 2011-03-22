@@ -6,17 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CompareValuesMapper.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
-#include "SystemLog.h"
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- CompareValuesMapper ------------------------------------------------------------------
 RegisterResultMapper(CompareValuesMapper);

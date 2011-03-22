@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RequestListener.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Registry.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */

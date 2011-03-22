@@ -89,6 +89,14 @@
 		/MainSwitch						10
 		/EnableAll						0
 	}
+	/MimeHeaderReultMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/SplitCookieResultMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/HTTPBodyMapper {
 		/MainSwitch						0
 		/EnableAll						20

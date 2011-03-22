@@ -9,7 +9,6 @@
 #ifndef _FileDAImpl_H
 #define _FileDAImpl_H
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
 #include "SystemFile.h"
 

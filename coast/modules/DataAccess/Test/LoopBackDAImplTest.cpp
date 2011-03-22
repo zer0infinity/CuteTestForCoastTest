@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LoopBackDAImplTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "DataAccessImpl.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
-#include "Dbg.h"
 
 //---- LoopBackDAImplTest ----------------------------------------------------------------
 Test *LoopBackDAImplTest::suite ()

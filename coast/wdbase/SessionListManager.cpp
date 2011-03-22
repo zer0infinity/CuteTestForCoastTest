@@ -8,10 +8,7 @@
 
 //#define TRACE_LOCKS
 
-//--- interface include --------------------------------------------------------
 #include "SessionListManager.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "URLFilter.h"
 #include "TraceLocks.h"
@@ -20,11 +17,8 @@
 #include "PeriodicAction.h"
 #include "TimeStamp.h"
 #include "StringStream.h"
-#include "Dbg.h"
 #include "Context.h"
 #include "AnyIterators.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
 
 //---- CleanSessions ----------------------------------------------------------

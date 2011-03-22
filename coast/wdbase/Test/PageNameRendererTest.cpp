@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PageNameRendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 #include "Page.h"
-
-//--- module under test --------------------------------------------------------
 #include "PageNameRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //---- PageNameRendererTest ----------------------------------------------------------------
 PageNameRendererTest::PageNameRendererTest(TString tname)

@@ -6,19 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ParameterMapperTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Mapper.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "StringStream.h"
-#include "CacheHandler.h"
 
 //---- ParameterMapperTest ----------------------------------------------------------------
 ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCaseType(tstrName)

@@ -6,14 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "StreamingAnythingMapper.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "Dbg.h"
 #include "Timers.h"
-#include "SystemLog.h"
 
 //---- AnythingToStreamMapper ----------------------------------------------------------------
 RegisterParameterMapper(AnythingToStreamMapper);

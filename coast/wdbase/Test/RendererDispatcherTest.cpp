@@ -6,19 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RendererDispatcherTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ServiceDispatcher.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- RendererDispatcherTest ----------------------------------------------------------------
 RendererDispatcherTest::RendererDispatcherTest(TString tname) : TestCaseType(tname)

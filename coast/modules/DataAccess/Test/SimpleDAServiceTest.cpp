@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SimpleDAServiceTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "SimpleDataAccessService.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "ServiceDispatcher.h"
 #include "RequestProcessor.h"
-#include "Dbg.h"
 #include "StringStreamSocket.h"
 #include "AnyIterators.h"
 

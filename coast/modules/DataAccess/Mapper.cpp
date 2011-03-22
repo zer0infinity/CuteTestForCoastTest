@@ -6,13 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Mapper.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Registry.h"
-#include "Dbg.h"
 #include "Timers.h"
 
 //---- MappersModule -----------------------------------------------------------

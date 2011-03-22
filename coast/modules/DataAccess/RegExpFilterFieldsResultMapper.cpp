@@ -6,11 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RegExpFilterFieldsResultMapper.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "RE.h"
 #include "AnyIterators.h"
 
@@ -45,14 +41,15 @@ bool RegExpFilterFieldsResultMapper::DoPutAnyWithSlotname(const char *key, Anyth
 			bMappedValues = true;
 			String strNewKey = key;
 			strNewKey.Append(getDelim()).Append(strSlotname);
-			Trace("Calling ResultMapper::DoPut() with new key [" << strNewKey << "]");
 			if ( roaScript.IsNull() || not roaScript.GetSize() ) {
 				//! catch emtpy mapper script and directly use final put
+				Trace("Calling ResultMapper::DoFinalPutAny() with new key [" << strNewKey << "]");
 				bMappingSuccess = DoFinalPutAny(strNewKey, anyValue, ctx) && bMappingSuccess;
 			} else {
+				Trace("Calling ResultMapper::DoPutAny() with new key [" << strNewKey << "]");
 				bMappingSuccess = DoPutAny(strNewKey, anyValue, ctx, roaScript) && bMappingSuccess;
 			}
-			Trace("RetCode of DoPutAny:" << (bMappingSuccess ? "true" : "false"));
+			Trace("RetCode of Put:" << (bMappingSuccess ? "true" : "false"));
 		}
 	}
 	for ( long idx = anyProcessed.GetSize()-1l; idx >= 0L; --idx ) {

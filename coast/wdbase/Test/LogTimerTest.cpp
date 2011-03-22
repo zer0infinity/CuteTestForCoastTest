@@ -6,19 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LogTimerTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Timers.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- LogTimerTest ----------------------------------------------------------------
 LogTimerTest::LogTimerTest(TString tname)

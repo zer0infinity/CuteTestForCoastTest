@@ -6,14 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "DataAccess.h"
-#include "Context.h"
 #include "Renderer.h"
-#include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
 #include "CallDataAccessAction.h"
 
 //---- CallDataAccessAction ---------------------------------------------------------------

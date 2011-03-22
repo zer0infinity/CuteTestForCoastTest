@@ -7,12 +7,7 @@
  */
 
 #include "HierarchyInstallerWithConfig.h"
-
 #include "Dbg.h"
-
-HierarchyInstallerWithConfig::HierarchyInstallerWithConfig(const char *cat, const ROAnything roaObjectConfig, char delimSlot, char delimIdx)
-	: HierarchyInstaller(cat), fObjectConfig(roaObjectConfig), fSlotDelim(delimSlot), fIdxDelim(delimIdx) {
-}
 
 void HierarchyInstallerWithConfig::DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf) {
 	StartTrace1(HierarchyInstallerWithConfig.DoInitializeLeaf, "current leaf [" << leafName << "]");

@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DataAccessImpl.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "StringStream.h"
-#include "SystemLog.h"
-#include "Dbg.h"
 
 //---- DataAccessImplsModule -----------------------------------------------------------
 RegisterModule(DataAccessImplsModule);

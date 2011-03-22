@@ -6,20 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CacheHandler.h"
-
-//--- project modules used -----------------------------------------------------
 #include "InitFinisManagerWDBase.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "AnyUtils.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //--- CacheLoadPolicy -----------------------------------------------
 CacheLoadPolicy::CacheLoadPolicy()	{ }
