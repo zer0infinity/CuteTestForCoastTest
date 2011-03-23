@@ -9,6 +9,7 @@
 #include "RegExpFilterFieldsResultMapperTest.h"
 #include "RegExpFilterFieldsResultMapper.h"
 #include "TestSuite.h"
+#include "AnyUtils.h"
 
 void RegExpFilterFieldsResultMapperTest::ConfiguredTests()
 {
@@ -31,7 +32,7 @@ void RegExpFilterFieldsResultMapperTest::ConfiguredTests()
 		t_assertm(m.Put(putKeyName, value, ctx), caseName);
 		String outputLocation = m.GetDestinationSlot(ctx);
 		outputLocation.Append(m.getDelim()).Append(putKeyName);
-		assertAnyEqualm(caseConfig["Expected"], ctx.Lookup(outputLocation), caseName);
+		assertAnyCompareEqual(caseConfig["Expected"], ctx.GetTmpStore(), caseName, m.getDelim(), m.getIndexDelim());
 		m.Finalize();
 	}
 }

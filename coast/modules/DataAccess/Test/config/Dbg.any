@@ -236,4 +236,8 @@
 		/MainSwitch 11
 		/EnableAll 11
 	}
+	/RegExpFilterFieldsResultMapperTest {
+		/MainSwitch 11
+		/EnableAll 11
+	}
 }
