@@ -23,6 +23,7 @@
 #include "WriteFileDAImplTest.h"
 #include "ConfigMapperTest.h"
 #include "StreamingAnythingMapperTest.h"
+#include "RegExpFilterFieldsResultMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -42,4 +43,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, WriteFileDAImplTest);
 	ADD_SUITE(runner, ConfigMapperTest);
 	ADD_SUITE(runner, StreamingAnythingMapperTest);
+	ADD_SUITE(runner, RegExpFilterFieldsResultMapperTest);
 } // setupRunner
