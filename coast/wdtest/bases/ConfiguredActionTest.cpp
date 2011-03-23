@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ConfiguredActionTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Page.h"
 #include "Server.h"
 #include "Role.h"
@@ -20,8 +15,6 @@
 #include "AnyUtils.h"
 #include "Timers.h"
 #include <iostream>
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
 ConfiguredActionTest::ConfiguredActionTest(TString tname)
@@ -152,7 +145,7 @@ void ConfiguredActionTest::DoCheckStore(ROAnything anyInput, ROAnything anyMaste
 	}
 }
 
-void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notExpected, String pathSoFar, char delimSlot)
+void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notExpected, String const & pathSoFar, char delimSlot)
 {
 	StartTrace(ConfiguredActionTest.GeneratePathList);
 
@@ -162,7 +155,7 @@ void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notE
 		if (notExpected[i].GetType() == AnyArrayType ) {
 			// continue recursively
 			ROAnything next(notExpected[i]);
-			path << ".";
+			path << delimSlot;
 			GeneratePathList(pathList, next, path, delimSlot);
 		} else {
 			// leaf reached, add path to list

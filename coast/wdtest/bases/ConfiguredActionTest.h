@@ -125,6 +125,9 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
+	//! helper method to generate a list of paths out of an anything
+	static void GeneratePathList(Anything &pathList, ROAnything &input, String const &pathSoFar, char delimSlot);
+
 protected:
 	/*!	Executes the testcase
 		\param testCase the test case's config
@@ -151,7 +154,7 @@ protected:
 		\return the configuration for the testcase */
 	virtual Anything PrepareConfig(Anything originalConfig);
 
-	//! type switch für store checks
+	//! type switch for store checks
 	enum eResultCheckType { exists, notExists };
 
 	/*!	utility method to perform Checks in ctx stores
@@ -173,9 +176,6 @@ protected:
 
 	//! Really compare the store using AnyUtils::AnyCompareEqual
 	void DoCheckStore(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', eResultCheckType rct = exists);
-
-	//! helper method to generate a list of paths out of an anything
-	virtual void GeneratePathList(Anything &pathList, ROAnything &input, String pathSoFar, char delimSlot);
 
 	//! Hook that allows alteration of the stores as read from caseConfig
 	virtual void AlterTestStoreHook(Anything &testCase);
