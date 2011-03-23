@@ -9,7 +9,6 @@
 #ifndef _TestTimer_H
 #define _TestTimer_H
 
-#include <ctime>
 #include <cmath>
 
 #if defined(WIN32)
@@ -22,7 +21,7 @@ typedef hrtime_t 		HRTESTTIME;
 #define GetHRTESTTIME()		gethrtime()
 #else
 #include <time.h>
-#include <sys/times.h>
+
 typedef clock_t			HRTESTTIME;
 extern "C" HRTESTTIME gettimes();
 #define GetHRTESTTIME()	gettimes()

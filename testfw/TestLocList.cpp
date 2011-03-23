@@ -7,10 +7,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestLocList.h"
-//--- standard modules used ----------------------------------------------------
-#include "TString.h"
 #include "TestLocation.h"
 
 TestLocElt::~TestLocElt()
@@ -44,7 +41,7 @@ void TestLocList::push_back( TestLocation *aValue )
 	{
 		fList = tmp;
 	}
-	// keep in mind the address of the öast inserted element
+	// keep in mind the address of the last inserted element
 	fIn = tmp;
 	// increment the number of elements in the list
 	fSize += 1;

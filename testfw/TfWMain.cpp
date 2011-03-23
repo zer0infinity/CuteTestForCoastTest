@@ -11,6 +11,7 @@
 
 // this is just included to test the definition of the setupRunner function
 #include "SetupRunner.h"
+#include "sys/times.h"
 
 #if !defined(WIN32) && !defined(gettimes)
 HRTESTTIME  gettimes()

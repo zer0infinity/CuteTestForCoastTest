@@ -6,13 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
-#include "SetupRunner.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TestRunner.h"
-
-//--- test cases ---------------------------------------------------------------
 #include "DummyTest.h"
 #include "AssertionTest.h"
 

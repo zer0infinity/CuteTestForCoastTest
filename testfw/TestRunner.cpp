@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Test.h"
 #include "TestList.h"
 #include "TextTestResult.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iostream>
 #include <fstream>
-
 #include <fcntl.h>
-#if !defined(WIN32)
-#include <unistd.h>
-#else
+#if defined(WIN32)
 #include <io.h>
 #endif
 

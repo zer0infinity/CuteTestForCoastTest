@@ -6,15 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TString.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstdlib>
-#include <cstdio>
-#include <sstream>
 #include <iostream>
-#include <cstdio>
+#include <stdio.h>
 
 //---- TString ----------------------------------------------------------------
 const long cStrAllocLimit = 4096;

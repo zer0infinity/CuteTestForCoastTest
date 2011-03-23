@@ -6,16 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
-#include "Test.h"
-//--- standard modules used ----------------------------------------------------
 #include "TestResult.h"
-//--- c-library modules used ---------------------------------------------------
-#include <math.h>
-
-#if defined(fstream)
-#undef fstream /* use plain fstream when unlocked is defined for it */
-#endif
 
 /* check for a failed general assertion */
 bool Test::assertImplementation (bool condition,
