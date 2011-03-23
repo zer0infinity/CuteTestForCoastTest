@@ -36,7 +36,7 @@ void SlotnameOutputMapperTest::BasicFunctionTest()
 
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"].DeepClone(), ctx);
-	DoCheckStores(GetTestCaseConfig()["Result"], ctx, name());
+	CheckStores(GetTestCaseConfig()["Result"], ctx, name());
 }
 
 void SlotnameOutputMapperTest::OverwriteOrAppendTest()
@@ -49,7 +49,7 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest()
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][0L].DeepClone(), ctx);
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][1L].DeepClone(), ctx);
-	DoCheckStores(GetTestCaseConfig()["Result"], ctx, name());
+	CheckStores(GetTestCaseConfig()["Result"], ctx, name());
 }
 
 // builds up a suite of tests, add a line for each testmethod

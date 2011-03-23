@@ -46,7 +46,7 @@
 	/ConfiguredActionTest {
 		/MainSwitch		103
 		/EnableAll		0
-		/DoCheckStores	103
+		/CheckStores	103
 	}
 	/AcceptorFactory {
 		/MainSwitch	200

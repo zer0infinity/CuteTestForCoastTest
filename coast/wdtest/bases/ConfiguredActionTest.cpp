@@ -104,14 +104,14 @@ void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, C
 
 	DoTestWithContext(testCase, testCaseName, ctx);
 	// do existence tests
-	DoCheckStores(testCase["Result"], ctx, testCaseName, exists);
+	CheckStores(testCase["Result"], ctx, testCaseName, exists);
 	// non-existence tests
-	DoCheckStores(testCase["NotResult"], ctx, testCaseName, notExists);
+	CheckStores(testCase["NotResult"], ctx, testCaseName, notExists);
 }
 
-void ConfiguredActionTest::DoCheckStore(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot, char delimIdx, eResultCheckType rct)
+void ConfiguredActionTest::CheckStoreContents(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot, char delimIdx, eResultCheckType rct)
 {
-	StartTrace(ConfiguredActionTest.DoCheckStore);
+	StartTrace(ConfiguredActionTest.CheckStoreContents);
 	if (rct == exists) {
 		String strTestPath = storeName;
 		strTestPath << "." << testCaseName;
@@ -164,23 +164,23 @@ void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notE
 	}
 }
 
-void ConfiguredActionTest::DoCheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct)
+void ConfiguredActionTest::CheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct)
 {
-	StartTrace(ConfiguredActionTest.DoCheckStores);
+	StartTrace(ConfiguredActionTest.CheckStores);
 	char delimSlot, delimIdx;
 	delimSlot = expected["Delim"].AsCharPtr(".")[0L];
 	delimIdx = expected["IndexDelim"].AsCharPtr(":")[0L];
 	if (expected.IsDefined("SessionStore") ) {
-		DoCheckStore(ctxToCheck.GetSessionStore(), expected["SessionStore"], "SessionStore", testCaseName, delimSlot, delimIdx, rct);
+		CheckStoreContents(ctxToCheck.GetSessionStore(), expected["SessionStore"], "SessionStore", testCaseName, delimSlot, delimIdx, rct);
 	}
 	if (expected.IsDefined("RoleStore") ) {
-		DoCheckStore(ctxToCheck.GetRoleStoreGlobal(), expected["RoleStore"], "RoleStore", testCaseName, delimSlot, delimIdx, rct);
+		CheckStoreContents(ctxToCheck.GetRoleStoreGlobal(), expected["RoleStore"], "RoleStore", testCaseName, delimSlot, delimIdx, rct);
 	}
 	if (expected.IsDefined("Query") ) {
-		DoCheckStore(ctxToCheck.GetQuery(), expected["Query"], "Query", testCaseName, delimSlot, delimIdx, rct);
+		CheckStoreContents(ctxToCheck.GetQuery(), expected["Query"], "Query", testCaseName, delimSlot, delimIdx, rct);
 	}
 	if (expected.IsDefined("TmpStore") ) {
-		DoCheckStore(ctxToCheck.GetTmpStore(), expected["TmpStore"], "TmpStore", testCaseName, delimSlot, delimIdx, rct);
+		CheckStoreContents(ctxToCheck.GetTmpStore(), expected["TmpStore"], "TmpStore", testCaseName, delimSlot, delimIdx, rct);
 	}
 }
 

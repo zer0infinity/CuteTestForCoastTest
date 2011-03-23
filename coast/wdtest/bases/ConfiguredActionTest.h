@@ -128,6 +128,29 @@ public:
 	//! helper method to generate a list of paths out of an anything
 	static void GeneratePathList(Anything &pathList, ROAnything &input, String const &pathSoFar, char delimSlot);
 
+	//! type switch for store checks
+	enum eResultCheckType { exists, notExists };
+
+	/*!	utility method to perform Checks in ctx stores
+		expected has the format
+		<PRE>
+		{
+			/SessionStore	{ .. }		# The whole content is compared to the ctxToCheck's SessionStore
+			/RoleStore	{ .. }			# The whole content is compared to the ctxToCheck's RoleStore
+			/TmpStore	{				# Each slot is compared to the slot with the same name
+				/Slot1	{ .. }			# in ctxToCheck's TmpStore
+				/Slot2	*
+			}
+		}</PRE>
+		\param expected Anything containing expected results
+		\param ctxToCheck contexts that supplies the SessionStore and TmpStore to be checked
+		\param testCaseName String that is printed with failure messages
+		\param rct result check type, either eResultCheckType::exists or eResultCheckType::notExists */
+	void CheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct = exists);
+
+	//! Really compare the store using AnyUtils::AnyCompareEqual
+	void CheckStoreContents(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', eResultCheckType rct = exists);
+
 protected:
 	/*!	Executes the testcase
 		\param testCase the test case's config
@@ -153,29 +176,6 @@ protected:
 		\param originalConfig the configuration as it comes from the configfile
 		\return the configuration for the testcase */
 	virtual Anything PrepareConfig(Anything originalConfig);
-
-	//! type switch for store checks
-	enum eResultCheckType { exists, notExists };
-
-	/*!	utility method to perform Checks in ctx stores
-		expected has the format
-		<PRE>
-		{
-			/SessionStore	{ .. }		# The whole content is compared to the ctxToCheck's SessionStore
-			/RoleStore	{ .. }			# The whole content is compared to the ctxToCheck's RoleStore
-			/TmpStore	{				# Each slot is compared to the slot with the same name
-				/Slot1	{ .. }			# in ctxToCheck's TmpStore
-				/Slot2	*
-			}
-		}</PRE>
-		\param expected Anything containing expected results
-		\param ctxToCheck contexts that supplies the SessionStore and TmpStore to be checked
-		\param testCaseName String that is printed with failure messages
-		\param rct result check type, either eResultCheckType::exists or eResultCheckType::notExists */
-	virtual void DoCheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct = exists);
-
-	//! Really compare the store using AnyUtils::AnyCompareEqual
-	void DoCheckStore(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', eResultCheckType rct = exists);
 
 	//! Hook that allows alteration of the stores as read from caseConfig
 	virtual void AlterTestStoreHook(Anything &testCase);

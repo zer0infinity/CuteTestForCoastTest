@@ -15,11 +15,8 @@
 
 //---- HTTPFlowControllerTest ----------------------------------------------------------
 //!TestCases description
-class HTTPFlowControllerTest : public ConfiguredActionTest
-{
+class HTTPFlowControllerTest: public ConfiguredActionTest {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	HTTPFlowControllerTest(TString tstrName);
@@ -29,13 +26,8 @@ public:
 	//! \param configFileName name of the tests config file
 	HTTPFlowControllerTest(TString tstrName, TString configFileName);
 
-	//!destroys the test case
-	~HTTPFlowControllerTest();
-
-	//--- public api
-
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	TString getConfigFileName();
 

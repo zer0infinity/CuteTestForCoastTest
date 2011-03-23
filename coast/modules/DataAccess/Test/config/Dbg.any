@@ -154,8 +154,8 @@
 		/MainSwitch		1100
 		/EnableAll	0
 		/DoTestWithContext	1000
-		/DoCheckStores	100
-		/DoCheckStore	100
+		/CheckStores	100
+		/CheckStore	100
 	}
 	/ParameterMapper {
 		/MainSwitch 1100
