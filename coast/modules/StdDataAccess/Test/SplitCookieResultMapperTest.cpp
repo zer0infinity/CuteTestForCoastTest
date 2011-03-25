@@ -11,7 +11,7 @@
 #include "TestSuite.h"
 #include "CacheHandler.h"
 #include "HierarchyInstallerWithConfig.h"
-#include "AnyUtils.h"
+#include "CheckStores.h"
 
 namespace {
 	bool setupMappers(ROAnything roaMapperConfigs) {
@@ -50,7 +50,15 @@ void SplitCookieResultMapperTest::ConfiguredTests()
 				t_assertm(rm->Put(putKeyName, value, ctx), caseName);
 				String outputLocation = rm->GetDestinationSlot(ctx);
 				outputLocation.Append(rm->getDelim()).Append(putKeyName);
-				assertAnyCompareEqual(caseConfig["Expected"], ctx.GetTmpStore(), caseName, rm->getDelim(), rm->getIndexDelim());
+
+				Anything anyFailureStrings;
+				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["Result"], ctx, caseName, Coast::TestFramework::exists);
+				// non-existence tests
+				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["NotResult"], ctx, caseName, Coast::TestFramework::notExists);
+				for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
+					t_assertm(false, anyFailureStrings[i].AsString().cstr());
+				}
+
 				rm->Finalize();
 			}
 		}

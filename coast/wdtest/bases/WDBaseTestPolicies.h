@@ -9,14 +9,11 @@
 #ifndef _WDBaseTestPolicies_H
 #define _WDBaseTestPolicies_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "AnythingConfigTestPolicy.h"
 #include "AppBooter.h"
 #include "Application.h"
 #include "WDModule.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- WDBaseTestPolicies ----------------------------------------------------------
 //! <B>really brief class description</B>

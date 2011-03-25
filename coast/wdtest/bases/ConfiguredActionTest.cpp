@@ -11,9 +11,8 @@
 #include "Page.h"
 #include "Server.h"
 #include "Role.h"
-#include "Action.h"
-#include "AnyUtils.h"
 #include "Timers.h"
+#include "CheckStores.h"
 #include <iostream>
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
@@ -104,83 +103,12 @@ void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, C
 
 	DoTestWithContext(testCase, testCaseName, ctx);
 	// do existence tests
-	CheckStores(testCase["Result"], ctx, testCaseName, exists);
+	Anything anyFailureStrings;
+	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["Result"], ctx, testCaseName, Coast::TestFramework::exists);
 	// non-existence tests
-	CheckStores(testCase["NotResult"], ctx, testCaseName, notExists);
-}
-
-void ConfiguredActionTest::CheckStoreContents(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot, char delimIdx, eResultCheckType rct)
-{
-	StartTrace(ConfiguredActionTest.CheckStoreContents);
-	if (rct == exists) {
-		String strTestPath = storeName;
-		strTestPath << "." << testCaseName;
-		assertAnyCompareEqual(anyMaster, anyInput, strTestPath, delimSlot, delimIdx);
-	} else if (rct == notExists) {
-		// anyInput == ctxToBeChecked
-		// anyMaster == notExpected
-		// ------------------------------------------------------------
-		// With this version, it is only possible to check for absence
-		// of named slots (cannot have unnamed slots so far).
-		// ------------------------------------------------------------
-
-		// generate list of paths and check for existence
-		Anything pathList;
-		GeneratePathList(pathList, anyMaster, "", delimSlot);
-
-		TraceAny(anyInput, "Store to be checked (" << storeName << "):");
-		TraceAny(pathList, "List of paths to check for non-existence:");
-
-		ROAnything luResult;
-		if ( !pathList.IsNull() ) {
-			for (long i = 0, sz = pathList.GetSize(); i < sz; ++i) {
-				if ( anyInput.LookupPath(luResult, pathList[i].AsCharPtr()) ) {
-					// error, if lookup succeeds
-					String strfail(testCaseName);
-					strfail << "\n\t" << "Slot [" << pathList[i].AsCharPtr() << "] should not exist in " << storeName << "!" ;
-					t_assertm(false, (const char *)strfail);
-				}
-			}
-		}
-	}
-}
-
-void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notExpected, String const & pathSoFar, char delimSlot)
-{
-	StartTrace(ConfiguredActionTest.GeneratePathList);
-
-	for (long i = 0, sz = notExpected.GetSize(); i < sz; ++i) {
-		String path(pathSoFar);
-		path << notExpected.SlotName(i);
-		if (notExpected[i].GetType() == AnyArrayType ) {
-			// continue recursively
-			ROAnything next(notExpected[i]);
-			path << delimSlot;
-			GeneratePathList(pathList, next, path, delimSlot);
-		} else {
-			// leaf reached, add path to list
-			pathList[pathList.GetSize()] = path;
-		}
-	}
-}
-
-void ConfiguredActionTest::CheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct)
-{
-	StartTrace(ConfiguredActionTest.CheckStores);
-	char delimSlot, delimIdx;
-	delimSlot = expected["Delim"].AsCharPtr(".")[0L];
-	delimIdx = expected["IndexDelim"].AsCharPtr(":")[0L];
-	if (expected.IsDefined("SessionStore") ) {
-		CheckStoreContents(ctxToCheck.GetSessionStore(), expected["SessionStore"], "SessionStore", testCaseName, delimSlot, delimIdx, rct);
-	}
-	if (expected.IsDefined("RoleStore") ) {
-		CheckStoreContents(ctxToCheck.GetRoleStoreGlobal(), expected["RoleStore"], "RoleStore", testCaseName, delimSlot, delimIdx, rct);
-	}
-	if (expected.IsDefined("Query") ) {
-		CheckStoreContents(ctxToCheck.GetQuery(), expected["Query"], "Query", testCaseName, delimSlot, delimIdx, rct);
-	}
-	if (expected.IsDefined("TmpStore") ) {
-		CheckStoreContents(ctxToCheck.GetTmpStore(), expected["TmpStore"], "TmpStore", testCaseName, delimSlot, delimIdx, rct);
+	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["NotResult"], ctx, testCaseName, Coast::TestFramework::notExists);
+	for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
+		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}
 }
 

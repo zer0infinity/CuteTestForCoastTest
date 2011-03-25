@@ -40,10 +40,12 @@
 					/^content	*
 				}
 			}
-			/Expected {
-				/CodeExample {
-					/content-type "text/html; charset=utf-8"
-					/content-length "4611"
+			/Result {
+				/TmpStore {
+					/CodeExample {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+					}
 				}
 			}
 		}
@@ -57,12 +59,14 @@
 					/^content	*
 				}
 			}
-			/Expected {
-				/CodeExample {
-					/content-type "text/html; charset=utf-8"
-					/content-length "4611"
-					/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
-					/CONTENT-LENGTH "4611; uppercase"
+			/Result {
+				/TmpStore {
+					/CodeExample {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
+						/CONTENT-LENGTH "4611; uppercase"
+					}
 				}
 			}
 		}
@@ -80,19 +84,21 @@
 					/"."		*			# catch all others and do default putting
 				}
 			}
-			/Expected {
-				/SomeWhere {
-					/CodeExample {
-						/connection "close"
-						/date "Thu, 11 Nov 2010 08:30:36 GMT"
-						/x-powered-by "ASP.NET"
-						/x-aspnet-version "2.0.50727"
-						/cache-control "private"
+			/Result {
+				/TmpStore {
+					/SomeWhere {
+						/CodeExample {
+							/connection "close"
+							/date "Thu, 11 Nov 2010 08:30:36 GMT"
+							/x-powered-by "ASP.NET"
+							/x-aspnet-version "2.0.50727"
+							/cache-control "private"
+						}
 					}
-				}
-				/CodeExample {
-					/content-type "text/html; charset=utf-8"
-					/content-length "4611"
+					/CodeExample {
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+					}
 				}
 			}
 		}
@@ -105,8 +111,10 @@
 					/.			*
 				}
 			}
-			/Expected {
-				/CodeExample %PseudoHTTPHeader
+			/Result {
+				/TmpStore {
+					/CodeExample %PseudoHTTPHeader
+				}
 			}
 		}
 		/RegexFieldsMapperNone {
@@ -117,7 +125,9 @@
 				/CodeExample {
 				}
 			}
-			/Expected {
+			/Result {
+				/TmpStore {
+				}
 			}
 		}
 		/RegexFieldsMapperAllWithoutSome {
@@ -130,16 +140,18 @@
 					/.				*
 				}
 			}
-			/Expected {
-				/CodeExample {
-					/connection "close"
-					/date "Thu, 11 Nov 2010 08:30:36 GMT"
-					/set-cookie "ASP.NET_SessionId=csjgcsewg42bva45tsexdu45; path=/; HttpOnly"
-					/cache-control "private"
-					/content-type "text/html; charset=utf-8"
-					/content-length "4611"
-					/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
-					/CONTENT-LENGTH "4611; uppercase"
+			/Result {
+				/TmpStore {
+					/CodeExample {
+						/connection "close"
+						/date "Thu, 11 Nov 2010 08:30:36 GMT"
+						/set-cookie "ASP.NET_SessionId=csjgcsewg42bva45tsexdu45; path=/; HttpOnly"
+						/cache-control "private"
+						/content-type "text/html; charset=utf-8"
+						/content-length "4611"
+						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
+						/CONTENT-LENGTH "4611; uppercase"
+					}
 				}
 			}
 		}

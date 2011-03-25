@@ -9,10 +9,8 @@
 #ifndef _ConfiguredActionTest_H
 #define _ConfiguredActionTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
-
-class Context;
+#include "Action.h"
 
 //---- ConfiguredActionTest ----------------------------------------------------------
 //! generic test case for configured action testing
@@ -124,32 +122,6 @@ public:
 	//--- public api
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//! helper method to generate a list of paths out of an anything
-	static void GeneratePathList(Anything &pathList, ROAnything &input, String const &pathSoFar, char delimSlot);
-
-	//! type switch for store checks
-	enum eResultCheckType { exists, notExists };
-
-	/*!	utility method to perform Checks in ctx stores
-		expected has the format
-		<PRE>
-		{
-			/SessionStore	{ .. }		# The whole content is compared to the ctxToCheck's SessionStore
-			/RoleStore	{ .. }			# The whole content is compared to the ctxToCheck's RoleStore
-			/TmpStore	{				# Each slot is compared to the slot with the same name
-				/Slot1	{ .. }			# in ctxToCheck's TmpStore
-				/Slot2	*
-			}
-		}</PRE>
-		\param expected Anything containing expected results
-		\param ctxToCheck contexts that supplies the SessionStore and TmpStore to be checked
-		\param testCaseName String that is printed with failure messages
-		\param rct result check type, either eResultCheckType::exists or eResultCheckType::notExists */
-	void CheckStores(ROAnything expected, Context &ctxToCheck, const char *testCaseName, eResultCheckType rct = exists);
-
-	//! Really compare the store using AnyUtils::AnyCompareEqual
-	void CheckStoreContents(ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', eResultCheckType rct = exists);
 
 protected:
 	/*!	Executes the testcase

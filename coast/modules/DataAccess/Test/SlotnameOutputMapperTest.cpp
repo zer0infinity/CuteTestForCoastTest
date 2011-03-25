@@ -9,26 +9,23 @@
 #include "SlotnameOutputMapperTest.h"
 #include "SlotnameOutputMapper.h"
 #include "TestSuite.h"
+#include "CheckStores.h"
 
 //---- SlotnameOutputMapperTest ----------------------------------------------------------------
-SlotnameOutputMapperTest::SlotnameOutputMapperTest(TString tname)
-	: ConfiguredActionTest(tname)
-{
+SlotnameOutputMapperTest::SlotnameOutputMapperTest(TString tname) :
+	ConfiguredActionTest(tname) {
 	StartTrace(SlotnameOutputMapperTest.SlotnameOutputMapperTest);
 }
 
-TString SlotnameOutputMapperTest::getConfigFileName()
-{
+TString SlotnameOutputMapperTest::getConfigFileName() {
 	return "SlotnameOutputMapperTestConfig";
 }
 
-SlotnameOutputMapperTest::~SlotnameOutputMapperTest()
-{
+SlotnameOutputMapperTest::~SlotnameOutputMapperTest() {
 	StartTrace(SlotnameOutputMapperTest.Dtor);
 }
 
-void SlotnameOutputMapperTest::BasicFunctionTest()
-{
+void SlotnameOutputMapperTest::BasicFunctionTest() {
 	StartTrace(SlotnameOutputMapperTest.BasicFunctionTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
@@ -36,11 +33,14 @@ void SlotnameOutputMapperTest::BasicFunctionTest()
 
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"].DeepClone(), ctx);
-	CheckStores(GetTestCaseConfig()["Result"], ctx, name());
+	Anything anyFailureStrings;
+	Coast::TestFramework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), Coast::TestFramework::exists);
+	for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
+		t_assertm(false, anyFailureStrings[i].AsString().cstr());
+	}
 }
 
-void SlotnameOutputMapperTest::OverwriteOrAppendTest()
-{
+void SlotnameOutputMapperTest::OverwriteOrAppendTest() {
 	StartTrace(SlotnameOutputMapperTest.OverwriteOrAppendTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
@@ -49,12 +49,15 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest()
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][0L].DeepClone(), ctx);
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][1L].DeepClone(), ctx);
-	CheckStores(GetTestCaseConfig()["Result"], ctx, name());
+	Anything anyFailureStrings;
+	Coast::TestFramework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), Coast::TestFramework::exists);
+	for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
+		t_assertm(false, anyFailureStrings[i].AsString().cstr());
+	}
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *SlotnameOutputMapperTest::suite ()
-{
+Test *SlotnameOutputMapperTest::suite() {
 	StartTrace(SlotnameOutputMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, SlotnameOutputMapperTest, BasicFunctionTest);
