@@ -22,8 +22,8 @@ void ConfigurableStoreResultMapper::DoGetDestinationAny(const char *key, Anythin
 	Anything anyConfig;
 	anyConfig["Store"] = Lookup("Store", "TmpStore");
 	anyConfig["Slot"] = path;
-	anyConfig["Delim"] = getDelim();
-	anyConfig["IndexDelim"] = getIndexDelim();
+	anyConfig["Delim"] = String().Append(getDelim());
+	anyConfig["IndexDelim"] = String().Append(getIndexDelim());
 
 	TraceAny(anyConfig, "StoreFinderConfig");
 	StoreFinder::Operate(ctx, targetAny, anyConfig);
