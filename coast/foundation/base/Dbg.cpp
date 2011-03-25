@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Dbg.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
@@ -18,7 +15,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 #ifdef COAST_TRACE

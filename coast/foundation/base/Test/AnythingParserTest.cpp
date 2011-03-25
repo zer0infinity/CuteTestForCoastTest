@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingParserTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "IFAObject.h"
@@ -21,7 +16,6 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
 
 //---- AnythingParserTest ---------------------------------------------------------
 AnythingParserTest::AnythingParserTest(TString tname) :
@@ -185,8 +179,8 @@ void  AnythingParserTest::scanAnything( Anything any0 )
 			break;
 
 			default: {
-				String str("???");
-				slotNm.Append( "???" );
+				String str("???");//lint !e585
+				slotNm.Append( "???" );//lint !e585
 				slotNm.Append( "; Value: " );
 				AnythingParserTest::anyOutput[ (const char *)slotNm ] = str;//"???";//String("???");
 			}
@@ -211,7 +205,7 @@ Anything AnythingParserTest::storeAndReload( Anything any )
 /*                         Tests von SimpleAny                                      */
 /*==================================================================================*/
 void AnythingParserTest::IntParseSimpleTypeLong(const String &inp, long exp)
-{
+{//lint !e578
 	Anything anyTest;
 
 	IStringStream is0(inp);
@@ -231,10 +225,10 @@ void AnythingParserTest::parseSimpleTypeLong ()
 	IntParseSimpleTypeLong("783051076", 	783051076L);
 
 	// test unsigned semantic for hex and oct
-	IntParseSimpleTypeLong("0x2eac6944",	(long)783051076UL);
-	IntParseSimpleTypeLong("05653064504", 	(long)783051076UL);
-	IntParseSimpleTypeLong("0xcffe007f", 	(long)3489529983UL);
-	IntParseSimpleTypeLong("031777400177", 	(long)3489529983UL);
+	IntParseSimpleTypeLong("0x2eac6944",	static_cast<long>(783051076UL));
+	IntParseSimpleTypeLong("05653064504", 	static_cast<long>(783051076UL));
+	IntParseSimpleTypeLong("0xcffe007f", 	static_cast<long>(3489529983UL));
+	IntParseSimpleTypeLong("031777400177", 	static_cast<long>(3489529983UL));
 
 	String input4 		= "9999999999999";
 	IStringStream is4(input4);
@@ -253,10 +247,9 @@ void AnythingParserTest::parseSimpleTypeLong ()
 	String inputx = "0xfffffffe";
 	IStringStream isx(inputx);
 	anyTest.Import( isx );
-	assertEqual(0xfffffffe, anyTest.AsLong(0));
+	assertEqual(0xfffffffe, static_cast<unsigned long>(anyTest.AsLong(0)));//lint !e569
 	t_assert( anyTest.GetType() == AnyLongType );
 	t_assert( anyTest.GetSize() == 1 );
-
 }
 
 void AnythingParserTest::parseSimpleTypeDouble ()
@@ -573,8 +566,8 @@ void AnythingParserTest::parseBinary()
 	input[27] = "[3]";
 	input[28] = "[[3;123]";
 	input[29] = "[3;   ]";
-	input[30] = "[3;\0x10123]";
-	input[31] = "[3;\0x13123]";
+	input[30] = "[3;\0""x10123]";//lint !e840
+	input[31] = "[3;\0""x13123]";//lint !e840
 	input[32] = "[2364663;3]";
 	input[33] = "[3;]]";
 
@@ -1226,7 +1219,7 @@ void AnythingParserTest::testObjectParsing() {
 	myObject aObj;
 	{
 		String buf("{/myObjectImpl &");
-		buf.Append((long)&aObj);
+		buf.Append((long)&aObj);//lint !e603
 		buf.Append("}");
 		std::cerr << "buf [" << buf << "]" << std::endl;
 		IStringStream is(buf);

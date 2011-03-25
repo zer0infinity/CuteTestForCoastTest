@@ -11,11 +11,6 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.nic_nac_project.lothar.sconsbuilder.SConsBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
 			<triggers>full,incremental,</triggers>
 			<arguments>
@@ -23,6 +18,16 @@
 		</buildCommand>
 		<buildCommand>
 			<name>ch.hsr.ifs.sconsolidator.Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.linticator.Linticator.lintConfigBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.linticator.Linticator.lintBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -35,5 +40,6 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>ch.hsr.ifs.sconsolidator.ExistingCodeNature</nature>
+		<nature>com.linticator.Nature</nature>
 	</natures>
 </projectDescription>

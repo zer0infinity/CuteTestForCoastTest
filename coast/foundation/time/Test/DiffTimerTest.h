@@ -9,10 +9,7 @@
 #ifndef _DiffTimerTest_H
 #define _DiffTimerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- DiffTimerTest ----------------------------------------------------------
 //!testcases for DiffTimer class

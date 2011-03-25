@@ -1,9 +1,5 @@
-//--- interface include --------------------------------------------------------
 #include "StringReverseIteratorTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
 #include "Dbg.h"
 
 void StringReverseIteratorTest::testEmptyStringBegin() {

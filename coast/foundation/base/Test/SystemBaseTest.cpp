@@ -6,25 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -----------------------------------------------------
 #include "SystemBaseTest.h"
-
-//--- module under test --------------------------------------------------------
-#include "SystemBase.h"
 
 using namespace Coast;
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used -------------------------------------------------
 #include "DiffTimer.h"
 #include "SystemLog.h"
-#include "AnyIterators.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <fcntl.h>
-#include <unistd.h>
 
 //---- SystemBaseTest --------------------------------------------------------
 SystemBaseTest::SystemBaseTest(TString tname)

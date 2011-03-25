@@ -6,18 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Resolver.h"
-
-//--- interface include --------------------------------------------------------
+#include "TestSuite.h"
 #include "ResolverTest.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- ResolverTest ------------------------------------------------------------
 ResolverTest::ResolverTest(TString tname) :

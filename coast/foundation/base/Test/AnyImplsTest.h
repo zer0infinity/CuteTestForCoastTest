@@ -9,8 +9,7 @@
 #ifndef _AnyImplsTest_H
 #define _AnyImplsTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- AnyImplsTest ----------------------------------------------------------
 //! <B>really brief class description</B>

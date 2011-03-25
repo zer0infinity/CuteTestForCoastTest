@@ -1,6 +1,4 @@
-//--- interface include --------------------------------------------------------
 #include "AnythingSTLTest.h"
-
 #include "TestSuite.h"
 
 AnythingSTLTest::AnythingSTLTest(TString tname)

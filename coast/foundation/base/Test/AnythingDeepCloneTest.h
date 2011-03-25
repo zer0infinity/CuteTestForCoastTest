@@ -9,10 +9,8 @@
 #ifndef _AnythingDeepCloneTest_H
 #define _AnythingDeepCloneTest_H
 
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 //---- AnythingDeepCloneTest -----------------------------------------------------------
 //!testcases for Anything

@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ROSimpleAnythingTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Anything.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "IFAObject.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 class DummyROIFAObj: public IFAObject

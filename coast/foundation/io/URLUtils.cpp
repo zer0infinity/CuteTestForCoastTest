@@ -6,18 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "URLUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Resolver.h"
 #include "Dbg.h"
 
 #include <cstring>
-#if !defined(WIN32)
-#include <ctype.h>
-#endif
 
 namespace Coast {
 	namespace URLUtils {

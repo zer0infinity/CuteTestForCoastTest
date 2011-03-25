@@ -12,7 +12,7 @@
 class String;
 class Anything;
 
-#include <time.h> // for LocalTime parameters struct tm
+#include <time.h> //lint !e451//lint !e537// for LocalTime parameters struct tm
 #if defined(WIN32)
 	#include <sys/types.h>
 #endif
@@ -35,7 +35,7 @@ class Anything;
 	#define	S_IWOTH		_S_IWRITE
 	#define	S_IROTH		_S_IREAD
 #else
-	#include <unistd.h>
+	#include <unistd.h>//lint !e537
 #endif
 
 namespace Coast {

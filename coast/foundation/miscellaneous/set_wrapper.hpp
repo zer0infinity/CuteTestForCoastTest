@@ -9,14 +9,12 @@
 #ifndef _set_wrapper_H
 #define _set_wrapper_H
 
-//---- baseclass include -------------------------------------------------
 #include "STLStorage.h"
 #include <set>
 #include <functional>
 #include "DummyMutex.h"
 #include "Anything.h"
 
-//---- forward declaration -----------------------------------------------
 class Anything;
 class LockUnlockEntry;
 

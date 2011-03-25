@@ -9,8 +9,7 @@
 #ifndef _ConnectorTest_H
 #define _ConnectorTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- ConnectorTest ----------------------------------------------------------
 //!testcases for Connector class

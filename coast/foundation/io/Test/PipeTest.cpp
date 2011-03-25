@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "Pipe.h"
-
-//--- interface include --------------------------------------------------------
 #include "PipeTest.h"
-
-//--- standard modules used ----------------------------------------------------
+#include "TestSuite.h"
+#include "Pipe.h"
 #include "Socket.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 
 #if defined(WIN32)
@@ -84,7 +75,7 @@ void PipeTest::simpleBlockingTest()
 		t_assert(pipi.IsReadyForWriting(0)); // now we should be able to write again
 		// write something
 		assertEqual(5L, (long)Socket::write(pipi.GetWriteFd(), "hallo", 5));
-	} else {
+	} else {//lint !e550
 		t_assertm(false, "couldn't create anonymous pipe");
 	}
 }

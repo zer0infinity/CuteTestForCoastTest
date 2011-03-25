@@ -9,10 +9,8 @@
 #ifndef _StringTokenizer2Test_H
 #define _StringTokenizer2Test_H
 
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
-#include "ITOString.h"
+#include "TestCase.h"//lint !e537
+#include "ITOString.h"//lint !e537
 
 //---- StringTokenizer -----------------------------------------------------------
 //!testcases for StringTokenizer2

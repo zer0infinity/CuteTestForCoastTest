@@ -9,10 +9,8 @@
 #ifndef _AnythingLookupTest_H
 #define _AnythingLookupTest_H
 
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 //---- AnythingLookupTest -----------------------------------------------------------
 //!testcases for Anything

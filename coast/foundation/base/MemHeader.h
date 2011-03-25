@@ -9,7 +9,7 @@
 #ifndef _MemHeader_H
 #define _MemHeader_H
 
-#include <sys/types.h>
+#include <sys/types.h>//lint !e537
 #if defined(WIN32)
 #include <windows.h>
 #endif

@@ -16,11 +16,7 @@
 
 using namespace Coast;
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
 
 //---- AnythingParserSemanticTest ---------------------------------------------------------
 AnythingParserSemanticTest::AnythingParserSemanticTest(TString tname) :
@@ -212,8 +208,8 @@ void  AnythingParserSemanticTest::scanAnything( Anything any0 )
 			break;
 
 			default: {
-				String str("???");
-				slotNm.Append( "???" );
+				String str("???");//lint !e585
+				slotNm.Append( "???" );//lint !e585
 				slotNm.Append( "; Value: " );
 				AnythingParserSemanticTest::anyOutput[ (const char *)slotNm ] = str;//"???";//String("???");
 			}

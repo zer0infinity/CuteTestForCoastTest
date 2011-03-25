@@ -9,10 +9,7 @@
 #ifndef _Resolver_H
 #define _Resolver_H
 
-//---- baseclass include -------------------------------------------------
-
-//---- forward declaration -----------------------------------------------
-#include "ITOString.h"
+#include "ITOString.h"//lint !e537
 
 namespace {
 	static const String defaultIP("127.0.0.1");

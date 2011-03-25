@@ -10,7 +10,6 @@
 #define _ConversionUtils_H
 
 #include "foundation.h"
-
 #include "ITOString.h"
 #include "Dbg.h"
 #include <iostream>
@@ -26,10 +25,10 @@ namespace ConversionUtils
 	inline void GetValueFromBuffer(const unsigned char *pBuf, valueType &lValue, OrderType order = eLSB2MSB)
 	{
 		StartTrace(ConversionUtils.GetValueFromBuffer);
-		long lValSize = sizeof(valueType);
-		Trace("value size:" << lValSize);
+		size_t lValSize = sizeof(valueType);
+		Trace("value size:" <<  static_cast<long>(lValSize));
 		lValue = 0;
-		for (long lIdx = 0; lIdx < lValSize; ++lIdx) {
+		for (size_t lIdx = 0; lIdx < lValSize; ++lIdx) {
 			switch ( order ) {
 				case eMSB2LSB:
 					Trace("MSB2LSB mode");
@@ -52,8 +51,8 @@ namespace ConversionUtils
 	{
 		StartTrace1(ConversionUtils.GetValueFromBuffer, "Offset:" << lOffset << " order is:" << (long)order);
 		// ensure the buffer is big enough to prevent a buffer overflow
-		const long lValSize = sizeof(valueType);
-		if ( raBuffer.Length() >= ( lOffset + lValSize ) ) {
+		const size_t lValSize = sizeof(valueType);
+		if ( static_cast<size_t>(raBuffer.Length()) >= ( lOffset + lValSize ) ) {
 			const char *pBuf = (const char *)raBuffer;
 			Trace("initial address:" << (long)pBuf);
 			pBuf += lOffset;
@@ -66,7 +65,7 @@ namespace ConversionUtils
 	template<typename valueType>
 	inline std::istream &GetValueFromStream(std::istream &stream, valueType &lValue, OrderType order = eLSB2MSB)
 	{
-		const long lValSize = sizeof(valueType);
+		const size_t lValSize = sizeof(valueType);
 		char pBuf[sizeof(valueType)];
 		if ( !stream.read(pBuf, lValSize).eof() ) {
 			GetValueFromBuffer((unsigned char *)pBuf, lValue, order);

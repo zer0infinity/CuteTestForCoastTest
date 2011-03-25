@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnyUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "Dbg.h"
@@ -236,6 +233,7 @@ long AnyUtils::DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, boo
 							if ( !bTest ) {
 								Trace("Array::unnamed: merging data");
 								long lMatch = DoAnyMerge(anyMaster[lMaxIdx], roaToMerge[i], bOverwriteSlots, bTest, delimSlot, delimIdx);
+								(void)lMatch;
 								Trace("Array:unnamed: match was:" << lMatch);
 							}
 						} else {

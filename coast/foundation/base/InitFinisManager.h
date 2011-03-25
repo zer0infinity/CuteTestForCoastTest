@@ -9,8 +9,6 @@
 #ifndef _InitFinisManager_H
 #define _InitFinisManager_H
 
-//---- baseclass include -------------------------------------------------
-
 //---- InitFinisManager ----------------------------------------------------------
 //! support class for initializing/cleaning things up in a deterministic sequence
 /*!

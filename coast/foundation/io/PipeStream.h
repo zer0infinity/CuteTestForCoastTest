@@ -9,7 +9,7 @@
 #ifndef _PipeStream_H
 #define _PipeStream_H
 
-#include "ITOString.h"
+#include "ITOString.h"//lint !e537
 
 #include <cstdio>
 #include <iostream>
@@ -60,7 +60,6 @@ protected: // seekxxx are protected in the std..
 	//! standard iostream behavior, adjust put or get position relatively
 	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = std::ios::in | std::ios::out);
 
-	PipeStreamBuf() { }
 	/*! no buffer setting needed, because we carry our own buffer, a String object */
 	std::streambuf *setbuf(char *, int) {
 		return this;
@@ -139,7 +138,7 @@ public:
 
 	virtual ~iosCoastPipe() { }
 
-	PipeStreamBuf *rdbuf()  {
+	PipeStreamBuf *rdbuf()  {//lint !e1511
 		return &fPipeBuf;
 	}
 

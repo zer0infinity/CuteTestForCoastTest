@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DiffTimer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "Dbg.h"
 
@@ -25,7 +22,8 @@ HRTIME  gettimes()
 
 //---- DiffTimer ---------------------------------------------------------------
 DiffTimer::DiffTimer(DiffTimer::eResolution resolution)
-	: fResolution(resolution)
+	: fStart(0),
+	  fResolution(resolution)
 {
 	StartTrace(DiffTimer.DiffTimer);
 	Trace("TicksPerSecond(): " << TicksPerSecond() << " fResolution: " << fResolution);
@@ -37,7 +35,8 @@ DiffTimer::DiffTimer(DiffTimer::eResolution resolution)
 }
 
 DiffTimer::DiffTimer(const DiffTimer &dt)
-	: fResolution(dt.fResolution)
+	: fStart(dt.fStart),
+	  fResolution(dt.fResolution)
 {
 	StartTrace(DiffTimer.DiffTimer);
 	Trace("TicksPerSecond(): " << TicksPerSecond() << " fResolution: " << fResolution);
@@ -51,9 +50,10 @@ DiffTimer::DiffTimer(const DiffTimer &dt)
 DiffTimer &DiffTimer::operator=(const DiffTimer &dt)
 {
 	StartTrace(DiffTimer.operator = );
+	fStart = dt.fStart;
 	fResolution = dt.fResolution;
 	return *this;
-}
+}//lint !e1529
 
 DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, DiffTimer::eResolution resolution)
 {

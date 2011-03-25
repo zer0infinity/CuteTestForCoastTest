@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ObjectListTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ObjectList.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "ITOString.h"
-#include "Dbg.h"
+#include "Dbg.h"//lint !e537
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -93,7 +85,7 @@ void ObjectListTest::DtorTest()
 			aStringList.SignalShutdown(true);
 		}
 		TraceMemDelta("after destruction of list");
-	}
+	}//lint !e429 // destructive shutdown should take care of deleting pointers
 	{
 		TraceMemDelta("before allocation");
 		const long lCount = 10;

@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "GenericXMLParser.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "StringStream.h"
 #include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
-#include <ctype.h>
 
 //---- GenericXMLParser ----------------------------------------------------------------
 Anything GenericXMLParser::Parse(std::istream &reader, const char *filename, long startline, Allocator *a)
@@ -170,7 +163,7 @@ Anything GenericXMLParser::ParseCommentCdataOrDtd(bool withindtd)
 				key.Append(ParseName());
 				break;
 			}
-		default:
+		default://lint !e616
 		error: {
 				String msg("unexpected character in <! element: ");
 				msg.Append(char(c));
@@ -521,16 +514,16 @@ bool GenericXMLParser::ParseTag(String &tag, Anything &tagAttributes)
 		switch (c) {
 			case '>': // done with tag
 				c = Get();
-				return true;
+				return true;//lint !e438
 			case '/': // an empty tag? i.e. <br />
 				c = Get();
 				if ('>' == Peek()) {
 					c = Get();
-					return false;
+					return false;//lint !e438
 				}
 				// an error occured, ignore '/' silently
 				PutBack(c);
-			default: {
+			default: {//lint !e616
 				String name;
 				String value;
 				if (ParseAttribute(name, value)) {
@@ -566,6 +559,7 @@ bool GenericXMLParser::ParseAttribute(String &name, String &value)
 		return false;
 	}
 	c = Get();
+	(void)c;
 	SkipWhitespace();
 	value = ParseValue();
 	return true;

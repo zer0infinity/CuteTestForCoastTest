@@ -6,12 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SegStoreAllocator.h"
-//--- c-library modules used ---------------------------------------------------
 
 //---- SegStoreAllocator ----------------------------------------------------------
-
 void* SegStoreAllocator::Alloc(size_t sz) {
 	AllocPoolMapping::iterator it;
 	CurrentPoolTypePtr aPool;

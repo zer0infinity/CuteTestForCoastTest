@@ -6,11 +6,4 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-
-//--- interface include --------------------------------------------------------
 #include "STLStorage.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-library modules used ---------------------------------------------------

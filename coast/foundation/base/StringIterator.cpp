@@ -41,7 +41,7 @@ String_const_iterator& String_const_iterator::operator=(String_const_iterator co
 	 const_cast<String*>(&a)->operator=(r.a);
 	 position = r.position;
 	 return *this;
-}
+}//lint !e1529
 
 bool String_const_iterator::operator==(const String_const_iterator &r) const {
 	return a == r.a && position == r.position;

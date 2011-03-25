@@ -9,8 +9,7 @@
 #ifndef _TimeStamp_H
 #define _TimeStamp_H
 
-#include "ITOString.h"
-#include <time.h>
+#include "ITOString.h"//lint !e537
 
 //---- TimeStamp ----------------------------------------------------------
 //! Timestamps as used by Frontdoor with external representation

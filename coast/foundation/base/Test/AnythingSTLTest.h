@@ -1,8 +1,8 @@
 #ifndef AnythingSTLTest_H
 #define AnythingSTLTest_H
 
-#include "TestCase.h"
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 class AnythingSTLTest : public TestFramework::TestCase
 {

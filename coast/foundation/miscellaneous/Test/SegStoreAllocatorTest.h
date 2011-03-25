@@ -8,10 +8,7 @@
 #ifndef _SegStoreAllocatorTest_H
 #define _SegStoreAllocatorTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
+#include "TestCase.h"//lint !e537
 
 //---- SegStoreAllocatorTest ----------------------------------------------------------
 //!TestCases for the SegStoreAllocatorTest class

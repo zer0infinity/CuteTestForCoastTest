@@ -9,7 +9,6 @@
 #ifndef _DummyMutex_H
 #define _DummyMutex_H
 
-//---- forward declaration -----------------------------------------------
 class Allocator;
 class DummyCondition;
 

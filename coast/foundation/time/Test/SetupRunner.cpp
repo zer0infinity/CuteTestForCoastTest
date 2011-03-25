@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- test cases -------------------------------------------------------------
 #include "DiffTimerTest.h"
 #include "TimeStampTest.h"
 

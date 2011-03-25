@@ -9,10 +9,8 @@
 #ifndef _AcceptorTest_H
 #define _AcceptorTest_H
 
-//---- TestFramework include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
-//---- forward declaration -----------------------------------------------
 class Socket;
 
 //---- AcceptorTest ----------------------------------------------------------

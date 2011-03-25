@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Socket.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "SystemLog.h"
 #include "Resolver.h"
@@ -59,6 +56,7 @@ Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long time
 	, fDoClose(doClose)
 	, fClientInfo(clientInfo)
 	, fTimeout(timeout)
+	, fHadTimeout(false)
 	, fAllocator((a) ? a : Coast::Storage::Global())
 {
 	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << (long)fAllocator << "]");
@@ -445,7 +443,6 @@ bool EndPoint::BindToAddress(String &srcIpAdr, long srcPort)
 				return false;
 			}
 		}
-		srcPort = GetBoundPort();
 	}
 	return true;
 }
@@ -758,7 +755,6 @@ class CallBackSynchronizer
 {
 public:
 	CallBackSynchronizer(AcceptorCallBack *ac) : fCallBack(ac) { }
-	~CallBackSynchronizer()	{ }
 
 	void Wait() {
 		if (fCallBack) {
@@ -789,7 +785,7 @@ Acceptor::Acceptor(const char *ipadress, long port, long backlog, AcceptorCallBa
 Acceptor::~Acceptor()
 {
 	StartTrace(Acceptor.Dtor);
-	StopAcceptLoop();
+	Acceptor::StopAcceptLoop();
 	if (fCallBack) 		{
 		delete fCallBack;
 		fCallBack = 0;

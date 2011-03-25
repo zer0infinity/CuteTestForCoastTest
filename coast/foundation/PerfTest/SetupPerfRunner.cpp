@@ -6,17 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
-
-//--- test cases -------------------------------------------------------------
 #include "AnythingPerfTest.h"
 #include "StringPerfTest.h"
 
 //--- standard modules used ----------------------------------------------------
 
 void setupRunner(TestRunner &runner)
-{
+{//lint !e14
 	ADD_SUITE(runner, StringPerfTest);
 	ADD_SUITE(runner, AnythingPerfTest);
 }

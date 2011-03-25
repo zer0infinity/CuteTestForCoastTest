@@ -9,26 +9,17 @@
 #ifndef _STLStorage_H
 #define _STLStorage_H
 
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
 #include <cstring>
 #include <cstdio>
-#include <exception>
-
-// std::numeric_limits
 #include <boost/limits.hpp>
-// new, std::bad_alloc
-#include <new>
-
-// boost::singleton_pool
 #include <boost/pool/pool.hpp>
-#include <boost/detail/workaround.hpp>
 #include <boost/intrusive_ptr.hpp>
 
 // The following code will be put into Boost.Config in a later revision
 #if defined(_RWSTD_VER) || defined(__SGI_STL_PORT) || \
-    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
+    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) //lint !e514
 #define BOOST_NO_PROPER_STL_DEALLOCATE
 #endif
 
@@ -82,7 +73,7 @@ namespace STLStorage
 		class fAllocatorNotInitialized : public std::exception
 		{
 		public:
-			virtual const char *what() const throw() {
+			virtual const char *what() const throw() { //lint !e1526
 				static const char pMsg[] = "FATAL: fAllocator passed is NULL!!";
 				SYSERROR(pMsg);
 				return pMsg;
@@ -148,7 +139,7 @@ namespace STLStorage
 		// allocate but don't initialize num elements of type T
 		pointer allocate (size_type num, const void* = 0) {
 			// print message and allocate memory with global new
-			_StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << (long)sizeof(T) << " but no initialization");
+			_StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << sizeof(T) << " but no initialization");
 			pointer ret = (pointer)fAllocator->Calloc(num, sizeof(T));
 			if ( ret == NULL ) {
 				static char pMsg[255] = { 0 };
@@ -220,7 +211,7 @@ namespace STLStorage
 			, fNextSz(nnext_size)
 			, fpPool(0)
 			, fOtherPools() {
-			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Coast::Storage::Current());
+			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << sizeof(int_pool_type) << " @" << (long)this, Coast::Storage::Current());
 			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
 			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
 		}

@@ -9,8 +9,7 @@
 #ifndef _DbgTest_H
 #define _DbgTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- DbgTest ----------------------------------------------------------
 //!testcases for Tracer class

@@ -9,10 +9,9 @@
 #ifndef _StringTestExtreme_h_
 #define _StringTestExtreme_h_
 
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
+#include "ITOString.h"//lint !e537
 
-#include "ITOString.h"
-#include <string>
 
 //---- StringTestExtreme -----------------------------------------------------------
 //!testcases for String

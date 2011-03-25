@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "DiffTimer.h"
-
-//--- interface include --------------------------------------------------------
 #include "DiffTimerTest.h"
-
-//--- standard modules used ----------------------------------------------------
+#include "TestSuite.h"
+#include "DiffTimer.h"
 #include "Dbg.h"
 #include "SystemBase.h"
 
@@ -76,10 +69,10 @@ void DiffTimerTest::DiffTest()
 
 	DiffTimer::eResolution resolution( DiffTimer::eMilliseconds );
 	DiffTimer dt(resolution); // milisecond resolution
-	const HRTIME wait = 200L; //one fifth of a second, not only one twentieth
-	t_assertm(System::MicroSleep(wait * resolution), "oops, interrupted"); // >= 50 miliseconds
-	HRTIME result = dt.Diff() - wait;
-	t_assertm( (result < 0 ? - result : result) <= wait / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << static_cast<long>(result)));
+	const HRTIME waitTime = 200L; //one fifth of a second, not only one twentieth
+	t_assertm(System::MicroSleep(waitTime * resolution), "oops, interrupted"); // >= 50 miliseconds
+	HRTIME result = dt.Diff() - waitTime;
+	t_assertm( (result < 0 ? - result : result) <= waitTime / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << static_cast<long>(result)));
 	dt = DiffTimer(DiffTimer::eSeconds);
 	t_assertm(System::MicroSleep(600 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();

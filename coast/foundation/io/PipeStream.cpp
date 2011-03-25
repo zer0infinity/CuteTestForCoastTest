@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PipeStream.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "Pipe.h"
@@ -49,6 +46,7 @@ PipeStreamBuf::PipeStreamBuf(Pipe *myPipe, long timeout, long sockbufsz, int mod
 	: fReadBufStorage(mode &std::ios::in ? sockbufsz : 0L)
 	, fWriteBufStorage(mode &std::ios::out ? sockbufsz : 0L)
 	, fPipe(myPipe)
+	, fTimeout(0)
 	, fReadCount(0)
 	, fWriteCount(0)
 {
@@ -65,10 +63,11 @@ PipeStreamBuf::PipeStreamBuf(Pipe *myPipe, long timeout, long sockbufsz, int mod
 PipeStreamBuf::PipeStreamBuf(const PipeStreamBuf &ssbuf)
 	: fReadBufStorage(ssbuf.fReadBufStorage.Capacity())
 	, fWriteBufStorage(ssbuf.fWriteBufStorage.Capacity())
-	, fPipe(ssbuf.fPipe)
+	, fPipe(ssbuf.fPipe)//lint !e1554
+	, fTimeout(ssbuf.fTimeout)
 	, fReadCount(ssbuf.fReadCount)
 	, fWriteCount(ssbuf.fWriteCount)
-{
+{//lint !e1538
 	StartTrace1(PipeStreamBuf.PipeStreamBuf, "copy");
 	int mode = 0;
 	if (fReadBufStorage.Capacity() > 0) {
@@ -78,7 +77,7 @@ PipeStreamBuf::PipeStreamBuf(const PipeStreamBuf &ssbuf)
 		mode |= std::ios::out;
 	}
 	xinit();
-}
+}//lint !e1566//lint !e550//lint !e438
 
 void PipeStreamBuf::xinit()
 {
@@ -91,10 +90,10 @@ void PipeStreamBuf::xinit()
 PipeStreamBuf::~PipeStreamBuf()
 {
 	StartTrace(PipeStreamBuf.~PipeStreamBuf);
-	sync(); // clear the buffer
+	PipeStreamBuf::sync(); // clear the buffer
 	setg(0, 0, 0);
 	setp(0, 0);
-}
+}//lint !e1579
 
 int PipeStreamBuf::overflow( int c )
 {
@@ -143,9 +142,8 @@ int PipeStreamBuf::sync()
 {
 	StartTrace(PipeStreamBuf.sync);
 	long count;
-	long written = 0;
 
-	if ( ( (count = pptr() - pbase()) > 0 ) && ( written = DoWrite(pbase(), count)) == EOF ) {
+	if ( ( (count = pptr() - pbase()) > 0 ) && ( DoWrite(pbase(), count)) == EOF ) {
 		return (EOF);
 	}
 	if (pptr()) {
@@ -183,13 +181,13 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 			do {
 				nout = Socket::write(wfd, (char *)bufPtr + bytesSent, bytes2Send - bytesSent);
 				Trace("bytes written:" << nout);
-			} while (nout < 0 && System::SyscallWasInterrupted() && fPipe->IsReadyForWriting());
+			} while (nout < 0 && System::SyscallWasInterrupted() && fPipe->IsReadyForWriting());//lint !e613
 			if (nout > 0) {
 				bytesSent += nout;
 				Trace("sent:" << bytesSent << " bytes");
 				continue;
 			}
-			if (fPipe->HadTimeout()) {
+			if (fPipe->HadTimeout()) {//lint !e613
 				Ios->clear(std::ios::failbit);
 				Trace("timeout");
 				break;
@@ -262,6 +260,7 @@ std::ostream  &operator<<(std::ostream &os, PipeStreamBuf *ssbuf)
 
 		os.flush();
 		Trace("total bytes read: " << totBytesRead);
+		(void) totBytesRead;
 	}
 	return os;
 }

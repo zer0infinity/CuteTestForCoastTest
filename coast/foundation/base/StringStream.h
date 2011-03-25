@@ -10,7 +10,7 @@
 #define _STRINGSTREAM_H
 
 #include "ITOTypeTraits.h"
-#include "ITOString.h"
+#include "ITOString.h"//lint !e537
 
 #define SS_TRACE(msg)
 
@@ -205,6 +205,6 @@ namespace NSStringStream
 		\param lBytes2Copy number of bytes to copy per call
 		\return true if copying was successful. If copiedBytes is lower than lBytes2Copy and the call returned true everything was read from streamSrc (eof) and copied into streamDest. If copiedBytes is equal to lBytes2Copy and the call returned true the function should be called again to consume remaining bytes from streamSrc. False indicates either an error condition on streamSrc or streamDest. */
 	bool PlainCopyStream2Stream(std::istream *streamSrc, std::ostream &streamDest, long &copiedBytes, long lBytes2Copy = 2048L);
-};
+}//lint !e19
 
 #endif

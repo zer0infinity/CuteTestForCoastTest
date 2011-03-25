@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SocketStream.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "Dbg.h"
@@ -18,7 +15,6 @@ using namespace Coast;
 
 //#define STREAM_TRACE
 
-//--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/socket.h> // used for send and recv
 #include <errno.h>
@@ -52,7 +48,7 @@ long SocketStreamBuf::GetTimeout()
 }
 
 //---- TimeoutModifier -------------------------------------------------------------------
-TimeoutModifier::TimeoutModifier(SocketStream *Ios, long timeout) : fStream(Ios)
+TimeoutModifier::TimeoutModifier(SocketStream *Ios, long timeout) : fOriginalTimeout(0), fStream(Ios)
 {
 	if (fStream) {
 		fOriginalTimeout = fStream->rdbuf()->GetTimeout();
@@ -82,10 +78,10 @@ SocketStreamBuf::SocketStreamBuf(Socket *psocket, long timeout, long sockbufsz, 
 SocketStreamBuf::SocketStreamBuf(const SocketStreamBuf &ssbuf)
 	: fReadBufStorage(ssbuf.fReadBufStorage.Capacity())
 	, fWriteBufStorage(ssbuf.fWriteBufStorage.Capacity())
-	, fSocket(ssbuf.fSocket)
+	, fSocket(ssbuf.fSocket)//lint !e1554
 	, fReadCount(ssbuf.fReadCount)
 	, fWriteCount(ssbuf.fWriteCount)
-{
+{//lint !e1538
 	int mode = 0;
 	if (fReadBufStorage.Capacity() > 0) {
 		mode |= std::ios::in;
@@ -94,7 +90,7 @@ SocketStreamBuf::SocketStreamBuf(const SocketStreamBuf &ssbuf)
 		mode |= std::ios::out;
 	}
 	xinit();
-}
+}//lint !e550//lint !e438
 
 void SocketStreamBuf::xinit()
 {
@@ -105,10 +101,10 @@ void SocketStreamBuf::xinit()
 
 SocketStreamBuf::~SocketStreamBuf()
 {
-	sync(); // clear the buffer
+	SocketStreamBuf::sync(); // clear the buffer
 	setg(0, 0, 0);
 	setp(0, 0);
-}
+}//lint !e1579
 
 int SocketStreamBuf::overflow( int c )
 {
@@ -195,28 +191,27 @@ void SocketStreamBuf::AddWriteCount(long bytes)
 long SocketStreamBuf::DoWrite(const char *buf, long len)
 {
 	long bytesSent = 0;
-
 	std::iostream *Ios = fSocket ? fSocket->GetStream() : 0; // neeed for errorhandling
 
-	while (len > bytesSent &&  Ios && Ios->good()) {
+	while (len > bytesSent && Ios && Ios->good()) {
 		long nout = 0;
-		if ( fSocket->IsReadyForWriting() ) {
+		if ( fSocket->IsReadyForWriting() ) {//lint !e613
 			do {
-				nout = send(fSocket->GetFd(), (char *)buf + bytesSent, len - bytesSent, 0);
+				nout = send(fSocket->GetFd(), (char *)buf + bytesSent, len - bytesSent, 0);//lint !e1773//lint !e613
 			} while (nout < 0 && System::SyscallWasInterrupted());
 			if (nout > 0) {
 				bytesSent += nout;
 				continue;
 			}
-		} else if (fSocket->HadTimeout()) {
+		} else if (fSocket->HadTimeout()) {//lint !e613
 			Ios->clear(std::ios::failbit);
 			break;
 		}
 		String logMsg("socket on send: ");
-		logMsg << fSocket->GetFd()
+		logMsg << fSocket->GetFd()//lint !e613
 			   << " failed - socket error number "
 			   << (long) SOCKET_ERROR
-			   << " <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
+			   << " <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;//lint !e613
 
 		SystemLog::Error(logMsg);
 		Ios->clear(std::ios::badbit);

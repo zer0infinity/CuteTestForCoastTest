@@ -170,7 +170,7 @@ protected:
 		\return EOF if no more characters for input available = EOF reached */
 	virtual int underflow() {
 		if (gptr() < egptr()) {
-			return ZAPEOF(*gptr());    // we still got something, false alarm
+			return ZAPEOF(*gptr());    //lint !e666// we still got something, false alarm
 		}
 		return EOF; // we never handle underflow, because our buffer is the String content
 	}
@@ -414,7 +414,7 @@ public:
 
 	/*! reveal underlying streambuf implementation
 		\return underlying streambuf */
-	StreamBufTypePtr rdbuf()  {
+	StreamBufTypePtr rdbuf()  {//lint !e1511
 		return &fSSBuf;
 	}
 

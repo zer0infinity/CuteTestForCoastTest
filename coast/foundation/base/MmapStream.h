@@ -185,7 +185,7 @@ public:
 		setstate(std::ios::eofbit);
 	}
 	//!let streambuf leak
-	MmapStreamBuf *rdbuf()  {
+	MmapStreamBuf *rdbuf()  {//lint !e1511
 		return &fMmapBuf;
 	}
 

@@ -9,7 +9,7 @@
 #ifndef _StrSpecialTest_h_
 #define _StrSpecialTest_h_
 
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- StrSpecialTest -----------------------------------------------------------
 //!some special tests for String

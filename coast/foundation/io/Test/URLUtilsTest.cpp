@@ -6,23 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -----------------------------------------------------
 #include "URLUtilsTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "URLUtils.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "Resolver.h"
 #include <iostream>
 
 namespace {
 	void Dump(std::ostream &os, const Anything &data, const String &str) {
-		if (TriggerEnabled(URLUtilsTest.Dump)) {
+		if (TriggerEnabled(URLUtilsTest.Dump)) {//lint !e506
 			os << std::endl << "----------------------------------" << std::endl << "Input: " << str << std::endl;
 			data.PrintOn(os);
 			os << std::endl;

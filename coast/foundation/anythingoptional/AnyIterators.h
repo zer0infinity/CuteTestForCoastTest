@@ -9,12 +9,9 @@
 #ifndef _AnyIterators_H
 #define _AnyIterators_H
 
-//---- baseclass include -------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
 #include "ITOTypeTraits.h"
-
-//---- forward declaration -----------------------------------------------
 
 namespace AnyExtensions
 {

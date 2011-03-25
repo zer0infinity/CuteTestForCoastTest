@@ -9,8 +9,7 @@
 #ifndef _GenericXMLParserTest_H
 #define _GenericXMLParserTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- GenericXMLParserTest ----------------------------------------------------------
 //! <B>really brief class description</B>

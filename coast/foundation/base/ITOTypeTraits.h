@@ -9,7 +9,6 @@
 #ifndef _ITOTypeTraits_H
 #define _ITOTypeTraits_H
 
-//---- standard-module include ----------------------------------------------
 #if defined(USE_TR1)
 #include <tr1/type_traits>
 namespace boost_or_tr1 = std::tr1;
@@ -18,7 +17,6 @@ namespace boost_or_tr1 = std::tr1;
 namespace boost_or_tr1 = std;
 #else
 #include <boost/type_traits.hpp>
-#include <boost/mpl/if.hpp>
 namespace boost_or_tr1 = boost;
 #endif
 
@@ -36,7 +34,7 @@ namespace Coast
 
 		template <typename T>
 		class TypeTraits
-		{
+		{//lint !e578
 		private:
 			template <class U> struct PointerTraits {
 				enum { result = false };
@@ -138,6 +136,6 @@ namespace Coast
 			typedef typename ConstCorrectRef2PtrGetter< typename boost_or_tr1::remove_const<T>::type >::Result ConstCorrectRef2PtrType;
 		};
 	}
-};
+}//lint !e19
 
 #endif

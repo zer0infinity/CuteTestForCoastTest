@@ -9,12 +9,9 @@
 #ifndef _AnythingConfigTestPolicy_H
 #define _AnythingConfigTestPolicy_H
 
-//---- baseclass include -------------------------------------------------
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "Dbg.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- AnythingConfigTestPolicy ----------------------------------------------------------
 //! <B>really brief class description</B>

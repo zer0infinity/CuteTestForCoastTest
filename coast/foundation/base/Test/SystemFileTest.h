@@ -9,8 +9,7 @@
 #ifndef SYSTEMFILETEST_H_
 #define SYSTEMFILETEST_H_
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 #include "boost/function.hpp"
 
 //---- SystemFileTest ----------------------------------------------------------

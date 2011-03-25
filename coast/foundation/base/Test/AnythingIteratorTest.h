@@ -1,8 +1,8 @@
 #ifndef AnythingIteratorTest_H
 #define AnythingIteratorTest_H
 
-#include "TestCase.h"
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 class AnythingIteratorTest : public TestFramework::TestCase
 {

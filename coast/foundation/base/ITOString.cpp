@@ -6,17 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface
 #include "ITOString.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "InitFinisManagerFoundation.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#include <ctype.h>
 
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
@@ -165,7 +159,8 @@ String::~String()
 		fAllocator->Free(GetImpl());
 		fStringImpl = 0;
 	}
-}
+}//lint !e1579
+
 // assignment operators are asymmetric !!!
 String &String::operator= (const char *s)
 {
@@ -183,7 +178,7 @@ String &String::operator= (const String &s)
 	}
 	// if we are already empty do a nop
 	return *this;
-}
+}//lint !e1529
 
 void String::Set(long start, const char *s, long len)
 /* in: start: at this position we start to copy the contents of s
@@ -231,7 +226,7 @@ note: if start > fLength then the new buffer will contain undefined
 				long oldLength = oldImpl->fLength;
 				long tocopy = (start > oldLength) ? oldLength : start;
 				if (tocopy) {
-					memcpy(GetContent(), oldImpl->Content(), tocopy);    //PS to be tested
+					memcpy(GetContent(), oldImpl->Content(), tocopy);  //lint !e671 //PS to be tested
 				}
 			}
 		} else {
@@ -686,10 +681,10 @@ String& String::TrimWhitespace()
 	return *this;
 }
 
-void String::Reserve(long minreserve)
 /* in: minreserve: minimal reserve (GetCapacity()-fLength) after this operation
  what: adjusts capacity such that at least minreserve bytes are available
 */
+void String::Reserve(long minreserve)
 {
 	Set(Length(), 0, ( minreserve > 0 ) ? minreserve : 0);
 }
@@ -1357,7 +1352,7 @@ std::istream &operator>>(std::istream &is, String &s)
 	if (is.good() && s.GetImpl()) {
 		// sanity checks
 		is >> std::ws; // skips whitespace
-		while ((aChar = is.get()) != EOF) {
+		while ((aChar = is.get()) != EOF) {//lint !e583
 			if (isspace(aChar)) {
 				is.putback(aChar);
 				break;
@@ -1413,7 +1408,7 @@ std::ostream &operator<<(std::ostream &os, const String &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while ( --padlen >= 0 ) {
+		while ( --padlen >= 0 ) {//lint !e568//lint !e685
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour

@@ -9,8 +9,8 @@
 #ifndef _AnythingParserSemanticTest_h_
 #define _AnythingParserSemanticTest_h_
 
-#include "TestCase.h"
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 //---- AnythingParserSemanticTest -----------------------------------------------------------
 //!testcases for AnythingParser
 class AnythingParserSemanticTest : public TestFramework::TestCase

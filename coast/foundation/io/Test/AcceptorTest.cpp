@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "Socket.h"
-
-//--- interface include --------------------------------------------------------
 #include "AcceptorTest.h"
+#include "TestSuite.h"
+#include "Socket.h"
 
 //--- standard modules used ----------------------------------------------------
 
@@ -44,14 +39,13 @@ class TestCallBack: public AcceptorCallBack
 {
 public:
 	TestCallBack(AcceptorTest *test): fTest(test) { }
-	~TestCallBack() { }
+
 	void CallBack(Socket *socket) {
 		if (fTest) {
 			fTest->TestSocket(socket);
 		}
 		delete socket;
 	}
-
 protected:
 	AcceptorTest *fTest;
 };

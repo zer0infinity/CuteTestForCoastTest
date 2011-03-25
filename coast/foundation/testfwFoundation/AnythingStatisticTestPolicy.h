@@ -9,13 +9,10 @@
 #ifndef _AnythingStatisticTestPolicy_H
 #define _AnythingStatisticTestPolicy_H
 
-//---- baseclass include -------------------------------------------------
 #include "AnyIterators.h"
 #include "StringStream.h"
 #include "SystemBase.h"
 #include "SystemFile.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- AnythingStatisticTestPolicy ----------------------------------------------------------
 //! <B>really brief class description</B>

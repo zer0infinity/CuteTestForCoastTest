@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TimeStamp.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SystemBase.h"
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
-#include <ctype.h>
 
 const long TimeStamp::MIN = 60L;
 const long TimeStamp::HOUR = TimeStamp::MIN * 60L;
@@ -222,7 +214,7 @@ TimeStamp &TimeStamp::operator=(const TimeStamp &aStamp)
 	StartTrace1(TimeStamp.operator = , "TimeStamp");
 	fTimeStruct = aStamp.fTimeStruct;
 	return *this;
-}
+}//lint !e1529
 
 TimeStamp &TimeStamp::operator=(TSIntNumberType lTimeUtc)
 {
@@ -283,7 +275,7 @@ bool TimeStamp::intTimeRep::SetTime( unsigned char iHour, unsigned char iMin, un
 {
 	StartTrace(TimeStamp.intSetTime);
 	bool bSuccess( false );
-	if ( ( iHour >= 0 ) && ( iHour <= 23 ) && ( iMin >= 0 ) && ( iMin <= 59 ) && ( iSec >= 0 && iSec <= 59 ) ) {
+	if ( ( iHour <= 23 ) && ( iMin <= 59 ) && ( iSec <= 59 ) ) {
 		cData[eHour] = iHour;
 		cData[eMin] = iMin;
 		cData[eSec] = iSec;
@@ -473,6 +465,7 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 		case TimeStamp::eSaturday:
 		case TimeStamp::eSunday:
 			--lWeek;
+			/* fall through */
 		case TimeStamp::eTuesday:
 		case TimeStamp::eWednesday:
 		case TimeStamp::eThursday:

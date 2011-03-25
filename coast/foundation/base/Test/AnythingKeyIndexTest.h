@@ -9,10 +9,8 @@
 #ifndef _AnythingKeyIndexTest_H
 #define _AnythingKeyIndexTest_H
 
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 //---- AnythingKeyIndexTest -----------------------------------------------------------
 //!testcases for Anything

@@ -6,14 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MmapStream.h"
 
 #if !defined(WIN32)
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 
-//--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 
 #if defined(linux) && ! defined(MAP_FAILED)
@@ -79,7 +76,7 @@ MmapStreamBuf::MmapStreamBuf(int syncflag)
 MmapStreamBuf::~MmapStreamBuf()
 {
 	this->close();
-}
+}//lint !e1579
 
 inline void MmapStreamBuf::AdjustFileLength()
 {
@@ -101,7 +98,8 @@ void MmapStreamBuf::close()
 		if (fFl.IsIosOut()) {
 			// do the tricky stuff for files written
 			if (fFileLength != fLength) { // the file has wrong length
-				::ftruncate(fMapFd, fFileLength);
+				int ret = ::ftruncate(fMapFd, fFileLength);
+				(void) ret;
 			}
 		}
 		::close(fMapFd); // really close it
@@ -199,7 +197,8 @@ bool MmapStreamBuf::xinit(int fd)
 			if (fMapFd >= 0) {
 				if (fFl.IsIosOut() && fFileLength != fLength) {
 					// the file has wrong length
-					::ftruncate(fMapFd, fFileLength);
+					int ret = ::ftruncate(fMapFd, fFileLength);
+					(void) ret;
 				}
 				::close(fMapFd); // really close it
 			}
@@ -236,11 +235,11 @@ bool MmapStreamBuf::xinit(int fd)
 		fFl.IosClearAtEnd(); // do it only once
 	}
 	//setb((char*)fAddr,(char*)fAddr+fLength-fMapOffset,0);
-	setg((fFl.IsReadable()) ? (char *)fAddr : (char *)fAddr + fFileLength - fMapOffset,
-		 (char *)fAddr + getoffset ,
-		 (char *)fAddr + fFileLength - fMapOffset);
+	setg((fFl.IsReadable()) ? (char *)fAddr : (char *)fAddr + fFileLength - fMapOffset,//lint !e613
+		 (char *)fAddr + getoffset ,//lint !e613
+		 (char *)fAddr + fFileLength - fMapOffset);//lint !e613
 	// now init get an put area
-	setp((char *)fAddr, (char *)fAddr + fLength - fMapOffset);
+	setp((char *)fAddr, (char *)fAddr + fLength - fMapOffset);//lint !e613//lint !e613
 	pbump(putoffset - fMapOffset); // to allow for backing up, because setb is no longer supported
 	// calculate error: true means OK = either the file was non empty or we write
 	// reserve() will take care of allocating the space for us when writing
@@ -261,7 +260,7 @@ int MmapStreamBuf::overflow( int c )
 		}
 		// we failed somehow. return EOF below
 	}
-	setp((char *)fAddr, (char *)fAddr + fLength - fMapOffset);   // reset put area
+	setp((char *)fAddr, (char *)fAddr + fLength - fMapOffset);   //lint !e613// reset put area
 	return EOF;
 } // overflow
 
@@ -273,7 +272,7 @@ int MmapStreamBuf::underflow()
 		setg(eback(), gptr(), (char *)fAddr + fFileLength - fMapOffset);
 	}
 	if (gptr() < egptr()) {
-		return ZAPEOF(*gptr());    // we still got something
+		return ZAPEOF(*gptr());   //lint !e666 // we still got something
 	}
 	return EOF; // we never handle underflow, because our buffer is the file content
 } // underflow
@@ -404,7 +403,7 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekoff(MmapStreamBuf::off_type of, MmapS
 	//sync(); // will adjust fFileLength if needed
 	long pos = long(of);
 	if (dir == std::ios::cur) {
-		pos += long((mode & std::ios::in ? gptr() : pptr()) - (char *)fAddr + fMapOffset);
+		pos += long((mode & std::ios::in ? gptr() : pptr()) - (char *)fAddr + fMapOffset);//lint !e613
 	} else if (dir == std::ios::end && fFileLength > 0) {
 		pos += long(fFileLength);
 	}

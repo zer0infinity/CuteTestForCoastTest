@@ -9,8 +9,7 @@
 #ifndef _StringPerfTest_H
 #define _StringPerfTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- StringPerfTest ----------------------------------------------------------
 //!TestCases description

@@ -7,7 +7,6 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "Anything.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "AnyImpls.h"
@@ -17,16 +16,13 @@
 #include "Dbg.h"
 #include "AnyVisitor.h"
 #include "AnyComparers.h"
-#include "AllocatorNewDelete.h"
 
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#include <cctype>
-#include <cstdlib>
 #include <cstring>
 #include <algorithm>
-#include <functional>
+
 
 #if defined(COAST_TRACE)
 #define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
@@ -80,7 +76,7 @@ public:
 	// input
 	void SkipToEOL();    // for reading comments by parser
 	bool Get(char &c)				{
-		return (fIs.get(c).good()) || (c = 0);
+		return (fIs.get(c).good()) || (c = 0);//lint !e506
 	}
 	// the last assignment is a trick for sunCC weakness of storing EOF(-1) in c
 	void Putback(char c)			{
@@ -91,10 +87,10 @@ public:
 	}
 
 	long &LineRef() {
-		return fLine;
+		return fLine;//lint !e1536
 	}
 	std::istream &StreamRef() {
-		return fIs;
+		return fIs;//lint !e1536
 	}
 	const String &FileName() {
 		return fFileName;
@@ -272,7 +268,6 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 						context.Putback(c);
 					}
 					return;
-					break;
 				case '#': // start of a comment skip to eol
 					context.SkipToEOL();
 					break;
@@ -581,7 +576,7 @@ namespace {
 			String strTok = anyValue.AsString();
 			fStr.Append(std::for_each(strTok.cstr(), strTok.cstr()+strTok.Length(),escapeString()).result);
 		}
-	};
+	};//lint !e1509
 	struct resolveToAnyLevel : public std::unary_function<Anything const&,void> {
 		Anything result;
 		resolveToAnyLevel(Anything const& anySource) : result(anySource) {}
@@ -604,7 +599,7 @@ namespace {
 				anyTraceAny(result, "retrieved reference so far")
 			}
 		}
-	};
+	};//lint !e1509
 	Anything escapedQueryStringToAny(String const& query) {
 		anyStartTrace(AnythingParser.escapedQueryStringToAny);
 		char const *pStart = query.cstr(), *pEnd = pStart + query.Length(), *pPos = pStart;
@@ -639,7 +634,6 @@ class AnyXrefHandler
 protected:
 	Anything fXrefs;
 public:
-	AnyXrefHandler() {};
 	Anything ParseLevel() {
 		return fParseLevel.DeepClone();
 	}
@@ -675,7 +669,7 @@ public:
 	String	GetBackRef(long id) {
 		return std::for_each(fXrefs[ToId(id)].begin(), fXrefs[ToId(id)].end(), appendAnyLevelToString()).fStr;
 	}
-};
+};//lint !e1509
 
 class ParserXrefHandler : public AnyXrefHandler
 {
@@ -733,7 +727,7 @@ public:
 			}
 		}
 	}
-};
+};//lint !e1509
 
 class AnythingParser
 {
@@ -1167,7 +1161,7 @@ Anything &Anything::operator= (const Anything &a)
 		}
 	}
 	return *this;
-}
+}//lint !e1529
 
 void Anything::SortByKey()
 {
@@ -1534,7 +1528,7 @@ AnyImpl  *Anything::GetImpl()
 void Anything::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 {
 	if (GetImpl()) {
-		GetImpl()->Accept(v, lIdx, slotname);
+		GetImpl()->Accept(v, lIdx, slotname);//lint !e613
 	} else {
 		v.VisitNull(lIdx, slotname);
 	}
@@ -1659,7 +1653,7 @@ ROAnything::ROAnything(const Anything &a)
 }
 
 ROAnything::ROAnything(const ROAnything &a)
-	: fAnyImp(a.fAnyImp)
+	: fAnyImp(a.fAnyImp)//lint !e1554
 {
 	// no ref necessary
 	// ROAnything don't do any
@@ -1687,9 +1681,9 @@ long ROAnything::GetSize() const
 
 ROAnything &ROAnything::operator= (const ROAnything &a)
 {
-	fAnyImp = a.fAnyImp;
+	fAnyImp = a.fAnyImp;//lint !e1555
 	return *this;
-}
+}//lint !e1529
 
 ROAnything &ROAnything::operator= (const Anything &a)
 {
@@ -2160,7 +2154,8 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 				// ignore empty strings otherwise fall through!
 				return false;
 			}
-		case AnythingToken::eString: // string impl
+			//fall through
+		case AnythingToken::eString: // string impl//lint !e616
 			any = tok.Text();
 			break;
 			// long impl.

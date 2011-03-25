@@ -6,15 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingPerfTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "Dbg.h"
 #include "PoolAllocator.h"
 
 //---- AnythingPerfTest ----------------------------------------------------------------
@@ -29,21 +22,21 @@ AnythingPerfTest::~AnythingPerfTest()
 	StartTrace(AnythingPerfTest.Dtor);
 }
 
-void AnythingPerfTest::RunIndexLoopAsCharPtr(long index, const Anything &a, const long iterations)
+void AnythingPerfTest::RunIndexLoopAsCharPtr(long idx, const Anything &a, const long iterations)
 {
 	CatchTimeType aTimer(TString("IndexLoop/AsCharPtr/") << iterations, this, '/');
 	String out;
 	for (long i = 0; i < iterations; ++i) {
-		out = a[index].AsCharPtr("lookup hallo");
+		out = a[idx].AsCharPtr("lookup hallo");
 	}
 }
 
-void AnythingPerfTest::RunIndexLoopAsString(long index, const Anything &a, const long iterations)
+void AnythingPerfTest::RunIndexLoopAsString(long idx, const Anything &a, const long iterations)
 {
 	CatchTimeType aTimer(TString("IndexLoop/AsString/") << iterations, this, '/');
 	String out;
 	for (long i = 0; i < iterations; ++i) {
-		out = a[index].AsString("lookup hallo");
+		out = a[idx].AsString("lookup hallo");
 	}
 }
 
@@ -66,6 +59,7 @@ void AnythingPerfTest::RunLookupPathLoop(const char *key, const Anything &a, con
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
+	(void) out;
 }
 
 void AnythingPerfTest::RunROLookupPathLoop(const char *key, const ROAnything &a, const long iterations)
@@ -77,7 +71,8 @@ void AnythingPerfTest::RunROLookupPathLoop(const char *key, const ROAnything &a,
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
-}
+	(void) out;
+}//lint !e438
 
 void AnythingPerfTest::LookupTest()
 {

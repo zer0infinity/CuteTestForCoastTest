@@ -6,23 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -----------
 #include "SocketStreamTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SocketStream.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- standard modules used ----------------------------------------------------
-
-
 SocketStreamTest::SocketStreamTest(TString tname)
-	: TestCaseType(tname)
-{
-}
-SocketStreamTest::~SocketStreamTest()
+	: TestCaseType(tname),
+	  fConnector(0)
 {
 }
 
@@ -71,14 +61,14 @@ void SocketStreamTest::simpleRead()
 
 void SocketStreamTest::simpleWrite()
 {
-	Socket *sock = fConnector->Use();
+	Socket *sock = fConnector->Use();//lint !e613 // fConnector is properly initialized in setUp()
 	if (t_assert(sock != NULL)) {
 		//!@FIXME is it really useful that Connector and Stream have the same timeout
 		assertEqual(1000L, sock->GetTimeout());
 		sock->SetTimeout(15L * 1000L); // increase timeout for reading and writing on the stream
-		std::iostream *Ios = fConnector->GetStream();
+		std::iostream *Ios = fConnector->GetStream();//lint !e613
 		if ( t_assert( Ios != NULL ) ) {
-			assertEqual(15 * 1000L, fConnector->Use()->GetTimeout());
+			assertEqual(15 * 1000L, fConnector->Use()->GetTimeout());//lint !e613
 			// make sure Ios is valid
 			if (t_assert(!!(*Ios))) {
 				(*Ios) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;

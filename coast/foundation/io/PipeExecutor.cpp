@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PipeExecutor.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
@@ -20,7 +17,6 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#include <cstdio>
 #include <cstring>
 #if !defined(WIN32)
 #include <sys/wait.h>
@@ -29,7 +25,6 @@ using namespace Coast;
 #include <io.h>
 #endif
 #include <fcntl.h>
-#include <signal.h> /* for kill() */
 #include <errno.h>
 
 //---- PipeExecutor ----------------------------------------------------------------
@@ -304,7 +299,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 					char **p = cgiParams.GetParams();
 					char **e = cgiEnv.GetEnv();
 					// execve will not return on success, it will return -1 in case of a failure
-					execve(p[0], p, e);
+					execve(p[0], p, e);//lint !e613
 				}
 				// oops we failed. terminate the process
 				// don't use strings - allocators not fork-safe
@@ -317,8 +312,9 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 								   (const char *)fWorkingDir,
 								   iError,
 								   strerror(iError));
-				write(1, buff, len);
-				write(2, buff, len);
+				ssize_t written = write(1, buff, len);
+				written = write(2, buff, len);
+				(void)written;
 				SystemLog::Error(buff);
 				_exit(EXIT_FAILURE); // point of no return for child process.....
 			} else if (fChildPid > 0) {

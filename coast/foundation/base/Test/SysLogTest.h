@@ -9,8 +9,7 @@
 #ifndef _SysLogTest_H
 #define _SysLogTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- SysLogTest ----------------------------------------------------------
 //!testcases for the SystemLog class

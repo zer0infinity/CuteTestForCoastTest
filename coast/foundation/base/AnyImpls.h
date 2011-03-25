@@ -9,13 +9,11 @@
 #ifndef _AnyImpls_H
 #define _AnyImpls_H
 
-//---- baseclass include -------------------------------------------------
 #include "ITOString.h"
 #include "AnyImplTypes.h"
 #include "IFAObject.h"
 #include "SegStorAllocatorNewDelete.h"
 
-//---- forward declaration -----------------------------------------------
 class Anything;
 class AnyVisitor;
 
@@ -454,11 +452,11 @@ public:
 	}
 
 	long IntAtBuf(long at) const {
-		return at / ARRAY_BUF_SIZE;
+		return at / static_cast<long>(ARRAY_BUF_SIZE);
 	}
 
 	long IntAtSlot(long at) const {
-		return at % ARRAY_BUF_SIZE;
+		return at % static_cast<long>(ARRAY_BUF_SIZE);
 	}
 
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
@@ -538,7 +536,7 @@ public:
 			ac(theComparer) {
 		}
 		virtual int Compare(AnyArrayImpl &that, long leftInt, long rightInt) const;
-	};
+	};//lint !e1510
 
 private:
 	AnyImpl *DoDeepClone(AnyImpl *res, Allocator *a, Anything &xreftable) const;

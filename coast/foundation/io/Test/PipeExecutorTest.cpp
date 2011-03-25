@@ -6,21 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "PipeExecutorTest.h"
-
-//--- module under test --------------------------------------------------------
+#include "TestSuite.h"
 #include "PipeExecutor.h"
 
-//--- standard modules used ----------------------------------------------------
-
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
-#include <iterator>
 
 //---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
@@ -149,7 +139,6 @@ void PipeExecutorTest::CatWorkingDirTest()
 	}
 	assertEqual(0, Execute.TerminateChild()); // everything is over
 }
-#include "SystemLog.h"
 void PipeExecutorTest::EchoCatTest()
 {
 	StartTrace(PipeExecutorTest.EchoCatTest);

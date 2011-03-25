@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- test cases -------------------------------------------------------------
 #include "PipeTest.h"
 #include "PipeStreamTest.h"
 #include "PipeExecutorTest.h"
@@ -25,7 +20,7 @@
 #include "AcceptorTest.h"
 
 void setupRunner(TestRunner &runner)
-{
+{//lint !e14
 	ADD_SUITE(runner, PipeTest);
 	ADD_SUITE(runner, PipeStreamTest);
 	ADD_SUITE(runner, PipeExecutorTest);

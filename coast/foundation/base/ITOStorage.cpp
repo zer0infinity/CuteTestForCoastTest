@@ -6,20 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ITOStorage.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 #include "AllocatorNewDelete.h"
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
-
-#include <stdio.h>
+#include <stdio.h>//lint !e537//lint !e451
 #if defined(WIN32)
 #define snprintf	_snprintf
 #endif
@@ -35,7 +30,7 @@ MemChecker::MemChecker(const char *scope, Allocator *a)
 MemChecker::~MemChecker()
 {
 	TraceDelta("MemChecker.~MemChecker: ");
-}
+}//lint !e1579
 
 void MemChecker::TraceDelta(const char *message)
 {
@@ -96,9 +91,9 @@ void MemTracker::operator delete(void *vp)
 MemTracker::~MemTracker()
 {
 	if ( fpUsedList ) {
-		delete fpUsedList;
+		delete fpUsedList;//lint !e1551
 	}
-	delete fpName;
+	delete fpName;//lint !e1551//lint !e605
 }
 
 void MemTracker::SetId(long id)
@@ -116,7 +111,7 @@ void MemTracker::TrackAlloc(MemoryHeader *mh)
 	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
 		fpUsedList->push_front(mh);
 	}
-}
+}//lint !e429
 
 void MemTracker::TrackFree(MemoryHeader *mh)
 {
@@ -182,8 +177,6 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
-#include <new>
-
 //---- Storage ------------------------------------------
 class StorageInitializer : public InitFinisManagerFoundation
 {
@@ -202,8 +195,6 @@ public:
 		Coast::Storage::Finalize();
 	}
 };
-
-static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 
 namespace Coast
 {
@@ -336,20 +327,20 @@ namespace Coast
 
 	namespace Memory
 	{
-		Allocator*& allocatorFor(void* ptr)
+		Allocator*& allocatorFor(void* ptr) throw()
 		{
 			return (reinterpret_cast<Allocator **>(ptr))[0L];
 		}
 
-		void *realPtrFor(void *ptr)
+		void *realPtrFor(void *ptr) throw()
 		{
 			return reinterpret_cast<char *>(ptr) - AlignedSize<Allocator *>::value;
 		}
 
-		void safeFree(Allocator *a, void *ptr)
+		void safeFree(Allocator *a, void *ptr) throw()
 		{
 			if (ptr) {
-				a->Free(ptr);
+				a->Free(ptr);//lint !e1550
 			}
 		}
 	} // namespace Memory
@@ -359,14 +350,14 @@ namespace Coast
 Allocator::Allocator(long allocatorid)
 	: fAllocatorId(allocatorid)
 	, fRefCnt(0)
-	, fTracker(NULL)
+	, fTracker(0)
 {
 }
 
 Allocator::~Allocator()
 {
 	Assert(0 == fRefCnt);
-}
+}//lint !e1540
 
 void *Allocator::Calloc(int n, size_t size)
 {
@@ -396,7 +387,7 @@ void *Allocator::ExtMemStart(void *vp)
 {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); // fUsableSize does *not* include header
+		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //lint !e429 // fUsableSize does *not* include header
 		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
@@ -427,8 +418,8 @@ GlobalAllocator::GlobalAllocator()
 GlobalAllocator::~GlobalAllocator()
 {
 	if ( fTracker ) {
-		delete fTracker;
-		fTracker = NULL;
+		delete fTracker;//lint !e1551
+		fTracker = 0;
 	}
 }
 
@@ -461,27 +452,27 @@ void GlobalAllocator::PrintStatistic(long lLevel)
 void *GlobalAllocator::Alloc(size_t allocSize)
 {
 	void *vp = ::malloc(allocSize);
+
 	if (vp) {
 		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
 		if ( fTracker ) {
 			fTracker->TrackAlloc(mh);
 		}
-		return ExtMemStart(mh);
+		return ExtMemStart(mh);//lint !e593//lint !e429
 	} else {
 		static char crashmsg[255] = { 0 };
 		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
 		SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 	}
-	return NULL;
+
+	return 0;
 }
 
 void GlobalAllocator::Free(void *vp)
 {
-	size_t sz(0);
 	if ( vp ) {
 		MemoryHeader *header = RealMemStart(vp);
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
-			sz = header->fUsableSize;
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
 			if ( fTracker ) {
@@ -517,17 +508,18 @@ void TestStorageHooks::Finalize()
 
 TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 	: fAllocator(wdallocator)
-	, fpOldHook(NULL)
+	, fpOldHook(0)
 {
 	fpOldHook = Coast::Storage::SetHooks(this);
 }
 
 TestStorageHooks::~TestStorageHooks()
 {
-	StorageHooks *pHook = Coast::Storage::SetHooks(NULL);
+	StorageHooks *pHook = Coast::Storage::SetHooks(0);
 	(void)pHook;
 	Assert( pHook == fpOldHook && "another Coast::Storage::SetHook() was called without restoring old Hook!");
 	fAllocator = 0;
+	fpOldHook = 0;
 }
 
 MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)

@@ -6,19 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PoolAllocator.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "MemHeader.h"
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
 #include "AllocatorNewDelete.h"
-
 #include <algorithm>
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 //! smallest size of allocation unit: 16UL for the usable memory block
@@ -77,11 +71,11 @@ void ExcessTrackerElt::operator delete(void *vp)
 ExcessTrackerElt::~ExcessTrackerElt()
 {
 	// recursively print statistics on excess trackers
-	PrintStatistic(2);
+	PrintStatistic(2);//lint !e1551
 	delete fpTracker;
-	fpTracker = NULL;
-	delete fpNext;
-	fpNext = NULL;
+	fpTracker = 0;
+	delete fpNext;//lint !e1551
+	fpNext = 0;
 }
 
 void ExcessTrackerElt::PrintStatistic(long lLevel)
@@ -104,7 +98,7 @@ ul_long ExcessTrackerElt::GetSizeToPowerOf2(size_t ulWishSize)
 	if ( lBitCnt == 1 ) {
 		--lMaxBit;
 	}
-	return (1 << lMaxBit);
+	return (1 << lMaxBit);//lint !e647
 }
 
 long ExcessTrackerElt::GetLargestExcessEltBitNum()
@@ -227,7 +221,7 @@ void ExcessTrackerElt::Refresh()
 		MemTracker *pTracker = pElt->fpTracker;
 		if ( pTracker && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));
+			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 			SystemLog::Error(buf);
 		}
 		pElt = pElt->fpNext;
@@ -256,10 +250,8 @@ PoolAllocator::PoolAllocator(long poolid, size_t poolSize, size_t maxPoolBuckets
 			fpPoolTotalExcessTracker = Coast::Storage::MakeMemTracker("ExcessTotal", false);
 			fTracker->SetId(poolid);
 			fpPoolTotalExcessTracker->SetId(poolid);
-
-		default:
-			break;
 	}
+
 	fAllocSz = poolSize * 1024;
 	fPoolMemory = ::calloc(fAllocSz, 1);
 	fPoolBuckets = (PoolBucket *)::calloc(fNumOfPoolBucketSizes + 1, sizeof(PoolBucket));
@@ -272,7 +264,7 @@ PoolAllocator::PoolAllocator(long poolid, size_t poolSize, size_t maxPoolBuckets
 		String msg("PoolAllocator: ");
 		msg << "allocation of PoolStorage: " << (long)poolSize << ", " << (long)maxPoolBuckets << " failed";
 		SystemLog::Error(msg);
-		Unref(); // signal allocation failure
+		PoolAllocator::Unref(); // signal allocation failure
 		return;
 	}
 	Initialize();
@@ -340,7 +332,7 @@ PoolAllocator::~PoolAllocator()
 				if ( pTracker->CurrentlyAllocated() > 0 ) {
 					if ( bFirst ) {
 						char buf[256] = { 0 };
-						snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->GetId(), NotNull(pTracker->GetName()));
+						snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 						SystemLog::Error(buf);
 						bFirst = false;
 					}
@@ -413,7 +405,7 @@ PoolAllocator::~PoolAllocator()
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Coast::Storage::Global());
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
-}
+}//lint !e1579
 
 void PoolAllocator::DumpStillAllocated()
 {
@@ -436,7 +428,7 @@ void PoolAllocator::DumpStillAllocated()
 			if ( pTracker && ( pTracker->PeakAllocated() > 0 ) && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 				if ( bFirst ) {
 					char buf[256] = { 0 };
-					snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::DumpStillAllocated()", pTracker->GetId(), NotNull(pTracker->GetName()));
+					snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::DumpStillAllocated()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 					SystemLog::Error(buf);
 					bFirst = false;
 				}
@@ -461,9 +453,7 @@ void PoolAllocator::Free(void* p, size_t sz) {
 void PoolAllocator::Free(void *vp)
 {
 	MemoryHeader *header = RealMemStart(vp);
-	size_t sz(0);
 	if ( header ) {
-		sz = header->fUsableSize;
 		if (header->fState == MemoryHeader::eUsed ) {	// most likely case first
 			// recycle into pool
 			const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
@@ -621,7 +611,7 @@ void *PoolAllocator::Alloc(size_t allocSize)
 	if (vp) {
 		// keep some statistic
 		const size_t alignedSize = allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value;
-		MemoryHeader *mh = new(vp) MemoryHeader(alignedSize, MemoryHeader::eUsedNotPooled);
+		MemoryHeader *mh = new (vp) MemoryHeader(alignedSize, MemoryHeader::eUsedNotPooled);
 		// as excess tracking (level 2) only takes place when total tracking (level 1) is enabled
 		// the excess tracker gets only checked when total tracking is also enabled
 		if ( fpPoolTotalExcessTracker ) {
@@ -630,7 +620,7 @@ void *PoolAllocator::Alloc(size_t allocSize)
 				(*fpExcessTrackerList)[alignedSize]->TrackAlloc(mh);
 			}
 		}
-		return ExtMemStart(mh);
+		return ExtMemStart(mh);//lint !e429
 	}
 	static char crashmsg[255] = { 0 };
 	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%ub failed. I will crash :-(\n", allocSize);
@@ -721,14 +711,14 @@ l_long PoolAllocator::CurrentlyAllocated()
 
 void PoolAllocator::Refresh()
 {
-	if ( TriggerEnabled(PoolAllocator.Refresh) ) {
+	if ( TriggerEnabled(PoolAllocator.Refresh) ) {//lint !e506//lint !e774
 		PrintStatistic();
 	}
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker && pTracker->CurrentlyAllocated() > 0 ) {
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));
+			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 			SystemLog::Error(buf);
 		}
 	}

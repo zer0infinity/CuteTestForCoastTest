@@ -9,10 +9,7 @@
 #ifndef _InitFinisManagerFoundation_H
 #define _InitFinisManagerFoundation_H
 
-//---- baseclass include -------------------------------------------------
 #include "InitFinisManager.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- InitFinisManagerFoundation ----------------------------------------------------------
 //! support class for initializing/cleaning things up in a deterministic sequence

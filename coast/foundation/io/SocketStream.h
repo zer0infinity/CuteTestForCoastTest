@@ -9,9 +9,7 @@
 #ifndef _SOCKETSTREAM_H
 #define _SOCKETSTREAM_H
 
-//--- module used in the interface
 #include "Socket.h"
-
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
@@ -63,7 +61,6 @@ protected: // seekxxx are protected in the std..
 	//! standard iostream behavior, adjust put or get position relatively
 	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = std::ios::in | std::ios::out);
 
-	SocketStreamBuf() { }
 	//! no buffer setting needed, because we carry our own buffer, a String object
 	std::streambuf *setbuf(char *buf, int length) {
 		return this;
@@ -136,9 +133,7 @@ public:
 	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::in | std::ios::out );
 	// s is the source resp. the sink;
 
-	virtual ~iosITOSocket() { }
-
-	SocketStreamBuf *rdbuf()  {
+	SocketStreamBuf *rdbuf()  {//lint !e1511
 		return &fSocketBuf;
 	}
 

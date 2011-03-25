@@ -1,9 +1,5 @@
-//--- interface include --------------------------------------------------------
 #include "StringIteratorTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
 #include "Dbg.h"
 
 void StringIteratorTest::testEmptyStringBegin() {

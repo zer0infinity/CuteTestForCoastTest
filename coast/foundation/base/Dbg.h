@@ -9,7 +9,7 @@
 #ifndef _Dbg_H
 #define _Dbg_H
 
-#include "ITOString.h"
+#include "ITOString.h"//lint !e537
 
 //---- Tracer --------------------------------------------------------------------------
 #ifdef COAST_TRACE

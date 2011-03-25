@@ -6,20 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingConstructorsTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "IFAObject.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
 #include "SystemLog.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 //---- AnythingConstructorsTest ---------------------------------------------------------
@@ -696,7 +689,7 @@ void AnythingConstructorsTest::EmptyVoidStarLenConstrTest()
 void AnythingConstructorsTest::VoidStarLenConstrTest()
 {
 	long arrTest[5] = { 0, 1, 2, 3, 4 };
-	Anything anyTest((void *) &arrTest, (long) sizeof(arrTest));
+	Anything anyTest((void *) arrTest, (long) sizeof(arrTest));
 	Anything anyHlp = anyTest;
 
 	t_assert( anyTest.GetType() == AnyVoidBufType );

@@ -24,7 +24,7 @@ typedef l_long HRTIME;
 typedef hrtime_t HRTIME;
 #define GetHRTIME() gethrtime()
 #else
-#include <time.h>
+#include <time.h>//lint !e537
 #include <sys/times.h>
 typedef clock_t HRTIME;
 extern "C" HRTIME gettimes();

@@ -6,21 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TimeStampTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "TimeStamp.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <limits.h>
 
 //---- TimeStampTest ----------------------------------------------------------------
@@ -123,11 +112,11 @@ void TimeStampTest::ArithmeticOperatorsTest()
 			TimeStamp ts1(roaConfig["Date"].AsString());
 			TimeStamp result;
 			result = ts1 + roaConfig["AmountSec"].AsLong();
-			assertCharPtrEqualm(roaConfig["ExpectedResult"].AsString(), result.AsString(), TString("Expected + test to pass at ") << strCase);
+			assertCharPtrEqualm(roaConfig["ExpectedResult"].AsString(), result.AsString(), (TString("Expected + test to pass at ") << strCase));
 			Trace("result after operator+ is: " << result.AsString());
 
 			result = result - roaConfig["AmountSec"].AsLong();
-			assertCharPtrEqualm(roaConfig["Date"].AsString(), result.AsString(), TString("Expected - test to pass at ") << strCase);
+			assertCharPtrEqualm(roaConfig["Date"].AsString(), result.AsString(), (TString("Expected - test to pass at ") << strCase));
 			Trace("result after operator- is: " << result.AsString());
 		}
 	}

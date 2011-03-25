@@ -9,8 +9,7 @@
 #ifndef _TypeTraitsTest_H
 #define _TypeTraitsTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- TypeTraitsTest ----------------------------------------------------------
 //! <B>really brief class description</B>

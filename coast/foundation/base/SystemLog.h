@@ -9,7 +9,7 @@
 #ifndef _SystemLog_H
 #define _SystemLog_H
 
-#include "ITOString.h"
+#include "ITOString.h"//lint !e537
 
 #if defined(WIN32)
 #include <windows.h>

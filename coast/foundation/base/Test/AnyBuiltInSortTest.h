@@ -9,8 +9,7 @@
 #ifndef _AnyBuiltInSortTest_H
 #define _AnyBuiltInSortTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- AnyBuiltInSortTest ----------------------------------------------------------
 //! <B>really brief class description</B>

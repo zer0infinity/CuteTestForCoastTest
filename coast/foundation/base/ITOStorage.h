@@ -11,7 +11,6 @@
 
 #include "foundation.h"			// for definition of own types
 #include <sys/types.h>
-#include <iosfwd>
 #include <cstdlib>
 #include <deque>
 
@@ -63,12 +62,12 @@ public:
 	virtual void PrintStatistic(long lLevel);
 
 	//!returns currently allocated bytes
-	l_long CurrentlyAllocated() {
+	l_long CurrentlyAllocated() const {
 		return fAllocated;
 	}
 
 	//!returns peak allocated bytes
-	l_long PeakAllocated() {
+	l_long PeakAllocated() const {
 		return fMaxAllocated;
 	}
 
@@ -76,12 +75,12 @@ public:
 	void SetId(long);
 
 	//! gets the Trackers/Allocators id
-	long GetId() {
+	long GetId() const {
 		return fId;
 	}
 
 	//! returns the name of the Tracker
-	const char *GetName() {
+	const char *GetName() const {
 		return fpName;
 	}
 
@@ -263,7 +262,7 @@ public:
 	virtual ~GlobalAllocator();
 
 	//!frees memory allocated by global allocator
-	virtual void Free(void *vp);
+	virtual void Free(void *vp);//lint !e1511
 
 	//!frees memory allocated by global allocator
 	virtual void Free(void *vp, size_t sz);
@@ -381,11 +380,11 @@ namespace Coast
 							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
 		};
 
-		Allocator*& allocatorFor(void* ptr);
+		Allocator*& allocatorFor(void* ptr) throw();
 
-		void *realPtrFor(void *ptr);
+		void *realPtrFor(void *ptr) throw();
 
-		void safeFree(Allocator *a, void *ptr);
+		void safeFree(Allocator *a, void *ptr) throw();
 	} // namespace Memory
 
 	namespace Storage
@@ -450,7 +449,7 @@ public:
 	virtual MemTracker *MakeMemTracker(const char *name, bool);
 
 	Allocator *fAllocator;
-	StorageHooks *fpOldHook;
+	StorageHooks *fpOldHook;//lint !e1516
 };
 
 #endif		//not defined _ITOStorage_H

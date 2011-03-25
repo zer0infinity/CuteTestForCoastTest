@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SystemLog.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 
 using namespace Coast;
@@ -222,7 +219,8 @@ void SystemLog::WriteToStderr(const char *msg, long length)
 #ifdef IOSTREAM_IS_THREADSAFE
 		std::cerr.write(msg, sLen).flush();
 #else
-		::write(2, msg, sLen);
+		ssize_t written = ::write(2, msg, sLen);
+		(void)written;
 #endif
 	}
 }
@@ -247,7 +245,8 @@ void SystemLog::WriteToStdout(const char *msg, long length)
 #ifdef IOSTREAM_IS_THREADSAFE
 		std::cout.write(msg, sLen).flush();
 #else
-		::write(1, msg, sLen);
+		ssize_t written = write(1, msg, sLen);
+		(void)written;
 #endif
 	}
 }

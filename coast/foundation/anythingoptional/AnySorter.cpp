@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnySorter.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "Anything.h"
-#include "AnyComparers.h"
 
 //--- c-library modules used ---------------------------------------------------
 //! shuffles anys where lookuppath is not defined towards the end, keeping their original sequence

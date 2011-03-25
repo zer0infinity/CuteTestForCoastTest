@@ -9,8 +9,7 @@
 #ifndef _ConversionUtilsTest_H
 #define _ConversionUtilsTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- ConversionUtilsTest ----------------------------------------------------------
 //! <B>really brief class description</B>

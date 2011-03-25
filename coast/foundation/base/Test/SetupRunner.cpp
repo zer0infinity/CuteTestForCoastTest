@@ -6,13 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 #include "TestSuite.h"
 
-//--- standard modules used ----------------------------------------------------
-
-//--- test cases -------------------------------------------------------------
 #include "AnythingConstructorsTest.h"
 #include "AnythingDeepCloneTest.h"
 #include "AnythingImportExportTest.h"
@@ -45,7 +41,7 @@
 #include "StringSTLTest.h"
 
 void setupRunner(TestRunner &runner)
-{
+{//lint !e14
 	ADD_SUITE(runner, StringTokenizerTest);
 	ADD_SUITE(runner, StringTokenizer2Test);
 	ADD_SUITE(runner, StringTest);

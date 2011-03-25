@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TypeTraitsTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ITOTypeTraits.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "ITOString.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <typeinfo>
 
 using namespace std;
@@ -122,7 +113,6 @@ public:
 		StartTrace1(ClassTraits.ClassTraits, "PlainTypePtr");
 		SomeMethod(pParam);
 	}
-	~ClassTraits() {};
 
 	void SomeMethod(ConstPlainTypeRef aParam) {
 		StartTrace1(ClassTraits.SomeMethod, "ConstPlainTypeRef");

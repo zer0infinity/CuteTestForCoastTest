@@ -8,23 +8,15 @@
 
 #if !defined(WIN32)
 
-//--- interface include --------------------------------------------------------
 #include "MmapTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "MmapStream.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "StringStream.h"
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 #include <fstream>
 
@@ -193,8 +185,8 @@ void MmapTest::SimpleRead()
 					break;
 				}
 				char c1 = *pc++;
-				assertEqual(c1, c);
-			} while (true); // compare content
+				assertEqual(c1, c); // compare content
+			} while (true); //lint !e506
 			assertEqual(pc - fgcContent, strlen(fgcContent)); // have we reached the end?
 		}
 		t_assert(is.eof());
@@ -309,7 +301,7 @@ void MmapTest::SimpleReadOnly()
 				}
 				char c1 = *pc++;
 				assertEqual(c1, c);
-			} while (true); // compare content
+			} while (true); //lint !e506 // compare content
 			assertEqual(pc - fgcContent, strlen(fgcContent)); // have we reached the end?
 		}
 		t_assert(is.eof());

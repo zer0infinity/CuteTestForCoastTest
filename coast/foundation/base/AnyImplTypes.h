@@ -25,7 +25,7 @@ namespace AnyImplHelper
 		eVoidBuf,
 		eObject
 	};
-};
+};//lint !e19
 
 typedef AnyImplHelper::AnyTypes AnyImplType;
 

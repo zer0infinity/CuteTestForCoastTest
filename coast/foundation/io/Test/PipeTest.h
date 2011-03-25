@@ -9,7 +9,6 @@
 #ifndef _PipeTest_H
 #define _PipeTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- PipeTest ----------------------------------------------------------

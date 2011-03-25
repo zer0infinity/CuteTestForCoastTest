@@ -9,9 +9,8 @@
 #ifndef _StringStreamTest_h_
 #define _StringStreamTest_h_
 
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
-//---- forward declaration -----------------------------------------------
 class String;
 
 //---- StringStreamTest -----------------------------------------------------------

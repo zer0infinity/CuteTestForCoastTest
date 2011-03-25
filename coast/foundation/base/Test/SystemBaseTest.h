@@ -9,7 +9,6 @@
 #ifndef SYSTEMBASETEST_H_
 #define SYSTEMBASETEST_H_
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SystemBaseTest ----------------------------------------------------------

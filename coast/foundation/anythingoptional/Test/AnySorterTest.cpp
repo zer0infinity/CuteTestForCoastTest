@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnySorterTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//---module under test  --------------------------------------------------------
 #include "AnySorter.h"
 
-//--- standard modules used ----------------------------------------------------
-#include "AnyIterators.h"
-
-//--- c-library modules used ---------------------------------------------------
-
 //---- AnySorterTest ---------------------------------------------------------
-
 AnySorterTest::AnySorterTest (TString tname)
 	: TestCaseType(tname)
 {

@@ -9,8 +9,7 @@
 #ifndef _PipeStreamTest_H
 #define _PipeStreamTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- PipeStreamTest ----------------------------------------------------------
 //!TestCases description

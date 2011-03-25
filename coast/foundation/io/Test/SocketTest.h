@@ -9,10 +9,7 @@
 #ifndef _SocketTest_H
 #define _SocketTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
-
-//---- forward declaration -----------------------------------------------
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- SocketTest ----------------------------------------------------------
 //!TestCases for the Socket class

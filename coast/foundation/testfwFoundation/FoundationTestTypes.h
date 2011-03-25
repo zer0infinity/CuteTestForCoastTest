@@ -9,12 +9,9 @@
 #ifndef _FoundationTestTypes_H
 #define _FoundationTestTypes_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "AnythingConfigTestPolicy.h"
 #include "AnythingStatisticTestPolicy.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- specialized test types ----------------------------------------------------------
 namespace TestFramework

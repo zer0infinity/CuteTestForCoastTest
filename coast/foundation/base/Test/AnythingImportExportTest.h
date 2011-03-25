@@ -9,10 +9,10 @@
 #ifndef _AnythingImportExportTest_H
 #define _AnythingImportExportTest_H
 
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- forward declaration -----------------------------------------------
-#include "Anything.h"
+#include "Anything.h"//lint !e537
 
 //---- AnythingImportExportTest -----------------------------------------------------------
 //!testcases for Anything

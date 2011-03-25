@@ -6,21 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingDeepCloneTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "IFAObject.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
 #include "SystemLog.h"
 #include "PoolAllocator.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 //---- AnythingDeepCloneTest ---------------------------------------------------------

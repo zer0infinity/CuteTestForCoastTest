@@ -10,8 +10,6 @@
 #define _AnythingConstructorsTest_H
 
 #include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
 #include "Anything.h"
 
 //---- AnythingConstructorsTest -----------------------------------------------------------

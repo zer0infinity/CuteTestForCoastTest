@@ -6,19 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SocketTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Socket.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
 
-//--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <netinet/in.h>		// for INADDR_ANY
 #include <fcntl.h>
@@ -37,7 +29,7 @@ SocketTest::~SocketTest()
 void SocketTest::simpleConstructorTest()
 {
 	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong());
-	Socket *socket = connector.MakeSocket();
+	Socket *socket = connector.MakeSocket();//lint !e578
 
 	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) {
 		long socketfd = socket->GetFd();
@@ -56,7 +48,7 @@ void SocketTest::allocatorConstructorTest()
 
 	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong());
 	connector.SetThreadLocal();
-	Socket *socket = connector.MakeSocket();
+	Socket *socket = connector.MakeSocket();//lint !e578
 
 	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) {
 		long socketfd = socket->GetFd();
@@ -91,7 +83,7 @@ void SocketTest::faultyConstructorTest()
 void SocketTest::httpClientTest()
 {
 	Connector connector(GetConfig()["HTTPReplyHost"]["ip"].AsString(), GetConfig()["HTTPReplyHost"]["port"].AsLong());
-	Socket *socket = connector.MakeSocket();
+	Socket *socket = connector.MakeSocket();//lint !e578
 
 	assertEqual( GetConfig()["HTTPReplyHost"]["ip"].AsString(), connector.GetAddress() );
 	assertEqual( GetConfig()["HTTPReplyHost"]["port"].AsLong(), connector.fPort );
@@ -123,12 +115,12 @@ void SocketTest::httpClientTest()
 		socket = 0;
 		assertEqual( -1L, ::closeSocket(socketfd)); // did we really close the socket??
 	}
-}
+}//lint !e438
 
 void SocketTest::faultyClientTest()
 {
 	Connector connector(GetConfig()["SocketNotAcceptingHost"]["ip"].AsString(), GetConfig()["SocketNotAcceptingHost"]["port"].AsLong(), GetConfig()["SocketNotAcceptingHost"]["timeout"].AsLong(5000L));
-	Socket *socket = connector.MakeSocket();
+	Socket *socket = connector.MakeSocket();//lint !e578
 
 	assertEqual( GetConfig()["SocketNotAcceptingHost"]["ip"].AsString(), connector.GetAddress() );
 	assertEqual( GetConfig()["SocketNotAcceptingHost"]["port"].AsLong(), connector.fPort );

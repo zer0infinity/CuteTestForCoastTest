@@ -9,7 +9,7 @@
 #ifndef _URLUtilsTest_h_
 #define _URLUtilsTest_h_
 
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- URLUtilsTest -----------------------------------------------------------
 //!testcases for URLUtils
@@ -24,12 +24,8 @@ public:
 	void ExhaustiveUrlDecodeTest();
 	void ExhaustiveHTMLDecodeTest();
 	void urlEncodeTest();
-	void strHasEscapesTest();
 	void PairTest();
 	void SplitTest();
-	int  CalcEncodedLength(int);
-	void EnDecodeBase64Test();
-	void EncodeTest();
 	void DecodeAllTest();
 	void HandleURITest();
 	void HandleURI2Test();

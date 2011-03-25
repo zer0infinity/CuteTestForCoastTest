@@ -23,8 +23,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
-
 AnyUtilsTest::AnyUtilsTest(TString tname) :
 	TestCaseType(tname)
 {

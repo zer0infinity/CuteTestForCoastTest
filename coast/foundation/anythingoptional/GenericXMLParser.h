@@ -16,7 +16,6 @@ further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
 #include "Anything.h"
-//---- forward declaration -----------------------------------------------
 
 //! construct a simple DOM representation using Anything from an XML file
 /*!
@@ -25,8 +24,7 @@ construct an anything representation of DOM parsing the XML
 class GenericXMLParser
 {
 public:
-	GenericXMLParser() {}
-	virtual ~GenericXMLParser() {}
+	virtual ~GenericXMLParser() {}//lint !e1401//lint !e1401
 	//! do the parsing,
 	//! \return the constructed Anything using the given Allocator
 	//! \param reader the input source

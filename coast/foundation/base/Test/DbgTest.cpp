@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DbgTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 
 //---- DbgTest ----------------------------------------------------------------
@@ -318,7 +311,7 @@ void DbgTest::CheckMacrosCompile()
 	StatTrace("test", "a stat trace", Coast::Storage::Current());
 	StatTraceBuf("bli.bla", "0123456789012345", 10, Coast::Storage::Current());
 	StatTraceAny("test.x", a, "an any", Coast::Storage::Current());
-	TriggerEnabled(SectionNotDefined.SlotNotDefined);
+	TriggerEnabled(SectionNotDefined.SlotNotDefined);//lint !e522
 }
 
 Test *DbgTest::suite ()

@@ -11,7 +11,6 @@
 
 #include "Anything.h"
 
-//---- forward declaration -----------------------------------------------
 class Pipe;
 
 //---- PipeExecutor ----------------------------------------------------------
@@ -71,7 +70,7 @@ public:
 protected:
 	friend class PipeExecutorTest;
 	PipeExecutor()
-		: fPipe(0), fChildPid(-1), fStderr(0) {} // empty default ctor for testing purposes only
+		: fPipe(0), fChildPid(-1), fStderr(0), fTimeout(0) {} // empty default ctor for testing purposes only
 	//--- subclass api
 	//!do the real work
 

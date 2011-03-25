@@ -6,20 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SysLogTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SystemLog.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 
 //---- SysLogTest ----------------------------------------------------------------
 SysLogTest::SysLogTest(TString tname) : TestCaseType(tname)

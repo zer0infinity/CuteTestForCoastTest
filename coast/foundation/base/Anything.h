@@ -12,7 +12,6 @@
 #include "ITOString.h"
 #include "AnyImplTypes.h"
 #include "AnythingIterator.h" // new version of STL compliant iterators
-#include <iterator>
 
 class AnyImpl;
 class ROAnything;
@@ -760,7 +759,7 @@ public:
 		be careful if the memory of the tricky thing is short lived!!!
 		\param any the tricky Anything we use its allocator for reference semantics */
 	TrickyThing(TrickyThing &any) : Anything(any, any.GetAllocator()) {}
-};
+};//lint !e1509
 
 //---- ROAnything --------------------------------------------------------------
 /*! ROAnything is an Anything which is immutable for MT-Safe reasons.

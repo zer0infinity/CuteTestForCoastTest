@@ -6,20 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "Socket.h"
-
-//--- interface include --------------------------------------------------------
 #include "ConnectorTest.h"
-
-//--- standard modules used ----------------------------------------------------
+#include "TestSuite.h"
+#include "Socket.h"
 #include "Resolver.h"
 #include "PoolAllocator.h"
 
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
 #endif
@@ -54,8 +46,7 @@ void ConnectorTest::simpleConstructorTest()
 	t_assertm( connector.GetStream() != NULL, msg );
 	delete socket;
 	socket = 0;
-
-} // simpleConstructorTest
+}//lint !e438
 
 void ConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, bool threadLocal, bool shouldFail)
 {
@@ -100,20 +91,14 @@ void ConnectorTest::bindingConstructorTest()
 	// assert the internal state of the connector
 	assertEqual( Resolver::DNS2IPAddress(targetConfig["ip"].AsString()), connector.GetAddress() );
 	assertEqual( targetConfig["port"].AsLong(), connector.fPort );
-	assertEqual( (long)NULL, (long)connector.fSocket );
+	assertEqual( 0, (long)connector.fSocket );
 	assertEqual( Resolver::DNS2IPAddress(targetConfig["ip"].AsString()), connector.fSrcIPAdress );
 	assertEqual( SRC_PORT, connector.fSrcPort );
-	assertEqual( (long)NULL, (long)connector.fSocket );
+	assertEqual( 0, (long)connector.fSocket );
 
 	// assert the funtionality of the public api
 	t_assert( connector.Use() != NULL );
 	t_assert( connector.GetStream() != NULL );
-	if (SRC_PORT > 0) {
-		assertEqual( SRC_PORT, connector.GetBoundPort() );
-		// it is not possible to create a second socket object with a fully bound socket
-		Socket *socket = connector.MakeSocket();
-		t_assert( socket == NULL );
-	}
 }
 
 void ConnectorTest::faultyConstructorTest()

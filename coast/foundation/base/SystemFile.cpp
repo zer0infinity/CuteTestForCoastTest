@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SystemFile.h"
 #include "SystemBase.h"
 #include "MmapStream.h"
 #include "InitFinisManagerFoundation.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <errno.h>
 #include <cstring>
 #include <climits>
@@ -267,7 +262,7 @@ namespace {
 				case Coast::System::eSuccess: {
 					// create link into original directory (strOriginalDir)
 					aDirStatus = Coast::System::CreateSymbolicLink(strExtensionDir, strOriginalDir);
-				}
+				} /* fall through */
 				default: {
 					bContinue = false;
 				}

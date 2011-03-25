@@ -9,8 +9,8 @@
 #ifndef _StringSTLTest_h_
 #define _StringSTLTest_h_
 
-#include "TestCase.h"
-#include "ITOString.h"
+#include "TestCase.h"//lint !e537
+#include "ITOString.h"//lint !e537
 
 //---- StringSTLTest -----------------------------------------------------------
 //!some special tests for String

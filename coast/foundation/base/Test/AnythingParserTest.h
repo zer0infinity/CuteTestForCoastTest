@@ -9,8 +9,8 @@
 #ifndef _AnythingParserTest_h_
 #define _AnythingParserTest_h_
 
-#include "TestCase.h"
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 //---- AnythingParserTest -----------------------------------------------------------
 //!testcases for AnythingParser
 class AnythingParserTest : public TestFramework::TestCase

@@ -9,12 +9,8 @@
 #ifndef _AnySorterTest_H
 #define _AnySorterTest_H
 
-//---- TestFramework include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
-//---- forward declaration -----------------------------------------------
-
-//---- AnySorterTest -----------------------------------------------------------
 //!testcases for AnySorterTest
 class AnySorterTest : public TestFramework::TestCaseWithConfig
 {

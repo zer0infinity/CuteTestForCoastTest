@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SS1Test.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 SS1Test::SS1Test(TString tname)
 	: TestCaseType(tname)

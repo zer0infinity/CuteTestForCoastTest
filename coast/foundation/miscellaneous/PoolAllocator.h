@@ -9,8 +9,7 @@
 #ifndef _PoolAllocator_H
 #define _PoolAllocator_H
 
-//---- baseclass include -------------------------------------------------
-#include "ITOStorage.h"
+#include "ITOStorage.h"//lint !e537
 
 struct PoolBucket;
 
@@ -72,7 +71,7 @@ public:
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
 	//! implement hook for freeing memory
-	virtual void Free(void *vp);
+	virtual void Free(void *vp);//lint !e1511
 	//! implement hook for freeing memory
 	virtual void Free(void *vp, size_t sz);
 

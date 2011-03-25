@@ -9,10 +9,7 @@
 #ifndef _ROSimpleAnythingTest_H
 #define _ROSimpleAnythingTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
+#include "TestCase.h"//lint !e537
 
 //---- ROSimpleAnythingTest ----------------------------------------------------------
 //!TestCases for the ROAnything class Simple types part

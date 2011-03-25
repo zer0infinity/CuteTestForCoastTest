@@ -9,9 +9,8 @@
 #ifndef _AnyUtilsTest_h_
 #define _AnyUtilsTest_h_
 
-#include "TestCase.h"
-
-#include "Anything.h"
+#include "TestCase.h"//lint !e537
+#include "Anything.h"//lint !e537
 
 //---- AnyUtilsTest -----------------------------------------------------------
 //!testcases for AnyUtils
@@ -34,7 +33,6 @@ protected:
 	bool DoXMLTest(const char *expect, ROAnything foroutput);
 	// utility
 	void DoCheck(Anything testCases, bool expectedResult, String description);
-	void Dump(std::ostream &os, const Anything &data, const String &str);
 };
 
 #endif

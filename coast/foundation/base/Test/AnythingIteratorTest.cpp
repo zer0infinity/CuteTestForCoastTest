@@ -1,7 +1,4 @@
-//--- interface include --------------------------------------------------------
 #include "AnythingIteratorTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 #include "Dbg.h"

@@ -6,17 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "StringPerfTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
-#include "Dbg.h"
+#include "Dbg.h"//lint !e537
 
-//--- c-library modules used ---------------------------------------------------
 
 //---- StringPerfTest ----------------------------------------------------------------
 StringPerfTest::StringPerfTest(TString tstrName)

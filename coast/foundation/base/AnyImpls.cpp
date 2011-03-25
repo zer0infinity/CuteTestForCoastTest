@@ -6,23 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -------------------------------------------------------
 #include "AnyImpls.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "IFAObject.h"
 #include "AnyVisitor.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-#include "AllocatorNewDelete.h"
 #include <algorithm>
 #include <iostream>
-
-//--- c-modules used -----------------------------------------------------------
 #include <cstring>
-#include <cstdlib>
-#include <stdexcept>
 
 #if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
@@ -46,9 +37,9 @@ static const Anything fgAnyEmpty(Coast::Storage::Global()); // avoid temporary
 //---- AnyImpl --------------------------------------------------------------
 
 String AnyImpl::ThisToHex(Allocator *a) const {
-	char buf[1+2*(sizeof(this)>4?sizeof(long long):4)];
+	char buf[1+2*(sizeof(this)>4?sizeof(long long):4)];//lint !e506
 	static char const *const fmt = (sizeof(this)>4)?"%016.16llx":"%08.8lx"; // assume large pointers are 64bit = 8 Bytes large
-	int iSize=snprintf(buf,sizeof(buf),fmt,this);
+	int iSize = snprintf(buf, sizeof(buf), fmt, this);
 	String hexStr(buf, iSize, a);
 	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Coast::Storage::Current());
 	return hexStr;
@@ -228,7 +219,7 @@ public:
 		fKey.SetAllocator(a);
 	}
 	Anything &Value() {
-		return fValue;
+		return fValue;//lint !e1536
 	}
 	const Anything &Value() const {
 		return fValue;
@@ -248,14 +239,14 @@ public:
 			fKey = aka.Key();
 		}
 		return *this;
-	}
+	}//lint !e1529
 	Allocator *MyAllocator() {
 		return fValue.GetAllocator();
 	}
 private:
 	Anything fValue;
 	String fKey;
-};
+};//lint !e1510
 
 //---- AnyKeyTable --------------------------------------------------
 #define LOADFACTOR 0.75
@@ -291,7 +282,7 @@ AnyKeyTable::~AnyKeyTable() {
 		fKeyTable = 0;
 		fHashTable = 0;
 	}
-}
+}//lint !e1579
 
 void AnyKeyTable::InitTable(long cap) {
 	if (cap < cInitCapacity) {
@@ -447,13 +438,13 @@ AnyIndTable::AnyIndTable(long initCapacity, Allocator *a) :
 
 AnyIndTable::~AnyIndTable() {
 	if (fIndexTable) {
-		Clear();
-		fAllocator->Free(fIndexTable);
-		fAllocator->Free(fEmptyTable);
+		Clear();//lint !e1551
+		fAllocator->Free(fIndexTable);//lint !e1551
+		fAllocator->Free(fEmptyTable);//lint !e1551
 
 		fIndexTable = 0;
 	}
-}
+}//lint !e1579//lint !e1579
 
 void AnyIndTable::InitTable(long cap) {
 	fCapacity = cap;
@@ -690,7 +681,7 @@ Anything &AnyArrayImpl::At(const char *key) {
 	if (slot < 0) {
 		// key doesn't exist so append this key in the key array
 		// with the according slot
-		slot = fKeys->Append(key, fSize);
+		slot = fKeys->Append(key, fSize);//lint !e613
 		slot = IntAt(slot);
 		// set the key in the any key assoc structure
 		fContents[IntAtBuf(slot)][IntAtSlot(slot)].SetKey(key);
@@ -841,9 +832,9 @@ void AnyArrayImpl::Expand(long newsize) {
 	// check for the range of the capacity
 	Assert((fCapacity % ARRAY_BUF_SIZE) == 0);
 
-	// calculate the number of buffers needed for the expansion
+	// calculate the number of buffe	long numOfExistingBufs = fNumOfBufs;
 	long numOfExistingBufs = fNumOfBufs;
-	long numOfNewBufs = fCapacity / ARRAY_BUF_SIZE; //fCapacity / ARRAY_BUF_SIZE + 1;
+	long numOfNewBufs = fCapacity / static_cast<long>(ARRAY_BUF_SIZE); //fCapacity / ARRAY_BUF_SIZE + 1;
 
 	Assert(numOfNewBufs *ARRAY_BUF_SIZE >= newsize);
 
@@ -903,7 +894,7 @@ void AnyArrayImpl::InsertReserve(long pos, long size) {
 void AnyArrayImpl::AllocMemory() {
 	// calculate the number of needed buffers
 	// allocate at least ARRAY_BUF_SIZE buffers of the size ARRAY_BUF_SIZE
-	fNumOfBufs = fCapacity / ARRAY_BUF_SIZE; // round to the next multiple
+	fNumOfBufs = fCapacity / static_cast<long>(ARRAY_BUF_SIZE); // round to the next multiple
 	//(fCapacity / ARRAY_BUF_SIZE > ARRAY_BUF_SIZE) ? fCapacity/ARRAY_BUF_SIZE : ARRAY_BUF_SIZE;
 	fContents = static_cast<AnyKeyAssoc **>( MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *)));
 
@@ -923,7 +914,7 @@ void AnyArrayImpl::PrintKeys() const {
 			hash = 	fKeys->At(fContents[IntAtBuf(at)][IntAtSlot(at)].Key());
 		}
 		String m;
-		m << "[" << i << "]<" << NotNullStr(fContents[IntAtBuf(at)][IntAtSlot(at)].Key()) << ">(" << hash << ")" << "\n";
+		m << "[" << i << "]<" << NotNullStr(fContents[IntAtBuf(at)][IntAtSlot(at)].Key()) << ">(" << hash << ")" << "\n";//lint !e666
 		SystemLog::WriteToStderr(m);
 	}
 }

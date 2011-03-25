@@ -6,15 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SystemBase.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "Anything.h"
 
-//--- c-library modules used ---------------------------------------------------
 #include <errno.h>
 #include <cstring>
 #include <fcntl.h>
@@ -73,15 +69,15 @@ namespace Coast {
 			timeval t;
 
 			// initialize the descriptor sets
-			FD_ZERO(&readfds); //lint -esym(530, readfds)
-			FD_ZERO(&writefds); //lint -esym(530, writefds)
-			FD_ZERO(&exceptfds);
+			FD_ZERO(&readfds);//lint !e529
+			FD_ZERO(&writefds);//lint !e529
+			FD_ZERO(&exceptfds);//lint !e529
 
 			// set the descriptor sets
 			if (bRead) {
-				FD_SET(fd, &readfds);
+				FD_SET(fd, &readfds);//lint !e530
 			} else if (bWrite) {
-				FD_SET(fd, &writefds);
+				FD_SET(fd, &writefds);//lint !e530
 			}
 			t.tv_sec = timeout / 1000;
 			t.tv_usec = 1000 * (timeout % 1000);

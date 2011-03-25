@@ -6,17 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "StringTokenizer2Test.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-library modules used ---------------------------------------------------
 
 StringTokenizer2Test::StringTokenizer2Test (TString tname)
 	: TestCaseType(tname)
@@ -1010,7 +1001,7 @@ void StringTokenizer2Test::constrMethodsAll ()
 void StringTokenizer2Test::getRemainder()
 {
 	StringTokenizer2 st0(".foo:bar.frm:", ".:");
-	String remainder, token;
+	String remainder, token;//lint !e578
 
 	// initial round, no parsing started yet
 	remainder = st0.GetRemainder();

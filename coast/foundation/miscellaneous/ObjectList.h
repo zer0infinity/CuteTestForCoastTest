@@ -9,13 +9,10 @@
 #ifndef _ObjectList_H
 #define _ObjectList_H
 
-//---- standard-module include ----------------------------------------------
 #include "ITOString.h"
 #include "Dbg.h"
 #include "ITOTypeTraits.h"
 #include "STLStorage.h"
-
-//---- c-module include -----------------------------------------------------
 #include <algorithm>
 #include <list>
 

@@ -6,17 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "SystemFile.h"
 
 using namespace Coast;
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "StrSpecialTest.h"
 
 StrSpecialTest::StrSpecialTest (TString tname) : TestCaseType(tname)

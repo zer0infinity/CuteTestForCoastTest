@@ -9,10 +9,8 @@
 #ifndef _StringTest_h_
 #define _StringTest_h_
 
-#include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
-#include "ITOString.h"
+#include "TestCase.h"//lint !e537
+#include "ITOString.h"//lint !e537
 
 //---- StringTest -----------------------------------------------------------
 //!testcases for String

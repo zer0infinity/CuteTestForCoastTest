@@ -6,24 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Resolver.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Socket.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-#include <ctype.h> // for isdigit test..
-
 #if !defined(WIN32)
-#include <arpa/nameser.h>	// for inet_ntop gethostbyname etc.
 #include <arpa/inet.h>		// for inet_ntop gethostbyname etc.
-#include <resolv.h>			// for inet_ntop gethostbyname etc.
 #include <netdb.h>			// for gethostbyname etc.
-#include <sys/socket.h>		// for gethostbyname etc.
-#include <netinet/in.h>		// for gethostbyname etc.
 #else
 #include <io.h>
 #endif

@@ -9,7 +9,6 @@
 #ifndef _IFAOBJECT_H
 #define _IFAOBJECT_H
 
-#include "foundation.h"
 #include "AllocatorNewDelete.h"
 
 class String;

@@ -9,10 +9,7 @@
 #ifndef _PipeExecutorTest_H
 #define _PipeExecutorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- PipeExecutorTest ----------------------------------------------------------
 //!
@@ -24,7 +21,6 @@ public:
 	virtual ~PipeExecutorTest();
 	void EchoCatTest(); // call cat for echoing stdin stdout
 	void CatWorkingDirTest(); // call cat for reading a file in separate dir
-	void EchoCatErrTest(); // call cat for echoing stdin stdout
 	void EchoEnvTest();
 	void FailExecTest();
 	void KillTest();

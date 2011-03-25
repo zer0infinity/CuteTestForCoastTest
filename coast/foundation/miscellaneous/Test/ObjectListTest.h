@@ -9,7 +9,6 @@
 #ifndef _ObjectListTest_H
 #define _ObjectListTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- ObjectListTest ----------------------------------------------------------

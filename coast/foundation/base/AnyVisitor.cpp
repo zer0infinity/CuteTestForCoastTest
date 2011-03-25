@@ -6,13 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnyVisitor.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-//--- c-modules used -----------------------------------------------------------
 
 //---- AnyVisitor ----------------------------------------------------------------
 void	AnyVisitor::VisitArray(const ROAnything value, const AnyImpl *id, long index, const char *slotname)

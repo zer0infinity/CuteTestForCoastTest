@@ -9,10 +9,7 @@
 #ifndef _ResolverTest_H
 #define _ResolverTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
-
-//---- forward declaration -----------------------------------------------
+#include "FoundationTestTypes.h"//lint !e537
 
 //---- ResolverTest ----------------------------------------------------------
 //!TestCases for the Resolver class

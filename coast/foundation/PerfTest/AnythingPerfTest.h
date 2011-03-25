@@ -9,7 +9,6 @@
 #ifndef _AnythingPerfTest_H
 #define _AnythingPerfTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- AnythingPerfTest ----------------------------------------------------------

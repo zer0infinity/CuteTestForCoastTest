@@ -13,7 +13,7 @@ namespace Coast
 	void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {
-			void *ptr = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);
+			void *ptr = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>::value);//lint !e1550
 			Memory::allocatorFor(ptr) = a; // remember address of responsible Allocator
 			return reinterpret_cast<char *>(ptr) + Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
 		}
@@ -26,7 +26,7 @@ namespace Coast
 			return operator new(sz, a);
 		} else {
 			sz += Memory::AlignedSize<Allocator *>::value;
-			return reinterpret_cast<char *>(calloc(sz, 1)) + Memory::AlignedSize<Allocator *>::value;
+			return reinterpret_cast<char *>(calloc(sz, 1)) + Memory::AlignedSize<Allocator *>::value;//lint !e613
 		}
 	}
 
@@ -53,7 +53,7 @@ namespace Coast
 
 	void AllocatorNewDelete::operator delete[](void *ptr) throw()
 	{
-		operator delete(ptr);
+		operator delete(ptr);//lint !e1023
 	}
 
 	AllocatorNewDelete::~AllocatorNewDelete() {}

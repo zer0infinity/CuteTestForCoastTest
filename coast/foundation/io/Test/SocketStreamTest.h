@@ -9,9 +9,8 @@
 #ifndef _SocketStreamTest_H
 #define _SocketStreamTest_H
 
-#include "FoundationTestTypes.h"
+#include "FoundationTestTypes.h"//lint !e537
 
-//---- forward declaration -----------------------------------------------
 class Connector;
 
 //---- SocketStreamTest -----------------------------------------------------------
@@ -20,7 +19,6 @@ class SocketStreamTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	SocketStreamTest(TString tstrName);
-	virtual ~SocketStreamTest();
 
 	static Test *suite ();
 	void setUp ();
