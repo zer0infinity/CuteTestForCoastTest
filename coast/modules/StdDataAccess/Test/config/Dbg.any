@@ -72,14 +72,15 @@
 		/EnableAll						200
 	}
 	/ParameterMapper {
-		/MainSwitch						10
-		/EnableAll						0
+		/MainSwitch						11
+		/EnableAll						11
 		/DoLoadConfig					-10
 	}
 	/ResultMapper {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 		/DoLoadConfig					-10
+		/DoGetConfigName				-11
 	}
 	/MapperTestDAImpl {
 		/MainSwitch						10
@@ -90,32 +91,36 @@
 		/EnableAll						10
 	}
 	/HTTPMimeHeaderMapper {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/HTTPMimeHeaderMapperTest {
 		/MainSwitch						10
 		/EnableAll						0
 	}
 	/MimeHeaderReultMapper {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/MimeHeaderResultMapperTest {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
+	}
+	/ConfigurableStoreResultMapper {
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/SplitCookieResultMapper {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/SplitCookieResultMapperTest {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/RenderedKeyMapper {
-		/MainSwitch						10
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 	}
 	/HTTPBodyMapper {
 		/MainSwitch						0
