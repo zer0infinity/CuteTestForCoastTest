@@ -13,10 +13,6 @@
 #include "Pipe.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
-
-using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 #if !defined(WIN32)
 #include <sys/wait.h>
@@ -26,7 +22,11 @@ using namespace Coast;
 #endif
 #include <fcntl.h>
 #include <errno.h>
+#if defined(sun)
+#include <signal.h>	/* for kill() */
+#endif
 
+using namespace Coast;
 //---- PipeExecutor ----------------------------------------------------------------
 PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long lExecTimeout, bool bOpenStreamForStderr)
 	: fPipe(0)
