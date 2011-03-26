@@ -51,7 +51,6 @@ namespace {
 	char const contentDispositionDelimiter = ';';
 	char const headerArgumentsDelimiter = ',';
 	char const valueArgumentDelimiter = '=';
-	char const *strPreparedPrefix = "preparedHeaders.";
 
 	String const strSplitfields("^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)", -1, Coast::Storage::Global());
 //	Anything const headersREProgram = RECompiler().compile(strSplitfields);
