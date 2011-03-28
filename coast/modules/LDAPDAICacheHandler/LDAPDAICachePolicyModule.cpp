@@ -198,7 +198,7 @@ ROAnything LDAPDAICacheGetter::GetAll(const String &dataAccess)
 	StartTrace1(LDAPDAICacheGetter.GetAll, dataAccess);
 
 	CacheHandler *cache = CacheHandler::Get();
-	return cache->Get("LdapDAIGetter", dataAccess);
+	return cache ? cache->Get("LdapDAIGetter", dataAccess) : ROAnything();
 }
 
 bool LDAPDAICacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI)

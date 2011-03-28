@@ -139,7 +139,7 @@ ROAnything CacheHandler::GetGroup(const char *group) {
 
 CacheHandler *CacheHandler::Get() {
 	StartTrace(CacheHandler.Get);
-	if (!fgCacheHandler) {
+	if (!fgCacheHandler && fgCacheHandlerMutex) {
 		LockUnlockEntry me(*fgCacheHandlerMutex);
 		// test again if changed while waiting for mutex
 		if (!fgCacheHandler) {

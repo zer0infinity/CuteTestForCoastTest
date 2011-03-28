@@ -173,7 +173,6 @@ bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r) 
 		const char *pcRegObjectName = installerSpec.SlotName(l);
 		installSuccess = InstallTree(GetLeaf(pcRegObjectName, 0, r), pcRegObjectName, installerSpec[l], r);
 	}
-
 	return installSuccess;
 }
 
@@ -242,7 +241,6 @@ bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootNa
 			}
 		}
 	}
-
 	return installSuccess;
 }
 

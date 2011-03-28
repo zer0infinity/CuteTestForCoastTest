@@ -83,9 +83,11 @@ bool HTTPHeaderParameterMapper::DoInitialize()
 		Anything toCache = Anything(Anything::ArrayMarker());
 		toCache[gsSuppressName] = suppresslist;
 		CacheHandler *cache= CacheHandler::Get();
-		AnythingLoaderPolicy loader(toCache);
-		ROAnything roaList = cache->Load(gsGroupName, GetName(), &loader);
-		TraceAny(roaList, "cached suppress list");
+		if ( cache ) {
+			AnythingLoaderPolicy loader(toCache);
+			ROAnything roaList = cache->Load(gsGroupName, GetName(), &loader);
+			TraceAny(roaList, "cached suppress list");
+		}
 	}
 	return true;
 }
@@ -95,7 +97,8 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 	// check first in cache with this object name as prefix
 	bool bValueFound = false;
 	if ( String(key).StartsWith(gsSuppressName) ) {
-		ROAnything roaCache = CacheHandler::Get()->Get(gsGroupName, GetName());
+		CacheHandler *cache = CacheHandler::Get();
+		ROAnything roaCache = cache ? cache->Get(gsGroupName, GetName()): ROAnything();
 		TraceAny(roaCache, "result from cache for [" << GetName() << "]");
 		if (!roaCache.IsNull()) {
 			bValueFound = roaCache.LookupPath(result, key);

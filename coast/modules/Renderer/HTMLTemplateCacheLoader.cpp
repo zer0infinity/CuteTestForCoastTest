@@ -94,7 +94,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 	TemplateParser tp;
 	HTMLTemplateCacheLoader htcl(&tp, config);
 
-	while ( st.NextToken(templateDir) ) {
+	while ( cache && st.NextToken(templateDir) ) {
 		// cache templates of template dir
 		filepath = rootDir;
 		filepath << System::Sep() << templateDir;

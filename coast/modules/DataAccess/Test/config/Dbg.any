@@ -85,9 +85,14 @@
 		/EnableAll	10
 	}
 	/ConfNamedObject {
-		/MainSwitch 0
+		/MainSwitch 10
 		/EnableAll	10
-		/DoLoadConfig	-10
+		/DoLoadConfig	10
+		/IntFinalize 10
+	}
+	/CacheHandler {
+		/MainSwitch 10
+		/EnableAll	10
 	}
 	/MappersModule {
 		/MainSwitch 0

@@ -194,7 +194,7 @@ ROAnything LdapCacheGetter::GetAll(const String &dataAccess)
 	StartTrace1(LdapCacheGetter.GetAll, dataAccess);
 
 	CacheHandler *cache = CacheHandler::Get();
-	return cache->Get("LdapGetter", dataAccess);
+	return cache ? cache->Get("LdapGetter", dataAccess) : ROAnything();
 }
 
 bool LdapCacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI)

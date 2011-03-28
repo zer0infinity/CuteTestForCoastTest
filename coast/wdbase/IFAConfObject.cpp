@@ -206,9 +206,10 @@ void ConfNamedObject::SetConfig(const char *category, const char *key, ROAnythin
 	TraceAny(fConfig, "currentConfig:");
 	TraceAny(newConfig, "newConfig:");
 	CacheHandler *cache = CacheHandler::Get();
-
-	AnythingLoaderPolicy alp(newConfig);
-	fConfig = cache->Reload(category, key, &alp);
+	if ( cache ) {
+		AnythingLoaderPolicy alp(newConfig);
+		fConfig = cache->Reload(category, key, &alp);
+	}
 	TraceAny(fConfig, "adjustedConfig:");
 	// ensure that the next call to CheckConfig succeeds without loading config again
 	fbConfigLoaded = true;
@@ -238,10 +239,10 @@ bool ConfNamedObject::DoLoadConfig(const char *category)
 	if ( DoGetConfigName(category, fName, configFileName) ) {
 		Trace("loading cat <" << category << "> name <" << configFileName << ">");
 		CacheHandler *cache = CacheHandler::Get();
-
-		SimpleAnyLoader sal;
-		fConfig = cache->Load(category, configFileName, &sal);
-
+		if ( cache ) {
+			SimpleAnyLoader sal;
+			fConfig = cache->Load(category, configFileName, &sal);
+		}
 		SubTraceAny(TraceConfig, fConfig, "Config &" << (long)&fConfig);
 		// always return true because even an empty config is a valid config
 		bRet = true;
