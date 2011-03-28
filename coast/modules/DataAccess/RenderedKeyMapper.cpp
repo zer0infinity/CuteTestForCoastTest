@@ -32,16 +32,30 @@ namespace {
 		}
 	}
 }
-//---- RenderedKeyMapper ------------------------------------------------------------------
-RegisterResultMapper(RenderedKeyMapper);
+//---- RenderedKeyResultMapper ------------------------------------------------------------------
+RegisterResultMapper(RenderedKeyResultMapper);
 
-bool RenderedKeyMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
-	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
+bool RenderedKeyResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
+	StartTrace1(RenderedKeyResultMapper.DoPutAny, NotNull(key));
 	String strKey = renderKey(*this, ctx, key, value);
 	Trace("new key [" << strKey << "]");
 	storeKey(*this, ctx, strKey);
 	return ResultMapper::DoPutAny(strKey, value, ctx, script);
 }
+
+ROAnything RenderedKeyResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const
+{
+	StartTrace1(RenderedKeyResultMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
+	TraceAny(script, "script config");
+	ROAnything roaReturn;
+	if ( script.IsNull() || not ( script.LookupPath(roaReturn, key) || script.LookupPath(roaReturn, "*", '\0', '\0') ) ) {
+		Trace("key not found in given script or Null-script, use hierarch-lookup mechanism now");
+		roaReturn = Lookup(key);
+	}
+	TraceAny(roaReturn, "selected script");
+	return roaReturn;
+}
+
 //---- RenderedKeyParameterMapper ------------------------------------------------------------------
 RegisterParameterMapper(RenderedKeyParameterMapper);
 

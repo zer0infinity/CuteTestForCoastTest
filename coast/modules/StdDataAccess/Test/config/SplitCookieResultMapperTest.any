@@ -17,11 +17,11 @@
 					/Delim ","
 					/HTTPHeader {
 						/SET-COOKIE {
-							/RenderedKeyMapper *
+							/RenderedKeyResultMapper *
 						}
 					}
 				}
-				/RenderedKeyMapper {
+				/RenderedKeyResultMapper {
 					/DestinationSlot "StoredCookies"
 					/PutPolicy Append
 					/Delim ","
@@ -33,6 +33,7 @@
 				}
 			}
 			/Result {
+				/Delim ","
 				/TmpStore {
 					/StoredCookies {
 						/.ASPXAUTH {
@@ -59,15 +60,16 @@
 					/Delim ","
 					/HTTPHeader {
 						/SET-COOKIE {
-							/RenderedKeyMapper {
-								/ConfigurableStoreResultMapper *
+							/RenderedKeyResultMapper {
+								/"*" {
+									/ConfigurableStoreResultMapper *
+								}
 							}
 						}
 					}
 				}
-				/RenderedKeyMapper {
+				/RenderedKeyResultMapper {
 					/DestinationSlot "StoredCookies"
-					/PutPolicy Append
 					/Delim ","
 					/KeySpec {
 						/ContextLookupRenderer {
@@ -77,11 +79,13 @@
 				}
 				/ConfigurableStoreResultMapper {
 					/Delim	","
+					/PutPolicy Append
 					/DestinationSlot StoredCookies
 					/Store	Session
 				}
 			}
 			/Result {
+				/Delim ","
 				/SessionStore {
 					/StoredCookies {
 						/.ASPXAUTH {
@@ -109,11 +113,11 @@
 					/Delim ","
 					/HTTPHeader {
 						/SET-COOKIE {
-							/RenderedKeyMapper *
+							/RenderedKeyResultMapper *
 						}
 					}
 				}
-				/RenderedKeyMapper {
+				/RenderedKeyResultMapper {
 					/DestinationSlot "MultiCookies"
 					/PutPolicy Append
 					/Delim ","
@@ -125,6 +129,7 @@
 				}
 			}
 			/Result {
+				/Delim ","
 				/TmpStore {
 					/MultiCookies {
 						/.ASPXAUTH {

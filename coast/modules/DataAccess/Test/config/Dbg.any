@@ -240,4 +240,12 @@
 		/MainSwitch 11
 		/EnableAll 11
 	}
+	/RenderedKeyResultMapper {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/RenderedKeyResultMapperTest {
+		/MainSwitch 11
+		/EnableAll 11
+	}
 }

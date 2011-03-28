@@ -24,6 +24,7 @@
 #include "ConfigMapperTest.h"
 #include "StreamingAnythingMapperTest.h"
 #include "RegExpFilterFieldsResultMapperTest.h"
+#include "RenderedKeyResultMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -44,4 +45,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, ConfigMapperTest);
 	ADD_SUITE(runner, StreamingAnythingMapperTest);
 	ADD_SUITE(runner, RegExpFilterFieldsResultMapperTest);
+	ADD_SUITE(runner, RenderedKeyResultMapperTest);
 } // setupRunner

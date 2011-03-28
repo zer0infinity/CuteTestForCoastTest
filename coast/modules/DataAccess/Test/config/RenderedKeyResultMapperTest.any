@@ -1,0 +1,154 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/ConfiguredTests {
+		/TestMappedKeyLookup {
+			/Value {
+				"something"
+			}
+			/Putkey "blubby"
+			/MapperConfig {
+				/RenderedKeyResultMapper {
+					/DestinationSlot StoredValues
+					/KeySpec {
+						/ContextLookupRenderer {
+							MappedKey
+						}
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/StoredValues {
+						/blubby {
+							something
+						}
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/MyStoredKey *
+				}
+			}
+		}
+		/TestMappedKeyLookupAndStoreNewKey {
+			/Value {
+				"something"
+			}
+			/Putkey "blubby"
+			/MapperConfig {
+				/RenderedKeyResultMapper {
+					/DestinationSlot StoredValues
+					/StoreKeyAt	MyStoredKey
+					/KeySpec {
+						/ContextLookupRenderer {
+							MappedKey
+						}
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/StoredValues {
+						/blubby {
+							something
+						}
+					}
+					/MyStoredKey blubby
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/TestCatchAllPostMapping {
+			/Value {
+				"something"
+			}
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper {
+							/"*" {
+								/ConfigurableStoreResultMapper *
+							}
+						}
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						/ContextLookupRenderer {
+							MappedKey
+						}
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+			}
+			/Result {
+				/SessionStore {
+					/StoredValues {
+						/blubby {
+							something
+						}
+					}
+				}
+			}
+		}
+		/TestExplicitKeyPostMapping {
+			/Value {
+				"something"
+			}
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper {
+							/blubby {
+								/RootMapper *
+							}
+							/"*" {
+								/ConfigurableStoreResultMapper *
+							}
+						}
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						mynewkey
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+				/RootMapper *
+			}
+			/Result {
+				/TmpStore {
+					/mynewkey {
+						something
+					}
+				}
+			}
+			/NotResult {
+				/SessionStore {
+					/StoredValues *
+				}
+				/TmpStore {
+					/StoredValues *
+				}
+			}
+		}
+	}
+}

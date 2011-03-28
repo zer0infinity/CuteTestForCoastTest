@@ -6,17 +6,17 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _SplitCookieResultMapperTest_H
-#define _SplitCookieResultMapperTest_H
+#ifndef _RenderedKeyResultMapperTest_H
+#define _RenderedKeyResultMapperTest_H
 
 #include "FoundationTestTypes.h"
 
-//---- SplitCookieResultMapperTest ----------------------------------------------------------
-class SplitCookieResultMapperTest: public TestFramework::TestCaseWithConfig {
+//---- RenderedKeyResultMapperTest ----------------------------------------------------------
+class RenderedKeyResultMapperTest: public TestFramework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	SplitCookieResultMapperTest(TString tstrName) :
+	RenderedKeyResultMapperTest(TString tstrName) :
 		TestCaseType(tstrName) {
 	}
 

@@ -6,12 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _RenderedKeyMapper_H
-#define _RenderedKeyMapper_H
+#ifndef _RenderedKeyResultMapper_H
+#define _RenderedKeyResultMapper_H
 
 #include "Mapper.h"
 
-//---- RenderedKeyMapper ----------------------------------------------------------
+//---- RenderedKeyResultMapper ----------------------------------------------------------
 //! Dynamically adjust the \c Put key according to Renderer specification
 /*! They key used to put the value will be rendered according to the given specification prior to putting it.
  * To extend the flexibility of rendering, the value itself will be pushed into the Context to allow using entries of
@@ -23,6 +23,8 @@
 	/KeySpec		Renderer specification
 	/StoreKeyAt		Renderer specification
 	/Store 			String
+	/<new-key>		Mapper specification
+	/"*"			catch all Mapper specification
 }
 \endcode
  * @par \c KeySpec
@@ -37,25 +39,38 @@
  * @par \c Store
  * Optional, defaults to TmpStore\n
  * Store the rendered key in a specific store in the context: \c Role -> RoleStore, \c Session -> SessionStore, \c Request
+ *
+ * @par \c <new-key>
+ * Optional, resulting key used to further map the value\n
+ * Mapper specification used to further map/Put() the current value with the new key
+ *
+ * @par \c "*"
+ * Optional, catch all specification to be used for any key not explicitly caught\n
+ * Mapper specification used to further map/Put() the current value with the new key
+ *
  */
-class RenderedKeyMapper: public ResultMapper {
-	RenderedKeyMapper();
-	RenderedKeyMapper(const RenderedKeyMapper &);
-	RenderedKeyMapper &operator=(const RenderedKeyMapper &);
+class RenderedKeyResultMapper: public ResultMapper {
+	RenderedKeyResultMapper();
+	RenderedKeyResultMapper(const RenderedKeyResultMapper &);
+	RenderedKeyResultMapper &operator=(const RenderedKeyResultMapper &);
 public:
 	//--- constructors
-	RenderedKeyMapper(const char *name) :
+	RenderedKeyResultMapper(const char *name) :
 		ResultMapper(name) {
 	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
-		return new (a) RenderedKeyMapper(fName);
+		return new (a) RenderedKeyResultMapper(fName);
 	}
 
 protected:
 	//! Put value according to newly rendered key
 	/*! @copydoc ResultMapper::DoPutAny(const char *, Anything &, Context &, ROAnything) */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
+
+	//! implement special slotname logic to catch 'any' newly generated key using \c "*"
+	/*! @copydetails SelectScript() */
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 };
 
 //---- RenderedKeyParameterMapper ----------------------------------------------------------

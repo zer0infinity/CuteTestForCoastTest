@@ -6,15 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "SplitCookieResultMapperTest.h"
-#include "SplitCookieResultMapper.h"
+#include "RenderedKeyResultMapperTest.h"
+#include "RenderedKeyMapper.h"
 #include "TestSuite.h"
 #include "HierarchyInstallerWithConfig.h"
 #include "CheckStores.h"
 
 namespace {
 	bool setupMappers(ROAnything roaMapperConfigs) {
-		StartTrace(SplitCookieResultMapperTest.setupMappers);
+		StartTrace(RenderedKeyResultMapperTest.setupMappers);
 		Anything mappersToInitialize;
 		ROAnything mapperConfig;
 		AnyExtensions::Iterator<ROAnything> aMapperConfigIterator(roaMapperConfigs);
@@ -27,9 +27,14 @@ namespace {
 		HierarchyInstallerWithConfig ip(ResultMapper::gpcCategory, roaMapperConfigs);
 		return RegisterableObject::Install(mappersToInitialize, ResultMapper::gpcCategory, &ip);
 	}
+	void unregisterMappers() {
+		AliasTerminator at(ResultMapper::gpcCategory);
+		RegisterableObject::Terminate(ResultMapper::gpcCategory, &at);
+	}
 }
-void SplitCookieResultMapperTest::ConfiguredTests() {
-	StartTrace(SplitCookieResultMapperTest.ConfiguredTests);
+
+void RenderedKeyResultMapperTest::ConfiguredTests() {
+	StartTrace(RenderedKeyResultMapperTest.ConfiguredTests);
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
 	while (aEntryIterator.Next(caseConfig)) {
@@ -60,14 +65,15 @@ void SplitCookieResultMapperTest::ConfiguredTests() {
 
 				rm->Finalize();
 			}
+			unregisterMappers();
 		}
 	}
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *SplitCookieResultMapperTest::suite() {
-	StartTrace(SplitCookieResultMapperTest.suite);
+Test *RenderedKeyResultMapperTest::suite() {
+	StartTrace(RenderedKeyResultMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, SplitCookieResultMapperTest, ConfiguredTests);
+	ADD_CASE(testSuite, RenderedKeyResultMapperTest, ConfiguredTests);
 	return testSuite;
 }
