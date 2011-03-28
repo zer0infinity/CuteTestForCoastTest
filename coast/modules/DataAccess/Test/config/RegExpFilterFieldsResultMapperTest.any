@@ -33,35 +33,54 @@
 	/ConfiguredTests {
 		/RegexFieldsMapperPositiveWithCase {
 			/Value %PseudoHTTPHeader
-			/Putkey "CodeExample"
+			/Putkey "CodeExample1"
 			/MapperConfig {
-				/DestinationSlot ""
-				/CodeExample {
-					/^content	*
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot ""
+					/CodeExample1 {
+						/^content	*
+					}
 				}
 			}
 			/Result {
 				/TmpStore {
-					/CodeExample {
+					/CodeExample1 {
 						/content-type "text/html; charset=utf-8"
 						/content-length "4611"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/CodeExample1 {
+						/connection *
+						/date *
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
+						/set-cookie *
+						/cache-control *
+						/CONTENT-TYPE *
+						/CONTENT-LENGTH *
 					}
 				}
 			}
 		}
 		/RegexFieldsMapperPositiveCaseless {
 			/Value %PseudoHTTPHeader
-			/Putkey "CodeExample"
+			/Putkey "CodeExample2"
 			/MapperConfig {
-				/DestinationSlot ""
-				/MatchFlags		1	# caseless matching
-				/CodeExample {
-					/^content	*
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot ""
+					/MatchFlags		1	# caseless matching
+					/CodeExample2 {
+						/^content	*
+					}
 				}
 			}
 			/Result {
 				/TmpStore {
-					/CodeExample {
+					/CodeExample2 {
 						/content-type "text/html; charset=utf-8"
 						/content-length "4611"
 						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
@@ -69,25 +88,42 @@
 					}
 				}
 			}
+			/NotResult {
+				/TmpStore {
+					/CodeExample2 {
+						/connection *
+						/date *
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
+						/set-cookie *
+						/cache-control *
+					}
+				}
+			}
 		}
 		/RegexFieldsMapperCodeExampleTest {
 			/Value %ExampleInput
-			/Putkey "CodeExample"
+			/Putkey "CodeExample3"
 			/MapperConfig {
-				/DestinationSlot SomeWhere
-				/MatchFlags		1
-				/CodeExample {
-					/"^content"	{			# execute Mapper script for entries starting with accept
-						/RootMapper	*
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot SomeWhere
+					/MatchFlags		1
+					/CodeExample3 {
+						/"^content"	{			# execute Mapper script for entries starting with accept
+							/RootMapper	*
+						}
+						/"^server"	"-"			# do not map this entry
+						/"."		*			# catch all others and do default putting
 					}
-					/"^server"	"-"			# do not map this entry
-					/"."		*			# catch all others and do default putting
+				}
+				/RootMapper {
 				}
 			}
 			/Result {
 				/TmpStore {
 					/SomeWhere {
-						/CodeExample {
+						/CodeExample3 {
 							/connection "close"
 							/date "Thu, 11 Nov 2010 08:30:36 GMT"
 							/x-powered-by "ASP.NET"
@@ -95,54 +131,88 @@
 							/cache-control "private"
 						}
 					}
-					/CodeExample {
+					/CodeExample3 {
 						/content-type "text/html; charset=utf-8"
 						/content-length "4611"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/SomeWhere {
+						/CodeExample3 {
+							/server "Microsoft-IIS/6.0"
+							/content-type "text/html; charset=utf-8"
+							/content-length "4611"
+						}
+					}
+					/CodeExample3 {
+						/connection "close"
+						/date "Thu, 11 Nov 2010 08:30:36 GMT"
+						/server "Microsoft-IIS/6.0"
+						/x-powered-by "ASP.NET"
+						/x-aspnet-version "2.0.50727"
+						/cache-control "private"
 					}
 				}
 			}
 		}
 		/RegexFieldsMapperAll {
 			/Value %PseudoHTTPHeader
-			/Putkey "CodeExample"
+			/Putkey "CodeExample4"
 			/MapperConfig {
-				/DestinationSlot ""
-				/CodeExample {
-					/.			*
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot ""
+					/CodeExample4 {
+						/.			*
+					}
 				}
 			}
 			/Result {
 				/TmpStore {
-					/CodeExample %PseudoHTTPHeader
+					/CodeExample4 %PseudoHTTPHeader
+				}
+			}
+			/NotResult {
+				/TmpStore {
 				}
 			}
 		}
 		/RegexFieldsMapperNone {
 			/Value %PseudoHTTPHeader
-			/Putkey "CodeExample"
+			/Putkey "CodeExample5"
 			/MapperConfig {
-				/DestinationSlot ""
-				/CodeExample {
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot ""
+					/CodeExample5 {
+					}
 				}
 			}
 			/Result {
 				/TmpStore {
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/CodeExample5 *
 				}
 			}
 		}
 		/RegexFieldsMapperAllWithoutSome {
 			/Value %PseudoHTTPHeader
-			/Putkey "CodeExample"
+			/Putkey "CodeExample6"
 			/MapperConfig {
-				/DestinationSlot ""
-				/CodeExample {
-					/"(server|^x-)"	"-"
-					/.				*
+				/RegExpFilterFieldsResultMapper {
+					/DestinationSlot ""
+					/CodeExample6 {
+						/"(server|^x-)"	"-"
+						/.				*
+					}
 				}
 			}
 			/Result {
 				/TmpStore {
-					/CodeExample {
+					/CodeExample6 {
 						/connection "close"
 						/date "Thu, 11 Nov 2010 08:30:36 GMT"
 						/set-cookie "ASP.NET_SessionId=csjgcsewg42bva45tsexdu45; path=/; HttpOnly"
@@ -151,6 +221,15 @@
 						/content-length "4611"
 						/CONTENT-TYPE "text/html; charset=utf-8; uppercase"
 						/CONTENT-LENGTH "4611; uppercase"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/CodeExample6 {
+						/server *
+						/x-powered-by *
+						/x-aspnet-version *
 					}
 				}
 			}

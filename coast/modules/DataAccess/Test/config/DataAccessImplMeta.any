@@ -136,16 +136,4 @@
 	}
 	/NameUsingTestWithEmptyLocalConfig %NameUsingTestWithLocalConfig
 	/NameUsingTestWithNullConfig %NameUsingTestWithLocalConfig
-	/RegExpFilterFieldsResultMapperDA {
-		/DataType	Anything
-		/transfer	{
-			{ /ExampleInput CodeExample }
-			{ /HTTPHeader PositiveWithCase }
-			{ /HTTPHeader PositiveCaseless }
-			{ /HTTPHeader ExplicitNoRecursionTest }
-			{ /HTTPHeader All }
-			{ /HTTPHeader None }
-			{ /HTTPHeader AllWithoutSome }
-		}
-	}
 }

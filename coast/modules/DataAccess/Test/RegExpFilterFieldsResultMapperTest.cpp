@@ -9,37 +9,64 @@
 #include "RegExpFilterFieldsResultMapperTest.h"
 #include "RegExpFilterFieldsResultMapper.h"
 #include "TestSuite.h"
-#include "AnyUtils.h"
+#include "HierarchyInstallerWithConfig.h"
+#include "CheckStores.h"
 
-void RegExpFilterFieldsResultMapperTest::ConfiguredTests()
-{
+namespace {
+	bool setupMappers(ROAnything roaMapperConfigs) {
+		StartTrace(SplitCookieResultMapperTest.setupMappers);
+		Anything mappersToInitialize;
+		ROAnything mapperConfig;
+		AnyExtensions::Iterator<ROAnything> aMapperConfigIterator(roaMapperConfigs);
+		String mapperName;
+		while (aMapperConfigIterator.Next(mapperConfig)) {
+			if (aMapperConfigIterator.SlotName(mapperName)) {
+				mappersToInitialize[mapperName] = Anything();
+			}
+		}
+		HierarchyInstallerWithConfig ip(ResultMapper::gpcCategory, roaMapperConfigs);
+		return RegisterableObject::Install(mappersToInitialize, ResultMapper::gpcCategory, &ip);
+	}
+}
+
+void RegExpFilterFieldsResultMapperTest::ConfiguredTests() {
 	StartTrace(RegExpFilterFieldsResultMapperTest.ConfiguredTests);
 	ROAnything caseConfig;
-	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
 	while (aEntryIterator.Next(caseConfig)) {
-		String mapperName;
-		if ( !aEntryIterator.SlotName(mapperName) ) {
+		TString caseName;
+		if (!aEntryIterator.SlotName(caseName)) {
 			t_assertm(false, "can not execute with unnamed case name, only named anything slots allowed");
 			continue;
 		}
-		TString caseName(mapperName.cstr());
 		Anything value = caseConfig["Value"].DeepClone();
 		String putKeyName = caseConfig["Putkey"].AsString("HTTPHeader");
-		RegExpFilterFieldsResultMapper m(mapperName);
-		m.SetConfig(ResultMapper::gpcCategory, mapperName, caseConfig["MapperConfig"]);
-		m.Initialize(ResultMapper::gpcCategory);
-		Context ctx;
-		t_assertm(m.Put(putKeyName, value, ctx), caseName);
-		String outputLocation = m.GetDestinationSlot(ctx);
-		outputLocation.Append(m.getDelim()).Append(putKeyName);
-		assertAnyCompareEqual(caseConfig["Expected"], ctx.GetTmpStore(), caseName, m.getDelim(), m.getIndexDelim());
-		m.Finalize();
+		if (t_assertm(setupMappers(caseConfig["MapperConfig"]), "ResultMapper setup must succeed to execute tests")) {
+			String mapperName = caseConfig["MapperConfig"].SlotName(0L);
+			ResultMapper *rm = ResultMapper::FindResultMapper(mapperName);
+			if (t_assertm(rm != 0, TString("could not find mapper [") << mapperName.cstr() << "]")) {
+				Context ctx;
+				t_assertm(rm->Put(putKeyName, value, ctx), caseName);
+				String outputLocation = rm->GetDestinationSlot(ctx);
+				outputLocation.Append(rm->getDelim()).Append(putKeyName);
+
+				Anything anyFailureStrings;
+				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["Result"], ctx, caseName, Coast::TestFramework::exists);
+				// non-existence tests
+				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["NotResult"], ctx, caseName,
+						Coast::TestFramework::notExists);
+				for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
+					t_assertm(false, anyFailureStrings[i].AsString().cstr());
+				}
+
+				rm->Finalize();
+			}
+		}
 	}
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *RegExpFilterFieldsResultMapperTest::suite ()
-{
+Test *RegExpFilterFieldsResultMapperTest::suite() {
 	StartTrace(RegExpFilterFieldsResultMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, RegExpFilterFieldsResultMapperTest, ConfiguredTests);
