@@ -71,7 +71,7 @@ public:
 	}
 };
 
-static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(1);
+static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(10); // must be of higher priority than RegistryInitFinis !
 
 CacheHandler::CacheHandler() :
 	NotCloned("CacheHandler"), fCache(Coast::Storage::Global()) {
@@ -123,6 +123,14 @@ bool CacheHandler::IsLoaded(const char *group, const char *key) {
 		return fCache[group].IsDefined(key);
 	}
 	return false;
+}
+
+void CacheHandler::Unload(const char *group, const char *key) {
+	StartTrace1(CacheHandler.Unload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+	LockUnlockEntry me(*fgCacheHandlerMutex);
+	if ( IsLoaded(group, key) ) {
+		SlotCleaner::Operate(fCache, String(group).Append('.').Append(key));
+	}
 }
 
 ROAnything CacheHandler::Get(const char *group, const char *key) {

@@ -197,6 +197,8 @@ bool ConfNamedObject::DoUnloadConfig()
 	StartTrace1(ConfNamedObject.DoUnloadConfig, "cat <" << fCategory << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
 	// ensure that we do not access data out of CacheHandler anymore
 	fConfig = ROAnything();
+	CacheHandler *cache = CacheHandler::Get();
+	if ( cache ) cache->Unload(fCategory, fName);
 	return true;
 }
 

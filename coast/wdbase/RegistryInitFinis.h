@@ -42,4 +42,4 @@ public:
 Anything *Registry::fgRegistryArray = 0;
 ROAnything *Registry::fgRORegistryArray = 0;
 bool Registry::fgFinalize = false;
-static RegistryInitFinis *psgRegistryInitCleanup = new RegistryInitFinis(0);
+static RegistryInitFinis *psgRegistryInitCleanup = new RegistryInitFinis(20); // must be of lower priority than CacheHandlerMutexAllocator !

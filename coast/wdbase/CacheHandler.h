@@ -124,6 +124,8 @@ public:
 
 	ROAnything Reload(const char *group, const char *key, CacheLoadPolicy *clp);
 
+	void Unload(const char *group, const char *key);
+
 	// check for already loaded group/key
 	bool IsLoaded(const char *group, const char *key);
 

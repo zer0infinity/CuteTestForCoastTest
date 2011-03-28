@@ -153,11 +153,13 @@ bool AliasTerminator::DoTerminate(Registry *r) {
 	String name;
 	while (ri.HasMore()) {
 		RegisterableObject *ro = ri.Next(name);
-		if (ro && !ro->IsStatic()) {
+		if (ro) {
 			Trace("Terminating <" << name << ">");
 			ro->Finalize();
-			r->UnregisterRegisterableObject(name);
-			delete ro;
+			if (not ro->IsStatic()) {
+				r->UnregisterRegisterableObject(name);
+				delete ro;
+			}
 		}
 	}
 	return true;
