@@ -6,25 +6,21 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "WDModule.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- WDModule iterators
 class WDModuleCaller;
 
 //:abstracting iteration over a module list calling some operation on each module
-class WDModuleIterator
-{
+class WDModuleIterator {
 public:
-	WDModuleIterator(WDModuleCaller *wdmc, bool forward = true) : fCaller(wdmc), fForward(forward) { }
-	virtual ~WDModuleIterator() { }
+	WDModuleIterator(WDModuleCaller *wdmc, bool forward = true) :
+		fCaller(wdmc), fForward(forward) {
+	}
+	virtual ~WDModuleIterator() {
+	}
 	virtual int DoForEach();
 
 protected:
@@ -35,11 +31,9 @@ protected:
 	bool fForward;
 };
 
-class ConfiguredWDMIterator: public WDModuleIterator
-{
+class ConfiguredWDMIterator: public WDModuleIterator {
 public:
 	ConfiguredWDMIterator(WDModuleCaller *wdmc, const ROAnything roaModules, bool forward = true);
-	virtual ~ConfiguredWDMIterator() { }
 
 protected:
 	virtual bool HasMore();
@@ -50,11 +44,9 @@ protected:
 	long fIndex;
 };
 
-class RegistryWDMIterator: public WDModuleIterator
-{
+class RegistryWDMIterator: public WDModuleIterator {
 public:
 	RegistryWDMIterator(WDModuleCaller *wdmc, bool forward = true);
-	virtual ~RegistryWDMIterator() { }
 
 protected:
 	virtual bool HasMore();
@@ -64,13 +56,12 @@ protected:
 };
 
 //---- WDModuleCaller ----------------------------------------------
-
 //:abstracting calling some operation on a module
-class WDModuleCaller
-{
+class WDModuleCaller {
 public:
 	WDModuleCaller(const ROAnything roaConfig);
-	virtual ~WDModuleCaller() { }
+	virtual ~WDModuleCaller() {
+	}
 	virtual bool Call(WDModule *wdm);
 	virtual void SetModules(const ROAnything roaModules) {
 		fModules = roaModules;
@@ -89,11 +80,11 @@ protected:
 	String fModuleName; // only set temporary
 };
 
-class WDInit : public WDModuleCaller
-{
+class WDInit: public WDModuleCaller {
 public:
-	WDInit(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
-	~WDInit() { }
+	WDInit(const ROAnything roaConfig) :
+		WDModuleCaller(roaConfig) {
+	}
 
 	virtual bool DoCall(WDModule *wdm);
 	virtual const char *CallName() {
@@ -101,11 +92,11 @@ public:
 	}
 };
 
-class WDTerminate : public WDModuleCaller
-{
+class WDTerminate: public WDModuleCaller {
 public:
-	WDTerminate(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
-	~WDTerminate() { }
+	WDTerminate(const ROAnything roaConfig) :
+		WDModuleCaller(roaConfig) {
+	}
 
 protected:
 	virtual bool DoCall(WDModule *wdm);
@@ -115,11 +106,11 @@ protected:
 	virtual bool DoCallInner(WDModule *wdm);
 };
 
-class WDResetInstall : public WDModuleCaller
-{
+class WDResetInstall: public WDModuleCaller {
 public:
-	WDResetInstall(const ROAnything roaConfig) : WDModuleCaller(roaConfig) { }
-	~WDResetInstall() { }
+	WDResetInstall(const ROAnything roaConfig) :
+		WDModuleCaller(roaConfig) {
+	}
 
 	virtual bool DoCall(WDModule *wdm);
 	virtual const char *CallName() {
@@ -127,11 +118,11 @@ public:
 	}
 };
 
-class WDResetTerminate : public WDTerminate
-{
+class WDResetTerminate: public WDTerminate {
 public:
-	WDResetTerminate(const ROAnything roaConfig) : WDTerminate(roaConfig) { }
-	~WDResetTerminate() { }
+	WDResetTerminate(const ROAnything roaConfig) :
+		WDTerminate(roaConfig) {
+	}
 
 	virtual bool DoCallInner(WDModule *wdm);
 	virtual const char *CallName() {

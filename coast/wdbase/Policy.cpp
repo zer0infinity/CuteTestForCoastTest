@@ -11,8 +11,7 @@
 #include "Dbg.h"
 
 //---- InstallerPolicy ------------------------------------------------------
-bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)
-{
+bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r) {
 	StartTrace1(InstallerPolicy.DoInstall, "Category: " << GetCategory());
 	SystemLog::WriteToStderr(String("\t") << GetCategory());
 	// let specific handler install its configured objects first
@@ -22,20 +21,19 @@ bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)
 	return bRet;
 }
 
-bool InstallerPolicy::IntInitialize(Registry *r)
-{
+bool InstallerPolicy::IntInitialize(Registry *r) {
 	StartTrace(InstallerPolicy.IntInitialize);
 	// initialize remaining objects of this category
 	bool bRet = true;
 	RegistryIterator ri(r);
 	String name;
 	RegisterableObject *ro;
-	while ( ri.HasMore() ) {
+	while (ri.HasMore()) {
 		ro = ri.Next(name);
-		if ( ro && !ro->IsInitialized() ) {
+		if (ro && !ro->IsInitialized()) {
 			bool bSucc = ro->Initialize(GetCategory());
 			Trace("initializing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
-			if ( !bSucc ) {
+			if (!bSucc) {
 				SystemLog::Warning(String("initializing <") << name << "> was not successful!");
 			}
 			bRet = bRet && bSucc;
@@ -44,9 +42,8 @@ bool InstallerPolicy::IntInitialize(Registry *r)
 	return bRet;
 }
 
-void InstallerPolicy::TellSuccess(bool success)
-{
-	if ( success ) {
+void InstallerPolicy::TellSuccess(bool success) {
+	if (success) {
 		SystemLog::WriteToStderr(" done\n");
 	} else {
 		SystemLog::WriteToStderr(" failed\n");
@@ -54,28 +51,26 @@ void InstallerPolicy::TellSuccess(bool success)
 }
 
 //---- TerminationPolicy ------------------------------------------------------
-bool TerminationPolicy::Terminate(Registry *r)
-{
+bool TerminationPolicy::Terminate(Registry *r) {
 	StartTrace(TerminationPolicy.Terminate);
 	bool bRet = DoTerminate(r);
 	bRet = IntFinalize(r) && bRet;
 	return bRet;
 }
 
-bool TerminationPolicy::IntFinalize(Registry *r)
-{
+bool TerminationPolicy::IntFinalize(Registry *r) {
 	StartTrace(TerminationPolicy.IntFinalize);
 	// finalize remaining objects of this category
 	bool bRet = true;
 	RegistryIterator ri(r);
 	String name;
 	RegisterableObject *ro;
-	while ( ri.HasMore() && ( ( ro = ri.Next(name) ) != NULL ) ) {
+	while (ri.HasMore() && ((ro = ri.Next(name)) != NULL)) {
 		Trace("checking initialized state of <" << name << ">");
-		if ( ro->IsInitialized() ) {
+		if (ro->IsInitialized()) {
 			bool bSucc = ro->Finalize();
 			Trace("finalizing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
-			if ( !bSucc ) {
+			if (!bSucc) {
 				SystemLog::Warning(String("finalizing <") << name << "> was not successful!");
 			}
 			bRet = bRet && bSucc;
@@ -85,14 +80,13 @@ bool TerminationPolicy::IntFinalize(Registry *r)
 }
 
 //---- AliasInstaller ------------------------------------------------------
-bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
-{
+bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r) {
 	StartTrace1(AliasInstaller.DoInstall, "Category: " << GetCategory());
 	bool installationSuccess = true;
 	long isSz = 0L;
 	TraceAny(installerSpec, "alias config");
 	// allow empty category definitions
-	if ( ( installerSpec.GetType() == AnyArrayType ) && ( ( isSz = installerSpec.GetSize() ) >= 0L ) ) {
+	if ((installerSpec.GetType() == AnyArrayType) && ((isSz = installerSpec.GetSize()) >= 0L)) {
 		// loop over RegisterableObjects to install aliases
 		for (long l = 0; l < isSz; ++l) {
 			const char *pcRegObjectName = installerSpec.SlotName(l);
@@ -101,17 +95,17 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 			ROAnything a = installerSpec[l];
 			long sz = 0L;
 			// we allow pre-definitions of /RegisterableObject slots without having aliases defined already
-			if ( ( sz = a.GetSize() ) >= 0L ) {
+			if ((sz = a.GetSize()) >= 0L) {
 				ROAnything k;
 				for (long j = 0; j < sz && installationSuccess; ++j) {
 					k = a[j];
 					// only process pure value entries, no sub-anythings
 					// if there is a slotname given, or the type is an anything, we dont process it
-					if ( ( a.SlotName(j) == NULL ) && ( k.GetType() != AnyArrayType ) ) {
+					if ((a.SlotName(j) == NULL) && (k.GetType() != AnyArrayType)) {
 						RegisterableObject *t = (RegisterableObject *) r->Find(pcRegObjectName);
-						if ( t ) {
+						if (t) {
 							String alias = k.AsString();
-							if ( alias.Length() ) {
+							if (alias.Length()) {
 								// clone the object with the correct name
 								String origName;
 								t->GetName(origName);
@@ -119,7 +113,7 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 
 								// installs a clone or a simple alias
 								// depending on subclass of Registerable
-								RegisterableObject *reg = (RegisterableObject *)t->Clone(Coast::Storage::Global());
+								RegisterableObject *reg = (RegisterableObject *) t->Clone(Coast::Storage::Global());
 								Trace("\talias <" << alias << ">");
 								reg->Register(alias, GetCategory());
 								reg->Initialize(GetCategory());
@@ -151,16 +145,15 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 }
 
 //---- AliasTerminator ------------------------------------------------------
-bool AliasTerminator::DoTerminate(Registry *r)
-{
+bool AliasTerminator::DoTerminate(Registry *r) {
 	StartTrace1(AliasTerminator.DoTerminate, "Category: " << GetCategory());
 	// iterate backwards over registry, since we're removing the objects
 	RegistryIterator ri(r, false);
 
 	String name;
-	while ( ri.HasMore() ) {
+	while (ri.HasMore()) {
 		RegisterableObject *ro = ri.Next(name);
-		if ( ro && !ro->IsStatic() ) {
+		if (ro && !ro->IsStatic()) {
 			Trace("Terminating <" << name << ">");
 			ro->Finalize();
 			r->UnregisterRegisterableObject(name);
@@ -171,8 +164,7 @@ bool AliasTerminator::DoTerminate(Registry *r)
 }
 
 //---- HierarchyInstaller ------------------------------------------------------
-bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
-{
+bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r) {
 	StartTrace(HierarchyInstaller.DoInstall);
 	TraceAny(installerSpec, "");
 	long isSz = installerSpec.GetSize();
@@ -185,8 +177,7 @@ bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 	return installSuccess;
 }
 
-bool HierarchyInstaller::HasSuper(const HierarchConfNamed *super, const char *name) const
-{
+bool HierarchyInstaller::HasSuper(const HierarchConfNamed *super, const char *name) const {
 	StartTrace1(HierarchyInstaller.HasSuper, "name [" << NotNull(name) << "] addr:" << (long)super);
 	if (!name) {
 		return false;
@@ -199,7 +190,7 @@ bool HierarchyInstaller::HasSuper(const HierarchConfNamed *super, const char *na
 	while (super) {
 		super->GetName(superName);
 		Trace("current class is [" << superName << "] addr:" << (long)super);
-		if ( superName == name ) {
+		if (superName == name) {
 			Trace("super class found with same name");
 			return true;
 		}
@@ -209,17 +200,15 @@ bool HierarchyInstaller::HasSuper(const HierarchConfNamed *super, const char *na
 	return false;
 }
 
-HierarchConfNamed *HierarchyInstaller::Find(const char *name, Registry *r)
-{
-	return (HierarchConfNamed *)r->Find(name);
+HierarchConfNamed *HierarchyInstaller::Find(const char *name, Registry *r) {
+	return (HierarchConfNamed *) r->Find(name);
 }
 
-bool HierarchyInstaller::InstallRoot(HierarchConfNamed *root, const char *name)
-{
+bool HierarchyInstaller::InstallRoot(HierarchConfNamed *root, const char *name) {
 	StartTrace1(HierarchyInstaller.InstallRoot, "root [" << NotNull(name) << "]" << (root ? "" : " is null!"));
-	if ( root ) {
+	if (root) {
 		// AB: don't create cycles in inheritance tree
-		if ( HasSuper(root->GetSuper(), name) ) {
+		if (HasSuper(root->GetSuper(), name)) {
 			Trace("");
 			return false;
 		}
@@ -228,8 +217,7 @@ bool HierarchyInstaller::InstallRoot(HierarchConfNamed *root, const char *name)
 	return false;
 }
 
-bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootName, const ROAnything tree, Registry *r)
-{
+bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootName, const ROAnything tree, Registry *r) {
 	StartTrace(HierarchyInstaller.InstallTree);
 	bool installSuccess = InstallRoot(root, rootName);
 	Trace("root [" << rootName << "] success: " << (installSuccess ? "true" : "false"));
@@ -241,7 +229,7 @@ bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootNa
 			leafName = tree[i].AsCharPtr(0);
 			subtree = false; // no more hierarchy
 		}
-		if (leafName) {	// there is something to install
+		if (leafName) { // there is something to install
 			HierarchConfNamed *leaf = GetLeaf(leafName, root, r);
 			if (leaf) {
 				leaf->SetSuper(root);
@@ -258,14 +246,13 @@ bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootNa
 	return installSuccess;
 }
 
-HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchConfNamed *root, Registry *r)
-{
+HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchConfNamed *root, Registry *r) {
 	StartTrace1(HierarchyInstaller.GetLeaf, (root ? "" : "root is null!"));
 	HierarchConfNamed *leaf = Find(leafName, r);
 	Trace("leaf [" << leafName << "] " << (leaf ? "" : "not ") << "found in registry");
 	String rootName("//");
 
-	if ( !leaf ) {
+	if (!leaf) {
 		if (root) {
 			root->GetName(rootName);
 			Trace("cloning [" << rootName << "]");
@@ -277,7 +264,7 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 			r->RegisterRegisterableObject(leafName, leaf);
 		}
 	}
-	if ( leaf ) {
+	if (leaf) {
 		DoInitializeLeaf(leafName, leaf);
 	}
 	SystemLog::WriteToStderr(".", 1);
@@ -285,7 +272,6 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 	return leaf;
 }
 
-void HierarchyInstaller::DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf)
-{
-    leaf->Initialize(GetCategory());
+void HierarchyInstaller::DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf) {
+	leaf->Initialize(GetCategory());
 }

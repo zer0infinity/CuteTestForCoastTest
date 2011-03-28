@@ -16,11 +16,11 @@ class Mutex;
 //---- CacheHandlerModule -----------------------------------------------------------
 //! <B>Initializes the global caching structures</B><BR>Configuration: -
 //! This Module should be initialized at first to ensure proper functionality of dependent modules
-class CacheHandlerModule : public WDModule
-{
+class CacheHandlerModule: public WDModule {
 public:
-	CacheHandlerModule(const char *name);
-	virtual ~CacheHandlerModule();
+	CacheHandlerModule(const char *name) :
+		WDModule(name) {
+	}
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
@@ -28,60 +28,52 @@ public:
 
 //--- CacheLoadPolicy -----------------------------------------------
 /****
-  Purpose_Begin
-    CacheLoadPolicy builds up a cache. It uses an Anything as representation. The contents of the
-	cache and the used tags are implementation dependent and must be defined between cache builder
-	and cache user (e.g. HTMLTemplateCacheLoader and HTMLTemplateRenderer)
-  Purpose_End
+ Purpose_Begin
+ CacheLoadPolicy builds up a cache. It uses an Anything as representation. The contents of the
+ cache and the used tags are implementation dependent and must be defined between cache builder
+ and cache user (e.g. HTMLTemplateCacheLoader and HTMLTemplateRenderer)
+ Purpose_End
 
-  Paramters_Begin
-    Group/Key pair identifies the cached object uniquely
-  Paramters_End
+ Paramters_Begin
+ Group/Key pair identifies the cached object uniquely
+ Paramters_End
 
-  Concurrency_Begin
-	The build up of the cache is done before the server is accepting requests.
-	There are no MT-Issues.
-  Concurrency_End
+ Concurrency_Begin
+ The build up of the cache is done before the server is accepting requests.
+ There are no MT-Issues.
+ Concurrency_End
 
-  Collaborations_Begin
-    Implementation dependent
-  Collaborations_End
+ Collaborations_Begin
+ Implementation dependent
+ Collaborations_End
 
-  Errorhandling_Begin
-    None
-  Errorhandling_End
+ Errorhandling_Begin
+ None
+ Errorhandling_End
 
-  Assumptions_Begin
-    Cache is uniquely identified by Group/Key pair
-  Assumptions_End
-****/
-class CacheLoadPolicy
-{
+ Assumptions_Begin
+ Cache is uniquely identified by Group/Key pair
+ Assumptions_End
+ ****/
+class CacheLoadPolicy {
 public:
-	CacheLoadPolicy();
-	virtual ~CacheLoadPolicy();
-
+	virtual ~CacheLoadPolicy() {
+	}
 	virtual Anything Load(const char *key);
 };
 
 //--- SimpleAnyLoader -----------------------------------------------
-class SimpleAnyLoader : public CacheLoadPolicy
-{
+class SimpleAnyLoader: public CacheLoadPolicy {
 public:
-	SimpleAnyLoader();
-	~SimpleAnyLoader();
-
 	virtual Anything Load(const char *key);
 };
 
 //--- AnythingLoaderPolicy -----------------------------------------------
 //! Dummy policy wrap an Anything to cache
-class AnythingLoaderPolicy : public CacheLoadPolicy
-{
+class AnythingLoaderPolicy: public CacheLoadPolicy {
 public:
 	AnythingLoaderPolicy(const Anything &anyToCache);
 	AnythingLoaderPolicy(const ROAnything roaToCache);
-	virtual ~AnythingLoaderPolicy();
 	virtual Anything Load(const char *);
 
 private:
@@ -90,36 +82,35 @@ private:
 
 //---- CacheHandler --------------------------------------------------
 /****
-  Purpose_Begin
-    CacheHandler manages a cache for configuration information. This information consists of loaded
-	configuration files (Anythings) and preprocessed HTML-template files. The construction of the
-	cache is done by a strategy object that is submitted to the load method as parameter.
-  Purpose_End
+ Purpose_Begin
+ CacheHandler manages a cache for configuration information. This information consists of loaded
+ configuration files (Anythings) and preprocessed HTML-template files. The construction of the
+ cache is done by a strategy object that is submitted to the load method as parameter.
+ Purpose_End
 
-  Paramters_Begin
-    CacheLoadPolicy, constructs the cache. Group/Key pair identifies the cached object uniquely
-  Paramters_End
+ Paramters_Begin
+ CacheLoadPolicy, constructs the cache. Group/Key pair identifies the cached object uniquely
+ Paramters_End
 
-  Concurrency_Begin
-	The build up of the cache is done before the server is accepting requests. It is distributed through
-	ROAnything and installed into clients. There are no MT-Issues during normal operation.
-	If the cache has to be reset (not implemented yet), this has to be done while no request is active.
-  Concurrency_End
+ Concurrency_Begin
+ The build up of the cache is done before the server is accepting requests. It is distributed through
+ ROAnything and installed into clients. There are no MT-Issues during normal operation.
+ If the cache has to be reset (not implemented yet), this has to be done while no request is active.
+ Concurrency_End
 
-  Collaborations_Begin
-    CacheLoadPolicy, Anything
-  Collaborations_End
+ Collaborations_Begin
+ CacheLoadPolicy, Anything
+ Collaborations_End
 
-  Errorhandling_Begin
-    None
-  Errorhandling_End
+ Errorhandling_Begin
+ None
+ Errorhandling_End
 
-  Assumptions_Begin
-    Cache is uniquely identified by Group/Key pair
-  Assumptions_End
-****/
-class CacheHandler : public NotCloned
-{
+ Assumptions_Begin
+ Cache is uniquely identified by Group/Key pair
+ Assumptions_End
+ ****/
+class CacheHandler: public NotCloned {
 	friend class CacheHandlerMutexAllocator;
 
 public:

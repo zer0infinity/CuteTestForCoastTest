@@ -13,85 +13,75 @@
 
 //---- InstallerPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
-class InstallerPolicy
-{
+class InstallerPolicy {
+	InstallerPolicy();
+	InstallerPolicy(const InstallerPolicy &);
+	InstallerPolicy &operator=(const InstallerPolicy &);
+	bool IntInitialize(Registry *r);
+	void TellSuccess(bool success);
+
+	String fCategory;
 public:
-	InstallerPolicy(const char *category)
-		: fCategory(category)
-	{}
-	virtual ~InstallerPolicy() {}
+	InstallerPolicy(const char *category) :
+		fCategory(category) {
+	}
+	virtual ~InstallerPolicy() {
+	}
 
 	bool Install(const ROAnything installerSpec, Registry *r);
 
-	const char *const GetCategory() const {
+	const char * const GetCategory() const {
 		return fCategory;
 	}
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) = 0;
-
-private:
-	bool IntInitialize(Registry *r);
-	void TellSuccess(bool success);
-
-	String fCategory;
-
-	InstallerPolicy();
-	InstallerPolicy(const InstallerPolicy &);
-	InstallerPolicy &operator=(const InstallerPolicy &);
 };
 
 //---- TerminationPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
-class TerminationPolicy
-{
+class TerminationPolicy {
+	TerminationPolicy();
+	TerminationPolicy(const TerminationPolicy &);
+	TerminationPolicy &operator=(const TerminationPolicy &);
+	bool IntFinalize(Registry *r);
+
+	String fCategory;
 public:
-	TerminationPolicy(const char *category)
-		: fCategory(category)
-	{}
-	virtual ~TerminationPolicy() {}
+	TerminationPolicy(const char *category) :
+		fCategory(category) {
+	}
+	virtual ~TerminationPolicy() {
+	}
 
 	bool Terminate(Registry *r);
 
-	const char *const GetCategory() const {
+	const char * const GetCategory() const {
 		return fCategory;
 	}
 
 protected:
 	virtual bool DoTerminate(Registry *r) = 0;
-
-private:
-	bool IntFinalize(Registry *r);
-
-	String fCategory;
-
-	TerminationPolicy();
-	TerminationPolicy(const TerminationPolicy &);
-	TerminationPolicy &operator=(const TerminationPolicy &);
 };
 
 //---- AliasInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
-class AliasInstaller : public InstallerPolicy
-{
+class AliasInstaller: public InstallerPolicy {
 public:
-	AliasInstaller(const char *category)
-		: InstallerPolicy(category)
-	{}
-	virtual ~AliasInstaller() {};
+	AliasInstaller(const char *category) :
+		InstallerPolicy(category) {
+	}
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
 };
 
 //---- AliasTerminator ------------------------------------------------------
-class AliasTerminator : public TerminationPolicy
-{
+class AliasTerminator: public TerminationPolicy {
 public:
-	AliasTerminator(const char *category)
-		: TerminationPolicy(category)
-	{}
-	virtual ~AliasTerminator() {};
+	AliasTerminator(const char *category) :
+		TerminationPolicy(category) {
+	}
 
 protected:
 	virtual bool DoTerminate(Registry *r);
@@ -99,17 +89,15 @@ protected:
 
 //---- HierarchyInstaller ------------------------------------------------------
 /*! hierarchyInstaller installs objects that are connected by a super relation into the registry */
-class HierarchyInstaller : public InstallerPolicy
-{
+class HierarchyInstaller: public InstallerPolicy {
 public:
-	HierarchyInstaller(const char *cat)
-		: InstallerPolicy(cat)
-	{}
-	virtual ~HierarchyInstaller() {};
+	HierarchyInstaller(const char *cat) :
+		InstallerPolicy(cat) {
+	}
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
-    virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
+	virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
 	HierarchConfNamed *Find(const char *name, Registry *r);
 	bool HasSuper(const HierarchConfNamed *super, const char *name) const;
 
