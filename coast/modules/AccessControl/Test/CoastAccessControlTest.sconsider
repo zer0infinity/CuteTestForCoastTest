@@ -3,14 +3,19 @@ from stat import *
 
 Import('*')
 
+def setUp(target, source, env):
+#    env['ENV']['COAST_TRACE_INITFINIS'] = 1
+    pass
+
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastAccessControl', 'testfwWDBase'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'runConfig'        : {
-                             },
+        'runConfig' : {
+            'setUp' : setUp,
+        },
     }
 }
 
