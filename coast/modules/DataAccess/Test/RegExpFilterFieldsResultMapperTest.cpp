@@ -14,7 +14,7 @@
 
 namespace {
 	bool setupMappers(ROAnything roaMapperConfigs) {
-		StartTrace(SplitCookieResultMapperTest.setupMappers);
+		StartTrace(RegExpFilterFieldsResultMapperTest.setupMappers);
 		Anything mappersToInitialize;
 		ROAnything mapperConfig;
 		AnyExtensions::Iterator<ROAnything> aMapperConfigIterator(roaMapperConfigs);
@@ -26,6 +26,11 @@ namespace {
 		}
 		HierarchyInstallerWithConfig ip(ResultMapper::gpcCategory, roaMapperConfigs);
 		return RegisterableObject::Install(mappersToInitialize, ResultMapper::gpcCategory, &ip);
+	}
+	void unregisterMappers() {
+		StartTrace(RegExpFilterFieldsResultMapperTest.unregisterMappers);
+		AliasTerminator at(ResultMapper::gpcCategory);
+		RegisterableObject::Terminate(ResultMapper::gpcCategory, &at);
 	}
 }
 
@@ -58,9 +63,8 @@ void RegExpFilterFieldsResultMapperTest::ConfiguredTests() {
 				for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 					t_assertm(false, anyFailureStrings[i].AsString().cstr());
 				}
-
-				rm->Finalize();
 			}
+			unregisterMappers();
 		}
 	}
 }

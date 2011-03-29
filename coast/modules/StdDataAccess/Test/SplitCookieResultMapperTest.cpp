@@ -27,6 +27,11 @@ namespace {
 		HierarchyInstallerWithConfig ip(ResultMapper::gpcCategory, roaMapperConfigs);
 		return RegisterableObject::Install(mappersToInitialize, ResultMapper::gpcCategory, &ip);
 	}
+	void unregisterMappers() {
+		StartTrace(SplitCookieResultMapperTest.unregisterMappers);
+		AliasTerminator at(ResultMapper::gpcCategory);
+		RegisterableObject::Terminate(ResultMapper::gpcCategory, &at);
+	}
 }
 void SplitCookieResultMapperTest::ConfiguredTests() {
 	StartTrace(SplitCookieResultMapperTest.ConfiguredTests);
@@ -57,9 +62,8 @@ void SplitCookieResultMapperTest::ConfiguredTests() {
 				for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 					t_assertm(false, anyFailureStrings[i].AsString().cstr());
 				}
-
-				rm->Finalize();
 			}
+			unregisterMappers();
 		}
 	}
 }

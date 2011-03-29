@@ -62,8 +62,6 @@ void RenderedKeyResultMapperTest::ConfiguredTests() {
 				for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 					t_assertm(false, anyFailureStrings[i].AsString().cstr());
 				}
-
-				rm->Finalize();
 			}
 			unregisterMappers();
 		}
