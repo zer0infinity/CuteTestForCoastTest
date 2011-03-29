@@ -6,18 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DataMapperTest.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "DataMapper.h"
+#include "TestSuite.h"
+#include "StringStream.h"
 
 //---- DataMapperTest ----------------------------------------------------------------
-Test *DataMapperTest::suite ()
-{
+Test *DataMapperTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, DataMapperTest, StdGetTest);
@@ -28,17 +23,14 @@ Test *DataMapperTest::suite ()
 	return testSuite;
 }
 
-DataMapperTest::DataMapperTest(TString tname)
-	: TestCaseType(tname)
-{
+DataMapperTest::DataMapperTest(TString tname) :
+	TestCaseType(tname) {
 }
 
-DataMapperTest::~DataMapperTest()
-{
+DataMapperTest::~DataMapperTest() {
 }
 
-void DataMapperTest::StdGetTest()
-{
+void DataMapperTest::StdGetTest() {
 	Anything dummy, anyContext(GetConfig().DeepClone());
 	Context ctx(anyContext, dummy, 0, 0, 0, 0);
 
@@ -76,8 +68,7 @@ void DataMapperTest::StdGetTest()
 	assertEqual("baz", aTestVal["foo"].AsCharPtr());
 }
 
-void DataMapperTest::NegativGetTest()
-{
+void DataMapperTest::NegativGetTest() {
 	Anything dummy, anyContext(GetConfig().DeepClone());
 	Context ctx(anyContext, dummy, 0, 0, 0, 0);
 
@@ -111,8 +102,7 @@ void DataMapperTest::NegativGetTest()
 	t_assert(!mapper.Get("noStdStreams", os, ctx));
 }
 
-void DataMapperTest::FixedSizeTest()
-{
+void DataMapperTest::FixedSizeTest() {
 	Anything lookupInput;
 	lookupInput["Find"]["Key"]["Here"] = "Result";
 
@@ -126,8 +116,7 @@ void DataMapperTest::FixedSizeTest()
 	assertEqual("<Result              >", result);
 }
 
-void DataMapperTest::UppercaseTest()
-{
+void DataMapperTest::UppercaseTest() {
 	Anything lookupInput;
 	lookupInput["Find"]["Key"]["Here"] = "Result";
 

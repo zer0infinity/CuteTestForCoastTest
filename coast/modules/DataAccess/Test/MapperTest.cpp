@@ -9,6 +9,8 @@
 #include "MapperTest.h"
 #include "Mapper.h"
 #include "TestSuite.h"
+#include "Session.h"
+#include "StringStream.h"
 
 //---- MapperTest ----------------------------------------------------------------
 Test *MapperTest::suite ()

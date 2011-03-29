@@ -6,26 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AppLogTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "AppLog.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Timers.h"
 #include "Server.h"
 #include "Action.h"
 #include "AnyIterators.h"
 #include "AnyUtils.h"
 #include "SystemBase.h"
+#include "StringStream.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- AppLogTest ----------------------------------------------------------------
 AppLogTest::AppLogTest(TString tname)

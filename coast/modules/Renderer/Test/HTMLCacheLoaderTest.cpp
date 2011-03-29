@@ -6,18 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTMLCacheLoaderTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTMLTemplateCacheLoader.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
+#include "StringStream.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------------
 HTMLCacheLoaderTest::HTMLCacheLoaderTest(TString tstrName)

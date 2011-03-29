@@ -6,25 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MultiThreadedTest.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
 #include "AnyUtils.h"
-#include "Dbg.h"
-#include "SystemLog.h"
-#include "Threads.h"
 #include "DataAccess.h"
-#include "DiffTimer.h"
 #include "Timers.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "StringStream.h"
 
 //---- MultiThreadedTest ----------------------------------------------------------------
 MultiThreadedTest::MultiThreadedTest( TString tstrName ) :

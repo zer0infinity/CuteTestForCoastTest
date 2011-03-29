@@ -6,21 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Session.h"
-
-//--- interface include --------------------------------------------------------
 #include "TransitionTests.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "Role.h"
 #include "Server.h"
+#include "Role.h"
 #include "Renderer.h"
 #include "SecurityModule.h"
+#include "StringStream.h"
 
 //---- SessionInfoRenderer ----------------------------------------------------------------
 class SessionInfoRenderer : public Renderer

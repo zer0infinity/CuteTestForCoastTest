@@ -9,9 +9,9 @@
 #ifndef _AnythingConfigTestPolicy_H
 #define _AnythingConfigTestPolicy_H
 
-#include "StringStream.h"
 #include "SystemFile.h"
 #include "Dbg.h"
+#include "TString.h"
 
 namespace Coast {
 	namespace TestFramework {

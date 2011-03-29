@@ -14,6 +14,7 @@
 #include "Session.h"
 #include "Page.h"
 #include "Role.h"
+#include "StringStream.h"
 #include <iostream>
 
 //---- NewRendererTest ----------------------------------------------------------------

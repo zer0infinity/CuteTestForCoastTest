@@ -10,6 +10,7 @@
 #include "TestSuite.h"
 #include "AuthenticationService.h"
 #include "SecurityModule.h"
+#include "StringStream.h"
 
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
