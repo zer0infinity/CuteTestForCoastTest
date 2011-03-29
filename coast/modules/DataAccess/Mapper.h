@@ -261,6 +261,12 @@ private:
 								"Append": always an array-any slot, append value below slot
 	/Delim			char		optional, default '.', specify path delimiting character for Lookup operations within DoGetDestinationAny()
 	/IndexDelim		char		optional, default ':', specify index delimiting character for Lookup operations within DoGetDestinationAny()
+	/<Put-Key>	{					Anything	optional, key specific Mapper-Script to execute when hit
+		/<ResultMapperName>	*				The specified ResultMapper will be called using an empty script as its configuration, eg. mapping ends with called ResultMapper
+		/<ResultMapperName> {				The specified ResultMapper will be called using the given script to be able to further delegate result mapping.
+			<specific mapper config>
+		}
+	}
 }
 \endcode
 */
