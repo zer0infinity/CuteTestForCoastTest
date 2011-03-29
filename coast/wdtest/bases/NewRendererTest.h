@@ -9,7 +9,6 @@
 #ifndef _NewRendererTest_H
 #define _NewRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- NewRendererTest ----------------------------------------------------------
@@ -25,17 +24,16 @@
 //! There is also a Toplevel slot <B>/EnvForAllCases</B> specifing an Anything that serves
 //! as Context for all TestCases
 //class NewRendererTest : public TestFramework::TestCaseWithConfig
-class NewRendererTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class NewRendererTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-	NewRendererTest(TString tstrName);
-	~NewRendererTest();
+	NewRendererTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//--- public api
 	//!generate NewRendererTest test suite
 	//! \return a new test is created by this method
-	static Test *suite ();
+	static Test *suite();
 
 	TString getConfigFileName() {
 		return "NewRendererTestConfig";

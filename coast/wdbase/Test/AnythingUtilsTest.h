@@ -12,13 +12,16 @@
 #include "FoundationTestTypes.h"
 
 //---- AnythingUtilsTest -----------------------------------------------------------
-class AnythingUtilsTest : public TestFramework::TestCaseWithConfig
-{
+class AnythingUtilsTest: public TestFramework::TestCaseWithConfig {
 public:
-	AnythingUtilsTest(TString tstrName);
-	virtual ~AnythingUtilsTest();
+	AnythingUtilsTest(TString tname) :
+		TestCaseType(tname) {
+	}
 
-	virtual TString getConfigFileName();
+	TString getConfigFileName() {
+		return "AnythingUtilsTestConfig";
+	}
+
 	virtual void setUp();
 
 	static Test *suite();
@@ -31,7 +34,7 @@ public:
 	void StoreFinderTest();
 
 protected:
-	Anything	fQuery;
+	Anything fQuery;
 };
 
 #endif

@@ -15,16 +15,18 @@ class Context;
 class String;
 
 //---- CopyActionsTest -----------------------------------------------------------
-
-class CopyActionsTest : public TestFramework::TestCaseWithConfig
-{
+class CopyActionsTest: public TestFramework::TestCaseWithConfig {
 public:
-	CopyActionsTest(TString tstrName);
-	virtual ~CopyActionsTest();
+	CopyActionsTest(TString tname) :
+		TestCaseType(tname) {
+	}
+
+	TString getConfigFileName() {
+		return "CopyActionsTestConfig";
+	}
 
 	static Test *suite();
 
-	TString getConfigFileName();
 	void CopyActionTest();
 
 protected:

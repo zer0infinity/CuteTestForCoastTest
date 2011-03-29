@@ -6,23 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AuthenticationServiceTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "AuthenticationService.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SecurityModule.h"
 
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
 class AuthTestService: public ServiceHandler {
 public:
-	//:standard named object constructor
 	AuthTestService(const char *serviceHandlerName) :
 		ServiceHandler(serviceHandlerName) {
 	}
@@ -33,7 +25,6 @@ public:
 	}
 
 protected:
-	//:
 	virtual bool DoHandleService(std::ostream &os, Context &ctx) {
 		os << "test ok";
 		return true;
@@ -42,24 +33,7 @@ protected:
 RegisterServiceHandler(AuthTestService);
 
 //---- AuthenticationServiceTest ----------------------------------------------------------------
-AuthenticationServiceTest::AuthenticationServiceTest(TString tstrName)
-	: ConfiguredActionTest(tstrName)
-{
-	StartTrace(AuthenticationServiceTest.AuthenticationServiceTest);
-}
-
-TString AuthenticationServiceTest::getConfigFileName()
-{
-	return "AuthenticationServiceTestConfig";
-}
-
-AuthenticationServiceTest::~AuthenticationServiceTest()
-{
-	StartTrace(AuthenticationServiceTest.Dtor);
-}
-
-void AuthenticationServiceTest::ServiceNotFoundTest()
-{
+void AuthenticationServiceTest::ServiceNotFoundTest() {
 	StartTrace(AuthenticationServiceTest.ServiceNotFoundTest);
 
 	AuthenticationService ash("AuthWrongServiceHandlerTest");
@@ -68,11 +42,10 @@ void AuthenticationServiceTest::ServiceNotFoundTest()
 	Context ctx;
 	MakeAuthenticationInfo(ctx, "KnownUser", "correct");
 	String expectedMsg("");
-	DoTest(ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 }
 
-void AuthenticationServiceTest::OkTest()
-{
+void AuthenticationServiceTest::OkTest() {
 	StartTrace(AuthenticationServiceTest.OkTest);
 
 	AuthenticationService ash("AuthServiceHandlerTest");
@@ -80,33 +53,32 @@ void AuthenticationServiceTest::OkTest()
 
 	{
 		Context ctx;
-		String expectedMsg("HTTP/1.1 401" );
+		String expectedMsg("HTTP/1.1 401");
 		MakeAuthenticationInfo(ctx, "KnownUser", "NOTcorrect");
-		DoTest(ash, ctx, expectedMsg );
+		DoTest(ash, ctx, expectedMsg);
 	}
 	{
 		Context ctx;
 		String expectedMsg("HTTP/1.1 401");
 		MakeAuthenticationInfo(ctx, "UnknownUser", "NOTcorrect");
-		DoTest(ash, ctx, expectedMsg );
+		DoTest(ash, ctx, expectedMsg);
 	}
 	{
 		Context ctx;
 		String expectedMsg("test ok");
 		MakeAuthenticationInfo(ctx, "KnownUser", "correct");
-		DoTest(ash, ctx, expectedMsg );
+		DoTest(ash, ctx, expectedMsg);
 
 	}
 	{
 		Context ctx;
 		String expectedMsg("test ok");
 		MakeAuthenticationInfo(ctx, "User Name", "Pass Word");
-		DoTest(ash, ctx, expectedMsg );
+		DoTest(ash, ctx, expectedMsg);
 	}
 }
 
-void AuthenticationServiceTest::ConnCloseMessage(String &strMsg, String strRealm, String strOutput)
-{
+void AuthenticationServiceTest::ConnCloseMessage(String &strMsg, String strRealm, String strOutput) {
 	StartTrace(AuthenticationServiceTest.ConnCloseMessage);
 	strMsg << "HTTP/1.1 401 Unauthorized" << ENDL;
 	strMsg << "Connection: close" << ENDL;
@@ -114,8 +86,7 @@ void AuthenticationServiceTest::ConnCloseMessage(String &strMsg, String strRealm
 	strMsg << "<html><h1>" << strOutput << "</h1></html>";
 }
 
-void AuthenticationServiceTest::NoConfigTest()
-{
+void AuthenticationServiceTest::NoConfigTest() {
 	StartTrace(AuthenticationServiceTest.NoConfigTest);
 
 	AuthenticationService ash("NoConfigAuthServiceHandlerTest");
@@ -126,21 +97,20 @@ void AuthenticationServiceTest::NoConfigTest()
 
 	String expectedMsg;
 	ConnCloseMessage(expectedMsg, "Coast", "Please stay away");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 
 	// but can also find config data elsewhere in context
-	PutInStore(GetTestCaseConfig()["TmpStore"].DeepClone(), ctx.GetTmpStore());
+	Coast::TestFramework::PutInStore(GetTestCaseConfig()["TmpStore"].DeepClone(), ctx.GetTmpStore());
 
 	String errorMsg;
 	ConnCloseMessage(errorMsg, "AuthTest", "AuthTest");
-	DoTest( ash, ctx, errorMsg );
+	DoTest(ash, ctx, errorMsg);
 
 	MakeAuthenticationInfo(ctx, "KnownUser", "correct");
-	DoTest( ash, ctx, errorMsg );
+	DoTest(ash, ctx, errorMsg);
 }
 
-void AuthenticationServiceTest::AuthenticationFailedTest()
-{
+void AuthenticationServiceTest::AuthenticationFailedTest() {
 	StartTrace(AuthenticationServiceTest.AuthenticationFailedTest);
 
 	AuthenticationService ash("AuthServiceHandlerTest");
@@ -149,30 +119,29 @@ void AuthenticationServiceTest::AuthenticationFailedTest()
 	String expectedMsg;
 	ConnCloseMessage(expectedMsg, "AuthTest", "AuthTest");
 	Context ctx;
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 
 	// Now add auth info, but unknown user
 	MakeAuthenticationInfo(ctx, "Unknown", "xyz");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 	// Now add auth info, but user pw is wrong
 	MakeAuthenticationInfo(ctx, "KnownUser", "wrong");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 	// Now try empty username and pw
 	MakeAuthenticationInfo(ctx, "", "");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 	// user name is casesensitiv
 	MakeAuthenticationInfo(ctx, "Knownuser", "correct");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 	// user password is casesensitiv
 	MakeAuthenticationInfo(ctx, "KnownUser", "corRRect");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 	// strange user name and password
 	MakeAuthenticationInfo(ctx, "UserWith:InItsName", "willNotWork");
-	DoTest( ash, ctx, expectedMsg );
+	DoTest(ash, ctx, expectedMsg);
 }
 
-void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, String expectedMsg )
-{
+void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, String expectedMsg) {
 	StartTrace(AuthenticationServiceTest.DoTest);
 
 	String output;
@@ -186,17 +155,16 @@ void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, String 
 	// --> Therefore ( output.IsEqual(expectedMsg) ) must be done
 	// long ret = ( (long)output.IsEqual(expectedMsg) || output.Contains( expectedMsg ) );
 	long ret = 0L;
-	ret = (long)output.IsEqual(expectedMsg);
-	if ( ret <= 0 ) {
-		ret = output.Contains( expectedMsg );
+	ret = (long) output.IsEqual(expectedMsg);
+	if (ret <= 0) {
+		ret = output.Contains(expectedMsg);
 	}
-	if ( ret < 0L ) {
+	if (ret < 0L) {
 		assertEqualm(expectedMsg, output, name());
 	}
 }
 
-void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, Anything expectedAny )
-{
+void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, Anything expectedAny) {
 	StartTrace(AuthenticationServiceTest.DoTest);
 
 	Anything receivedAny;
@@ -208,8 +176,7 @@ void AuthenticationServiceTest::DoTest(ServiceHandler &sh, Context &ctx, Anythin
 	assertAnyEqualm(expectedAny, receivedAny , name() );
 }
 
-void AuthenticationServiceTest::MakeAuthenticationInfo(Context &ctx, String user, String pw)
-{
+void AuthenticationServiceTest::MakeAuthenticationInfo(Context &ctx, String user, String pw) {
 	StartTrace(AuthenticationServiceTest.MakeAuthenticationInfo);
 
 	String clearText(user);
@@ -225,8 +192,7 @@ void AuthenticationServiceTest::MakeAuthenticationInfo(Context &ctx, String user
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *AuthenticationServiceTest::suite ()
-{
+Test *AuthenticationServiceTest::suite() {
 	StartTrace(AuthenticationServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

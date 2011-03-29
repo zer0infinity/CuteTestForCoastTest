@@ -16,30 +16,12 @@
 #include <iostream>
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
-ConfiguredActionTest::ConfiguredActionTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(ConfiguredActionTest.ConfiguredActionTest);
-}
-
-TString ConfiguredActionTest::getConfigFileName()
-{
-	return "ConfiguredActionTestConfig";
-}
-
-ConfiguredActionTest::~ConfiguredActionTest()
-{
-	StartTrace(ConfiguredActionTest.Dtor);
-}
-
-void ConfiguredActionTest::setUp()
-{
+void ConfiguredActionTest::setUp() {
 	StartTrace(ConfiguredActionTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 }
 
-void ConfiguredActionTest::TestCases()
-{
+void ConfiguredActionTest::TestCases() {
 	StartTrace(ConfiguredActionTest.TestCases);
 
 	Anything testCases;
@@ -59,7 +41,7 @@ void ConfiguredActionTest::TestCases()
 
 	long sz = testCases.GetSize();
 	for (long i = 0; i < sz; ++i) {
-		if ( i > 0 ) {
+		if (i > 0) {
 			std::cerr << ".";
 		}
 		String testCaseName = testCases.SlotName(i);
@@ -67,8 +49,7 @@ void ConfiguredActionTest::TestCases()
 	}
 }
 
-Anything ConfiguredActionTest::PrepareConfig(Anything originalConfig)
-{
+Anything ConfiguredActionTest::PrepareConfig(Anything originalConfig) {
 	StartTrace(ConfiguredActionTest.PrepareConfig);
 
 	if (!originalConfig.IsDefined("UseConfig")) {
@@ -89,16 +70,14 @@ Anything ConfiguredActionTest::PrepareConfig(Anything originalConfig)
 	return result;
 }
 
-void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName)
-{
+void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName) {
 	StartTrace1(ConfiguredActionTest.DoTest, "<" << NotNull(testCaseName) << ">");
 	Context ctx;
 	DoTest(testCase, testCaseName, ctx);
 	RequestTimeLogger(ctx);
 }
 
-void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, Context &ctx)
-{
+void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, Context &ctx) {
 	StartTrace1(ConfiguredActionTest.DoTest, "<" << NotNull(testCaseName) << ">");
 
 	DoTestWithContext(testCase, testCaseName, ctx);
@@ -107,30 +86,28 @@ void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, C
 	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["Result"], ctx, testCaseName, Coast::TestFramework::exists);
 	// non-existence tests
 	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["NotResult"], ctx, testCaseName, Coast::TestFramework::notExists);
-	for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
+	for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}
 }
 
-void ConfiguredActionTest::DoTestWithContext(ROAnything testCase, const String &testCaseName, Context &ctx)
-{
+void ConfiguredActionTest::DoTestWithContext(ROAnything testCase, const String &testCaseName, Context &ctx) {
 	StartTrace(ConfiguredActionTest.DoTestWithContext);
 	DoTestWithContext(testCase.DeepClone(), testCaseName, ctx);
 }
 
-void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &testCaseName, Context &ctx)
-{
+void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &testCaseName, Context &ctx) {
 	StartTrace(ConfiguredActionTest.DoTestWithContext);
 	TraceAny(testCase, "Config of " << testCaseName);
 
 	AlterTestStoreHook(testCase);
-	PutInStore(testCase["SessionStore"], ctx.GetSessionStore());
-	PutInStore(testCase["RoleStore"], ctx.GetRoleStoreGlobal());
+	Coast::TestFramework::PutInStore(testCase["SessionStore"], ctx.GetSessionStore());
+	Coast::TestFramework::PutInStore(testCase["RoleStore"], ctx.GetRoleStoreGlobal());
 	// Can not use real Session Store because Lookup does not find it ! - fix me
 	TraceAny(ctx.GetRoleStoreGlobal(), "SessionStore");
-	PutInStore(testCase["TmpStore"], ctx.GetTmpStore());
-	PutInStore(testCase["Query"], ctx.GetQuery());
-	PutInStore(testCase["Env"], ctx.GetEnvStore());
+	Coast::TestFramework::PutInStore(testCase["TmpStore"], ctx.GetTmpStore());
+	Coast::TestFramework::PutInStore(testCase["Query"], ctx.GetQuery());
+	Coast::TestFramework::PutInStore(testCase["Env"], ctx.GetEnvStore());
 
 	if (!testCase.IsDefined("Server") && GetConfig().IsDefined("Server")) {
 		testCase["Server"] = GetConfig()["Server"].DeepClone();
@@ -159,14 +136,13 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 	assertEqualm(expectedToken, token, (const char *)testCaseName);
 }
 
-void ConfiguredActionTest::AlterTestStoreHook(Anything &testCase)
-{
-	StartTrace(ConfiguredActionTest.AlterTestStoreHook);
+void ConfiguredActionTest::AlterTestStoreHook(Anything &testCase) {
+	StartTrace(ConfiguredActionTest.AlterTestStoreHook)
+	;
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ConfiguredActionTest::suite ()
-{
+Test *ConfiguredActionTest::suite() {
 	StartTrace(ConfiguredActionTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ConfiguredActionTest, TestCases);

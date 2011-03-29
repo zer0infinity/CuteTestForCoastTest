@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "NewRendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
 #include "Renderer.h"
 #include "Server.h"
@@ -22,21 +17,10 @@
 #include <iostream>
 
 //---- NewRendererTest ----------------------------------------------------------------
-NewRendererTest::NewRendererTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(NewRendererTest.NewRendererTest);
-}
-
-NewRendererTest::~NewRendererTest()
-{
-}
-
-void NewRendererTest::TestCases()
-{
+void NewRendererTest::TestCases() {
 	StartTrace(NewRendererTest.TestCases);
 
-	if ( t_assertm( !GetTestCaseConfig().IsNull(), "no Tests configured!" ) ) {
+	if (t_assertm( !GetTestCaseConfig().IsNull(), "no Tests configured!" )) {
 		Server *theServer = Server::FindServer("Server");
 		t_assert(theServer != NULL);
 		Context ctx;
@@ -51,11 +35,11 @@ void NewRendererTest::TestCases()
 		ROAnything roaCaseConfig;
 		t_assertm( GetConfig()["RunOnly"].GetSize() == 0L, "running only subset of tests");
 		TraceAny(GetConfig()["RunOnly"], "run only config")
-		while ( aEntryIterator.Next(roaCaseConfig) ) {
+		while (aEntryIterator.Next(roaCaseConfig)) {
 			TString slotToCheck;
 			aEntryIterator.SlotName(slotToCheck);
 			Trace("current testslot [" << slotToCheck << "]");
-			if ( ( GetConfig()["RunOnly"].GetSize() == 0L ) || GetConfig()["RunOnly"].Contains((const char *)slotToCheck) ) {
+			if ((GetConfig()["RunOnly"].GetSize() == 0L) || GetConfig()["RunOnly"].Contains((const char *) slotToCheck)) {
 				std::cerr << ".";
 				TString message;
 				message << getConfigFileName() << ".any:0 at " << name();
@@ -64,10 +48,10 @@ void NewRendererTest::TestCases()
 				} else {
 					message << ":" << aEntryIterator.Index();
 				}
-
-				Context c(GetConfig()["EnvForAllCases"].DeepClone(), roaCaseConfig["Env"].DeepClone(), theServer, &theSession, theRole, thePage);
-				PutInStore(roaCaseConfig["TmpStore"], c.GetTmpStore());
-				PutInStore(roaCaseConfig["SessionStore"], c.GetSessionStore());
+				Context c(GetConfig()["EnvForAllCases"].DeepClone(), roaCaseConfig["Env"].DeepClone(), theServer, &theSession, theRole,
+						thePage);
+				Coast::TestFramework::PutInStore(roaCaseConfig["TmpStore"], c.GetTmpStore());
+				Coast::TestFramework::PutInStore(roaCaseConfig["SessionStore"], c.GetSessionStore());
 				TraceAny(roaCaseConfig["Renderer"], "running renderer at [" << slotToCheck << "]");
 				String result("[");
 				String expected("[");
@@ -85,8 +69,7 @@ void NewRendererTest::TestCases()
 	}
 }
 
-Test *NewRendererTest::suite ()
-{
+Test *NewRendererTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, NewRendererTest, TestCases);
 	return testSuite;

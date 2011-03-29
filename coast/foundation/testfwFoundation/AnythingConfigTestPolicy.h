@@ -13,15 +13,24 @@
 #include "SystemFile.h"
 #include "Dbg.h"
 
+namespace Coast {
+	namespace TestFramework {
+		template< class InputType >
+		void PutInStore(InputType source, Anything &dest) {
+			long sz = source.GetSize();
+			for (long i = 0; i < sz; ++i) {
+				dest[source.SlotName(i)] = source[i].DeepClone();
+			}
+		}
+	}
+}
 //---- AnythingConfigTestPolicy ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-namespace TestFramework
-{
-
+namespace TestFramework {
 	template
 	<
 	class dummy
@@ -46,16 +55,6 @@ namespace TestFramework
 		Anything fConfig;
 		ROAnything fTestCaseConfig;
 		TString fCfgFileName, fTestCaseName;
-
-		template< class InputType >
-		void PutInStore(InputType source, Anything &dest) {
-			StartTrace(AnythingConfigTestPolicy.PutInStore);
-
-			long sz = source.GetSize();
-			for (long i = 0; i < sz; ++i) {
-				dest[source.SlotName(i)] = source[i].DeepClone();
-			}
-		}
 
 		virtual TString getConfigFileName() {
 			return fCfgFileName;

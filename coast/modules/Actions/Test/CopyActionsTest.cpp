@@ -6,44 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
+#include "CopyActionsTest.h"
 #include "Context.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Action.h"
 
-//--- interface include --------------------------------------------------------
-#include "CopyActionsTest.h"
-
-CopyActionsTest::CopyActionsTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(CopyActionsTest.CopyActionsTest);
-}
-
-TString CopyActionsTest::getConfigFileName()
-{
-	return "CopyActionsTestConfig";
-}
-
-CopyActionsTest::~CopyActionsTest()
-{
-	StartTrace(CopyActionsTest.Dtor);
-}
-
-void CopyActionsTest::CopyActionTest()
-{
+void CopyActionsTest::CopyActionTest() {
 	StartTrace(CopyActionsTest.CopyActionTest);
 	// Set up
 	Context c;
-	PutInStore(GetConfig()["RoleStore"].DeepClone(), c.GetRoleStoreGlobal());
-	PutInStore(GetConfig()["Query"].DeepClone(), c.GetQuery());
-	PutInStore(GetConfig()["TempStore"].DeepClone(), c.GetTmpStore());
+	Coast::TestFramework::PutInStore(GetConfig()["RoleStore"].DeepClone(), c.GetRoleStoreGlobal());
+	Coast::TestFramework::PutInStore(GetConfig()["Query"].DeepClone(), c.GetQuery());
+	Coast::TestFramework::PutInStore(GetConfig()["TempStore"].DeepClone(), c.GetTmpStore());
 
 	// Process
 	String ret1 = ExecAction("Copy1", c, true);
@@ -84,16 +58,14 @@ void CopyActionsTest::CopyActionTest()
 	assertAnyEqual(expectedTempStore, tmpStore["Copy6Fields"]);
 }
 
-String CopyActionsTest::ExecAction(String token, Context &c, bool expectedResult)
-{
+String CopyActionsTest::ExecAction(String token, Context &c, bool expectedResult) {
 	StartTrace(CopyActionsTest.ExecAction);
 	ROAnything config = c.Lookup(token);
 	t_assert(Action::ExecAction(token, c, config) == expectedResult);
 	return token;
 }
 
-Test *CopyActionsTest::suite ()
-{
+Test *CopyActionsTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, CopyActionsTest, CopyActionTest);
 	return testSuite;

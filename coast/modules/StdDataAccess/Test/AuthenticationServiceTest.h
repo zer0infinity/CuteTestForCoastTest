@@ -9,31 +9,24 @@
 #ifndef _AuthenticationServiceTest_H
 #define _AuthenticationServiceTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 
 class Context;
 class ServiceHandler;
 //---- AuthenticationServiceTest ----------------------------------------------------------
 //!ConfiguredTestCases description
-class AuthenticationServiceTest : public ConfiguredActionTest
-{
+class AuthenticationServiceTest: public ConfiguredActionTest {
 public:
-	//--- constructors
+	AuthenticationServiceTest(TString tstrName) :
+		ConfiguredActionTest(tstrName) {
+	}
 
-	//!ConfiguredTestCase constructor
-	//! \param name name of the test
-	AuthenticationServiceTest(TString tstrName);
-
-	//!destroys the test case
-	~AuthenticationServiceTest();
-
-	//--- public api
+	TString getConfigFileName() {
+		return "AuthenticationServiceTestConfig";
+	}
 
 	//!builds up a suite of tests
-	static Test *suite ();
-
-	TString getConfigFileName();
+	static Test *suite();
 
 	//!Authentication is Ok
 	void OkTest();
@@ -47,8 +40,8 @@ public:
 
 protected:
 	void ConnCloseMessage(String &strMsg, String strRealm, String strOutput);
-	void DoTest(ServiceHandler &sh, Context &ctx, String expectedMsg );
-	void DoTest(ServiceHandler &sh, Context &ctx, Anything expectedAny );
+	void DoTest(ServiceHandler &sh, Context &ctx, String expectedMsg);
+	void DoTest(ServiceHandler &sh, Context &ctx, Anything expectedAny);
 	//! utility method to set user info into Context
 	//! \post Env in ctx has AUTHENTICATION header with encoded user / pw
 	virtual void MakeAuthenticationInfo(Context &ctx, String user, String pw);
