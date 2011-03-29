@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -------------------------------------------------------
 #include "RE.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
 #include "REBitSet.h"
 #include "RECompiler.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
 #include <string.h>
 
 RE::RE(const char *pattern, eMatchFlags matchFlags)
@@ -417,12 +408,8 @@ Anything RE::Split(const String &s)
 	}
 	return res;
 }
-String RE::Subst(const String &substituteIn, const String &substitution, bool replaceall)
-{
-	StartTrace(RE.Subst);
-	Trace("input:" << substituteIn);
-	Trace("Subst:" << substitution);
-
+String RE::Subst(const String &substituteIn, const String &substitution, bool replaceall) {
+	StartTrace1(RE.Subst, "replaceall?" << (replaceall?"true":"false") << " input [" << substituteIn << "] Subst [" << substitution << "]");
 	long len = substituteIn.Length();
 	String ret(len);
 	int pos = 0;
