@@ -9,14 +9,13 @@
 #ifndef _RegExpReplaceRenderer_H
 #define _RegExpReplaceRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- RegExpReplaceRenderer ----------------------------------------------------------
-//! Search string within another string.
-/*! Search \c /Contains within \c /String and either render the position where the \c /Contains string was found within \c /String or render \c /True or \c /False spec if given.
- * In case of empty \c /Contains and/or  \c /String slots, render \c /Error contents.
- * @section cosr1 Renderer configuration
+//! Search regular expression within a string and replace match(es).
+/*! Search regular expression \c /Pattern or \c /SimplePattern within \c /Text and render the replaced result to the stream.
+ *
+ * @section rerr1 Renderer configuration
 \code
 {
 	/Text
@@ -46,7 +45,8 @@
  *
  * @par \c SimplePattern
  * Mandatory, if \c Pattern not specified\n
- * Simple Regular expression pattern used to search within contents of \c Text. The pattern will be filtered through RE::SimplePatternToFullRegularExpression() to create a valid regular expression string. Simple String or Renderer specification supported.
+ * Simple Regular expression pattern used to search within contents of \c Text. The pattern will be filtered through RE::SimplePatternToFullRegularExpression()
+ * to create a valid regular expression string. Simple String or Renderer specification supported.
  *
  * @par \c MatchFlags
  * Optional, default 0 (RE::MATCH_NORMAL which is case sensitive matching), check \ref RE::eMatchFlags for valid values
@@ -58,7 +58,7 @@
  *
  * @par \c ReplaceAll
  * Optional, default 1 (true)\n
- * Default is to replace all regular expression matches within \c Text. Set to 0 if you want to only replace the first occurence.
+ * Default is to replace all regular expression matches within \c Text. Set to 0 if you want to only replace the first occurrence.
  *
  * @par Example1:
 \code
@@ -99,18 +99,14 @@ Renders : "Try to match something within this string"
 class RegExpReplaceRenderer: public Renderer {
 	RegExpReplaceRenderer();
 public:
-	/*! Default constructor for NamedObject
-	 * @param name defines the name of the Renderer */
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RegExpReplaceRenderer(const char *name) :
 		Renderer(name) {
 	}
 
 protected:
-	/*! Renders the corresponding result based on a String::Contains() check
-	 * @param reply stream to generate output on
-	 * @param ctx Context used for output generation
-	 * @param config configuration which drives the output generation
-	 */
+	//! Renders the corresponding result based on the regular expression match and replacement
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
