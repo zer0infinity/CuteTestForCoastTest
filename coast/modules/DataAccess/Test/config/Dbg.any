@@ -245,6 +245,14 @@
 		/MainSwitch 11
 		/EnableAll 11
 	}
+	/RegExpSearchReplaceResultMapper {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/RegExpSearchReplaceResultMapperTest {
+		/MainSwitch 11
+		/EnableAll 11
+	}
 	/RenderedKeyResultMapper {
 		/MainSwitch 11
 		/EnableAll 11
@@ -252,5 +260,10 @@
 	/RenderedKeyResultMapperTest {
 		/MainSwitch 11
 		/EnableAll 11
+	}
+	/RE {
+		/MainSwitch 11
+		/EnableAll 1
+		/Subst	11
 	}
 }

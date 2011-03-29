@@ -7,6 +7,191 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/ConfiguredTests {
-
+		/CaseMatchingSimpleStringReplace {
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/Pattern BlUb
+							/Replacement asdf
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search replace asdf in this blubby string"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/CaseMatchingRenderedStringReplace {
+			/TmpStore {
+				/SomeValue	"yoopeedoo"
+			}
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/Pattern BlUb
+							/Replacement {
+								/ContextLookupRenderer SomeValue
+							}
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search replace yoopeedoo in this blubby string"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/CaselessSimpleStringReplaceAll {
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/MatchFlags	1
+							/Pattern BlUb
+							/Replacement asdf
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search replace asdf in this asdfby string"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/CaselessSimpleStringReplaceOnce {
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/MatchFlags	1
+							/Pattern BlUb
+							/Replacement asdf
+							/ReplaceAll 0
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search replace asdf in this blubby string"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/CaseMatchingRegexSimpleStringReplace {
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/Pattern "repl\w+ "
+							/Replacement ""
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search BlUb in this blubby string"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
+		/MultipleRegexSimpleStringReplace {
+			/Value "Search replace BlUb in this blubby string"
+			/Putkey "putkey"
+			/MapperConfig {
+				/RegExpSearchReplaceResultMapper {
+					/DestinationSlot "MyDestination"
+					/Expressions {
+						{
+							/Pattern "repl\w+ "
+							/Replacement ""
+						}
+						{
+							/SimplePattern " blu*"
+							/Replacement ""
+						}
+					}
+					/putkey {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/MyDestination {
+						/putkey	"Search BlUb in this"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+				}
+			}
+		}
 	}
 }

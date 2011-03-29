@@ -9,52 +9,78 @@
 #include "RegExpSearchReplaceResultMapper.h"
 #include "RE.h"
 #include "AnyIterators.h"
+#include "Renderer.h"
+#include "StringStream.h"
 
+namespace {
+	const char * _Expressions = "Expressions";
+	const char * _Pattern = "Pattern";
+	const char * _SimplePattern = "SimplePattern";
+	const char * _Replacement = "Replacement";
+	const char * _MatchFlags = "MatchFlags";
+	const char * _ReplaceAll = "ReplaceAll";
+
+	String getSimpleOrRenderedString(Context &ctx, ROAnything roaConfig) {
+		if (roaConfig.GetType() == AnyArrayType) {
+			return Renderer::RenderToString(ctx, roaConfig);
+		}
+		return roaConfig.AsString();
+	}
+	void searchReplaceExpressions(Context &ctx, String &sText, ROAnything roaExpressions) {
+		StartTrace(RegExpSearchReplaceResultMapper.searchReplaceExpressions);
+		TraceAny(roaExpressions, "list of expressions");
+		// check if we have multiple replacements by testing if first entry in Expressions is an AnyArrayType or not
+		bool singleExpression = not (roaExpressions[0L].GetType() == AnyArrayType);
+		AnyExtensions::Iterator<ROAnything> expressionIterator(singleExpression ? ROAnything() : roaExpressions);
+		ROAnything roaEntry = roaExpressions;
+		if (not singleExpression) {
+			expressionIterator.Next(roaEntry);
+		}
+		TraceAny(roaEntry, (singleExpression?"single ":"prefetched ") << "expression configuration" );
+		do {
+			String sPattern;
+			ROAnything roaPattern, roaMatchFlags;
+			bool isSimplePattern = false;
+			if (roaEntry.LookupPath(roaPattern, _Pattern, '\000') || (isSimplePattern = roaEntry.LookupPath(roaPattern, _SimplePattern,
+					'\000'))) {
+				sPattern = getSimpleOrRenderedString(ctx, roaPattern);
+				if (isSimplePattern) {
+					sPattern = RE::SimplePatternToFullRegularExpression(sPattern);
+				}
+			}
+			String sReplacement = getSimpleOrRenderedString(ctx, roaEntry[_Replacement]);
+			RE aRE(sPattern, static_cast<RE::eMatchFlags> (roaEntry[_MatchFlags].AsLong(0L)));
+			Trace("String [" << sText << "], applying pattern [" << sPattern << "]");
+			sText = aRE.Subst(sText, sReplacement, roaEntry[_ReplaceAll].AsBool(true));
+		} while (expressionIterator.Next(roaEntry));
+		Trace("replaced text [" << sText << "]");
+	}
+}
 //---- RegExpSearchReplaceResultMapper ----------------------------------------------------------------
 RegisterResultMapper(RegExpSearchReplaceResultMapper);
 
 bool RegExpSearchReplaceResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(RegExpSearchReplaceResultMapper.DoPutAny, "key [" << NotNull(key) << "]");
-	if ( script.IsNull() || not script.GetSize() ) {
-		return true;
+	if (value.GetType() != AnyArrayType) {
+		String sText = value.AsString();
+		ROAnything roaExpressions;
+		if (Lookup(_Expressions, roaExpressions, '\000')) {
+			searchReplaceExpressions(ctx, sText, roaExpressions);
+			value = sText;
+		}
 	}
 	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
 
-bool RegExpSearchReplaceResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname)
-{
-	StartTrace1(RegExpSearchReplaceResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] regular expression [" << NotNull(slotname) << "]");
-	TraceAny(value, "value");
-	RE aRE(slotname, static_cast<RE::eMatchFlags>(Lookup("MatchFlags", 0L)));
-
-	AnyExtensions::Iterator<Anything> slotnameIterator(value);
-	Anything anyValue, anyProcessed;
-	String strSlotname;
-	bool bMappingSuccess = true, bMappedValues=false;
-	while ( slotnameIterator.Next(anyValue) && bMappingSuccess ) {
-		if ( slotnameIterator.SlotName(strSlotname) && aRE.ContainedIn(strSlotname) ) {
-			anyProcessed.Append(slotnameIterator.Index());
-			TraceAny(anyValue, "pattern [" << slotname << "] matched in slotname [" << strSlotname << "] with value:");
-			if ( roaScript.AsString().IsEqual("-") ) {
-				continue; //<! shortcut because we got a negative filter which is not to put through
-			}
-			bMappedValues = true;
-			String strNewKey = key;
-			strNewKey.Append(getDelim()).Append(strSlotname);
-			if ( roaScript.IsNull() || not roaScript.GetSize() ) {
-				//! catch emtpy mapper script and directly use final put
-				Trace("Calling ResultMapper::DoFinalPutAny() with new key [" << strNewKey << "]");
-				bMappingSuccess = DoFinalPutAny(strNewKey, anyValue, ctx) && bMappingSuccess;
-			} else {
-				Trace("Calling ResultMapper::DoPutAny() with new key [" << strNewKey << "]");
-				bMappingSuccess = DoPutAny(strNewKey, anyValue, ctx, roaScript) && bMappingSuccess;
-			}
-			Trace("RetCode of Put:" << (bMappingSuccess ? "true" : "false"));
-		}
-	}
-	for ( long idx = anyProcessed.GetSize()-1l; idx >= 0L; --idx ) {
-		Trace("removing processed entry at index " << anyProcessed[idx].AsLong(-1L));
-		value.Remove(anyProcessed[idx].AsLong(-1L));
-	}
-	return (bMappedValues ? bMappingSuccess : Lookup("NoMatchReturnValue", 1L) > 0L );
+bool RegExpSearchReplaceResultMapper::DoPutStream(const char *key, std::istream & is, Context & ctx, ROAnything script) {
+	StartTrace1(RegExpSearchReplaceResultMapper.DoPutStream, "key [" << NotNull(key) << "]");
+	OStringStream content;
+	long lRecv = 0, lToRecv = 2048;
+	l_long lTotalReceived = 0LL;
+	while (NSStringStream::PlainCopyStream2Stream(&is, content, lRecv, lToRecv) && lRecv == lToRecv)
+		lTotalReceived += lRecv;
+	lTotalReceived += lRecv;
+	Trace("total characters read: " << lTotalReceived);
+	Anything value = content.str();
+	return DoPutAny(key, value, ctx, script);
 }

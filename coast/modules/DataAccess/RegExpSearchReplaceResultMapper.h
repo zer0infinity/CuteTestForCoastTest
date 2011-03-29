@@ -12,80 +12,79 @@
 #include "Mapper.h"
 
 //---- RegExpSearchReplaceResultMapper ----------------------------------------------------------
-//! Calls ResultMapper::DoPutAny() on named value entries matched by regular expressions. Positive and negative filtering can be applied.
-/*! Lookup values in the given Anything and map them again using the given configuration.
- * Provide a MapperScript which extracts and stores either parts of the converted Anything or the whole Anything.
- * @section rffrm Mapper configuration
+//! Search and replace by regular expression a String convertible value or stream.
+/*! Search regular expression \c /Pattern or \c /SimplePattern in String convertible value or stream.
+ *
+ * @section resrrm1 Mapper configuration
 \code
 {
-	/MatchFlags				long
-	/NoMatchReturnValue		long
-	/key {
-		/"regular-expr"		MapperSpec	# positive filter
-		/"regular-expr"		-			# negative filter
+	/Expressions {
+		{	# optional if only one expression used
+			/Pattern			# either
+			/SimplePattern		# or
+			/MatchFlags
+			/Replacement
+			/ReplaceAll
+		}
 		...
 	}
 }
 \endcode
+ * @par \c Expressions
+ * Mandatory\n
+ * One expression specification or list of expressions to apply on put value in sequence of list
+ *
+ * @par \c Pattern
+ * Mandatory, if \c SimplePattern not specified, this one has precedence\n
+ * Regular expression pattern used to search within contents of value. Simple String or Renderer specification supported.
+ *
+ * @par \c SimplePattern
+ * Mandatory, if \c Pattern not specified\n
+ * Simple Regular expression pattern used to search within contents of value. The pattern will be filtered through RE::SimplePatternToFullRegularExpression()
+ * to create a valid regular expression string. Simple String or Renderer specification supported.
+ *
  * @par \c MatchFlags
- * Optional, default 0 (RE::MATCH_NORMAL which is case sensitive matching)\n
- * Check \ref RE::eMatchFlags for valid values
+ * Optional, default 0 (RE::MATCH_NORMAL which is case sensitive matching), check \ref RE::eMatchFlags for valid values
  *
- * @par \c NoMatchReturnValue
+ * @par \c Replacement
+ * Mandatory\n
+ * Simple String or Renderer specification resulting in a string to be used as replacement for the matching regular expression.\n
+ * \note Group specific replacement strings like \\1 are not supported.
+ *
+ * @par \c ReplaceAll
  * Optional, default 1 (true)\n
- * return value of mapping if no matching slot found
- *
- * @par \c /regular-expression \c MapperSpec
- * Optional\n
- * Positive regular expression rule filter, ResultMapper::DoPutAny() will be called with the contents of the matched slot of value.
- *
- * @par \c /regular-expression \c -
- * Optional\n
- * Negative regular expression rule filter, the matched slot of value will be ignored.
+ * Default is to replace all regular expression matches within value. Set to 0 if you want to only replace the first occurrence.
  *
  * @par Example1:
- * @code
-{ /FilterSomeHeaderFields {
-	/DestinationSlot SomeWhere
-	/MatchFlags		1
-	/CodeExample {
-		/"^content"	{			# execute Mapper script for entries starting with "content"
-			/RootMapper	*
+\code
+/RegExpSearchReplaceResultMapper {
+	/DestinationSlot "MyDestination"
+	/Expressions {
+		{
+			/Pattern "repl\w+ "
+			/Replacement ""
 		}
-		/"^server"	"-"			# do not map this entry
-		/"."		*			# catch all others and do default putting
+		{
+			/SimplePattern " blu*"
+			/Replacement ""
+		}
 	}
-} }
-@endcode
- * value to put:
-@code
-/CodeExample {
-	/connection "close"
-	/date "Thu, 11 Nov 2010 08:30:36 GMT"
-	/server "Microsoft-IIS/6.0"
-	/x-powered-by "ASP.NET"
-	/x-aspnet-version "2.0.50727"
-	/cache-control "private"
-	/content-type "text/html; charset=utf-8"
-	/content-length "4611"
+	/putkey {
+		/ResultMapper *
+	}
 }
+@endcode
+ * value to put with key \b putkey
+@code
+Search replace BlUb in this blubby string
 @endcode
  * resulting output in TmpStore would be:
 @code
-/SomeWhere {
-	/CodeExample {
-		/connection "close"
-		/date "Thu, 11 Nov 2010 08:30:36 GMT"
-		/x-powered-by "ASP.NET"
-		/x-aspnet-version "2.0.50727"
-		/cache-control "private"
-	}
+/MyDestination {
+	/putkey	"Search BlUb in this"
 }
-/CodeExample {
-	/content-type "text/html; charset=utf-8"
-	/content-length "4611"
-}
-@endcode */
+@endcode
+*/
 class RegExpSearchReplaceResultMapper: public ResultMapper {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
@@ -99,12 +98,12 @@ public:
 	}
 
 protected:
-	//! override needed to catch empty mapper script and put nothing
+	//! regular expression replacement for simple anything types convertible to String
 	/*! @copydoc ResultMapper::DoPutAny() */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
-	//! use slotname as Anything::LookupPath() argument within value and call mapper script for slotname using the new value looked up
-	/*! @copydoc ResultMapper::DoPutAnyWithSlotname() */
-	virtual bool DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything script, const char *slotname);
+	//! regular expression replacement for streams
+	/*! @copydoc ResultMapper::DoPutStream() */
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 };
 #endif
