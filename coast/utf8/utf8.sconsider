@@ -1,0 +1,14 @@
+import SConsider
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'public' : {
+            'includeSubdir': 'source',
+        },
+    },
+}
+
+SConsider.createTargets(packagename, buildSettings)
+
