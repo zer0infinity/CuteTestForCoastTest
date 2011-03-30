@@ -31,6 +31,7 @@
 #include "HTTPProcessorWithChecksTest.h"
 #include "MimeHeaderResultMapperTest.h"
 #include "SplitCookieResultMapperTest.h"
+#include "MSAjaxFixFieldLengthResultMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -41,6 +42,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, HTTPProcessorTest);
 	ADD_SUITE(runner, HTTPProcessorWithChecksTest);
 	ADD_SUITE(runner, SplitCookieResultMapperTest);
+	ADD_SUITE(runner, MSAjaxFixFieldLengthResultMapperTest);
 
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, HTTPResponseMapperTest);

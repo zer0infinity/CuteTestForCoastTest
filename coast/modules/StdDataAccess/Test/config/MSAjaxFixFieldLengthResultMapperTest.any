@@ -1,0 +1,89 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2011, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/ConfiguredTests {
+		/NonUTF8SingleFieldAdjustLength {
+			/Value "10|x|y|abcd|"
+			/Putkey "Content"
+			/MapperConfig {
+				/MSAjaxFixFieldLengthResultMapper {
+					/DestinationSlot	Body
+					/Fields {
+						/len	0
+						/id1	*
+						/id2	*
+						/value	"+"
+					}
+					/FieldSeparator	"|"
+					/Content {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Body {
+						/Content "4|x|y|abcd|"
+					}
+				}
+			}
+		}
+		/UTF8SingleFieldAdjustLength {
+			/Value "10|x|y|\xC3\xA4\xC3\xB6\xC3\xBC|"
+			/Putkey "Content"
+			/MapperConfig {
+				/MSAjaxFixFieldLengthResultMapper {
+					/DestinationSlot	Body
+					/Fields {
+						/len	0
+						/id1	*
+						/id2	*
+						/value	"+"
+					}
+					/FieldSeparator	"|"
+					/Content {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Body {
+						/Content "3|x|y|\xC3\xA4\xC3\xB6\xC3\xBC|"
+					}
+				}
+			}
+		}
+		/NonUTF8MultipleFieldAdjustLength {
+			/Value "10|x|y|abcd|-1|a|b|0|77|hjhj|jkljlkl|blubby blub blub|"
+			/Putkey "Content"
+			/MapperConfig {
+				/MSAjaxFixFieldLengthResultMapper {
+					/DestinationSlot	Body
+					/Fields {
+						/len	0
+						/id1	*
+						/id2	*
+						/value	"+"
+					}
+					/FieldSeparator	"|"
+					/Content {
+						/ResultMapper *
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Body {
+						/Content "4|x|y|abcd|1|a|b|0|16|hjhj|jkljlkl|blubby blub blub|"
+					}
+				}
+			}
+		}
+	}
+}

@@ -118,6 +118,14 @@
 		/MainSwitch						11
 		/EnableAll						11
 	}
+	/MSAjaxFixFieldLengthResultMapper {
+		/MainSwitch						11
+		/EnableAll						11
+	}
+	/MSAjaxFixFieldLengthResultMapperTest {
+		/MainSwitch						11
+		/EnableAll						11
+	}
 	/RenderedKeyResultMapper {
 		/MainSwitch						11
 		/EnableAll						11

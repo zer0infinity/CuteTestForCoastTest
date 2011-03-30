@@ -11,27 +11,61 @@
 #include "MSAjaxFixFieldLengthResultMapper.h"
 #include "StringStream.h"
 #include "utf8.h"
-#include <algorithm>
-
+#include "AnyIterators.h"
 
 namespace {
 	char const *_FieldList = "Fields";
 	char const *_FieldSeparator = "FieldSeparator";
+	long const _lenMarker = 0L;
+	char const _addMarker = '+';
 
-	struct appendFunctor {
-		typedef std::back_insert_iterator<String> stringInserter;
-		stringInserter backinsert;
-		appendFunctor(String& strRet): backinsert(strRet) {}
-		void operator()(unsigned char const c) {
-			StatTrace(UTF8Renderer.append, "character to add:" << static_cast<long>(c), Coast::Storage::Current());
-			utf8::append(static_cast<utf8::uint32_t>(c), backinsert);
+	Anything getEntryFromString(String &sText, char const delim, long const nFields, ROAnything roaFieldList) {
+		Anything anyEntry;
+		long const _delimLen = 1;
+		for ( long lIdx=0, delimPos=0; lIdx < nFields; ++lIdx) {
+			delimPos = sText.StrChr(delim);
+			anyEntry[roaFieldList.SlotName(lIdx)] = sText.SubString(0, delimPos);
+			sText.TrimFront(delimPos+_delimLen);
 		}
-	};
-	String AsUTF8(String const &strInput) {
-		StartTrace(UTF8Renderer.AsUTF8);
-		String strRet(strInput.Length());
-		std::for_each(strInput.begin(), strInput.end(), appendFunctor(strRet));
-		return strRet;
+		return anyEntry;
+	}
+	long getStringLength(String const &str) {
+		StartTrace1(MSAjaxFixFieldLengthResultMapper.getStringLength, "str [" << str << "]");
+		long len = utf8::distance(str.begin(), str.end());
+		return len;
+	}
+	void adjustLengthField(Anything &anyEntry, ROAnything roaFieldList) {
+		StartTrace(MSAjaxFixFieldLengthResultMapper.adjustLenghtField);
+		long len = 0L;
+		AnyExtensions::Iterator<ROAnything> fieldIterator(roaFieldList);
+		ROAnything roaField;
+		String strSlotname;
+		long lenIdx = -1L;
+		TraceAny(anyEntry, "unmodified entry");
+		while ( fieldIterator.Next(roaField) ) {
+			TraceAny(roaField, "current field");
+			if ( roaField.IsNull() ) continue;
+			if ( roaField.AsString()[0L] == _addMarker ) {
+				if ( fieldIterator.SlotName(strSlotname) ) {
+					len += getStringLength(anyEntry[strSlotname].AsString());
+				} else {
+					len += getStringLength(anyEntry[fieldIterator.Index()].AsString());
+				}
+			} else if ( roaField.AsLong(-1) == _lenMarker ) {
+				lenIdx = fieldIterator.Index();
+			}
+		}
+		if ( lenIdx >= 0L ) {
+			anyEntry[lenIdx] = len;
+		}
+		TraceAny(anyEntry, "modified entry");
+	}
+	void appendEntryToString(String &strOut, char const delim, ROAnything roaEntry) {
+		AnyExtensions::Iterator<ROAnything> fieldIterator(roaEntry);
+		ROAnything roaField;
+		while ( fieldIterator.Next(roaField) ) {
+			strOut.Append(roaField.AsString()).Append(delim);
+		}
 	}
 }
 
@@ -39,13 +73,21 @@ RegisterResultMapper(MSAjaxFixFieldLengthResultMapper);
 
 bool MSAjaxFixFieldLengthResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(MSAjaxFixFieldLengthResultMapper.DoPutAny, "key [" << NotNull(key) << "]");
-	if (value.GetType() != AnyArrayType) {
-		String sText = value.AsString();
-		ROAnything roaFieldList;
-		long nFields = 0L;
-		if (Lookup(_FieldList, roaFieldList, '\000') && ( nFields = roaFieldList.GetSize() ) > 0L ) {
-			value = sText;
+	String sText = value.AsString();
+	ROAnything roaFieldList;
+	long nFields = 0L;
+	if (Lookup(_FieldList, roaFieldList, '\000') && ( nFields = roaFieldList.GetSize() ) > 0L ) {
+		TraceAny(roaFieldList, "field list");
+		char const delim = Lookup(_FieldSeparator, "|")[0];
+		String strOut;
+		while ( sText.Length() ) {
+			Anything anyEntry = getEntryFromString(sText, delim, nFields, roaFieldList);
+			if ( anyEntry.GetSize() == nFields ) {
+				adjustLengthField(anyEntry, roaFieldList);
+				appendEntryToString(strOut, delim, anyEntry);
+			}
 		}
+		value = strOut;
 	}
 	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
