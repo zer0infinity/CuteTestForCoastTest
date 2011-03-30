@@ -6,16 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "StreamTransferMapper.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "RequestProcessor.h"
-#include "Server.h"
-#include "Dbg.h"
 
-//---- StreamTransferMapper ------------------------------------------------------------------
 RegisterResultMapper(StreamTransferMapper);
 
 namespace {

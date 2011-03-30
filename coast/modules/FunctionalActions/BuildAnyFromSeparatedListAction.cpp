@@ -6,24 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "BuildAnyFromSeparatedListAction.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
 #include "Renderer.h"
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- BuildAnyFromSeparatedListAction ---------------------------------------------------------------
 RegisterAction(BuildAnyFromSeparatedListAction);
-
-BuildAnyFromSeparatedListAction::BuildAnyFromSeparatedListAction(const char *name) : Action(name) { }
-
-BuildAnyFromSeparatedListAction::~BuildAnyFromSeparatedListAction() { }
 
 bool BuildAnyFromSeparatedListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {

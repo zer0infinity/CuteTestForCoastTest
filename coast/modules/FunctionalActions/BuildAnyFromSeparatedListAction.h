@@ -9,7 +9,6 @@
 #ifndef _BuildAnyFromSeparatedListAction_H
 #define _BuildAnyFromSeparatedListAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- BuildAnyFromSeparatedListAction ----------------------------------------------------------
@@ -56,31 +55,29 @@ Generates
 }
 \endcode
 */
-class BuildAnyFromSeparatedListAction : public Action
-{
+class BuildAnyFromSeparatedListAction: public Action {
 public:
-	//--- constructors
-	/*! \param name defines the name of the action */
-	BuildAnyFromSeparatedListAction(const char *name);
-	~BuildAnyFromSeparatedListAction();
+	BuildAnyFromSeparatedListAction(const char *name) :
+		Action(name) {
+	}
 
 	/*! DoSomething method for configured Actions
-		\param transitionToken (in/out) the event passed by the caller, can be modified.
-		\param ctx the context the action runs within.
-		\param config the configuration of the action.
-		\return true if the action run successfully, false if an error occurred.
-	*/
+	 \param transitionToken (in/out) the event passed by the caller, can be modified.
+	 \param ctx the context the action runs within.
+	 \param config the configuration of the action.
+	 \return true if the action run successfully, false if an error occurred.
+	 */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 
 private:
-	bool   DoTokenize(Anything &anyTokens, String &text, String &strSep );
-	bool   DoBuildHeader(Anything &anyHeaderTok, Anything &anyHeader, String &sHeaderSeparator, bool &bBuildHeader);
-	bool   ReadConfig(String &text, String &recordSeparator, String &fieldSeparator, bool &bFieldSep,
-					  String &useSlotName, bool &bUseSlot, long &lHeaderRows, String &sHeaderSeparator, Context &ctx, const ROAnything &config);
-	bool   ReadValue(String &retValue, const ROAnything &store, const String &location, Context &ctx);
+	bool DoTokenize(Anything &anyTokens, String &text, String &strSep);
+	bool DoBuildHeader(Anything &anyHeaderTok, Anything &anyHeader, String &sHeaderSeparator, bool &bBuildHeader);
+	bool ReadConfig(String &text, String &recordSeparator, String &fieldSeparator, bool &bFieldSep, String &useSlotName, bool &bUseSlot,
+			long &lHeaderRows, String &sHeaderSeparator, Context &ctx, const ROAnything &config);
+	bool ReadValue(String &retValue, const ROAnything &store, const String &location, Context &ctx);
 	String TrimEndingSpaces(String &value);
-	bool   BuildAnything (String &text, String &recordSeparator, String &fieldSeparator, bool &bFieldSep,
-						  bool &bUseSlot, long &lHeaderRows, String &sHeaderSeparator, Anything &tmp );
+	bool BuildAnything(String &text, String &recordSeparator, String &fieldSeparator, bool &bFieldSep, bool &bUseSlot, long &lHeaderRows,
+			String &sHeaderSeparator, Anything &tmp);
 };
 
 #endif

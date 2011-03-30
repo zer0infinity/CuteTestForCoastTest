@@ -6,17 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RequestProcessor.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "StringStream.h"
 #include "Registry.h"
 #include "Server.h"
 #include "ServerUtils.h"
-#include "SystemLog.h"
-#include "Dbg.h"
 
 //--- RequestProcessor ----------------------------------------------------------
 RegCacheImpl(RequestProcessor)

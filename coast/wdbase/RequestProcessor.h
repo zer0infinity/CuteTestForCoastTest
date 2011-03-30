@@ -9,8 +9,6 @@
 #ifndef _RequestProcessor_H
 #define _RequestProcessor_H
 
-//---- baseclass include -------------------------------------------------
-#include "IFAConfObject.h"
 #include "Context.h"
 
 //--- RequestProcessor ----------------------------------------------------------
@@ -18,7 +16,7 @@
 class RequestProcessor : public RegisterableObject
 {
 public:
-	//!named object shared by all requests
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RequestProcessor(const char *processorName);
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
