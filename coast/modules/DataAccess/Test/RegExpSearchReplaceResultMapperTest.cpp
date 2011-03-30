@@ -62,12 +62,12 @@ void RegExpSearchReplaceResultMapperTest::ConfiguredTests() {
 				setupContext(caseConfig, ctx);
 				ROAnything roaValue;
 				if (caseConfig.LookupPath(roaValue, _Value)) {
+					Anything value = roaValue.DeepClone();
+					t_assertm(rm->Put(putKeyName, value, ctx), caseName);
+				} else  if (caseConfig.LookupPath(roaValue, _Stream)) {
 					String strValue = roaValue.AsString();
 					IStringStream stream(strValue);
 					t_assertm(rm->Put(putKeyName, stream, ctx), caseName);
-				} else  if (caseConfig.LookupPath(roaValue, _Stream)) {
-					Anything value = roaValue.DeepClone();
-					t_assertm(rm->Put(putKeyName, value, ctx), caseName);
 				} else {
 					t_assertm(false, TString("neither ").Append(_Value).Append(" nor ").Append(_Stream).Append(" is defined in configuration for ").Append(caseName));
 					continue;

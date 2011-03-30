@@ -9,10 +9,8 @@
 #ifndef _RegExpSearchReplaceResultMapperTest_H
 #define _RegExpSearchReplaceResultMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
-//---- RegExpSearchReplaceResultMapperTest ----------------------------------------------------------
 class RegExpSearchReplaceResultMapperTest: public TestFramework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor

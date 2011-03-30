@@ -13,6 +13,8 @@
 #include "CheckStores.h"
 
 namespace {
+    const char *_Value = "Value";
+    const char *_Stream = "Stream";
 	bool setupMappers(ROAnything roaMapperConfigs) {
 		StartTrace(RegExpFilterFieldsResultMapperTest.setupMappers);
 		Anything mappersToInitialize;
@@ -32,6 +34,13 @@ namespace {
 		AliasTerminator at(ResultMapper::gpcCategory);
 		RegisterableObject::Terminate(ResultMapper::gpcCategory, &at);
 	}
+	void setupContext(ROAnything caseConfig, Context &ctx) {
+		Coast::TestFramework::PutInStore(caseConfig["SessionStore"], ctx.GetSessionStore());
+		Coast::TestFramework::PutInStore(caseConfig["RoleStore"], ctx.GetRoleStoreGlobal());
+		Coast::TestFramework::PutInStore(caseConfig["TmpStore"], ctx.GetTmpStore());
+		Coast::TestFramework::PutInStore(caseConfig["Query"], ctx.GetQuery());
+		Coast::TestFramework::PutInStore(caseConfig["Env"], ctx.GetEnvStore());
+	}
 }
 
 void RegExpFilterFieldsResultMapperTest::ConfiguredTests() {
@@ -44,17 +53,25 @@ void RegExpFilterFieldsResultMapperTest::ConfiguredTests() {
 			t_assertm(false, "can not execute with unnamed case name, only named anything slots allowed");
 			continue;
 		}
-		Anything value = caseConfig["Value"].DeepClone();
 		String putKeyName = caseConfig["Putkey"].AsString("HTTPHeader");
 		if (t_assertm(setupMappers(caseConfig["MapperConfig"]), "ResultMapper setup must succeed to execute tests")) {
 			String mapperName = caseConfig["MapperConfig"].SlotName(0L);
 			ResultMapper *rm = ResultMapper::FindResultMapper(mapperName);
 			if (t_assertm(rm != 0, TString("could not find mapper [") << mapperName.cstr() << "]")) {
 				Context ctx;
-				t_assertm(rm->Put(putKeyName, value, ctx), caseName);
-				String outputLocation = rm->GetDestinationSlot(ctx);
-				outputLocation.Append(rm->getDelim()).Append(putKeyName);
-
+				setupContext(caseConfig, ctx);
+				ROAnything roaValue;
+				if (caseConfig.LookupPath(roaValue, _Value)) {
+					Anything value = roaValue.DeepClone();
+					t_assertm(rm->Put(putKeyName, value, ctx), caseName);
+				} else  if (caseConfig.LookupPath(roaValue, _Stream)) {
+					String strValue = roaValue.AsString();
+					IStringStream stream(strValue);
+					t_assertm(rm->Put(putKeyName, stream, ctx), caseName);
+				} else {
+					t_assertm(false, TString("neither ").Append(_Value).Append(" nor ").Append(_Stream).Append(" is defined in configuration for ").Append(caseName));
+					continue;
+				}
 				Anything anyFailureStrings;
 				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["Result"], ctx, caseName, Coast::TestFramework::exists);
 				// non-existence tests
