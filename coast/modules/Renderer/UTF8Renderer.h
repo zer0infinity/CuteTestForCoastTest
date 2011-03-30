@@ -9,38 +9,31 @@
 #ifndef _UTF8Renderer_H
 #define _UTF8Renderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- UTF8Renderer ----------------------------------------------------------
 //! Converts ascii character String to UTF8 representation
 /*!
-<B>Configuration:</B><PRE>
-{
-	/String			Rendererspec	mandatory, String to be converted
-}
+ <B>Configuration:</B><PRE>
+ {
+ /String			Rendererspec	mandatory, String to be converted
+ }
  or just
-{
-	"name" "default renderer specification"
-}
-</PRE>
+ {
+ "name" "default renderer specification"
+ }
+ </PRE>
  */
-class UTF8Renderer : public Renderer
-{
+class UTF8Renderer: public Renderer {
 public:
-	//--- constructors
-	UTF8Renderer(const char *name);
-	~UTF8Renderer();
+	UTF8Renderer(const char *name) :
+		Renderer(name) {
+	}
 
+protected:
 	//! Converts String into UTF8 character stream
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
-
-private:
-	String AsUTF8(String const &strInput);
-
 };
 
 #endif

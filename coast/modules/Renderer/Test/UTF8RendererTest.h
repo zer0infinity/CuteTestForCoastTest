@@ -9,37 +9,15 @@
 #ifndef _UTF8RendererTest_H
 #define _UTF8RendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
-//---- UTF8RendererTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class UTF8RendererTest : public TestFramework::TestCase
-{
+class UTF8RendererTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	UTF8RendererTest(TString tname);
-
-	//! destroys the test case
-	~UTF8RendererTest();
-
-	//--- public api
-
+	UTF8RendererTest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	static Test *suite();
 
 	//! describe this testcase
 	void conversionTest();
