@@ -9,8 +9,9 @@
 #ifndef _PAGE_H
 #define _PAGE_H
 
-#include "Context.h"
 #include "WDModule.h"
+
+class Context;
 
 //---- PagesModule -----------------------------------------------------------
 class PagesModule: public WDModule {

@@ -9,7 +9,6 @@
 #ifndef _ReadFileDAImplTest_H
 #define _ReadFileDAImplTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- ReadFileDAImplTest ----------------------------------------------------------

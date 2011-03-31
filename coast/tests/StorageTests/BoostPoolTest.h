@@ -9,7 +9,6 @@
 #ifndef _BoostPoolTest_H
 #define _BoostPoolTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 #include <boost/preprocessor/seq.hpp>

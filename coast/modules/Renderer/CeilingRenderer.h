@@ -9,7 +9,6 @@
 #ifndef _CeilingRenderer_H
 #define _CeilingRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "ComparingRenderer.h"
 
 //---- CeilingRenderer ----------------------------------------------------------

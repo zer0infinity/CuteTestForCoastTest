@@ -9,7 +9,6 @@
 #ifndef _StringsEqualAction_H
 #define _StringsEqualAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 class Context;

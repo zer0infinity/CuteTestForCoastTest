@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLListenerPoolTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "RequestListener.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SSLSocket.h"
 #include "SSLModule.h"
 #include "AnyIterators.h"

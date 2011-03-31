@@ -9,7 +9,6 @@
 #ifndef CONNECTIONPOOL_H_
 #define CONNECTIONPOOL_H_
 
-//---- ConnectionPool include -------------------------------------------------
 #include "DataAccessImpl.h"
 #include "Threads.h"
 #include "WPMStatHandler.h"

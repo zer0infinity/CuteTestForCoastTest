@@ -10,8 +10,6 @@
 #include "TestSuite.h"
 #include "GenericXMLParser.h"
 
-//--- standard modules used ----------------------------------------------------
-
 //---- GenericXMLParserTest ----------------------------------------------------------------
 GenericXMLParserTest::GenericXMLParserTest(TString tstrName)
 	: TestCaseType(tstrName)

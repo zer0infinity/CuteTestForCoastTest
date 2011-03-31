@@ -9,7 +9,6 @@
 #ifndef _ROAnyConfNamedObjectLookupAdapterTest_H
 #define _ROAnyConfNamedObjectLookupAdapterTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- framework classes include -----------------------------------------

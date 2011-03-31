@@ -7,10 +7,7 @@
  */
 
 #include "ComputeRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
 #include <stdlib.h>
 
 //---- ComputeRenderer ----------------------------------------------------------------

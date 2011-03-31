@@ -6,26 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "STLStorageTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "STLStorage.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
 #include "MemHeader.h"
 #include "Dbg.h"
 #include "ITOStorage.h"
-
 #include <vector>
 #include <list>
 #include <deque>
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- STLStorageTest ----------------------------------------------------------------
 STLStorageTest::STLStorageTest(TString tstrName)

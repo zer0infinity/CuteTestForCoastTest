@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "REBitSet.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 REBitSet::REBitSet(bool setall)
 {

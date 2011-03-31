@@ -10,7 +10,6 @@
 #include "Socket.h"
 #include "TestSuite.h"
 #include "PoolAllocator.h"
-
 #if !defined(WIN32)
 #include <netinet/in.h>		// for INADDR_ANY
 #include <fcntl.h>

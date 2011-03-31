@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MockAccessControllerTests.h"
-
-//--- project modules used -----------------------------------------------------
 #include "SimpleAccessControllers.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "WDModule.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 void MockAccessControllerTests::MockUDACTest()
 {

@@ -10,6 +10,7 @@
 #include "DataMapper.h"
 #include "TestSuite.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- DataMapperTest ----------------------------------------------------------------
 Test *DataMapperTest::suite() {

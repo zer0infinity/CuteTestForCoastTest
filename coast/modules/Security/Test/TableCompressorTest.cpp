@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Threads.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "TableCompressor.h"
-
-//--- interface include --------------------------------------------------------
 #include "TableCompressorTest.h"
 
 //---- TableCompressorTest ----------------------------------------------------------------

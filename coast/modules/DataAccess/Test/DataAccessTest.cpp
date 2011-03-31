@@ -10,6 +10,7 @@
 #include "TestSuite.h"
 #include "DataAccess.h"
 #include "Session.h"
+#include "Context.h"
 
 //---- DataAccessTest ----------------------------------------------------------------
 Test *DataAccessTest::suite ()
@@ -80,7 +81,6 @@ class SessionUnlockTestDAImpl : public DataAccessImpl
 {
 public:
 	SessionUnlockTestDAImpl(const char *name): DataAccessImpl(name) {}
-	~SessionUnlockTestDAImpl() {}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

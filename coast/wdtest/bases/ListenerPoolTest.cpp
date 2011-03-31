@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ListenerPoolTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "RequestListener.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 
 class TestCallBack : public AcceptorCallBack
 {

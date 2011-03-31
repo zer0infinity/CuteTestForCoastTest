@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
-
-//--- project modules used -----------------------------------------------------
 #include "Context.h"
 #include "Page.h"
-
-//--- interface include --------------------------------------------------------
 #include "PageRelatedLookupRenderer.h"
 
 //---- PageRelatedLookupRenderer ----------------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _NameUsingOutputMapper_H
 #define _NameUsingOutputMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- NameUsingOutputMapper ----------------------------------------------------------

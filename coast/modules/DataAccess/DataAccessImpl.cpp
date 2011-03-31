@@ -9,6 +9,8 @@
 #include "DataAccessImpl.h"
 #include "Registry.h"
 #include "StringStream.h"
+#include "Dbg.h"
+#include "Policy.h"
 
 //---- DataAccessImplsModule -----------------------------------------------------------
 RegisterModule(DataAccessImplsModule);

@@ -9,7 +9,6 @@
 #ifndef _HTMLComparerTest_H
 #define _HTMLComparerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- HTMLComparerTest ----------------------------------------------------------

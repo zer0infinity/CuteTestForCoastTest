@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "URI2FileNameMapper.h"
-
-//--- interface include --------------------------------------------------------
 #include "URI2FileNameTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Context.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- URI2FileNameTest ----------------------------------------------------------------
 URI2FileNameTest::URI2FileNameTest(TString tname) : TestCaseType(tname)

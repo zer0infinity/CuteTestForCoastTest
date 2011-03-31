@@ -6,15 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "ConditionalAction.h"
-
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
-
-//--- test cases ---------------------------------------------------------------
-#include "ConfiguredActionTest.h"
 #include "LDAPConnectionTest.h"
 #include "ErrorHandlerTest.h"
 #include "LDAPConnectionManagerTest.h"

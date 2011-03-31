@@ -9,7 +9,6 @@
 #ifndef _CgiCallerTest_H
 #define _CgiCallerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 class Context;
 //---- CgiCallerTest ----------------------------------------------------------

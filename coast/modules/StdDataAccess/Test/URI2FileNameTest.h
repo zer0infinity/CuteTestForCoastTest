@@ -9,7 +9,6 @@
 #ifndef _URI2FileNameTest_H
 #define _URI2FileNameTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- URI2FileNameTest ----------------------------------------------------------

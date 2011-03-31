@@ -9,7 +9,6 @@
 #ifndef _StatementDescriptionTest_H
 #define _StatementDescriptionTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- StatementDescriptionTest ----------------------------------------------------------

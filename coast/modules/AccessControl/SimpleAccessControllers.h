@@ -9,7 +9,6 @@
 #ifndef _SimpleAccessControllers_H
 #define _SimpleAccessControllers_H
 
-//---- baseclass include -------------------------------------------------
 #include "AccessController.h"
 #include "Threads.h"
 

@@ -6,28 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Threads.h"
-#include "Session.h"
-#include "Role.h"
-#include "Context.h"
-#include "StringStream.h"
+#include "WDModuleTest.h"
+#include "WDModule.h"
 #include "Registry.h"
 #include "Policy.h"
-#include "Server.h"
-#include "Socket.h"
-#include "Renderer.h"
-#include "Action.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "WDModule.h"
-
-//--- interface include --------------------------------------------------------
-#include "WDModuleTest.h"
 
 class TestModuleTrue: public WDModule
 {

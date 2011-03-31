@@ -9,7 +9,6 @@
 #ifndef _HTTPMimeHeaderMapperTest_H
 #define _HTTPMimeHeaderMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- HTTPMimeHeaderMapperTest ----------------------------------------------------------

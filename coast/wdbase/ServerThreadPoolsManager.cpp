@@ -6,18 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ServerThreadPoolsManager.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Timers.h"
 #include "Server.h"
 #include "RequestListener.h"
 #include "ServerUtils.h"
 #include "RequestProcessor.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 class WorkerPoolCallBackFactory : public CallBackFactory
 {

@@ -11,7 +11,6 @@
 #include "Socket.h"
 #include "Resolver.h"
 #include "PoolAllocator.h"
-
 #if defined(WIN32)
 #include <io.h>
 #endif

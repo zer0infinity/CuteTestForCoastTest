@@ -6,21 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AccessControllersModule.h"
-
-//--- project modules used -----------------------------------------------------
-
-// kgu: NOTE: The following is not required, but we want to grant that
-// at least one concrete AccessController implementation is registered,
-// if the AccessControllersModule is used.
 #include "SimpleAccessControllers.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Registry.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Policy.h"
 
 //---- AccessControllersModule -----------------------------------------------------------
 RegisterModule(AccessControllersModule);

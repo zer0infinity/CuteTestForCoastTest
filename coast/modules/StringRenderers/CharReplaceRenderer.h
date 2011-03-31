@@ -9,7 +9,6 @@
 #ifndef _CharReplaceRenderer_H
 #define _CharReplaceRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- CharReplaceRenderer ----------------------------------------------------------

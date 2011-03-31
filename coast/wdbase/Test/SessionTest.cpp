@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SessionTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Session.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Role.h"
 #include "Registry.h"
 #include "PoolAllocator.h"

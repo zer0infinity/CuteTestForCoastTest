@@ -9,7 +9,6 @@
 #ifndef _MemTrackerTest_H
 #define _MemTrackerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- MemTrackerTest ----------------------------------------------------------

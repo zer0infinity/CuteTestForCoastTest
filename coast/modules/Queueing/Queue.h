@@ -9,7 +9,6 @@
 #ifndef _Queue_H
 #define _Queue_H
 
-//---- baseclass include -------------------------------------------------
 #include "STLStorage.h"
 #include "Threads.h"
 #include "DateTime.h"

@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -----------------------------------------------------
 #include "AnyUtilsTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "AnyUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"

@@ -9,7 +9,6 @@
 #ifndef _TruncateStringRenderer_H
 #define _TruncateStringRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- TruncateStringRenderer ----------------------------------------------------------

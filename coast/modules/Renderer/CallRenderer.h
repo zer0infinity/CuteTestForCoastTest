@@ -9,7 +9,6 @@
 #ifndef _CallRenderer_H
 #define _CallRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- CallRenderer ----------------------------------------------------------

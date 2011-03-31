@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "WebAppService.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
 #include "Session.h"
 #include "SessionListManager.h"
-#include "RequestProcessor.h"
-#include "Server.h"
 #include "URLUtils.h"
 #include "Dbg.h"
 #include "AnythingUtils.h"

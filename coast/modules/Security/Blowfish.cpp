@@ -6,17 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Blowfish.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
-
 #undef n2l
 #define n2l(c,l)        (l =((unsigned long)(*((c)++)))<<24L, \
                          l|=((unsigned long)(*((c)++)))<<16L, \

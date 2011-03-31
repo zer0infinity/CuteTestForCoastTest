@@ -12,7 +12,6 @@
 //--- superclass interface ---
 #include "DataAccessImpl.h"
 
-//--- modules used in the interface ---
 #include <mysql/mysql.h>
 
 //! DataAccess for

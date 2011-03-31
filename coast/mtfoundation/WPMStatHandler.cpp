@@ -6,12 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "WPMStatHandler.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "boost/format.hpp"

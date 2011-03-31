@@ -9,7 +9,6 @@
 #ifndef _HTTPMimeHeaderMapper_H
 #define _HTTPMimeHeaderMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- HTTPMimeHeaderMapper ----------------------------------------------------------

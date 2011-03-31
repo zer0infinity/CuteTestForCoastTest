@@ -11,7 +11,7 @@
 #include "SocketStream.h"
 #include "DataAccess.h"
 #include "StringStream.h"
-
+#include "Context.h"
 #if defined(WIN32)
 #include <io.h>				// for SO_ERROR
 #else

@@ -9,7 +9,6 @@
 #ifndef _XMLEscapeRenderer_H
 #define _XMLEscapeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- XMLEscapeRenderer ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _RendererMapperTest_H
 #define _RendererMapperTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 #include "Anything.h"
 

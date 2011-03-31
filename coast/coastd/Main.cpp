@@ -6,12 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "AppBooter.h"
-
 #include <locale>
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- main ----
 int main(int argc, const char *argv[])

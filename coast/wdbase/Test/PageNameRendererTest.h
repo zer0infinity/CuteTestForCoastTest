@@ -9,7 +9,6 @@
 #ifndef _PageNameRendererTest_H
 #define _PageNameRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- PageNameRendererTest ----------------------------------------------------------

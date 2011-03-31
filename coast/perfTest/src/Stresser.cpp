@@ -6,14 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Stresser.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "DiffTimer.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+#include "Policy.h"
 
 //---- Stresser -----------------------------------------------------------
 Stresser::Stresser(const char *StresserName)

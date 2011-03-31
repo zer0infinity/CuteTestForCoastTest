@@ -8,11 +8,11 @@
 
 #include "SimpleDAServiceTest.h"
 #include "TestSuite.h"
-#include "SimpleDataAccessService.h"
 #include "ServiceDispatcher.h"
 #include "RequestProcessor.h"
 #include "StringStreamSocket.h"
 #include "AnyIterators.h"
+#include "ServiceHandler.h"
 
 //---- SimpleDAServiceTest ----------------------------------------------------------------
 SimpleDAServiceTest::SimpleDAServiceTest(TString tname)

@@ -9,7 +9,6 @@
 #ifndef _AnythingNotNullAction_H
 #define _AnythingNotNullAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- AnythingNotNullAction ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _PeriodicAction_H
 #define _PeriodicAction_H
 
-//---- baseclass include -------------------------------------------------
 #include "Threads.h"
 
 //---- PeriodicAction ------------------------------------------------------------------

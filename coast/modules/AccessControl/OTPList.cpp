@@ -6,16 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "OTPList.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Registry.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Policy.h"
 
 //---- OTPListsModule -----------------------------------------------------------
 RegisterModule(OTPListsModule);

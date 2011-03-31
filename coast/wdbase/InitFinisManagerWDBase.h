@@ -9,7 +9,6 @@
 #ifndef _InitFinisManagerWDBase_H
 #define _InitFinisManagerWDBase_H
 
-//---- baseclass include -------------------------------------------------
 #include "InitFinisManager.h"
 
 //---- InitFinisManagerWDBase ----------------------------------------------------------

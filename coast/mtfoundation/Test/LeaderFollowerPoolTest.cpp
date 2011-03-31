@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LeaderFollowerPoolTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "LeaderFollowerPool.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/poll.h>
 #endif

@@ -9,7 +9,6 @@
 #ifndef _MimeHeaderResultMapperTest_H
 #define _MimeHeaderResultMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- MimeHeaderResultMapperTest ----------------------------------------------------------

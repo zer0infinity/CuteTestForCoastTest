@@ -9,7 +9,6 @@
 #ifndef _TestSession_H
 #define _TestSession_H
 
-//---- Session include -------------------------------------------------
 #include "Session.h"
 #include "SessionListManager.h"
 

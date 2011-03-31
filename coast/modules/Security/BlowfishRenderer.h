@@ -9,7 +9,6 @@
 #ifndef _BlowfishRenderer_H
 #define _BlowfishRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- BlowfishRenderer ----------------------------------------------------------

@@ -9,9 +9,6 @@
 #include "DiffTimer.h"
 #include "SystemBase.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
-
 #if !defined(WIN32)
 HRTIME  gettimes()
 {

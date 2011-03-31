@@ -6,22 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PersistentLDAPConnection.h"
-
-//--- project modules used -----------------------------------------------------
-#include "LDAPMessageEntry.h"
 #include "LDAPConnectionManager.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "StringStream.h"
 #include "Base64.h"
 #include "MD5.h"
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
-#include <string.h>		// used for memset on older compilers
+#include <cstring>
 
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()

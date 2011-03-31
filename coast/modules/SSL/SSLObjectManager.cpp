@@ -6,12 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLObjectManager.h"
 
 //#define TRACE_LOCKS
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "TraceLocks.h"
 #include "Threads.h"
@@ -21,8 +19,6 @@
 #include "SSLModule.h"
 #include "SSLAPI.h"
 #include "Resolver.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
 
 SSLObjectManager *SSLObjectManager::fgSSLObjectManager = 0;

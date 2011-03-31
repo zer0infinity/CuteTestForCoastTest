@@ -9,7 +9,6 @@
 #ifndef _StressProcessor_H
 #define _StressProcessor_H
 
-//---- RequestProcessor include -------------------------------------------------
 #include "RequestProcessor.h"
 
 //---- StressProcessor ----------------------------------------------------------

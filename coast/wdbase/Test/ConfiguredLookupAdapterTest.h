@@ -9,7 +9,6 @@
 #ifndef _ConfiguredLookupAdapterTest_H
 #define _ConfiguredLookupAdapterTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- ConfiguredLookupAdapterTest ----------------------------------------------------------

@@ -10,8 +10,6 @@
 #include "AnythingPerfTest.h"
 #include "StringPerfTest.h"
 
-//--- standard modules used ----------------------------------------------------
-
 void setupRunner(TestRunner &runner)
 {//lint !e14
 	ADD_SUITE(runner, StringPerfTest);

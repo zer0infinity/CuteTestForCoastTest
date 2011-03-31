@@ -9,7 +9,6 @@
 #ifndef _TestThread_H
 #define _TestThread_H
 
-//---- Thread include -------------------------------------------------
 #include "ThreadPools.h"
 
 //---- forward declaration -----------------------------------------------

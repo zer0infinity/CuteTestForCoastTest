@@ -19,6 +19,7 @@
 #include "StringStream.h"
 #include "Context.h"
 #include "AnyIterators.h"
+#include "Policy.h"
 #include <iomanip>
 
 //---- CleanSessions ----------------------------------------------------------

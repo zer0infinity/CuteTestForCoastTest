@@ -9,7 +9,6 @@
 #ifndef _LoopBackDAImplTest_H
 #define _LoopBackDAImplTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 #include "Anything.h"
 

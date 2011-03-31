@@ -9,7 +9,6 @@
 #ifndef _EBCDICAcceptor_H
 #define _EBCDICAcceptor_H
 
-//---- baseclass include -------------------------------------------------
 #include "Socket.h"
 
 //---- EBCDICAcceptor ----------------------------------------------------------

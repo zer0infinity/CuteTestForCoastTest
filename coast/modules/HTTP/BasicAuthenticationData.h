@@ -9,7 +9,6 @@
 #ifndef _BasicAuthenticationData_H
 #define _BasicAuthenticationData_H
 
-//---- baseclass include -------------------------------------------------
 #include "ITOString.h"
 
 //---- forward declaration -----------------------------------------------

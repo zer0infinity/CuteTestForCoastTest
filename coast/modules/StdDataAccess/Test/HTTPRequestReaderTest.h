@@ -9,7 +9,6 @@
 #ifndef _HTTPRequestReaderTest_H
 #define _HTTPRequestReaderTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- HTTPRequestReaderTest ----------------------------------------------------

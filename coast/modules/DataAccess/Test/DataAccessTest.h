@@ -9,7 +9,6 @@
 #ifndef _DataAccessTest_H
 #define _DataAccessTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- DataAccessTest ----------------------------------------------------------

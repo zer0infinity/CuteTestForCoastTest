@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MT_Storage.h"
-
-//--- project modules used -----------------------------------------------------
 #include "InitFinisManagerMTFoundation.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 #if defined(WIN32)
 #include <cstdio>

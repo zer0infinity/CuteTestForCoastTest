@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLModule.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemFile.h"
 #include "SSLSocket.h"
@@ -19,8 +16,6 @@
 #include "AnyLookupInterfaceAdapter.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 static void thread_setup(void);
 static void thread_cleanup(void);

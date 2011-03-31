@@ -6,16 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -------------------------------------------------------
 #include <fstream>
-//--- standard modules used ----------------------------------------------------
 #include "WDModule.h"
 #include "Context.h"
 #include "SecurityModule.h"
 #include "Application.h"
 #include "AppBooter.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <unistd.h>
 
 class MyAppBooter : public AppBooter

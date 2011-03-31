@@ -6,9 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestList.h"
-//--- standard modules used ----------------------------------------------------
 #include "Test.h"
 
 //---- TestElt

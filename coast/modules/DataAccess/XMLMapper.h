@@ -9,7 +9,6 @@
 #ifndef _XMLMapper_H
 #define _XMLMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- XMLMapper ----------------------------------------------------------

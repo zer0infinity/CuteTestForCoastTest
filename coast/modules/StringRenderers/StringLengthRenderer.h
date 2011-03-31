@@ -9,7 +9,6 @@
 #ifndef _StringLengthRenderer_H
 #define _StringLengthRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- StringLengthRenderer ----------------------------------------------------------

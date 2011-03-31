@@ -6,16 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPDAICachePolicyModule.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "SystemLog.h"
 #include "DataAccess.h"
 #include "Action.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Context.h"
 
 //---- LDAPDAICachePolicyModule -----------------------------------------------------------
 RegisterModule(LDAPDAICachePolicyModule);

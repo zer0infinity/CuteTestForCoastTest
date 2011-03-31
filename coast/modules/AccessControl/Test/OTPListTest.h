@@ -9,7 +9,6 @@
 #ifndef _OTPListTest_H
 #define _OTPListTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 class OTPList;

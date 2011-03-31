@@ -9,7 +9,6 @@
 #ifndef _WorkerPoolManagerTest_H
 #define _WorkerPoolManagerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 class Mutex;

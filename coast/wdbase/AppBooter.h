@@ -9,8 +9,6 @@
 #ifndef _AppBooter_H
 #define _AppBooter_H
 
-//---- baseclass include -------------------------------------------------
-
 //---- forward declaration -----------------------------------------------
 #include "Anything.h"
 class Application;

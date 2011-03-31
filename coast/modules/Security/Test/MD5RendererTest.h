@@ -9,7 +9,6 @@
 #ifndef _MD5RendererTest_H
 #define _MD5RendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- MD5RendererTest ----------------------------------------------------------

@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LoggingAction.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Timers.h"
-#include "Renderer.h"
-#include "Dbg.h"
 #include "AnyIterators.h"
 
 //---- LoggingAction ---------------------------------------------------------------

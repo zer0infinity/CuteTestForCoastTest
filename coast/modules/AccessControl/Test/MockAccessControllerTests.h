@@ -9,7 +9,6 @@
 #ifndef _MockAccessControllerTests_H
 #define _MockAccessControllerTests_H
 
-//---- baseclass include -------------------------------------------------
 #include "FileAccessControllerTests.h"
 
 //---- MockAccessControllerTests ------------------------------------------

@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLObjectManagerTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "SSLObjectManager.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SSLSocket.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------
 SSLObjectManagerTest::SSLObjectManagerTest(TString tstrName)

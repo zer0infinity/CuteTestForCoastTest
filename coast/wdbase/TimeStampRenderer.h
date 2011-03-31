@@ -10,7 +10,6 @@
 #define _TimeStampRenderer_H
 
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- TimeStampRenderer ----------------------------------------------------------

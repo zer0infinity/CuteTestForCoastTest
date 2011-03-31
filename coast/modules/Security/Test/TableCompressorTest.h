@@ -9,7 +9,6 @@
 #ifndef _TableCompressorTest_H
 #define _TableCompressorTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

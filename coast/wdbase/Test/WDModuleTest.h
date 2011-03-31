@@ -9,7 +9,6 @@
 #ifndef _WDModuleTest_H
 #define _WDModuleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

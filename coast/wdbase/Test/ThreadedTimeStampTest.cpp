@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ThreadedTimeStampTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "TimeStamp.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TimeStampTestThread.h"
 #include "AnyUtils.h"
 #include "SystemLog.h"

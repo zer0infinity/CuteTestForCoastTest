@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPErrorHandler.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "SystemLog.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
-
-//--- c-modules used -----------------------------------------------------------
-
-//---- LDAPErrorHandler ----------------------------------------------------------------
+#include "Context.h"
 
 LDAPErrorHandler::LDAPErrorHandler(Context &ctx, ParameterMapper *in, ResultMapper *out, String daName)
 	: fCtx(ctx), fIn(in), fOut(out), fName(daName), fRetryState(eNoRetry)

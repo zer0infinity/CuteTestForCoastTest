@@ -9,7 +9,6 @@
 #ifndef _PageNameRenderer_H
 #define _PageNameRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- PageNameRenderer ----------------------------------------------------------

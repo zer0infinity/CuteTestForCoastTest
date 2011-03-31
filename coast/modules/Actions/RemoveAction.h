@@ -9,7 +9,6 @@
 #ifndef _RemoveAction_H
 #define _RemoveAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- RemoveAction ----------------------------------------------------------

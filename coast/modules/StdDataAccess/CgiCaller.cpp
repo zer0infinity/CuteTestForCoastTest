@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CgiCaller.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "PipeExecutor.h"

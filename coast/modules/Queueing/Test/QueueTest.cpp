@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "QueueTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Queue.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
 #include "Dbg.h"
 #include "SystemBase.h"

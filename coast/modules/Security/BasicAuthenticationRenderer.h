@@ -9,7 +9,6 @@
 #ifndef _BasicAuthenticationRenderer_H
 #define _BasicAuthenticationRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- BasicAuthenticationRenderer ----------------------------------------------------------

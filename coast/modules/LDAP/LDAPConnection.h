@@ -9,7 +9,6 @@
 #ifndef _LDAPConnection_H
 #define _LDAPConnection_H
 
-//---- baseclass include --------------------------------------------------
 #include "LDAPErrorHandler.h"
 
 //---- LDAPConnection ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _GetThisHostNameRenderer_H
 #define _GetThisHostNameRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- GetThisHostNameRenderer ----------------------------------------------------------

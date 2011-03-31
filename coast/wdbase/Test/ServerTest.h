@@ -9,7 +9,6 @@
 #ifndef _ServerTest_H
 #define _ServerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------

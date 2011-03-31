@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPConnectionManagerTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "LDAPConnectionManager.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PersistentLDAPConnection.h"
-#include "Mapper.h"
 #include "AnyIterators.h"
 #include "SystemBase.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Context.h"
 
 //---- LDAPConnectionManagerTest ----------------------------------------------------------------
 LDAPConnectionManagerTest::LDAPConnectionManagerTest(TString tstrName)

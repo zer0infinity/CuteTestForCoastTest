@@ -9,7 +9,6 @@
 #ifndef _FormattedStringRenderer_H
 #define _FormattedStringRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- FormattedStringRenderer ----------------------------------------------------------

@@ -10,7 +10,6 @@
 #include "Server.h"
 #include "ServerTest.h"
 #include "Socket.h"
-
 #define TESTHOST "localhost"
 
 //---- ServerTest ----------------------------------------------------------------

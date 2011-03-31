@@ -6,15 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Threads.h"
 #include "Context.h"
 #include "URLUtils.h"
 #include "Registry.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
 #include "MD5.h"
 
 // ------------------- MD5 ---------------------------------------------
@@ -35,9 +32,7 @@
  * will fill a supplied 16-byte array with the digest.
  */
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>		/* for memcpy() */
-
 #ifdef __alpha
 typedef unsigned int uint32;
 #else

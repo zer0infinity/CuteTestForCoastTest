@@ -9,7 +9,6 @@
 #include "VHostServiceDispatcher.h"
 #include "ServiceHandler.h"
 #include "Renderer.h"
-#include "URLUtils.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
 

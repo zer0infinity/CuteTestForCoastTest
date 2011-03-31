@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AccessManagerTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "AccessManager.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
 #include "FileAccessControllerTests.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 #if !defined (WIN32)
 #include <stdio.h>
 #endif

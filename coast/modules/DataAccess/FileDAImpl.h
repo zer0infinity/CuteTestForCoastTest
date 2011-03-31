@@ -29,10 +29,15 @@
 }
 </PRE>
 */
-class FileDAImpl: public DataAccessImpl
-{
+class FileDAImpl: public DataAccessImpl {
+	FileDAImpl();
+	FileDAImpl(const FileDAImpl &);
+	FileDAImpl &operator=(const FileDAImpl &);
+	friend class FileDAImplTest;
 public:
-	FileDAImpl(const char *name) : DataAccessImpl(name) {}
+	FileDAImpl(const char *name) :
+		DataAccessImpl(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
@@ -44,15 +49,6 @@ protected:
 	bool GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in);
 	std::iostream *GetFileStream(Context &context, ParameterMapper *in);
 	Coast::System::openmode GetMode(Context &context, ParameterMapper *in);
-
-private:
-	// constructor
-	FileDAImpl();
-	FileDAImpl(const FileDAImpl &);
-	// assignement
-	FileDAImpl &operator=(const FileDAImpl &);
-
-	friend class FileDAImplTest;
 };
 
 #endif		//not defined _FileDAImpl_H

@@ -5,17 +5,15 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-//--- interface include --------------------------------------------------------
 #include "Role.h"
-//--- standard modules used ----------------------------------------------------
 #include "Session.h"
 #include "Registry.h"
 #include "Renderer.h"
-#include "SystemLog.h"
-#include "Dbg.h"
 #include "AnyIterators.h"
+#include "Policy.h"
 #include <typeinfo>
 #include <cstring>
+
 //---- RolesModule -----------------------------------------------------------
 RegisterModule(RolesModule);
 

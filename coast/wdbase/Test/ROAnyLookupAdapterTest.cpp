@@ -6,22 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "AnyLookupInterfaceAdapter.h"
-
-//--- interface include --------------------------------------------------------
 #include "ROAnyLookupAdapterTest.h"
+#include "Dbg.h"
+#include "TestSuite.h"
+#include "AnyLookupInterfaceAdapter.h"
 
 //---- ROAnyLookupAdapterTest ----------------------------------------------------------------
 ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString tstrName) : TestCaseType(tstrName)

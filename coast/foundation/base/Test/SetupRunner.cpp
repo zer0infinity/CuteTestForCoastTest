@@ -8,7 +8,6 @@
 
 #include "TestRunner.h"
 #include "TestSuite.h"
-
 #include "AnythingConstructorsTest.h"
 #include "AnythingDeepCloneTest.h"
 #include "AnythingImportExportTest.h"

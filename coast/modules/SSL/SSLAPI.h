@@ -9,8 +9,6 @@
 #ifndef _sslapi_h
 #define _sslapi_h
 
-//--- c-library modules used ---------------------------------------------------
-
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/rand.h>

@@ -9,7 +9,6 @@
 #ifndef _CompareValuesAction_H
 #define _CompareValuesAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 class String;

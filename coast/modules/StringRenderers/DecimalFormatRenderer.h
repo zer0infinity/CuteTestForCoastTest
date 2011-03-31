@@ -9,7 +9,6 @@
 #ifndef _DecimalFormatRenderer_H
 #define _DecimalFormatRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- DecimalFormatRenderer ----------------------------------------------------------

@@ -13,8 +13,6 @@
 #include "DiffTimer.h"
 #include <iostream>
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- AnyBuiltInSortTest ----------------------------------------------------------------
 AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCaseType(tstrName)
 {

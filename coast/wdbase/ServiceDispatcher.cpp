@@ -6,15 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ServiceDispatcher.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
-#include "Timers.h"
 #include "ServiceHandler.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Policy.h"
 
 //---- ServiceDispatchersModule -----------------------------------------------------------
 RegisterModule(ServiceDispatchersModule);

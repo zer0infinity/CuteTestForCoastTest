@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "InterruptHandlerTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ServerUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Server.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <signal.h>
 #endif

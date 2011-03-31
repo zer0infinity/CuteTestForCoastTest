@@ -9,7 +9,6 @@
 #ifndef _URLFilter_H
 #define _URLFilter_H
 
-//---- baseclass include -------------------------------------------------
 #include "IFAConfObject.h"
 
 //--- URLFilter ----------------------------------------------------------

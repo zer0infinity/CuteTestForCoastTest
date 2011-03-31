@@ -9,7 +9,6 @@
 #ifndef _MockAccessManager_H
 #define _MockAccessManager_H
 
-//---- baseclass include -------------------------------------------------
 #include "AccessManager.h"
 
 //---- MockAccessManager ----------------------------------------------------------

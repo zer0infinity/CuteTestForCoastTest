@@ -9,7 +9,6 @@
 #ifndef _StringUpperLowerRenderer_H
 #define _StringUpperLowerRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- StringUpperLowerRenderer ----------------------------------------------------------

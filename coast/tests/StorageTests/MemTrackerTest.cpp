@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MemTrackerTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ITOStorage.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MemHeader.h"
 #include "AllocatorNewDelete.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- MemTrackerTest ----------------------------------------------------------------
 MemTrackerTest::MemTrackerTest(TString tstrName)

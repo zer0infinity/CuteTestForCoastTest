@@ -9,7 +9,6 @@
 #ifndef _SybCTnewDATest_H
 #define _SybCTnewDATest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "cstypes.h"
 

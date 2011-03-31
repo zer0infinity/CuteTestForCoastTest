@@ -9,7 +9,6 @@
 #ifndef _EmailAddressCheckAction_H
 #define _EmailAddressCheckAction_H
 
-//---- Action include -------------------------------------------------
 #include "NotEmptyCheckAction.h"
 
 //---- EmailAddressCheckAction ----------------------------------------------------------

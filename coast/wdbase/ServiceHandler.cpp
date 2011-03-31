@@ -8,6 +8,7 @@
 
 #include "ServiceHandler.h"
 #include "Registry.h"
+#include "Policy.h"
 
 //---- ServiceHandler -----------------------------------------------------------
 const char* ServiceHandler::gpcCategory = "ServiceHandler";

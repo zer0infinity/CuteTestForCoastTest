@@ -9,7 +9,6 @@
 #ifndef _LoopAction_H
 #define _LoopAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- LoopAction ----------------------------------------------------------

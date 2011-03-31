@@ -9,7 +9,6 @@
 #ifndef _SlotnameOutputMapperTest_H
 #define _SlotnameOutputMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 
 //---- SlotnameOutputMapperTest ----------------------------------------------------------

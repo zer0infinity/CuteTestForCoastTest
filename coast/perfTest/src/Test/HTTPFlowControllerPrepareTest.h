@@ -9,7 +9,6 @@
 #ifndef _HTTPFlowControllerPrepareTest_H
 #define _HTTPFlowControllerPrepareTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "HTTPFlowControllerTest.h"
 //---- HTTPFlowControllerPrepareTest ----------------------------------------------------------
 //!TestCases description

@@ -10,7 +10,6 @@
 #include "SystemLog.h"
 #include "Socket.h"
 #include "Dbg.h"
-
 #if !defined(WIN32)
 #include <arpa/inet.h>		// for inet_ntop gethostbyname etc.
 #include <netdb.h>			// for gethostbyname etc.

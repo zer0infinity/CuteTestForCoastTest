@@ -9,7 +9,6 @@
 #ifndef _ThreadPoolTest_H
 #define _ThreadPoolTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- ThreadPoolTest ----------------------------------------------------------

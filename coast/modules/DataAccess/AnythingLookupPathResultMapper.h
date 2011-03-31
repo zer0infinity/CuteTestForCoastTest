@@ -9,7 +9,6 @@
 #ifndef _AnythingLookupPathResultMapper_H
 #define _AnythingLookupPathResultMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- AnythingLookupPathResultMapper ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _AccessManagerTest_H
 #define _AccessManagerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 class AccessManager;

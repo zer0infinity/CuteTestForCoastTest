@@ -9,7 +9,6 @@
 #ifndef _ConfigMapperTest_H
 #define _ConfigMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- ConfigMapperTest ----------------------------------------------------------

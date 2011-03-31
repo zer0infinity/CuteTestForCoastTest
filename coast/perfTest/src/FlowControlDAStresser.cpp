@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FlowControlDAStresser.h"
-
-//--- project modules used -----------------------------------------------------
 #include "FlowController.h"
 #include "Application.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemLog.h"
 #include "Dbg.h"

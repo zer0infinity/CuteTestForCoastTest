@@ -9,7 +9,6 @@
 #ifndef _QueueWorkingModule_H
 #define _QueueWorkingModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "Context.h"
 #include "Server.h"
 #include "Queue.h"

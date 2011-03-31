@@ -9,7 +9,6 @@
 #ifndef _RECompilerTest_H
 #define _RECompilerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- RECompilerTest ----------------------------------------------------------

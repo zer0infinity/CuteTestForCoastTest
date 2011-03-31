@@ -9,7 +9,6 @@
 #ifndef _LFListenerPoolTest_H
 #define _LFListenerPoolTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 class Socket;

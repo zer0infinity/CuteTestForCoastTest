@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CookieToServerRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- CookieToServerRenderer ---------------------------------------------------------
 RegisterRenderer(CookieToServerRenderer);

@@ -9,7 +9,6 @@
 #ifndef _RegexTest_H
 #define _RegexTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- RegexTest ----------------------------------------------------------

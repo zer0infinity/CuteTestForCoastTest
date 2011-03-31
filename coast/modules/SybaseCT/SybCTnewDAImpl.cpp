@@ -6,20 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SybCTnewDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
 #include "SybCTnewDA.h"
 #include "Timers.h"
 #include "TimeStamp.h"
 #include "StringStream.h"
 #include "Action.h"
 #include "PeriodicAction.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 SimpleMutex SybCTnewDAImpl::fgStructureMutex("StructureMutex", Coast::Storage::Global());
 Anything SybCTnewDAImpl::fgListOfSybCT;

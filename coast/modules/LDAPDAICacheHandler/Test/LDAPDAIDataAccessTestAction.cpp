@@ -6,14 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Context.h"
 #include "Renderer.h"
 #include "Dbg.h"
 #include "CallDataAccessAction.h"
-
-//--- interface include --------------------------------------------------------
 #include "LDAPDAIDataAccessTestAction.h"
 
 //---- LDAPDAIDataAccessTestAction ---------------------------------------------------------------

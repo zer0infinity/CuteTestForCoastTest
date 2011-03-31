@@ -9,7 +9,6 @@
 #ifndef _StringStreamSocket_H
 #define _StringStreamSocket_H
 
-//---- Socket include -------------------------------------------------
 #include "Socket.h"
 #include "StringStream.h"
 

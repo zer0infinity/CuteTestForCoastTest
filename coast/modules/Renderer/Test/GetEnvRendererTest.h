@@ -9,7 +9,6 @@
 #ifndef _GetEnvRendererTest_H
 #define _GetEnvRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- GetEnvRendererTest ----------------------------------------------------------

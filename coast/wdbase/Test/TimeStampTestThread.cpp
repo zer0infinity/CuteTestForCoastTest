@@ -6,23 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Threads.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TString.h"
-#include "TestLocation.h"
-#include "TestLocList.h"
-#include "TestResult.h"
-
-//--- module under test --------------------------------------------------------
+#include "TimeStampTestThread.h"
 #include "ThreadedTimeStampTest.h"
 #include "TimeStamp.h"
-
-//--- interface include --------------------------------------------------------
-#include "TimeStampTestThread.h"
 
 //---- TestWorker -----------------------------------------------
 TestWorker::TestWorker()

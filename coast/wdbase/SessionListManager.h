@@ -9,7 +9,6 @@
 #ifndef _SessionListManager_H
 #define _SessionListManager_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDModule.h"
 #include "DiffTimer.h"
 #include "Threads.h"

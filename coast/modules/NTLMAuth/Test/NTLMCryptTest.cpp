@@ -6,19 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "NTLMCryptTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "NTLMCoder.h"
 #include "NTLMAuthMessage.h"
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- NTLMCryptTest ----------------------------------------------------------------
 NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCaseType(tstrName)

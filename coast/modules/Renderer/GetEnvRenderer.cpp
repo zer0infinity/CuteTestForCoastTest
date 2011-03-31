@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "GetEnvRenderer.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- GetEnvRenderer ---------------------------------------------------------------
 RegisterRenderer(GetEnvRenderer);

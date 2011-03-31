@@ -6,12 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ---------------------------------------------------------
 #include "config_mtfoundation.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "InitFinisManagerMTFoundation.h"
-
 #include "SystemLog.h"
 #include "Threads.h"
 
@@ -40,7 +36,6 @@ namespace {
 
 #if defined(WIN32)
 #ifdef _DLL
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "AnyIterators.h"
 

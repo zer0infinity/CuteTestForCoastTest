@@ -9,7 +9,6 @@
 #ifndef _ComputeDateRenderer_H
 #define _ComputeDateRenderer_H
 
-//---- baseclass include -------------------------------------------------
 #include "Renderer.h"
 
 class TimeStamp;

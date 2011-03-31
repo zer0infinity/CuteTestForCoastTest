@@ -9,7 +9,6 @@
 #ifndef _RequestBlockerTest_H
 #define _RequestBlockerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- RequestBlockerTest ----------------------------------------------------------

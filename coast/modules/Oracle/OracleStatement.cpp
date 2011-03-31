@@ -7,13 +7,11 @@
  */
 
 #include "OracleStatement.h"
-
 #include "OracleEnvironment.h"
 #include "OracleException.h"
 #include "OracleResultset.h"
 #include "AnyIterators.h"
 #include "Dbg.h"
-
 #include <algorithm>
 #include <cstring>
 

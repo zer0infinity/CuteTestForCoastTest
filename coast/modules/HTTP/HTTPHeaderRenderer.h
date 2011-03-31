@@ -9,7 +9,6 @@
 #ifndef _HTTPHeaderRenderer_H
 #define _HTTPHeaderRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- HTTPHeaderRenderer ----------------------------------------------------------

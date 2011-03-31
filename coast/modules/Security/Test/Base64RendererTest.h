@@ -9,7 +9,6 @@
 #ifndef _Base64RendererTest_H
 #define _Base64RendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- Base64RendererTest ----------------------------------------------------------

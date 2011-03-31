@@ -9,7 +9,6 @@
 #ifndef _RequestBodyParserTest_H
 #define _RequestBodyParserTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- HTTPPostRequestBodyParserTest ----------------------------------------------------------

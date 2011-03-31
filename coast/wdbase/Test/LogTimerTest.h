@@ -9,7 +9,6 @@
 #ifndef _LogTimerTest_H
 #define _LogTimerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- LogTimerTest ----------------------------------------------------------

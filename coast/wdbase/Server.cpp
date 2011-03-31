@@ -6,27 +6,20 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Server.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "ServerPoolsManagerInterface.h"
-#include "Registry.h"
 #include "ServerUtils.h"
 #include "RequestProcessor.h"
 #include "ServiceDispatcher.h"
 #include "AppBooter.h"
 #include "RequestBlocker.h"
-#include "Dbg.h"
 #include "AnyIterators.h"
+#include "Policy.h"
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
-#include <cstring>
 #if !defined(WIN32)
 #include <pwd.h>
 #else
@@ -41,7 +34,6 @@ public:
 	ServerReInitInstaller(const char *category)
 		: InstallerPolicy(category)
 	{}
-	virtual ~ServerReInitInstaller() {};
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) {

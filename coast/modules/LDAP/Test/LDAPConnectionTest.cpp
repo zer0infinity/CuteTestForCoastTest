@@ -12,6 +12,7 @@
 #include "AnyIterators.h"
 #include "AnyUtils.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- LDAPConnectionTest ----------------------------------------------------------------
 LDAPConnectionTest::LDAPConnectionTest(TString tstrName)

@@ -9,7 +9,6 @@
 #ifndef _ZipStreamTest_H
 #define _ZipStreamTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- ZipStreamTest ----------------------------------------------------------

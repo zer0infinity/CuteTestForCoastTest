@@ -7,6 +7,8 @@
  */
 #include "MimeHeaderResultMapper.h"
 #include "MIMEHeader.h"
+#include "Dbg.h"
+
 //---- MimeHeaderResultMapper ------------------------------------------------------------------
 RegisterResultMapper(MimeHeaderResultMapper);
 

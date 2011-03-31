@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingParserSemanticTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "IFAObject.h"

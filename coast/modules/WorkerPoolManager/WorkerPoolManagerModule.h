@@ -9,7 +9,6 @@
 #ifndef _WorkerPoolManagerModule_H
 #define _WorkerPoolManagerModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 #include "ThreadPools.h"
 class WorkerPoolManagerModulePoolManager;

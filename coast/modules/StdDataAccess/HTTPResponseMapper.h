@@ -9,7 +9,6 @@
 #ifndef _HTTPResponseMapper_H
 #define _HTTPResponseMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- HTTPResponseMapper ----------------------------------------------------------

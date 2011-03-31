@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Timers.h"
 #include "ConnectorParams.h"
 #include "SSLSocket.h"
-#include "Dbg.h"
 #include "Session.h"
-
 #ifdef RECORD
 #include "AnyUtils.h"
 #include "SystemLog.h"
@@ -24,17 +19,6 @@
 
 //--- HTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl( HTTPDAImpl);
-
-HTTPDAImpl::HTTPDAImpl(const char *name) :
-	DataAccessImpl(name) {
-}
-
-HTTPDAImpl::~HTTPDAImpl() {
-}
-
-IFAObject *HTTPDAImpl::Clone(Allocator *a) const {
-	return new (a) HTTPDAImpl(fName);
-}
 
 String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 	ROAnything appPref(context.Lookup("URIPrefix2ServiceMap"));

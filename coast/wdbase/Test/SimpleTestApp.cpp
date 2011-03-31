@@ -6,24 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "ServerUtils.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TString.h"
-#include "TestLocation.h"
-#include "TestLocList.h"
-#include "TestResult.h"
-
-//--- module under test --------------------------------------------------------
 #include "AppBooterTest.h"
-
-//--- interface include --------------------------------------------------------
 #include "SimpleTestApp.h"
 
 class MethodTracker

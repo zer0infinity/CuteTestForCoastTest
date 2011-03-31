@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TagRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "OptionsPrinter.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- TagRenderer ---------------------------------------------------------
 RegisterRenderer(TagRenderer);

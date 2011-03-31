@@ -9,7 +9,6 @@
 #ifndef _MultiThreadedTest_H
 #define _MultiThreadedTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- MultiThreadedTest ----------------------------------------------------------

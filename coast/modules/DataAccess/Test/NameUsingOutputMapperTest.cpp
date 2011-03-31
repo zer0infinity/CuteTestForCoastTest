@@ -10,6 +10,7 @@
 #include "NameUsingOutputMapper.h"
 #include "TestSuite.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- NameUsingOutputMapperTest ----------------------------------------------------------------
 NameUsingOutputMapperTest::NameUsingOutputMapperTest(TString tname) : TestCaseType(tname)

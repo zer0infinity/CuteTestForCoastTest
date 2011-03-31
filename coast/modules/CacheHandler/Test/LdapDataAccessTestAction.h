@@ -9,7 +9,6 @@
 #ifndef _LdapDataAccessTestAction_H
 #define _LdapDataAccessTestAction_H
 
-//---- Action include -------------------------------------------------
 #include "CallDataAccessAction.h"
 
 //---- LdapDataAccessTestAction ----------------------------------------------------------

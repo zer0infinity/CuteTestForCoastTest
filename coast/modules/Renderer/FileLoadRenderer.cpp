@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FileLoadRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- FileLoadRenderer ---------------------------------------------------------------
 RegisterRenderer(FileLoadRenderer);

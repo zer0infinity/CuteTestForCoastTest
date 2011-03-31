@@ -6,14 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
 #include "ZipStream.h"
 #include "HTTPChunkedOStream.h"
-
-//--- interface include -------------------------------------------------------
 #include "HTTPStreamStack.h"
 
 //---- HTTPStreamStack ----------------------------------------------------------------

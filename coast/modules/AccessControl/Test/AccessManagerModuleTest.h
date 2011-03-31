@@ -9,7 +9,6 @@
 #ifndef _AccessManagerModuleTest_H
 #define _AccessManagerModuleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- AccessManagerModuleTest ----------------------------------------------------------

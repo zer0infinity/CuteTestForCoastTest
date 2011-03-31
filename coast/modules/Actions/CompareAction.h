@@ -9,7 +9,6 @@
 #ifndef _CompareAction_H
 #define _CompareAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- CompareAction ----------------------------------------------------------

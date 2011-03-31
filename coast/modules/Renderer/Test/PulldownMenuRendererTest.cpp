@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Context.h"
 #include "StringStream.h"
 #include "Renderer.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "FormRenderer.h"
-
-//--- interface include --------------------------------------------------------
 #include "PulldownMenuRendererTest.h"
 
 PulldownMenuRendererTest::PulldownMenuRendererTest (TString tname) : FieldRendererTest(tname)

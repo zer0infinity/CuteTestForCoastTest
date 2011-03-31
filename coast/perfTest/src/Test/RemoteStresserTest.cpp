@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- module under test --------------------------------------------------------
 #include "Stresser.h"
-
-//--- interface include --------------------------------------------------------
 #include "RemoteStresserTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Server.h"
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- RemoteStresserTest ----------------------------------------------------------------
 RemoteStresserTest::RemoteStresserTest(TString tstrName)

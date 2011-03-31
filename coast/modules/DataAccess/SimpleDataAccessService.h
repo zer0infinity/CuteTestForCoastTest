@@ -9,7 +9,6 @@
 #ifndef _SimpleDataAccessService_h_
 #define _SimpleDataAccessService_h_
 
-//---- baseclass include -------------------------------------------------
 #include "ServiceHandler.h"
 
 //---- SimpleDataAccessService ----------------------------------------------------------

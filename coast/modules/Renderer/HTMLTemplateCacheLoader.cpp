@@ -6,18 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTMLTemplateCacheLoader.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 #include "Dbg.h"
 
 using namespace Coast;
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- TemplatesCacheModule -----------------------------------------------------------
 RegisterModule(TemplatesCacheModule );

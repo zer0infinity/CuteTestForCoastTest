@@ -9,7 +9,6 @@
 #ifndef _SSLModuleTest_H
 #define _SSLModuleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SSLModuleTest ----------------------------------------------------------

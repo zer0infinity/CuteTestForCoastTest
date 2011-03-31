@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Threads.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test ----------------------------------------------------------
 #include "Base64.h"
-
-//--- interface include --------------------------------------------------------
 #include "Base64Test.h"
 
 //---- Base64Test ----------------------------------------------------------------

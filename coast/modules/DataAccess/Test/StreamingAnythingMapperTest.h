@@ -9,7 +9,6 @@
 #ifndef _StreamingAnythingMapperTest_H
 #define _StreamingAnythingMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- StreamingAnythingMapperTest ----------------------------------------------------------

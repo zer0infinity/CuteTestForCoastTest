@@ -9,7 +9,6 @@
 #ifndef _AppLogTest_H
 #define _AppLogTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 class Context;
 

@@ -7,6 +7,8 @@
  */
 
 #include "WriteFileDAImpl.h"
+#include "SystemLog.h"
+#include "Dbg.h"
 
 using namespace Coast;
 

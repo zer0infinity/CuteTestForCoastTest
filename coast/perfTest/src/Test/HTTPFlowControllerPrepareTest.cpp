@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "HttpFlowController.h"
-
-//--- interface include --------------------------------------------------------
 #include "HTTPFlowControllerPrepareTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
 
 //---- HTTPFlowControllerPrepareTest ----------------------------------------------------------------

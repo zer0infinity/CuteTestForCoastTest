@@ -9,6 +9,7 @@
 #include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
+#include "Policy.h"
 
 //---- InstallerPolicy ------------------------------------------------------
 bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r) {

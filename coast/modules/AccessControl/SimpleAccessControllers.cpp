@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SimpleAccessControllers.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Context.h"
 #include "DataAccess.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- FileUDAC ----------------------------------------------------------------
 RegisterUserDataAccessController(FileUDAC);

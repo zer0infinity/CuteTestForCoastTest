@@ -9,7 +9,6 @@
 #ifndef _TemplateParserTest_H
 #define _TemplateParserTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- TemplateParserTest ----------------------------------------------------------

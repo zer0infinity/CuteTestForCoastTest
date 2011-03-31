@@ -9,7 +9,6 @@
 #ifndef _RequestBlocker_H
 #define _RequestBlocker_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDModule.h"
 #include "Threads.h"
 

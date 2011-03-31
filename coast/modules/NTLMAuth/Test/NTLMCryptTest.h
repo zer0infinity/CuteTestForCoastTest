@@ -9,7 +9,6 @@
 #ifndef _NTLMCryptTest_H
 #define _NTLMCryptTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- NTLMCryptTest ----------------------------------------------------------

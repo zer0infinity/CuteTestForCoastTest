@@ -9,7 +9,6 @@
 #ifndef _SSLCertificateTest_H
 #define _SSLCertificateTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SSLCertificateTest ----------------------------------------------------------

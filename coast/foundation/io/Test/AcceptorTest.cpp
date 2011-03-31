@@ -10,10 +10,6 @@
 #include "TestSuite.h"
 #include "Socket.h"
 
-//--- standard modules used ----------------------------------------------------
-
-//--- c-library modules used ---------------------------------------------------
-
 //---- AcceptorTest ----------------------------------------------------------------
 AcceptorTest::AcceptorTest(TString tname)
 	: TestCaseType(tname)

@@ -9,7 +9,6 @@
 #ifndef _ComparingRenderer_H
 #define _ComparingRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- ComparingRenderer ----------------------------------------------------------

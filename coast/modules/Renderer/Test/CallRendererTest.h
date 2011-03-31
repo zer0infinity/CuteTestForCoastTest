@@ -13,7 +13,6 @@
 #include "StringStream.h"
 #include "Context.h"
 
-//---- baseclass include -------------------------------------------------
 #include "RendererTest.h"
 
 //---- CallRendererTest ----------------------------------------------------------

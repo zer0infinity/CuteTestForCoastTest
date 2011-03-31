@@ -6,16 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "BasicAuthenticationRenderer.h"
 #include "Base64.h"
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- BasicAuthenticationRenderer ---------------------------------------------------------------
 RegisterRenderer(BasicAuthenticationRenderer);

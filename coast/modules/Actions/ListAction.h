@@ -9,7 +9,6 @@
 #ifndef _ListAction_H
 #define _ListAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- ListAction ----------------------------------------------------------

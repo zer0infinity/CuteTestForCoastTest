@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "URLFilter.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "SecurityModule.h"
 #include "Renderer.h"

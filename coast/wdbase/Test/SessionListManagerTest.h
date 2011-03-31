@@ -9,7 +9,6 @@
 #ifndef _SessionListManagerTest_H
 #define _SessionListManagerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "Session.h"
 

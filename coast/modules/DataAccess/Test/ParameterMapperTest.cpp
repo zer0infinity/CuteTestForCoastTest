@@ -10,6 +10,7 @@
 #include "TestSuite.h"
 #include "Mapper.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- ParameterMapperTest ----------------------------------------------------------------
 ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCaseType(tstrName)

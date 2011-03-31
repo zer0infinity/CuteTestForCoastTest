@@ -6,25 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Context.h"
-
-//--- project modules used -----------------------------------------------------
 #include "Session.h"
 #include "Server.h"
 #include "Role.h"
 #include "Page.h"
 #include "LocalizationUtils.h"
 #include "LocalizedStrings.h"
-#include "AnythingUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "StringStream.h"
-#include "Dbg.h"
 #include <typeinfo>
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -->");

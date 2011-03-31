@@ -15,9 +15,7 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
-
 #if defined (WIN32)
 #include <io.h>
 #else

@@ -9,7 +9,6 @@
 #ifndef _SSLObjectManager_H
 #define _SSLObjectManager_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDModule.h"
 #include "Threads.h"
 #include "SSLModule.h"

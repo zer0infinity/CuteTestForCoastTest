@@ -9,7 +9,6 @@
 #ifndef _SlotNameRenderer_H
 #define _SlotNameRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- SlotNameRenderer ----------------------------------------------------------

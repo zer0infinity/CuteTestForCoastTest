@@ -11,7 +11,6 @@
 
 #include "WDModule.h"
 
-//---- forward declaration -----------------------------------------------
 class Session;
 class Context;
 

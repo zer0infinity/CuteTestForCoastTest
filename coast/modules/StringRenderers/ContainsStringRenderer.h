@@ -9,7 +9,6 @@
 #ifndef _ContainsStringRenderer_H
 #define _ContainsStringRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- ContainsStringRenderer ----------------------------------------------------------

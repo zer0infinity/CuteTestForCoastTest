@@ -1,6 +1,5 @@
 #include "AnythingIteratorTest.h"
 #include "TestSuite.h"
-
 #include "Dbg.h"
 
 AnythingIteratorTest::AnythingIteratorTest (TString tname)

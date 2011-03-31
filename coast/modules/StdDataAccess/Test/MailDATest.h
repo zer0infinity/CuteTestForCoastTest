@@ -9,7 +9,6 @@
 #ifndef _MailDATest_H
 #define _MailDATest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 
 //---- MailDATest ----------------------------------------------------------

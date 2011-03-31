@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DummyDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "SystemLog.h"

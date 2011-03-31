@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "NavBarRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
 static String ENRTY_STORE_NAME_DEFAULT("EntryData");

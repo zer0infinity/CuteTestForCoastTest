@@ -7,10 +7,7 @@
  */
 
 #include "ConnectionPool.h"
-
 #include "OraclePooledConnection.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Timers.h"
 #include "TimeStamp.h"
@@ -18,8 +15,6 @@
 #include "PeriodicAction.h"
 #include "AnyIterators.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 namespace Coast
 {

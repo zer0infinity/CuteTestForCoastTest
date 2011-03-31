@@ -6,18 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ZipStreamTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ZipStream.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 #include "gzio.h"
 
 //---- ZipStreamTest ----------------------------------------------------------------

@@ -6,16 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RequestProcessorTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "RequestProcessor.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStreamSocket.h"
 #include "Server.h"
 #include "Dbg.h"

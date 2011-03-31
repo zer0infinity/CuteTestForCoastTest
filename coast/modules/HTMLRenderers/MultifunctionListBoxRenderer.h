@@ -9,8 +9,7 @@
 #ifndef _MultifunctionListBoxRenderer_H
 #define _MultifunctionListBoxRenderer_H
 
-//---- Renderer include -------------------------------------------------
- #include "FormRenderer.h"
+#include "FormRenderer.h"
 
 //---- MultifunctionListBoxRenderer ----------------------------------------------------------
 //! comment Renderer

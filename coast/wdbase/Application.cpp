@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Application.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AppBooter.h"
 #include "Registry.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 // used for dynamic load of libraries
 #include <dlfcn.h>

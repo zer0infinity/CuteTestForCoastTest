@@ -9,8 +9,6 @@
 #ifndef _THREADS_H
 #define _THREADS_H
 
-#include <cstdlib>
-
 #include "IFAObject.h"
 #include "MT_Storage.h"
 #include "Anything.h"
@@ -474,7 +472,7 @@ protected:
 };
 
 #include "ObserverIf.h"
-#include "AllocatorNewDelete.h"
+
 
 //---- Thread ------------------------------------------------------------
 //! thread abstraction implementing its own thread state model using EThreadState and the available native thread api

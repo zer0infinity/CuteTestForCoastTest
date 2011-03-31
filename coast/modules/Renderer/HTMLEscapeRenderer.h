@@ -9,7 +9,6 @@
 #ifndef _HTMLEscapeRenderer_H
 #define _HTMLEscapeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- HTMLEscapeRenderer ----------------------------------------------------------

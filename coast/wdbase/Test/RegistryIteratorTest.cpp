@@ -6,20 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "Registry.h"
-
-//--- interface include --------------------------------------------------------
 #include "RegistryIteratorTest.h"
+#include "Dbg.h"
+#include "TestSuite.h"
+#include "Registry.h"
 
 //---- RegistryIteratorTest ----------------------------------------------------------------
 RegistryIteratorTest::RegistryIteratorTest(TString tname) : TestCaseType(tname)

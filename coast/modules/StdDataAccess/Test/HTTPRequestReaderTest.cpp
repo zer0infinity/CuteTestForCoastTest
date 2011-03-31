@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPRequestReaderTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTTPRequestReader.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "HTTPProcessor.h"
 #include "MIMEHeader.h"

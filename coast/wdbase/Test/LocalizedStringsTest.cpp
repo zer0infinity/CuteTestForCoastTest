@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LocalizedStringsTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "LocalizedStrings.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 
 //---- LocalizedStringsTest ----------------------------------------------------------------
 LocalizedStringsTest::LocalizedStringsTest(TString tstrName)

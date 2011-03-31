@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "NTLMCoder.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Base64.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <openssl/des.h> // be careful to really use our 3rdparty openssl instead of an older one
 #include <openssl/md4.h>
 

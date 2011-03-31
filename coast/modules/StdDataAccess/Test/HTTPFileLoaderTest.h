@@ -9,7 +9,6 @@
 #ifndef _HTTPFileLoaderTest_H
 #define _HTTPFileLoaderTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- HTTPFileLoaderTest ----------------------------------------------------------

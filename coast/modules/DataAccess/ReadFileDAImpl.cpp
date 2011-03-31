@@ -7,6 +7,7 @@
  */
 
 #include "ReadFileDAImpl.h"
+#include "Dbg.h"
 
 //--- ReadFileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(ReadFileDAImpl);

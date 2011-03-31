@@ -9,10 +9,11 @@
 #ifndef _ConnectorDAImpl_H
 #define _ConnectorDAImpl_H
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
 
 class Connector;
+class Context;
+class Socket;
 
 //---- ConnectorDAImpl ----------------------------------------------------------
 //! Protocol less connector to send and receive from a remote host

@@ -11,8 +11,6 @@
 
 #include "TestResult.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 class TextTestResult : public TestResult
 {
 public:

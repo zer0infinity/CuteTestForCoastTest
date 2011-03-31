@@ -9,7 +9,6 @@
 #ifndef _InitFinisManagerMTFoundation_H
 #define _InitFinisManagerMTFoundation_H
 
-//---- baseclass include -------------------------------------------------
 #include "InitFinisManager.h"
 
 //---- InitFinisManagerMTFoundation ----------------------------------------------------------

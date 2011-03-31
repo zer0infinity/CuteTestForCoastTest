@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RegExpAction.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "Renderer.h"
 #include "AnythingUtils.h"

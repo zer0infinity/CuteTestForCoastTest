@@ -9,7 +9,6 @@
 #ifndef _EBCDICSocketStreamBuf_H
 #define _EBCDICSocketStreamBuf_H
 
-//---- baseclass include -------------------------------------------------
 #include "SocketStream.h"
 
 //---- EBCDICSocketStreamBuf ---------------------------------------------

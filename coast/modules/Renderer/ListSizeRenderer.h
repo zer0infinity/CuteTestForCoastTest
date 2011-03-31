@@ -9,7 +9,6 @@
 #ifndef _ListSizeRenderer_H
 #define _ListSizeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- ListSizeRenderer ----------------------------------------------------------

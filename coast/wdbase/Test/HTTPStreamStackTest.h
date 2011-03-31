@@ -9,7 +9,6 @@
 #ifndef _HTTPStreamStackTest_H
 #define _HTTPStreamStackTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTTPStreamStackTest ----------------------------------------------------------

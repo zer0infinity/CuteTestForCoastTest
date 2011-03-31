@@ -6,19 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LeaderFollowerPool.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Socket.h"
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "SystemBase.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
-
 #if !defined(WIN32)
 #include <sys/poll.h>
 #include <sys/select.h>

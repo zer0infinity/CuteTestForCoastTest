@@ -9,7 +9,6 @@
 #ifndef _AccessManager_H
 #define _AccessManager_H
 
-//---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 
 class AccessManager;

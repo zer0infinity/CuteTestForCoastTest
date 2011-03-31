@@ -11,6 +11,9 @@
 #include "TestSuite.h"
 #include "Session.h"
 #include "StringStream.h"
+#include "Context.h"
+#include "Server.h"
+#include "Role.h"
 
 //---- MapperTest ----------------------------------------------------------------
 Test *MapperTest::suite ()

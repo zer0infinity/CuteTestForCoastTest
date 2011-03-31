@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LocalizedRenderers.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "LocalizationUtils.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- StringRenderer ----------------------------------------------------------------
 RegisterRenderer(StringRenderer);

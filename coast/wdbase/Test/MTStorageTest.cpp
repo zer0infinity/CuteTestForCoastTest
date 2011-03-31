@@ -6,21 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "MT_Storage.h"
-
-//--- interface include --------------------------------------------------------
 #include "MTStorageTest.h"
-
-//--- standard modules used ----------------------------------------------------
+#include "TestSuite.h"
 #include "Timers.h"
-#include "PoolAllocator.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //----- AllocTestThread -------------------------------------------------------------
 class AllocTestThread : public Thread

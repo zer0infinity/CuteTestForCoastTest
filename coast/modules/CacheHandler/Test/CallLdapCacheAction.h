@@ -9,7 +9,6 @@
 #ifndef _CallLdapCacheAction_H
 #define _CallLdapCacheAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- CallLdapCacheAction ----------------------------------------------------------

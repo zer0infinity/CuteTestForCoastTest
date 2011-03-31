@@ -6,22 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPStreamStackTest.h"
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-//--- module under test --------------------------------------------------------
 #include "HTTPStreamStack.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "Dbg.h"
-
-#include "StringStream.h"
-#include "Context.h"
 #include "HTTPChunkedOStream.h"
 #include "ZipStream.h"
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPStreamStackTest ----------------------------------------------------------------
 HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCaseType(tstrName)

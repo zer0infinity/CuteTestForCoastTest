@@ -11,16 +11,11 @@
 #undef CONTROL_CHAR_CHECK // iscntrl is locale specific, it is avoided if this define is set
 #define SPECIAL_CHAR_CONVERSION // should you need to turn conversion of &copy etc into local characters
 
-//--- interface include --------------------------------------------------------
 #include "HTMLParser.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemLog.h"
 #include "DiffTimer.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 #if !defined(WIN32)
 #include <ctype.h>

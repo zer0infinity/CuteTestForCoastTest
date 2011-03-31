@@ -10,8 +10,7 @@
 #define _LocalizationUtilsTest_h_
 
 #include "TestCase.h"
-
-class Context;
+#include "Context.h"
 
 //---- LocalizationUtilsTest -----------------------------------------------------------
 class LocalizationUtilsTest : public TestFramework::TestCase

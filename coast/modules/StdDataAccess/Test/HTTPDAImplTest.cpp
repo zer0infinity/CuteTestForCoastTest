@@ -6,22 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- module under test --------------------------------------------------------
 #include "HTTPDAImpl.h"
-
-//--- interface include --------------------------------------------------------
 #include "HTTPDAImplTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Server.h"
-#include "Session.h"
-#include "Role.h"
 #include "SSLModule.h"
 #include "AnyIterators.h"
-#include "Dbg.h"
+#include "Context.h"
 
 //---- HTTPDAImplTest ----------------------------------------------------------------
 HTTPDAImplTest::HTTPDAImplTest(TString tstrName) :

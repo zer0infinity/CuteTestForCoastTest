@@ -6,13 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "FlowController.h"
 #include "Context.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
 #include "FlowControllerPerformAnalyzeAction.h"
 
 //---- FlowControllerPerformAnalyzeAction ---------------------------------------------------------------

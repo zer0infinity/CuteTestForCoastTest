@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ZipStream.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
 #include "ConversionUtils.h"
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <cstring>	// memset
 #include "gzio.h"	// DEF_MEM_LEVEL
 

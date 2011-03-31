@@ -9,7 +9,6 @@
 #ifndef _AssertionTest_H
 #define _AssertionTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- AssertionTest ----------------------------------------------------------

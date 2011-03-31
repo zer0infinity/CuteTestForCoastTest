@@ -9,7 +9,6 @@
 #ifndef _TransitionTests_H
 #define _TransitionTests_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------

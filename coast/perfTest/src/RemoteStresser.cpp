@@ -6,12 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RemoteStresser.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "DataAccess.h"
 #include "DiffTimer.h"
+#include "Context.h"
 #include "Dbg.h"
 
 //---- RemoteStresser -----------------------------------------------------------

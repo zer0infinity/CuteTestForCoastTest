@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "CgiCaller.h"
-
-//--- interface include --------------------------------------------------------
 #include "CgiCallerTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "CgiParams.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "Context.h"
 
 //---- CgiCallerTest ----------------------------------------------------------------
 CgiCallerTest::CgiCallerTest(TString tstrName) : TestCaseType(tstrName)

@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTMLTreeMapper.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "MultiWriterParser.h"
 #include "HTMLTreeWriter.h"
 #include "StringStream.h"

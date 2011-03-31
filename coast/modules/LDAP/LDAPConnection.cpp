@@ -6,17 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPConnection.h"
-
-//--- project modules used -----------------------------------------------------
 #include "LDAPMessageEntry.h"
-#include "LDAPConnectionManager.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "StringStream.h"
-
 #if defined(USE_OPENLDAP)
 static const long fgOptNetworkTimeout = LDAP_OPT_NETWORK_TIMEOUT;
 static const String fgstrOptNetworkTimeout = String("LDAP_OPT_NETWORK_TIMEOUT", -1, Coast::Storage::Global());

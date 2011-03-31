@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Page.h"
-
-//--- interface include --------------------------------------------------------
 #include "PageTest.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "TestAction.h"
-#include "Dbg.h"
 #include <iostream>
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- PageTest ----------------------------------------------------------------
 PageTest::PageTest(TString tname) : TestCaseType(tname)

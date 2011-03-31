@@ -9,6 +9,7 @@
 #include "ReadFileDAImplTest.h"
 #include "TestSuite.h"
 #include "ReadFileDAImpl.h"
+#include "Context.h"
 
 //---- ReadFileDAImplTest ----------------------------------------------------------------
 ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCaseType(tstrName)

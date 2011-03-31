@@ -9,6 +9,7 @@
 #include "RequestListener.h"
 #include "SystemLog.h"
 #include "Registry.h"
+#include "Policy.h"
 
 //---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */

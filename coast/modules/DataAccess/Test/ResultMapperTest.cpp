@@ -9,6 +9,7 @@
 #include "ResultMapperTest.h"
 #include "TestSuite.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- ResultMapperTest ----------------------------------------------------------------
 ResultMapperTest::ResultMapperTest(TString tstrName) : TestCaseType(tstrName)

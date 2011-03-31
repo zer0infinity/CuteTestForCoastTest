@@ -6,22 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ThreadsTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "TestThread.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Dbg.h"
 #include <iostream>
-
-//--- c-library modules used ---------------------------------------------------
-
 #define MILISEC 1000000 /* 1 million nanoseconds */
 #define MILISECGRANULARITY 50  //100  /* check and measure for 0.1 or 0.05 seconds */
 // SOP: 10 miliseconds seem to be too fine grained on my linux box.

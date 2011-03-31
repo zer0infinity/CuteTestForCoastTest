@@ -9,7 +9,6 @@
 #ifndef _ContextTest_H
 #define _ContextTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 class Registry;

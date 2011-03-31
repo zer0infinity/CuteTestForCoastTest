@@ -9,7 +9,6 @@
 #ifndef _Base64Test_H
 #define _Base64Test_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

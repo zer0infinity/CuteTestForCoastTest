@@ -9,7 +9,6 @@
 #ifndef _ExistsCheckAction_H
 #define _ExistsCheckAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- ExistsCheckAction ----------------------------------------------------------

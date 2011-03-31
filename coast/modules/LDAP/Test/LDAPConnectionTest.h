@@ -9,7 +9,6 @@
 #ifndef _LDAPConnectionTest_H
 #define _LDAPConnectionTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- LDAPConnectionTest ----------------------------------------------------------

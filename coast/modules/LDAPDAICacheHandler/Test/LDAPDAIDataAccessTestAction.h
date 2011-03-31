@@ -9,7 +9,6 @@
 #ifndef _LDAPDAIDataAccessTestAction_H
 #define _LDAPDAIDataAccessTestAction_H
 
-//---- Action include -------------------------------------------------
 #include "CallDataAccessAction.h"
 
 //---- LDAPDAIDataAccessTestAction ----------------------------------------------------------

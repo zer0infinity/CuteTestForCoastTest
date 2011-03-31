@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "BasicTableRenderer.h"
-
-//--- interface include --------------------------------------------------------
 #include "BasicTableRendererTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 BasicTableRendererTest::BasicTableRendererTest (TString tname) : RendererTest(tname) {}
 

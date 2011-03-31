@@ -9,7 +9,6 @@
 #ifndef _UniqueIdGenTest_H
 #define _UniqueIdGenTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 class String;

@@ -6,18 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AnythingNotNullAction.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "AnythingUtils.h"
 #include "Renderer.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- AnythingNotNullAction ---------------------------------------------------------------
 RegisterAction(AnythingNotNullAction);

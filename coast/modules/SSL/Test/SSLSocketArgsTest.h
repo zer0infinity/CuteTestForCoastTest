@@ -9,7 +9,6 @@
 #ifndef _SSLSocketArgsTest_H
 #define _SSLSocketArgsTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "SSLSocket.h"
 

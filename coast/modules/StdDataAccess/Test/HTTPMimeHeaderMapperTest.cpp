@@ -9,6 +9,7 @@
 #include "HTTPMimeHeaderMapperTest.h"
 #include "HTTPMimeHeaderMapper.h"
 #include "TestSuite.h"
+#include "Context.h"
 
 void HTTPMimeHeaderMapperTest::ConfiguredTests()
 {

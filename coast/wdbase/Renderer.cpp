@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "Registry.h"
 #include "StringStream.h"
+#include "Policy.h"
 
 //---- RenderersModule -----------------------------------------------------------
 RegisterModule(RenderersModule);

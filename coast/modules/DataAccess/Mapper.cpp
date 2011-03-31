@@ -7,9 +7,10 @@
  */
 
 #include "Mapper.h"
-#include "StringStream.h"
 #include "Registry.h"
 #include "Timers.h"
+#include "StringStream.h"
+#include "Policy.h"
 
 //---- MappersModule -----------------------------------------------------------
 RegisterModule(MappersModule);

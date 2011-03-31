@@ -6,18 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "BlowfishRenderer.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SecurityModule.h"
 #include "Base64.h"
 #include "SystemLog.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- BlowfishRenderer ---------------------------------------------------------------
 RegisterRenderer(BlowfishRenderer);

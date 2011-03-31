@@ -9,7 +9,6 @@
 #ifndef _GetEnvRenderer_H
 #define _GetEnvRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "LookupRenderers.h"
 
 //---- GetEnvRenderer ----------------------------------------------------------

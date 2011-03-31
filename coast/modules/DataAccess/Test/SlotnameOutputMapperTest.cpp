@@ -10,6 +10,7 @@
 #include "SlotnameOutputMapper.h"
 #include "TestSuite.h"
 #include "CheckStores.h"
+#include "Context.h"
 
 //---- SlotnameOutputMapperTest ----------------------------------------------------------------
 SlotnameOutputMapperTest::SlotnameOutputMapperTest(TString tname) :

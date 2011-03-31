@@ -9,7 +9,6 @@
 #ifndef _HTTPHeaderRendererTest_H
 #define _HTTPHeaderRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTTPHeaderRendererTest ----------------------------------------------------------

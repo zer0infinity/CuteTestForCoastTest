@@ -9,7 +9,6 @@
 #ifndef _SystemAPITest_H
 #define _SystemAPITest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- SystemAPITest ----------------------------------------------------------

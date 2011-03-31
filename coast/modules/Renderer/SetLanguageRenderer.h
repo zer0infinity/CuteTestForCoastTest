@@ -9,7 +9,6 @@
 #ifndef _SetLanguageRenderer_H
 #define _SetLanguageRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- SetLanguageRenderer ----------------------------------------------------------

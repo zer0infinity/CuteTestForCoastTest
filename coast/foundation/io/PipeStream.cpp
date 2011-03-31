@@ -15,7 +15,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <errno.h>
 #if defined(WIN32)
 #include <io.h>

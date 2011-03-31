@@ -9,7 +9,6 @@
 #ifndef _HTTPProtocolReplyRendererTest_H
 #define _HTTPProtocolReplyRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------

@@ -16,7 +16,6 @@
 
 #include "StringStreamBuf.h"
 
-
 //! istream for Strings, read input from a string
 template
 <

@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "UniqueIdGenTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "UniqueIdGen.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Anything.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- UniqueIdGenTest ----------------------------------------------------------------
 UniqueIdGenTest::UniqueIdGenTest(TString tstrName)

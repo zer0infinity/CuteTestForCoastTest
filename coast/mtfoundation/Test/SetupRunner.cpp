@@ -6,7 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
 //--- test cases ---------------------------------------------------------------

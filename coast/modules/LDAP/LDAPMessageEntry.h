@@ -9,7 +9,6 @@
 #ifndef _LDAPMessageEntry_H
 #define _LDAPMessageEntry_H
 
-//---- baseclass include -------------------------------------------------
 #include "LDAPAPI.h"
 
 //---- LDAPMessageEntry ---------------------------------------------------

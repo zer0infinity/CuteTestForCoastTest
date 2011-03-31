@@ -9,7 +9,6 @@
 #ifndef _EBCDICSocket_H
 #define _EBCDICSocket_H
 
-//---- baseclass include -------------------------------------------------
 #include "Socket.h"
 
 //--- EBCDICSocket ---

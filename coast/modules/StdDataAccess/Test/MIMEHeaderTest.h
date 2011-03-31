@@ -9,7 +9,6 @@
 #ifndef _MIMEHeaderTest_H
 #define _MIMEHeaderTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- MIMEHeaderTest ----------------------------------------------------------

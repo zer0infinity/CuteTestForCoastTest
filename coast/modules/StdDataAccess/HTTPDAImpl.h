@@ -14,16 +14,23 @@
 
 class ConnectorParams;
 class Connector;
+class Socket;
+class Context;
 
-//! DataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any
-class HTTPDAImpl: public DataAccessImpl
-{
+//! DataAccess for performing HTTP Requests
+class HTTPDAImpl: public DataAccessImpl {
+	HTTPDAImpl();
+	HTTPDAImpl(const HTTPDAImpl &);
+	HTTPDAImpl &operator=(const HTTPDAImpl &);
 public:
-	HTTPDAImpl(const char *name);
-	~HTTPDAImpl();
+	HTTPDAImpl(const char *name) :
+		DataAccessImpl(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPDAImpl(fName);
+	}
 
 	//! executes the transaction
 	//! \param c The context of the transaction
@@ -44,19 +51,11 @@ protected:
 	bool DoExecRecord(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out);
 
 	bool ReadReply( String &theReply, Context &context, std::iostream *ios );
-	bool RenderReply( String &theReply, Context &context, ResultMapper *out  );
-//	long CompareRequest( Anything & recording, Context &context, String & request );
+	bool RenderReply( String &theReply, Context &context, ResultMapper *out );
+	//	long CompareRequest( Anything & recording, Context &context, String & request );
 	bool BuildRequest( String &request, Context &context, ParameterMapper *in, ResultMapper *out);
 	bool SendRequest(String &request, std::iostream *ios, Socket *s, ConnectorParams *cps );
 #endif
-
-private:
-	//constructor
-	HTTPDAImpl();
-	HTTPDAImpl(const HTTPDAImpl &);
-	//assignement
-	HTTPDAImpl &operator=(const HTTPDAImpl &);
 };
 
-/* Don't add stuff after this #endif */
 #endif		//not defined _HTTPDAImpl_H

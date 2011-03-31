@@ -16,7 +16,6 @@
 #include <cstring>
 #include <climits>
 #include <fstream>
-
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>

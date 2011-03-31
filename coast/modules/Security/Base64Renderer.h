@@ -9,7 +9,6 @@
 #ifndef _Base64Renderer_H
 #define _Base64Renderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- Base64Renderer ----------------------------------------------------------

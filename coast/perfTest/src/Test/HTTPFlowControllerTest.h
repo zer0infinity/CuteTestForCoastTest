@@ -9,7 +9,6 @@
 #ifndef _HTTPFlowControllerTest_H
 #define _HTTPFlowControllerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 #include "Context.h"
 

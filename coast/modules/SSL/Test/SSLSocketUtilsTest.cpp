@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLSocketUtilsTest.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SSLSocketUtils.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- SSLSocketUtilsTest ----------------------------------------------------------------
 SSLSocketUtilsTest::SSLSocketUtilsTest(TString tstrName)

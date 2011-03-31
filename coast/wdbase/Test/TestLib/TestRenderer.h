@@ -9,7 +9,6 @@
 #ifndef _TestRenderer_H
 #define _TestRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- TestRenderer ----------------------------------------------------------

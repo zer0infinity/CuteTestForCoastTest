@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ConnectorAcceptorTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "EBCDICConnector.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 #include "Threads.h"
 #include "StringStream.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
 #endif

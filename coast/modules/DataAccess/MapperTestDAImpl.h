@@ -9,7 +9,6 @@
 #ifndef _MapperTestDAImpl_H
 #define _MapperTestDAImpl_H
 
-//---- baseclass include -------------------------------------------------
 #include "DataAccessImpl.h"
 
 //---- MapperTestDAImpl ----------------------------------------------------------

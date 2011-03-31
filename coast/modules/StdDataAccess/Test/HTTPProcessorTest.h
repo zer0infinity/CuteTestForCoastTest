@@ -9,7 +9,6 @@
 #ifndef _HTTPProcessorTest_H
 #define _HTTPProcessorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- HTTPProcessorTest ----------------------------------------------------------

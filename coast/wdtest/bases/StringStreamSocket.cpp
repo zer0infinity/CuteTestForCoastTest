@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "StringStreamSocket.h"
-
-//--- standard modules used ----------------------------------------------------
 
 //---- StringStreamSocket ----------------------------------------------------------------
 StringStreamSocket::StringStreamSocket(String &str): Socket(-1)

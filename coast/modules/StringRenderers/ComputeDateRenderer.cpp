@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -------------------------------------------------------
 #include "ComputeDateRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TimeStamp.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 static const char *pcMonthes[] = { "---", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 

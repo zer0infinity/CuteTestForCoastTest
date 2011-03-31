@@ -9,7 +9,6 @@
 #ifndef _LoggingAction_H
 #define _LoggingAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 #include "AppLog.h"
 

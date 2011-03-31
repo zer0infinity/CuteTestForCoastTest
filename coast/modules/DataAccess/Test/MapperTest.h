@@ -9,7 +9,6 @@
 #ifndef _MapperTest_H
 #define _MapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------

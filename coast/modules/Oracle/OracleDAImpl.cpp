@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "OracleDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "OraclePooledConnection.h"
 #include "OracleStatement.h"
 #include "OracleException.h"
@@ -21,10 +18,7 @@
 #include "TimeStamp.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
-
 #include <limits>
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 static const long glStringBufferSize( 4096L );

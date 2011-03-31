@@ -6,15 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ----------------------------------------------------------------
 #include "URLRenderers.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SecurityModule.h"
 #include "URLUtils.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- LinkRenderer ----------------------------------------------------------------
 

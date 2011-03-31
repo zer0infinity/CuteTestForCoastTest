@@ -10,11 +10,9 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "Anything.h"
-
 #include <errno.h>
 #include <cstring>
 #include <fcntl.h>
-
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>

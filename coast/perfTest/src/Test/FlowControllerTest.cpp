@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "FlowController.h"
-
-//--- interface include --------------------------------------------------------
 #include "FlowControllerTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Dbg.h"
 #include <iostream>
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- FlowControllerTest ----------------------------------------------------------------
 FlowControllerTest::FlowControllerTest(TString tstrName) : StressAppTest(tstrName) { }

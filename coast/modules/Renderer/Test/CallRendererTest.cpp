@@ -6,19 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CallRendererTest.h"
-//--- c-modules used -----------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "CallRenderer.h"
 
 //---- CallRendererTest ----------------------------------------------------------------

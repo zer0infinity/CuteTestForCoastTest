@@ -9,7 +9,6 @@
 #ifndef _NameUsingOutputMapperTest_H
 #define _NameUsingOutputMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 class ROAnything;

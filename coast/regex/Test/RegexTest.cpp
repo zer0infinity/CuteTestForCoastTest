@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "RE.h"
-
-//--- interface include --------------------------------------------------------
 #include "RegexTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "StringStream.h"
 #include "RECompiler.h"

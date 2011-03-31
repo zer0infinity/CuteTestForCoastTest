@@ -14,7 +14,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #if !defined (WIN32)
 #include <errno.h> /* PS wg. SUNCC5 */
 #endif

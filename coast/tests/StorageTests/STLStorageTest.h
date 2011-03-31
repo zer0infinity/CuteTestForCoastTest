@@ -9,7 +9,6 @@
 #ifndef _STLStorageTest_H
 #define _STLStorageTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- STLStorageTest ----------------------------------------------------------

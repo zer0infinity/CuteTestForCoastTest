@@ -9,7 +9,6 @@
 #ifndef _DataAccessImplTest_H
 #define _DataAccessImplTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 #include "Anything.h"
 

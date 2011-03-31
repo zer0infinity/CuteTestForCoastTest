@@ -9,7 +9,6 @@
 #ifndef _SERVER_H
 #define _SERVER_H
 
-//--- superclass interface ---
 #include "Application.h"
 #include "WDModule.h"
 

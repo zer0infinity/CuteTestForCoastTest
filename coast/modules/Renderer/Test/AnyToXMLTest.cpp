@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "Context.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "AnyToXMLTest.h"
 
 AnyToXMLTest::AnyToXMLTest(TString tname)

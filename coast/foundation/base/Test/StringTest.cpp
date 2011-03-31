@@ -14,7 +14,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <limits>
 
 StringTest::StringTest (TString tname)

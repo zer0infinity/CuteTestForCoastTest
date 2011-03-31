@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AuthenticationService.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SecurityModule.h"
 #include "HTTPProcessor.h"	// for Coast::HTTP

@@ -6,22 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ServiceDispatcherTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "ServiceDispatcher.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "ServiceHandler.h"
-
-//--- c-library modules used ---------------------------------------------------
-#if !defined(WIN32)
-#include <stdlib.h>
-#endif
 
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher

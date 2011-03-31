@@ -13,6 +13,7 @@
 #include "Registry.h"
 #include "HTTPStreamStack.h"
 #include "RequestProcessor.h"
+#include "Policy.h"
 
 //---- PagesModule -----------------------------------------------------------
 RegisterModule(PagesModule);

@@ -8,6 +8,7 @@
 
 #include "ReadXMLFileDAImpl.h"
 #include "GenericXMLParser.h"
+#include "Dbg.h"
 
 //--- ReadXMLFileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(ReadXMLFileDAImpl);

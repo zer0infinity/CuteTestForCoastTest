@@ -9,10 +9,8 @@
 #ifndef _AppBooterTest_H
 #define _AppBooterTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
-
-class Anything;
+#include "Anything.h"
 
 //---- AppBooterTest ----------------------------------------------------------
 //!TestCases description

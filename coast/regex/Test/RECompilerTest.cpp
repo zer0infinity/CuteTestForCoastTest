@@ -6,23 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "RECompiler.h"
-
-//--- interface include --------------------------------------------------------
 #include "RECompilerTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "Dbg.h"
 #include "RE.h"
 #include "REBitSet.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- RECompilerTest ----------------------------------------------------------------
 RECompilerTest::RECompilerTest(TString tstrName) : TestCaseType(tstrName)

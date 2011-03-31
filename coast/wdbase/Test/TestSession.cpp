@@ -6,16 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestSession.h"
-
-//--- module under test --------------------------------------------------------
 #include "SessionListManagerTest.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "DiffTimer.h"
-#include "Threads.h"
 #include "Dbg.h"
 
 //---- TestSession ----------------------------------------------------------

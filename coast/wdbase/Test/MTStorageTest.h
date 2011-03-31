@@ -9,7 +9,6 @@
 #ifndef _MTStorageTest_H
 #define _MTStorageTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "Threads.h"
 

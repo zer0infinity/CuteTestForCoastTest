@@ -9,7 +9,6 @@
 #ifndef _LDAPErrorHandler_H
 #define _LDAPErrorHandler_H
 
-//---- baseclass include -------------------------------------------------
 #include "LDAPAPI.h"
 #include "Mapper.h"
 

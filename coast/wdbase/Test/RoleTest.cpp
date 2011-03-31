@@ -6,23 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "Role.h"
-
-//--- interface include --------------------------------------------------------
 #include "RoleTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "Context.h"
-
-//--- c-library modules used ---------------------------------------------------
-#if !defined(WIN32)
-#include <stdlib.h>
-#endif
 
 //---- RoleTest ----------------------------------------------------------------
 RoleTest::RoleTest(TString tname)

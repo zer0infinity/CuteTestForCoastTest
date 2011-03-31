@@ -6,17 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AssertionTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- AssertionTest ----------------------------------------------------------------
 AssertionTest::AssertionTest(TString tstrName)

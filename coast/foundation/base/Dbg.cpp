@@ -16,7 +16,6 @@
 using namespace Coast;
 
 #include <cstring>
-
 #ifdef COAST_TRACE
 
 //---- Tracer -------------------------------------------------------------------------

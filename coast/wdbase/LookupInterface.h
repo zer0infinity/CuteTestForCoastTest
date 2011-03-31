@@ -9,8 +9,6 @@
 #ifndef _LookupInterface_H
 #define _LookupInterface_H
 
-//---- baseclass include -------------------------------------------------
-
 class ROAnything;
 
 //---- LookupInterface ----------------------------------------------------------

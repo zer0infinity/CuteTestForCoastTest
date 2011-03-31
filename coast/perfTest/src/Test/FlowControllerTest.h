@@ -9,7 +9,6 @@
 #ifndef _FlowControllerTest_H
 #define _FlowControllerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "StressAppTest.h"
 
 //---- FlowControllerTest ----------------------------------------------------------

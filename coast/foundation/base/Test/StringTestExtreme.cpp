@@ -14,8 +14,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
-
 StringTestExtreme::StringTestExtreme (TString tname)
 	: TestCaseType(tname)
 {

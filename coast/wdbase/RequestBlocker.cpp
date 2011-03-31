@@ -6,22 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
 //#define TRACE_LOCKS
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "TraceLocks.h"
-#include "Threads.h"
-#include "SystemLog.h"
-#include "Context.h"
-#include "Dbg.h"
-#include "Registry.h"
-
-//--- interface include --------------------------------------------------------
 #include "RequestBlocker.h"
+#include "TraceLocks.h"
+#include "SystemLog.h"
 
 RequestBlocker *RequestBlocker::fgRequestBlocker = 0;
 bool RequestBlocker::fBlocked = false;

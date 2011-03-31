@@ -9,7 +9,6 @@
 #ifndef _ConnectorDAImplTest_H
 #define _ConnectorDAImplTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "Socket.h"
 #include "Threads.h"

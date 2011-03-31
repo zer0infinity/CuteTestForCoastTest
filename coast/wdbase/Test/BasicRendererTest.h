@@ -9,7 +9,6 @@
 #ifndef _BasicRendererTest_H
 #define _BasicRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- BasicRendererTest ----------------------------------------------------------

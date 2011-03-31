@@ -7,7 +7,6 @@
  */
 
 #include "TestRunner.h"
-
 #include "MapperTest.h"
 #include "ParameterMapperTest.h"
 #include "ResultMapperTest.h"

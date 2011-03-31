@@ -15,8 +15,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- AnythingParserTest ---------------------------------------------------------
 AnythingParserTest::AnythingParserTest(TString tname) :
 	TestCaseType(tname), lineCounter(0) {

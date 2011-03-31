@@ -9,7 +9,6 @@
 #ifndef _QueueTest_H
 #define _QueueTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- QueueTest ----------------------------------------------------------

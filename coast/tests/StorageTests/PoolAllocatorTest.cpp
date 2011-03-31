@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "PoolAllocatorTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "PoolAllocator.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MemHeader.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- PoolAllocatorTest ----------------------------------------------------------------
 PoolAllocatorTest::PoolAllocatorTest(TString tstrName)

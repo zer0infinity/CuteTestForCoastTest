@@ -9,7 +9,6 @@
 #ifndef _UnTaintRenderer_H
 #define _UnTaintRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- UnTaintRenderer ----------------------------------------------------------

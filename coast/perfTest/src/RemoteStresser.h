@@ -9,7 +9,6 @@
 #ifndef _RemoteStresser_H
 #define _RemoteStresser_H
 
-//---- Stresser include -------------------------------------------------
 #include "Stresser.h"
 
 //---- forward declaration -----------------------------------------------

@@ -10,28 +10,29 @@
 #define _MailDAImpl_H
 
 #define DEF_UNKNOWN "No-domain-provided"
-//--- superclass interface ---
+
 #include "DataAccessImpl.h"
+
+class Context;
 
 //! DataAccess for
 class MailDAImpl: public DataAccessImpl {
+	MailDAImpl();
+	MailDAImpl(const MailDAImpl &);
+	MailDAImpl &operator=(const MailDAImpl &);
 public:
-	MailDAImpl(const char *name);
-	~MailDAImpl();
+	MailDAImpl(const char *name) :
+		DataAccessImpl(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MailDAImpl(fName);
+	}
 
 	//! executes the transaction
 	//! \param c The context of the transaction
 	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
-
-private:
-	//constructor
-	MailDAImpl();
-	MailDAImpl(const MailDAImpl &);
-	//assignement
-	MailDAImpl &operator=(const MailDAImpl &);
 };
 
 #endif		//not defined _MailDAImpl_H

@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "URLEncoderTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "URLEncoder.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
 
 //---- URLEncoderTest ----------------------------------------------------------------

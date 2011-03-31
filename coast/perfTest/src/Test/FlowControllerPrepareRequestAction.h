@@ -9,7 +9,6 @@
 #ifndef _FlowControllerPrepareRequestAction_H
 #define _FlowControllerPrepareRequestAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- FlowControllerPrepareRequestAction ----------------------------------------------------------

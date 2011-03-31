@@ -9,7 +9,6 @@
 #ifndef _OracleMappers_H
 #define _OracleMappers_H
 
-//---- ParameterMapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- OracleParameterMapper ----------------------------------------------------------

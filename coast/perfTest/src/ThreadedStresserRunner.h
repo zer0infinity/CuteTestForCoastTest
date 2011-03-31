@@ -9,7 +9,6 @@
 #ifndef _ThreadedStresserRunner_H
 #define _ThreadedStresserRunner_H
 
-//---- Stresser include -------------------------------------------------
 #include "Stresser.h"
 
 //---- ThreadedStresserRunner ----------------------------------------------------------

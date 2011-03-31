@@ -9,7 +9,6 @@
 #ifndef _SSLObjectManagerTest_H
 #define _SSLObjectManagerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SSLObjectManagerTest ----------------------------------------------------------

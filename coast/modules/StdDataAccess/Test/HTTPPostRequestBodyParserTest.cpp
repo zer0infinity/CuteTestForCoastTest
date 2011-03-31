@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPPostRequestBodyParserTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTTPPostRequestBodyParser.h"
-
-//--- project modules used -----------------------------------------------------
 #include "MIMEHeader.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Dbg.h"
 #include "Renderer.h"

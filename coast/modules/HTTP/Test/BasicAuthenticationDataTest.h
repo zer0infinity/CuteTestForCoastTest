@@ -9,7 +9,6 @@
 #ifndef _BasicAuthenticationDataTest_H
 #define _BasicAuthenticationDataTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- BasicAuthenticationDataTest ----------------------------------------------------------

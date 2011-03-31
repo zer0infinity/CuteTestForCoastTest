@@ -18,9 +18,7 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
-
 #if !defined(WIN32)
 // used for dynamic load of libraries
 #include <dlfcn.h>

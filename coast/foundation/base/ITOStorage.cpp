@@ -12,7 +12,6 @@
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 #include "AllocatorNewDelete.h"
-
 #include <cstring>
 #include <stdio.h>//lint !e537//lint !e451
 #if defined(WIN32)

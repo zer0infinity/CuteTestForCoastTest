@@ -9,7 +9,6 @@
 #ifndef _HTTPDAImplTest_H
 #define _HTTPDAImplTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- HTTPDAImplTest ----------------------------------------------------------

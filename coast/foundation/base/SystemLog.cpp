@@ -11,7 +11,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <errno.h>
 #include <cstdio>
 #include <cstring>

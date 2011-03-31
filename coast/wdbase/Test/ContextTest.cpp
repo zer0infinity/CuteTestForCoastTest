@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ContextTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Context.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStreamSocket.h"
 #include "Page.h"
 #include "Session.h"

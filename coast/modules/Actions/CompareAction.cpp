@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CompareAction.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "Dbg.h"
 #include "Renderer.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- CompareAction ---------------------------------------------------------------
 RegisterAction(CompareAction);

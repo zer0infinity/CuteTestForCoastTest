@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "Page.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "PageRelatedLookupRenderer.h"
-
-//--- interface include --------------------------------------------------------
 #include "PageRelatedRendererTest.h"
 
 //---- PageRelatedRendererTest ----------------------------------------------------------------

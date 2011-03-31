@@ -9,10 +9,10 @@
 #ifndef _MAPPER_H
 #define _MAPPER_H
 
-#include "Context.h"
 #include "WDModule.h"
 
 class Registry;
+class Context;
 
 //---- MappersModule -----------------------------------------------------------
 class MappersModule: public WDModule {
@@ -44,8 +44,10 @@ public:
 }
 \endcode
 */
-class ParameterMapper : public HierarchConfNamed
-{
+class ParameterMapper : public HierarchConfNamed {
+	ParameterMapper();
+	ParameterMapper(const ParameterMapper &);
+	ParameterMapper &operator=(const ParameterMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ParameterMapper(const char *name);
@@ -221,57 +223,72 @@ protected:
 	/*! @copydetails GetSourceSlot()
 	 */
 	virtual String DoGetSourceSlot(Context &ctx) const;
-
-private:
-	ParameterMapper();
-	ParameterMapper(const ParameterMapper &);
-	ParameterMapper &operator=(const ParameterMapper &);
 };
 
 //---------------- EagerParameterMapper ------------------------------
 //! A ParameterMapper eager to interpret its config, interprets full config if key is not found
-class EagerParameterMapper : public ParameterMapper
-{
+class EagerParameterMapper: public ParameterMapper {
+	EagerParameterMapper();
+	EagerParameterMapper(const EagerParameterMapper &);
+	EagerParameterMapper &operator=(const EagerParameterMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	EagerParameterMapper(const char *name): ParameterMapper(name) {}
+	EagerParameterMapper(const char *name) :
+		ParameterMapper(name) {
+	}
 	EagerParameterMapper(const char *name, ROAnything config);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) EagerParameterMapper(fName);
 	}
-
 protected:
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
-
-private:
-	EagerParameterMapper();
-	EagerParameterMapper(const EagerParameterMapper &);
-	EagerParameterMapper &operator=(const EagerParameterMapper &);
 };
 
 //---------------- ResultMapper ------------------------------
 //! Base class for putting results into context
 /*! This Mapper supports behavior configuration. Put the following into OutputMapperMeta.any for the corresponding Mapper alias name.
-\par Configuration
-\code
+ * @section ResultMapperConfiguration Mapper configuration
+@code
 {
-	/PutPolicy		String		optional, default "Put" or "Append" if a value already exists
-								"Put": always a non-array-any slot, set value as 'slots' content
-								"Append": always an array-any slot, append value below slot
-	/Delim			char		optional, default '.', specify path delimiting character for Lookup operations within DoGetDestinationAny()
-	/IndexDelim		char		optional, default ':', specify index delimiting character for Lookup operations within DoGetDestinationAny()
-	/<Put-Key>	{					Anything	optional, key specific Mapper-Script to execute when hit
+	/PutPolicy		String
+	/Delim			String
+	/IndexDelim		String
+	/<Put-Key>	{
 		/<ResultMapperName>	*				The specified ResultMapper will be called using an empty script as its configuration, eg. mapping ends with called ResultMapper
 		/<ResultMapperName> {				The specified ResultMapper will be called using the given script to be able to further delegate result mapping.
 			<specific mapper config>
 		}
 	}
 }
-\endcode
+@endcode
+ *
+ * @par \c PutPolicy
+ * \b optional, default \c Put\n
+ * \c Put : always a non-array-any slot, set value as 'slots' content (overwrites)\n
+ * \c Append : always an array-any slot, append value below slot\n
+ * \note If \c PutPolicy is not specified, it automatically changes to Append mode when the same key is put again!
+ * This can lead to curious Anything structures, as the first put entry will not be placed within additional curly braces.
+ *
+ * @par \c Delim
+ * \b optional, default "."\n
+ * First character is taken as path delimiting character for Lookup operations within DoGetDestinationAny()
+ *
+ * @par \c IndexDelim
+ * \b optional, default ":"\n
+ * First character is taken as index delimiting character for Lookup operations within DoGetDestinationAny()
+ *
+ * @par \c <Put-Key>
+ * \b mandatory\n
+ * Specific ResultMapper script to execute when hit.\n
+ * Slotnames will be used to find the ResultMapper used to further put the current value.
+ * If the FindResultMapper() call fails, the slotname will be used as new key to use for further put calls. This allows on the fly renaming of put keys.
+ *
 */
-class ResultMapper : public HierarchConfNamed
-{
+class ResultMapper : public HierarchConfNamed {
+	ResultMapper();
+	ResultMapper(const ResultMapper &);
+	ResultMapper &operator=(const ResultMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ResultMapper(const char *name);
@@ -438,11 +455,6 @@ protected:
 	//! Subclass hook which can be overridden for special behavior
 	/*! @copydetails SelectScript() */
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
-
-private:
-	ResultMapper();
-	ResultMapper(const ResultMapper &);
-	ResultMapper &operator=(const ResultMapper &);
 };
 
 //---------------- EagerResultMapper ------------------------------
@@ -461,7 +473,6 @@ public:
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) EagerResultMapper(fName);
 	}
-
 protected:
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 };
@@ -477,25 +488,23 @@ protected:
 //! Result mapper which stores Results directly at root of TmpStore
 /*! This could be configured in config, but it would be necessary to write a config every time a RootMapper is used.
 */
-class RootMapper : public ResultMapper
-{
+class RootMapper: public ResultMapper {
+	RootMapper();
+	RootMapper(const RootMapper &);
+	RootMapper &operator=(const RootMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	RootMapper(const char *name) : ResultMapper(name) {}
+	RootMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) RootMapper(fName);
 	}
-
 protected:
 	String DoGetDestinationSlot(Context &ctx, const char *pcDefault) {
 		return "";
 	}
-
-private:
-	RootMapper();
-	RootMapper(const RootMapper &);
-	RootMapper &operator=(const RootMapper &);
 };
 
 //  -------------------------- ConfigMapper ----------------------------
@@ -521,24 +530,23 @@ Example:<pre>
 }
 </pre>Result: exactly the config above, with the difference that the value of "calculated" slot will be assigned the results of the call to MyMapper
 */
-class ConfigMapper : public EagerParameterMapper
-{
+class ConfigMapper: public EagerParameterMapper {
+	ConfigMapper();
+	ConfigMapper(const ConfigMapper &);
+	ConfigMapper &operator=(const ConfigMapper &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	ConfigMapper(const char *name) : EagerParameterMapper(name) {};
+	ConfigMapper(const char *name) :
+		EagerParameterMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) ConfigMapper(fName);
-	};
+	}
 
 protected:
 	bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything config);
 	virtual void EvaluateConfig(ROAnything config, Anything &value, Context &ctx);
-
-private:
-	ConfigMapper();
-	ConfigMapper(const ConfigMapper &);
-	ConfigMapper &operator=(const ConfigMapper &);
 };
 
 #endif

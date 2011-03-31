@@ -6,42 +6,31 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ConfigMapperTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "Mapper.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
+#include "Context.h"
 
-//---- ConfigMapperTest ----------------------------------------------------------------
-ConfigMapperTest::ConfigMapperTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
+ConfigMapperTest::ConfigMapperTest(TString tstrName) :
+	TestCaseType(tstrName) {
 	StartTrace(ConfigMapperTest.ConfigMapperTest);
 }
 
-TString ConfigMapperTest::getConfigFileName()
-{
+TString ConfigMapperTest::getConfigFileName() {
 	return "ConfigMapperTestConfig";
 }
 
-ConfigMapperTest::~ConfigMapperTest()
-{
+ConfigMapperTest::~ConfigMapperTest() {
 	StartTrace(ConfigMapperTest.Dtor);
 }
 
-void ConfigMapperTest::ConfigTest()
-{
+void ConfigMapperTest::ConfigTest() {
 	StartTrace(ConfigMapperTest.ConfigTest);
 	String leafName("Test");
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(caseConfig) ) {
+	while (aEntryIterator.Next(caseConfig)) {
 		TString caseName;
 		aEntryIterator.SlotName(caseName);
 		Trace("Running " << caseName << " Test");
@@ -65,8 +54,7 @@ void ConfigMapperTest::ConfigTest()
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *ConfigMapperTest::suite ()
-{
+Test *ConfigMapperTest::suite() {
 	StartTrace(ConfigMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ConfigMapperTest, ConfigTest);

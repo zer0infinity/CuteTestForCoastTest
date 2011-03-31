@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FirstNonEmptyRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
 //---- FirstNonEmptyRenderer ---------------------------------------------------------------

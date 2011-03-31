@@ -11,8 +11,6 @@
 #include "ObjectList.h"
 #include "Dbg.h"//lint !e537
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- ObjectListTest ----------------------------------------------------------------
 ObjectListTest::ObjectListTest(TString tstrName) : TestCaseType(tstrName)
 {

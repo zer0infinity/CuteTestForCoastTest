@@ -9,7 +9,6 @@
 #ifndef _CallLDAPDAICacheAction_H
 #define _CallLDAPDAICacheAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- CallLDAPDAICacheAction ----------------------------------------------------------

@@ -7,12 +7,8 @@
  */
 
 #include <stdio.h>
-
-//--- interface include --------------------------------------------------------
 #include "BlowfishTest.h"
-//--- module under test --------------------------------------------------------
 #include "Blowfish.h"
-//--- standard modules used ----------------------------------------------------
 #include "TestSuite.h"
 #include "Dbg.h"
 #include "Base64.h"

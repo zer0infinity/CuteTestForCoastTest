@@ -9,7 +9,6 @@
 #ifndef _TailRenderer_H
 #define _TailRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- TailRenderer ----------------------------------------------------------

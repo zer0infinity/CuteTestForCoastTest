@@ -6,14 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Action.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "Page.h"
 #include "Timers.h"
 #include "AnyIterators.h"
+#include "Policy.h"
 
 //---- ActionsModule -----------------------------------------------------------
 RegisterModule(ActionsModule);

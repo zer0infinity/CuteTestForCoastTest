@@ -9,7 +9,6 @@
 #ifndef _FileLoadRenderer_H
 #define _FileLoadRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- FileLoadRenderer ----------------------------------------------------------

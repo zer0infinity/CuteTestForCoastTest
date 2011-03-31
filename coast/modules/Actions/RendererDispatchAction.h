@@ -9,7 +9,6 @@
 #ifndef _RendererDispatchAction_H
 #define _RendererDispatchAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- RendererDispatchAction ----------------------------------------------------------

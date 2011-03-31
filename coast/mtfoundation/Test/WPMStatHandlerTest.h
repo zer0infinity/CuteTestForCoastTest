@@ -9,7 +9,6 @@
 #ifndef _WPMStatHandlerTest_H
 #define _WPMStatHandlerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 class WPMStatHandler;

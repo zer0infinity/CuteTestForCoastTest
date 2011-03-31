@@ -9,14 +9,11 @@
 #ifndef _ObjectList_r_H
 #define _ObjectList_r_H
 
-//---- baseclass include -----------------------------------------------------
 #include "ObjectList.h"
 
 //---- standard-module include ----------------------------------------------
 #include "SystemLog.h"
 #include "Threads.h"
-
-//---- c-module include -----------------------------------------------------
 
 //---- class ObjectList_r ----------------------------------------------------------------
 template <

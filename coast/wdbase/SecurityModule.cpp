@@ -6,18 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SecurityModule.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Registry.h"
 #include "SystemLog.h"
-#include "Dbg.h"
 #include "SystemFile.h"
-#include "DiffTimer.h" /* for GetHRTIME() */
-
-#include <stdlib.h>
+#include "DiffTimer.h"
+#include "Policy.h" /* for GetHRTIME() */
 
 // ------------------- SecurityModule ---------------------------------------------
 RegisterModule(SecurityModule);

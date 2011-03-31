@@ -11,8 +11,6 @@
 #include "StringStream.h"
 #include "SystemLog.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- GenericXMLParser ----------------------------------------------------------------
 Anything GenericXMLParser::Parse(std::istream &reader, const char *filename, long startline, Allocator *a)
 {

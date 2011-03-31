@@ -9,10 +9,8 @@
 #ifndef _ConfiguredLookupAdapter_H
 #define _ConfiguredLookupAdapter_H
 
-//---- baseclass include -------------------------------------------------
 #include "LookupInterface.h"
 
-//---- project modules ---------------------------------------------------
 #include "Anything.h"
 
 //---- forward declaration -----------------------------------------------

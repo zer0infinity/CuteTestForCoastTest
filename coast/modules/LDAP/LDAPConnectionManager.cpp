@@ -6,18 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPConnectionManager.h"
-
-//--- project include ----------------------------------------------------------
 #include "PersistentLDAPConnection.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TraceLocks.h"
 #include "TimeStamp.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "SystemLog.h"
 
 THREADKEY LDAPConnectionManager::fgErrnoKey = 0;
 

@@ -6,32 +6,22 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FileAccessControllerTests.h"
-
-//--- project modules used -----------------------------------------------------
 #include "SimpleAccessControllers.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SystemFile.h"
 #include "DataAccess.h"
+#include "Context.h"
 
-//--- c-modules used -----------------------------------------------------------
-
-bool FileCreator::CreateFile(String dataAccessName, ROAnything data)
-{
+bool FileCreator::CreateFile(String dataAccessName, ROAnything data) {
 	Context c;
 	c.GetTmpStore()["FileContent"] = data.DeepClone();
 	return DataAccess(dataAccessName).StdExec(c);
 }
 
 // -------------------- UDAC Tests ----------------------
-void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac)
-{
+void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac) {
 	StartTrace(FileAccessControllerTests.doTestUDAC);
 
 	if (t_assert(udac != NULL)) {
@@ -67,12 +57,11 @@ void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac)
 	}
 }
 
-void FileAccessControllerTests::FileUDACTest()
-{
+void FileAccessControllerTests::FileUDACTest() {
 	StartTrace(FileAccessControllerTests.FileUDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UDACTest"]), "Creation of test file failed"	);
+	t_assertm(FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UDACTest"]), "Creation of test file failed");
 
 	// do generic tests
 	UserDataAccessController *fudac = UserDataAccessController::FindUserDataAccessController("UserDataFile");
@@ -89,8 +78,7 @@ void FileAccessControllerTests::FileUDACTest()
 }
 
 // -------------------- TDAC Tests ----------------------
-void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac)
-{
+void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac) {
 	StartTrace(FileAccessControllerTests.doTestTDAC);
 
 	if (t_assert(tdac != NULL)) {
@@ -105,7 +93,7 @@ void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac)
 		assertEqual(empty, tdac->GetSeed(unknown));
 
 		t_assert(tdac->IncCount(tid, increment));
-		t_assert( ( count = tdac->GetCount(tid) ) > 0);
+		t_assert((count = tdac->GetCount(tid)) > 0);
 		expectedCount += increment;
 		assertEqual(expectedCount, count);
 
@@ -114,12 +102,11 @@ void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac)
 	}
 }
 
-void FileAccessControllerTests::FileTDACTest()
-{
+void FileAccessControllerTests::FileTDACTest() {
 	StartTrace(FileAccessControllerTests.FileTDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteTokenData", GetConfig()["InitData"]["TDACTest"]), "Creation of test file failed"	);
+	t_assertm(FileCreator::CreateFile("WriteTokenData", GetConfig()["InitData"]["TDACTest"]), "Creation of test file failed");
 
 	// do generic tests
 	TokenDataAccessController *ftdac = TokenDataAccessController::FindTokenDataAccessController("TokenDataFile");
@@ -136,8 +123,7 @@ void FileAccessControllerTests::FileTDACTest()
 }
 
 // -------------------- EDAC Tests ----------------------
-void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac)
-{
+void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac) {
 	StartTrace(FileAccessControllerTests.doTestEDAC);
 
 	if (t_assert(edac != NULL)) {
@@ -184,12 +170,11 @@ void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac)
 	}
 }
 
-void FileAccessControllerTests::FileEDACTest()
-{
+void FileAccessControllerTests::FileEDACTest() {
 	StartTrace(FileAccessControllerTests.FileEDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteEntityData", GetConfig()["InitData"]["EDACTest"]), "Creation of test file failed"	);
+	t_assertm(FileCreator::CreateFile("WriteEntityData", GetConfig()["InitData"]["EDACTest"]), "Creation of test file failed");
 
 	// do generic tests
 	EntityDataAccessController *fedac = EntityDataAccessController::FindEntityDataAccessController("EntityDataFile");
@@ -206,8 +191,7 @@ void FileAccessControllerTests::FileEDACTest()
 }
 
 // ------------------------- suite ------------------------------
-Test *FileAccessControllerTests::suite ()
-{
+Test *FileAccessControllerTests::suite() {
 	StartTrace(FileAccessControllerTests.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, FileAccessControllerTests, FileUDACTest);

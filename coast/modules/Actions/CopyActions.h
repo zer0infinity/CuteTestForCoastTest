@@ -9,7 +9,6 @@
 #ifndef _CopyActions_H
 #define _CopyActions_H
 
-//---- baseclass include -------------------------------------------------
 #include "Action.h"
 
 //---- CopyAction ----------------------------------------------------------

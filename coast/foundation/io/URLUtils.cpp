@@ -10,7 +10,6 @@
 #include "SystemFile.h"
 #include "Resolver.h"
 #include "Dbg.h"
-
 #include <cstring>
 
 namespace Coast {

@@ -6,14 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "InitFinisManagerWDBase.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- InitFinisManagerWDBase ----------------------------------------------------------------
 InitFinisManagerWDBase *InitFinisManagerWDBase::fgpInitFinisManagerWDBase = 0;

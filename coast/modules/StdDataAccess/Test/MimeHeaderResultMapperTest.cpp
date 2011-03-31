@@ -9,6 +9,7 @@
 #include "MimeHeaderResultMapperTest.h"
 #include "MimeHeaderResultMapper.h"
 #include "TestSuite.h"
+#include "Context.h"
 
 void MimeHeaderResultMapperTest::ConfiguredTests()
 {

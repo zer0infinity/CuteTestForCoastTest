@@ -9,7 +9,6 @@
 #ifndef _WPMStatHandler_H
 #define _WPMStatHandler_H
 
-//---- baseclass include -------------------------------------------------
 #include "StatUtils.h"
 
 //---- forward declaration -----------------------------------------------

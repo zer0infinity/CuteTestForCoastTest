@@ -9,7 +9,6 @@
 #ifndef _ResultMapperTest_H
 #define _ResultMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "Mapper.h"
 

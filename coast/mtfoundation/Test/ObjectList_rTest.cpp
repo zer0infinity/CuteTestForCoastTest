@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ObjectList_rTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ObjectList_r.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 #include <deque>
 
 //---- ObjectList_rTest ----------------------------------------------------------------

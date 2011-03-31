@@ -10,7 +10,6 @@
 #define _HTMLTemplateCacheLoader_H
 
 
-//---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 #include "CacheHandler.h"
 

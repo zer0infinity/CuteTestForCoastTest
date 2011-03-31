@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Base64Renderer.h"
 #include "Base64.h"
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- Base64Renderer ---------------------------------------------------------------
 RegisterRenderer(Base64Renderer);

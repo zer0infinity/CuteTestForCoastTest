@@ -8,16 +8,11 @@
 
 //#define TRACE_LOCKS
 
-//--- interface include --------------------------------------------------------
 #include "Session.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "TraceLocks.h"
 #include "SystemLog.h"
 #include "Role.h"
 #include "Page.h"
-#include "RequestProcessor.h"
-#include "Server.h"
 #include "Renderer.h"
 #include "LocalizationUtils.h"
 #include "Dbg.h"

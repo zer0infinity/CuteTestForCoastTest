@@ -6,16 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "SessionListManager.h"
-
-//--- interface include --------------------------------------------------------
 #include "SessionListManagerTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "URLFilter.h"
 #include "Context.h"
 #include "SecurityModule.h"

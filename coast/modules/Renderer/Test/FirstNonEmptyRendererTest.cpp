@@ -6,18 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FirstNonEmptyRendererTest.h"
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-//--- module under test --------------------------------------------------------
 #include "FirstNonEmptyRenderer.h"
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- FirstNonEmptyRendererTest ----------------------------------------------------------------
 FirstNonEmptyRendererTest::FirstNonEmptyRendererTest(TString tstrName) : RendererTest(tstrName)

@@ -9,7 +9,6 @@
 #ifndef _FloorRenderer_H
 #define _FloorRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "ComparingRenderer.h"
 
 //---- FloorRenderer ----------------------------------------------------------

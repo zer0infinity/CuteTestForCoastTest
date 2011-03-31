@@ -7,12 +7,9 @@
  */
 
 #include "MmapStream.h"
-
 #if !defined(WIN32)
 #include "SystemLog.h"
-
 #include <fcntl.h>
-
 #if defined(linux) && ! defined(MAP_FAILED)
 // missing #define in mmap.h
 #define MAP_FAILED ((void*)-1)

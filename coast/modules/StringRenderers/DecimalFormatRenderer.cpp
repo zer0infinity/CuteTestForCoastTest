@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DecimalFormatRenderer.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- DecimalFormatRenderer ---------------------------------------------------------------
 RegisterRenderer(DecimalFormatRenderer);

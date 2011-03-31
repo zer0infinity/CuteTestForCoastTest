@@ -9,7 +9,6 @@
 #ifndef _SecurityModuleTest_H
 #define _SecurityModuleTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 
 //---- SecurityModuleTest ----------------------------------------------------------

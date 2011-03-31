@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTMLComparer.h"
-
-//--- interface include --------------------------------------------------------
 #include "HTMLComparerTest.h"
 
 //---- HTMLComparerTest ----------------------------------------------------------------

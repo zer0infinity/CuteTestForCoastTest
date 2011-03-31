@@ -6,12 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ---------------------------------------------------------
-
-//--- project modules used -----------------------------------------------------
 #include "InitFinisManagerWDBase.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 
 // special include to inline static objects needed for registry

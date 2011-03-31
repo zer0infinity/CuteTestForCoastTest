@@ -16,7 +16,6 @@
 #include "Anything.h"
 #include "AllocatorNewDelete.h"
 
-//--- forward declarations ------------------------------------------------------------
 class AcceptorCallBack;
 
 struct 	 sockaddr_in;

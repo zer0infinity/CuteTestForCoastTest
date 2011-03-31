@@ -6,17 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MD5Renderer.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MD5.h"
 #include "Base64.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- MD5Renderer ---------------------------------------------------------------
 RegisterRenderer(MD5Renderer);

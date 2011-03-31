@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ---------------------------------------------------------
 #include "ThreadPools.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemLog.h"
 #include "DiffTimer.h"
 #include "WPMStatHandler.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
 
 //---- ThreadPoolManager ---------------------------------------------------------

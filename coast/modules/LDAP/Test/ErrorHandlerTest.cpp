@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ErrorHandlerTest.h"
-
-//--- module under test --------------------------------------------------------
-#include "LDAPErrorHandler.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "PersistentLDAPConnection.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Context.h"
 
 //---- ErrorHandlerTest ----------------------------------------------------------------
 ErrorHandlerTest::ErrorHandlerTest(TString tstrName)

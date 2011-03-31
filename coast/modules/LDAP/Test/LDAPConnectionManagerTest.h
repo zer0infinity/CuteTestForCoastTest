@@ -9,7 +9,6 @@
 #ifndef _LDAPConnectionManagerTest_H
 #define _LDAPConnectionManagerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 #include "LDAPConnection.h"
 

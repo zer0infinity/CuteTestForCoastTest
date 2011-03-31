@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "QueueWorkingModuleTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "QueueWorkingModule.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- project modules used ----------------------------------------------------
 #include "Queue.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- QueueWorkingModuleTest ----------------------------------------------------------------
 QueueWorkingModuleTest::QueueWorkingModuleTest(TString tstrName)

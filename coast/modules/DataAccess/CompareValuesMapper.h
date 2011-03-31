@@ -9,7 +9,6 @@
 #ifndef _CompareValuesMapper_H
 #define _CompareValuesMapper_H
 
-//---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- CompareValuesMapper ----------------------------------------------------------

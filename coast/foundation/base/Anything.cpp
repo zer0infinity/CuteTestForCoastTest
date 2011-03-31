@@ -6,9 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyImpls.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
@@ -19,11 +16,8 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 #include <algorithm>
-
-
 #if defined(COAST_TRACE)
 #define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define anyStartTrace(trigger)					StartTrace(trigger)

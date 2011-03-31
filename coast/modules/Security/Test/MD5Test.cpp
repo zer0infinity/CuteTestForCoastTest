@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "MD5.h"
-
-//--- interface include --------------------------------------------------------
 #include "MD5Test.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
 
 MD5Test::MD5Test(TString tname) : TestCaseType(tname)

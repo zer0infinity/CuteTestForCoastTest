@@ -9,7 +9,6 @@
 #ifndef _SSLSocketUtilsTest_H
 #define _SSLSocketUtilsTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SSLSocketUtilsTest ----------------------------------------------------------

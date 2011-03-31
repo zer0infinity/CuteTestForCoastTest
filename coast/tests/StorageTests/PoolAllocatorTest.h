@@ -9,7 +9,6 @@
 #ifndef _PoolAllocatorTest_H
 #define _PoolAllocatorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- PoolAllocatorTest ----------------------------------------------------------

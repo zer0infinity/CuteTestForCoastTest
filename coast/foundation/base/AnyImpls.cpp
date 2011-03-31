@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
-
 #if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define aimplStartTrace(trigger)					StartTrace(trigger)

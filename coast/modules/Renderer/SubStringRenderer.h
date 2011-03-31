@@ -9,7 +9,6 @@
 #ifndef _SubStringRenderer_H
 #define _SubStringRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- SubStringRenderer ----------------------------------------------------------

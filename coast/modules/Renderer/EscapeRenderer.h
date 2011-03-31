@@ -9,7 +9,6 @@
 #ifndef _EscapeRenderer_H
 #define _EscapeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- EscapeRenderer ----------------------------------------------------------

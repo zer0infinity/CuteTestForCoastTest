@@ -9,7 +9,6 @@
 #ifndef _LoopTestAction_H
 #define _LoopTestAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 class ROAnything;

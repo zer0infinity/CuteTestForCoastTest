@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLConnectorTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SSLSocket.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SSLModule.h"
 #include "Resolver.h"
 #include "PoolAllocator.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
 #endif

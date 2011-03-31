@@ -9,7 +9,6 @@
 #ifndef _RegExpFilterFieldsResultMapperTest_H
 #define _RegExpFilterFieldsResultMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- RegExpFilterFieldsResultMapperTest ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _OracleModule_H
 #define _OracleModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 #include "ConnectionPool.h"
 #include <memory>

@@ -9,7 +9,6 @@
 #ifndef _LocalizedStringsTest_H
 #define _LocalizedStringsTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- LocalizedStringsTest ----------------------------------------------------------

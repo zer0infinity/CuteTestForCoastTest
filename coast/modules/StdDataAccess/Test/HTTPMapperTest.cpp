@@ -6,19 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPMapperTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTTPMapper.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SystemFile.h"
-#include "Dbg.h"
+#include "Context.h"
+#include "Server.h"
+#include "Session.h"
+#include "Role.h"
 
 //---- HTTPMapperTest ----------------------------------------------------------------
 HTTPMapperTest::HTTPMapperTest(TString tname) : TestCaseType(tname)

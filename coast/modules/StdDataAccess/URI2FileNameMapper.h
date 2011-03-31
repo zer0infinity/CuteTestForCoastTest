@@ -9,7 +9,6 @@
 #ifndef _URI2FileNameMapper_H
 #define _URI2FileNameMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- URI2FileNameMapper ----------------------------------------------------------

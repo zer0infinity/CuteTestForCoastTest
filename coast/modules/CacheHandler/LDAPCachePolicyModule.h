@@ -9,7 +9,6 @@
 #ifndef _LdapCachePolicyModule_H
 #define _LdapCachePolicyModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "CacheHandler.h"
 
 //--- LdapDataAccessLoader -----------------------------------------------

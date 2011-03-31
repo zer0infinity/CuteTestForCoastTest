@@ -9,11 +9,8 @@
 #ifndef _PageTest_H
 #define _PageTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
-
-class Context;
-class Anything;
+#include "Context.h"
 
 //---- PageTest ----------------------------------------------------------
 //!TestCases description

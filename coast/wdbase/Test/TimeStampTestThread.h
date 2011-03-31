@@ -9,7 +9,6 @@
 #ifndef _TimeStampTestThread_H
 #define _TimeStampTestThread_H
 
-//---- Thread include -------------------------------------------------
 #include "ThreadPools.h"
 
 //---- forward declaration -----------------------------------------------

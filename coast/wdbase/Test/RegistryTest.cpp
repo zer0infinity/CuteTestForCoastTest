@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "RegistryTest.h"
-//--- module under test --------------------------------------------------------
 #include "Registry.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Page.h"
-//--- c-library modules used ---------------------------------------------------
+#include "Policy.h"
+#include "Dbg.h"
 
 //---- RegistryTest ----------------------------------------------------------------
 RegistryTest::RegistryTest(TString tname)

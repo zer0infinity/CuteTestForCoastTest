@@ -9,7 +9,6 @@
 #ifndef _HTMLParserTest_H
 #define _HTMLParserTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTMLParserTest ----------------------------------------------------------

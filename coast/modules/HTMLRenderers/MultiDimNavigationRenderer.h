@@ -9,8 +9,7 @@
 #ifndef _MultiDimNavigationRenderer_H
 #define _MultiDimNavigationRenderer_H
 
-//---- Renderer include -------------------------------------------------
- #include "Renderer.h"
+#include "Renderer.h"
 
 //---- MultiDimNavigationRenderer ----------------------------------------------------------
 //! Preconfigured Table renderer, some things are hardcoded

@@ -9,7 +9,6 @@
 #ifndef _PeriodicActionTest_H
 #define _PeriodicActionTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "Threads.h"
 

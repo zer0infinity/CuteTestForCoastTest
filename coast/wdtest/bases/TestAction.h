@@ -9,7 +9,6 @@
 #ifndef _TESTACTION_H
 #define _TESTACTION_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- TestAction ----------------------------------------------------------

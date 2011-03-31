@@ -9,7 +9,6 @@
 #ifndef _HTTPMapperTest_H
 #define _HTTPMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "Anything.h"
 

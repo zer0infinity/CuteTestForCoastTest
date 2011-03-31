@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "BasicTableRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Timers.h"
 #include "Dbg.h"
 #include "AllocatorNewDelete.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- RowAccessor -------------------------------------------------------------------
 // utility class used by BasicTableRenderer to cache the renderers/configuration data

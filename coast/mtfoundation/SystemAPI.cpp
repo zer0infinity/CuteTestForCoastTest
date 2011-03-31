@@ -6,15 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SystemAPI.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/time.h>
 #endif

@@ -7,9 +7,9 @@
  */
 
 #include "OracleCheckCloseOpenedConnectionsAction.h"
-
 #include "OracleModule.h"
-#include "ConnectionPool.h"
+#include "OracleEnvironment.h"
+#include "Context.h"
 
 //--- OracleCheckCloseOpenedConnectionsAction ---
 RegisterAction(OracleCheckCloseOpenedConnectionsAction);

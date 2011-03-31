@@ -12,7 +12,6 @@
 #include "Socket.h"
 #include "Dbg.h"
 #include <fcntl.h>
-
 #if defined(WIN32)
 #include <io.h>
 #endif

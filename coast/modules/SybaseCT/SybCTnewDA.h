@@ -9,13 +9,9 @@
 #ifndef _SybCTnewDA_H
 #define _SybCTnewDA_H
 
-//---- baseclass include -------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "Mapper.h"
 
-//--- c-library modules used ---------------------------------------------------
 #include <ctpublic.h>
 
 //---- SybCTnewDA ----------------------------------------------------------

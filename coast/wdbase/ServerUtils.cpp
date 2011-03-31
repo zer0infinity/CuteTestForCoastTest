@@ -6,20 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ServerUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 #include "SystemLog.h"
-#include "StringStream.h"
 #include "Server.h"
 #include "RequestProcessor.h"
 #include "Timers.h"
 #include "SystemBase.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <signal.h>
 #endif

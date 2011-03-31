@@ -9,7 +9,6 @@
 #ifndef _NotEmptyCheckAction_H
 #define _NotEmptyCheckAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- NotEmptyCheckAction ----------------------------------------------------------

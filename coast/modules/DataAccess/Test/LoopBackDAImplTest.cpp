@@ -10,6 +10,7 @@
 #include "DataAccessImpl.h"
 #include "TestSuite.h"
 #include "SystemFile.h"
+#include "Context.h"
 
 //---- LoopBackDAImplTest ----------------------------------------------------------------
 Test *LoopBackDAImplTest::suite ()

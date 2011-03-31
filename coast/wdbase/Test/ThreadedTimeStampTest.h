@@ -9,7 +9,6 @@
 #ifndef _ThreadedTimeStampTest_H
 #define _ThreadedTimeStampTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 #include "Threads.h"
 class Mutex;

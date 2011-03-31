@@ -9,7 +9,6 @@
 #ifndef _URLFilterTest_H
 #define _URLFilterTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------

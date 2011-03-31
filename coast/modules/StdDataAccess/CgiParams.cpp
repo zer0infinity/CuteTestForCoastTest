@@ -6,15 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "CgiParams.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Dbg.h"
 #include "Renderer.h"
 
-//--- c-library modules used ---------------------------------------------------
 
 //---- CgiParams ------------------------------------------------------------------
 RegisterParameterMapper(CgiParams);

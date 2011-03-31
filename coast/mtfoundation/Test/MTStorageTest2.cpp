@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "MT_Storage.h"
-
-//--- interface include --------------------------------------------------------
 #include "MTStorageTest2.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "DiffTimer.h"
 #include "PoolAllocator.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
 #endif

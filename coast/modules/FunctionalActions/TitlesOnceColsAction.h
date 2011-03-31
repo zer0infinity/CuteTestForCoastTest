@@ -9,7 +9,6 @@
 #ifndef _TitlesOnceColsAction_H
 #define _TitlesOnceColsAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 class String;

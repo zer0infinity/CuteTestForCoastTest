@@ -9,7 +9,6 @@
 #ifndef _SimpleDAServiceTest_H
 #define _SimpleDAServiceTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- SimpleDAServiceTest ----------------------------------------------------------

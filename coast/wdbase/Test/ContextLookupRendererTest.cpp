@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ContextLookupRendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "LookupRenderers.h"
-
-//--- standard modules used ----------------------------------------------------
 
 ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
 	: TestCaseType(tname)
@@ -29,7 +22,7 @@ void ContextLookupRendererTest::ContextCharPtr()
 	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString = "EinString";
-	String testKey = "EinSchlüssel";
+	String testKey = "EinSchlï¿½ssel";
 
 	tmpStore[testKey] = testString;
 
@@ -48,7 +41,7 @@ void ContextLookupRendererTest::ContextLong()
 	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	long 	testLong = 123456;
-	String 	testKey = "EinSchlüssel";
+	String 	testKey = "EinSchlï¿½ssel";
 
 	tmpStore[testKey] = testLong;
 
@@ -67,7 +60,7 @@ void ContextLookupRendererTest::ContextDouble()
 	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	double 	testDouble 	= 123.456;
-	String 	testKey 	= "EinSchlüssel";
+	String 	testKey 	= "EinSchlï¿½ssel";
 
 	tmpStore[testKey] = testDouble;
 
@@ -86,7 +79,7 @@ void ContextLookupRendererTest::ContextNull()
 	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	Anything NullAny;
-	String 	testKey 	= "EinSchlüssel";
+	String 	testKey 	= "EinSchlï¿½ssel";
 
 	tmpStore[testKey] = NullAny;
 
@@ -105,7 +98,7 @@ void ContextLookupRendererTest::ContextCharPtrConfigArray()
 	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString = "EinString";
-	String testKey = "EinSchlüssel";
+	String testKey = "EinSchlï¿½ssel";
 
 	tmpStore[testKey] = testString;
 

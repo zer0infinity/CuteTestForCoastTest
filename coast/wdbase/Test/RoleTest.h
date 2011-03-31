@@ -9,7 +9,6 @@
 #ifndef _RoleTest_H
 #define _RoleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- RoleTest ----------------------------------------------------------

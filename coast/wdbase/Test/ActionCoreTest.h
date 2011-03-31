@@ -9,7 +9,6 @@
 #ifndef _ActionCoreTest_H
 #define _ActionCoreTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- ActionCoreTest ----------------------------------------------------------

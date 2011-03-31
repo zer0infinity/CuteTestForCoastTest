@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTMLEscapeRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "URLUtils.h"
-
-//--- project modules used -----------------------------------------------------
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTMLEscapeRenderer ---------------------------------------------------------------
 RegisterRenderer(HTMLEscapeRenderer);

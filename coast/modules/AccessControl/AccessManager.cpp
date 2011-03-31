@@ -6,14 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AccessManager.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Policy.h"
 
 //---- AccessManagerModule ---------------------------------------------------------------
 RegisterModule(AccessManagerModule);
@@ -25,7 +21,7 @@ bool AccessManagerModule::Init(const ROAnything config)
 {
 	StartTrace(AccessManagerModule.Init);
 	bool ok = true;
-	// impl analog PagesModule für Finis und Init
+	// impl analog PagesModule fï¿½r Finis und Init
 
 	if (config.IsDefined("AccessManagers")) {
 		HierarchyInstaller hi("AccessManager");

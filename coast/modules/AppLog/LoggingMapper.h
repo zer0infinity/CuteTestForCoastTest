@@ -9,7 +9,6 @@
 #ifndef _LoggingMapper_H
 #define _LoggingMapper_H
 
-//---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- LoggingMapper ----------------------------------------------------------

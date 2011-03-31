@@ -9,7 +9,6 @@
 #ifndef _StoreAction_H
 #define _StoreAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- StoreAction ----------------------------------------------------------

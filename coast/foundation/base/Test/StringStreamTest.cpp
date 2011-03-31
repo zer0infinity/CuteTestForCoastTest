@@ -14,7 +14,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
 #include <limits>
 
 typedef std::numeric_limits<long long> ll_limits;

@@ -9,7 +9,6 @@
 #ifndef _LDAPConnectionManager_H
 #define _LDAPConnectionManager_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDModule.h"
 #include "Threads.h"
 #include "ldap.h"

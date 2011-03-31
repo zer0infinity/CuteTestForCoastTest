@@ -6,18 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "BoostPoolTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 #include "TestTimer.h"
-
-//--- module under test --------------------------------------------------------
 #include <boost/pool/pool_alloc.hpp>
 #include <boost/pool/object_pool.hpp>
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #define COAST_DISABLE_TRACE
 #include "STLStorage.h"
@@ -25,10 +18,8 @@
 #include "Threads.h"
 #include "Dbg.h"
 #include "ThreadPools.h"
-
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-
 #include <stdlib.h>
 #include <string>
 #include <stdexcept>
@@ -40,8 +31,6 @@
 #include <set>
 #include <ctime>
 #include <cmath>
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- BoostPoolTest ----------------------------------------------------------------
 BoostPoolTest::BoostPoolTest(TString tstrName)

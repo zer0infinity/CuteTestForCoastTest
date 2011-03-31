@@ -9,7 +9,6 @@
 #ifndef _FormattedDateRenderer_H
 #define _FormattedDateRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- FormattedDateRenderer ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _LDAPAPI_H
 #define _LDAPAPI_H
 
-//---- API include -------------------------------------------------
 #include "ldap.h"
 
 typedef struct ldap LDAP;

@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "Renderer.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "LocalizedRenderers.h"
-
-//--- interface include --------------------------------------------------------
 #include "StringRendererTest.h"
 
 StringRendererTest::StringRendererTest (TString tname) : RendererTest(tname),

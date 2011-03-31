@@ -14,8 +14,6 @@
 
 using namespace Coast;
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- DiffTimerTest ----------------------------------------------------------------
 DiffTimerTest::DiffTimerTest(TString tname) : TestCaseType(tname)
 {

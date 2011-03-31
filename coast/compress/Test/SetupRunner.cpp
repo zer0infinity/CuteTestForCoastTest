@@ -12,7 +12,6 @@
 //
 
 #include "TestRunner.h"
-
 #include "ZipStreamTest.h"
 
 void setupRunner(TestRunner &runner)

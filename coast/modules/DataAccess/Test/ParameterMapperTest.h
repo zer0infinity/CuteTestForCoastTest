@@ -9,7 +9,6 @@
 #ifndef _ParameterMapperTest_H
 #define _ParameterMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- ParameterMapperTest ----------------------------------------------------------

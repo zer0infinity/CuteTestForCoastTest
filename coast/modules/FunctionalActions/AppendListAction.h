@@ -9,7 +9,6 @@
 #ifndef _AppendListAction_H
 #define _AppendListAction_H
 
-//---- baseclass include -------------------------------------------------
 #include "CopyActions.h"
 
 class Context;

@@ -9,7 +9,6 @@
 #ifndef _CallDataAccessAction_H
 #define _CallDataAccessAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- CallDataAccessAction ----------------------------------------------------------

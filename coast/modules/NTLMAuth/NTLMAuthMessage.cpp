@@ -6,15 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "NTLMAuthMessage.h"
-
-//--- project modules used -----------------------------------------------------
 #include "NTLMCoder.h"
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- NTLMAuthMessage ----------------------------------------------------------------
 

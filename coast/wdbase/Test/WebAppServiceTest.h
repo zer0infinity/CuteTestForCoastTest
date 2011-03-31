@@ -9,7 +9,6 @@
 #ifndef _WebAppServiceTest_H
 #define _WebAppServiceTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- WebAppServiceTest ----------------------------------------------------------

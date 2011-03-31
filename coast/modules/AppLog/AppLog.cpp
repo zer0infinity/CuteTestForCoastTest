@@ -6,25 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "AppLog.h"
-
-//--- project modules used -----------------------------------------------------
 #include "Server.h"
 #include "Renderer.h"
 #include "Registry.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-
 #include "SystemBase.h"
 #include "SystemFile.h"
-using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <stdio.h>
 #endif
+using namespace Coast;
 
 //---- AppLogModule -----------------------------------------------------------
 RegisterModule(AppLogModule);

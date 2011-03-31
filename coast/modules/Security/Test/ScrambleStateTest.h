@@ -9,7 +9,6 @@
 #ifndef _ScrambleStateTest_H
 #define _ScrambleStateTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 #include "Anything.h"
 

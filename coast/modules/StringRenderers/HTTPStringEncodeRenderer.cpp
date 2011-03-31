@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "HTTPStringEncodeRenderer.h"
-
-//--- project modules used -----------------------------------------------------
 #include "URLUtils.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPStringEncodeRenderer ---------------------------------------------------------------
 RegisterRenderer(HTTPStringEncodeRenderer);

@@ -11,7 +11,6 @@
 #include "Server.h"
 #include "Socket.h"
 #include "AnyIterators.h"
-
 #define TESTHOST "localhost"
 
 //---- MasterServerTest ----------------------------------------------------------------

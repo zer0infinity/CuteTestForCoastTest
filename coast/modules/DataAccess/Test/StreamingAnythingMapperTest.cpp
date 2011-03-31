@@ -10,6 +10,7 @@
 #include "StreamingAnythingMapper.h"
 #include "TestSuite.h"
 #include "StringStream.h"
+#include "Context.h"
 
 //---- StreamingAnythingMapperTest ----------------------------------------------------------------
 StreamingAnythingMapperTest::StreamingAnythingMapperTest(TString tname) : TestCaseType(tname)

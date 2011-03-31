@@ -9,7 +9,6 @@
 #ifndef _HTTPStringEncodeRenderer_H
 #define _HTTPStringEncodeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- HTTPStringEncodeRenderer ----------------------------------------------------------

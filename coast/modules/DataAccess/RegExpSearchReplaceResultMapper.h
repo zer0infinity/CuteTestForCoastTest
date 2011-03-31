@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- RegExpSearchReplaceResultMapper ----------------------------------------------------------
 //! Search and replace by regular expression a String convertible value or stream.
 /*! Search regular expression \c /Pattern or \c /SimplePattern in String convertible value or stream.
  *

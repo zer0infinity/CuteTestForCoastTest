@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "DiffTimer.h"
 #include "Threads.h"
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "WPMStatHandler.h"
-
-//--- interface include --------------------------------------------------------
 #include "WPMStatHandlerTest.h"
 
 //---- WPMStatHandlerTest ----------------------------------------------------------------

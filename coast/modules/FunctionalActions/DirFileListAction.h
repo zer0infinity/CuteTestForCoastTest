@@ -9,7 +9,6 @@
 #ifndef _DirFileListAction_H
 #define _DirFileListAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- DirFileListAction ----------------------------------------------------------

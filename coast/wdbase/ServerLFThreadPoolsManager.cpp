@@ -6,20 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ServerLFThreadPoolsManager.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Registry.h"
-#include "Timers.h"
 #include "Server.h"
-#include "SystemLog.h"
 #include "LFListenerPool.h"
 #include "WPMStatHandler.h"
 #include "RequestProcessor.h"
-#include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
 
 RegisterServerPoolsManagerInterface(ServerLFThreadPoolsManager);
 

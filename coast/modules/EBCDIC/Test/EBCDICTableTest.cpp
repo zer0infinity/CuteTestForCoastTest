@@ -6,15 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "a2ee2a.h"
-
-//--- interface include --------------------------------------------------------
 #include "EBCDICTableTest.h"
 
 EBCDICTableTest::EBCDICTableTest(TString tname) : TestCaseType(tname) {}

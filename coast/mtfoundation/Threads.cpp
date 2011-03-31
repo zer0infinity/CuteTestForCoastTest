@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include ---------------------------------------------------------
 #include "Threads.h"
-
-//--- project modules used -----------------------------------------------------
 #include "InitFinisManagerMTFoundation.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "DiffTimer.h"
 #include "StringStream.h"
@@ -20,8 +15,6 @@
 #include "PoolAllocator.h"
 #include "Dbg.h"
 #include <exception>
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 //#define TRACE_LOCKS_IMPL 1

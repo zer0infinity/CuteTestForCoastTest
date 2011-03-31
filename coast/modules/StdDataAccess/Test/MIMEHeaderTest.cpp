@@ -6,16 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "MIMEHeaderTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "MIMEHeader.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "URLUtils.h"
@@ -90,7 +83,6 @@ void MIMEHeaderTest::ConfiguredTests() {
 #include <boost/spirit/include/phoenix_object.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/std_pair.hpp>
-
 #include "ITOString.h"
 #include <vector>
 

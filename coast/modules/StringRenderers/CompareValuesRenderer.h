@@ -9,7 +9,6 @@
 #ifndef _CompareValuesRenderer_H
 #define _CompareValuesRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- CompareValuesRenderer ----------------------------------------------------------

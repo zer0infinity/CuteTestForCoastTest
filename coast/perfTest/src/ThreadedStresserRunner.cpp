@@ -6,16 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ThreadedStresserRunner.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "DiffTimer.h"
 #include "Application.h"
 #include "Dbg.h"
 #include "SystemLog.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "StresserThread.h"
 
 RegisterStresser(ThreadedStresserRunner);

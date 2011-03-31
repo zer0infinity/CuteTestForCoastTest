@@ -9,7 +9,6 @@
 #ifndef _LDAPDAICachePolicyTest_H
 #define _LDAPDAICachePolicyTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- LDAPDAICachePolicyTest ----------------------------------------------------------

@@ -7,6 +7,7 @@
  */
 
 #include "FileDAImpl.h"
+#include "Dbg.h"
 
 using namespace Coast;
 

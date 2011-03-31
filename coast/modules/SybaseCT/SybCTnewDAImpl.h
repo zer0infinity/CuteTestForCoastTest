@@ -9,7 +9,6 @@
 #ifndef _SybCTnewDAImpl_H
 #define _SybCTnewDAImpl_H
 
-//---- SybCTnewDAImpl include -------------------------------------------------
 #include "DataAccessImpl.h"
 #include "Threads.h"
 #include <ctpublic.h>

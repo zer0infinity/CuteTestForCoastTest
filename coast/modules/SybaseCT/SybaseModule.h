@@ -9,7 +9,6 @@
 #ifndef _SybaseModule_H
 #define _SybaseModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "WDModule.h"
 
 //---- SybaseModule ----------------------------------------------------------

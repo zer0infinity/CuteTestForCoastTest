@@ -9,7 +9,6 @@
 #ifndef _TransitionDispatchAction_H
 #define _TransitionDispatchAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- TransitionDispatchAction ----------------------------------------------------------

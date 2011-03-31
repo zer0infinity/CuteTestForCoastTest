@@ -9,7 +9,6 @@
 #ifndef _ROAnyLookupAdapterTest_H
 #define _ROAnyLookupAdapterTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- ROAnyLookupAdapterTest ----------------------------------------------------------

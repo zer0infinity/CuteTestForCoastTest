@@ -6,16 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "URI2FileNameMapper.h"
-
-//--- project modules used -----------------------------------------------------
 #include "SystemFile.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "Context.h"
 
 using namespace Coast;
 

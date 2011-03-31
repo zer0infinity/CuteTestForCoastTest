@@ -10,7 +10,6 @@
 #define _WebAppService_H
 
 
-//---- baseclass include -------------------------------------------------
 #include "ServiceHandler.h"
 
 //---- WebAppService ----------------------------------------------------------

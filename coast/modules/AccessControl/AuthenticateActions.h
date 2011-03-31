@@ -9,7 +9,6 @@
 #ifndef _AuthenticateActions_H
 #define _AuthenticateActions_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 class AccessManager;

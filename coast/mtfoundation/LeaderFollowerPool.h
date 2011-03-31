@@ -9,7 +9,6 @@
 #ifndef _LeaderFollowerPool_H
 #define _LeaderFollowerPool_H
 
-//---- baseclass include -------------------------------------------------
 #include "ThreadPools.h"
 
 //---- forward declaration -----------------------------------------------

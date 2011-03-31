@@ -9,7 +9,6 @@
 #ifndef _StringReplaceRenderer_H
 #define _StringReplaceRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- StringReplaceRenderer ----------------------------------------------------------

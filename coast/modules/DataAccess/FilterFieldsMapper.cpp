@@ -7,6 +7,7 @@
  */
 
 #include "FilterFieldsMapper.h"
+#include "Dbg.h"
 
 //---- FilterFieldsMapper ------------------------------------------------------------------
 RegisterResultMapper(FilterFieldsMapper);

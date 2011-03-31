@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ImageRenderers.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- ImageLocationRenderer ----------------------------------------------------------------
 RegisterRenderer(ImageLocationRenderer);

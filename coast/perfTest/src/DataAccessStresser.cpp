@@ -6,17 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DataAccessStresser.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Timers.h"
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "DataAccess.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- DataAccessStresser -----------------------------------------------------------
 RegisterStresser(DataAccessStresser);

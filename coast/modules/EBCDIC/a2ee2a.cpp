@@ -6,7 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "a2ee2a.h"
 
 const unsigned char os_toascii[256] = {

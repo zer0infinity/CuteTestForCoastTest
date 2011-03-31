@@ -9,7 +9,6 @@
 #ifndef _FlowControllerPerformAnalyzeAction_H
 #define _FlowControllerPerformAnalyzeAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- FlowControllerPerformAnalyzeAction ----------------------------------------------------------

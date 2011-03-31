@@ -9,7 +9,6 @@
 #ifndef _MultiWriterParser_H
 #define _MultiWriterParser_H
 
-//---- AAT_StdHTMLParser include -------------------------------------------------
 #include "HTMLParser.h"
 
 //---- MultiWriterParser ----------------------------------------------------------

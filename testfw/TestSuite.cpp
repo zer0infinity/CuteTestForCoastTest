@@ -6,11 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "TestSuite.h"
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "TestList.h"
 #include "TestResult.h"
 

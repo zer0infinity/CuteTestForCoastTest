@@ -6,19 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Threads.h"
 #include "TestThread.h"
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "ThreadPools.h"
-
-//--- interface include --------------------------------------------------------
 #include "WorkerPoolManagerTest.h"
 
 //---- WorkerPoolManagerTest ----------------------------------------------------------------

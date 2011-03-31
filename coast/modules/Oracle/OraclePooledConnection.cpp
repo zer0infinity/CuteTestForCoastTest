@@ -7,10 +7,8 @@
  */
 
 #include "OraclePooledConnection.h"
-
 #include "SystemLog.h"
 #include "Dbg.h"
-
 #include <string.h>		// for strlen
 //----- OraclePooledConnection -----------------------------------------------------------------
 OraclePooledConnection::OraclePooledConnection( u_long lId, u_long lPoolSize, u_long lPoolBuckets ) :

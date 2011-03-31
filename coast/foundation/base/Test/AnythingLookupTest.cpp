@@ -13,8 +13,6 @@
 #include "Dbg.h"
 #include "AnyIterators.h"
 #include "SystemLog.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 //---- AnythingLookupTest ---------------------------------------------------------

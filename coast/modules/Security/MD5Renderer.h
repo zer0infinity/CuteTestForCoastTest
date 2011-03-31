@@ -9,7 +9,6 @@
 #ifndef _MD5Renderer_H
 #define _MD5Renderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- MD5Renderer ----------------------------------------------------------

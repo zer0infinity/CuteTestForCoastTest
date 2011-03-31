@@ -9,7 +9,6 @@
 #ifndef _TestContextFlagRenderer_H
 #define _TestContextFlagRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- TestContextFlagRenderer ----------------------------------------------------------

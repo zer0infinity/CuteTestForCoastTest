@@ -9,7 +9,6 @@
 #ifndef _SlotnameOutputMapper_H
 #define _SlotnameOutputMapper_H
 
-//---- Mapper include -------------------------------------------------
 #include "NameUsingOutputMapper.h"
 
 //---- SlotnameOutputMapper ----------------------------------------------------------

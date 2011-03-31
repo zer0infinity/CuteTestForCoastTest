@@ -9,7 +9,6 @@
 #ifndef _WriteFileDAImplTest_H
 #define _WriteFileDAImplTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
 
 //---- WriteFileDAImplTest ----------------------------------------------------------

@@ -6,12 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DirFileListAction.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "Renderer.h"
 #include "Context.h"
@@ -19,8 +14,6 @@
 #include "Timers.h"
 
 using namespace Coast;
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- DirFileListAction ---------------------------------------------------------------
 RegisterAction(DirFileListAction);

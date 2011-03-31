@@ -6,15 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "EBCDICSocket.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "EBCDICSocketStreamBuf.h"
 #include "EBCDICSocketStream.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- EBCDICSocket ----------------------------------------------------------
 EBCDICSocket::EBCDICSocket(int socket, const Anything &clientInfo, bool doClose, Allocator *a)

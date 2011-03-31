@@ -9,7 +9,6 @@
 #ifndef _DateTimeTest_H
 #define _DateTimeTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- DateTimeTest ----------------------------------------------------------

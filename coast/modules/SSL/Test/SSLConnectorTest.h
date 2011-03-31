@@ -9,7 +9,6 @@
 #ifndef _SSLConnectorTest_H
 #define _SSLConnectorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------

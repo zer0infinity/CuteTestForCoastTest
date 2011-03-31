@@ -11,7 +11,6 @@
 
 //PS make Registry an IFAObject --> NotCloned to have clean handling of Anything
 #include "IFAConfObject.h"
-#include "Policy.h"
 
 //---- Registry -----------------------------------------------------------------------
 //!an infrastructure class to register and retrieve objects by name

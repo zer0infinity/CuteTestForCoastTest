@@ -5,9 +5,7 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-//--- interface include --------------------------------------------------------
 #include "ConditionalAction.h"
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 //---- ConditionalAction ---------------------------------------------------------------
 RegisterAction(ConditionalAction);

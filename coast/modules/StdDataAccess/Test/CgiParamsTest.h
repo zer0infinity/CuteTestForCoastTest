@@ -9,7 +9,6 @@
 #ifndef _CgiParamsTest_H
 #define _CgiParamsTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- CgiParamsTest ----------------------------------------------------------

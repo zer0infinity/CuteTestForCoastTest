@@ -9,7 +9,6 @@
 #ifndef _CreateAnythingFromStringAction_H
 #define _CreateAnythingFromStringAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- CreateAnythingFromStringAction ----------------------------------------------------------

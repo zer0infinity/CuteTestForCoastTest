@@ -8,6 +8,7 @@
 
 #include "LocalizationUtils.h"
 #include "SystemFile.h"
+#include "Context.h"
 
 using namespace Coast;
 

@@ -9,6 +9,7 @@
 //#define XML_MAPPER_TRACING // does a lookup with the generated lookup-path
 
 #include "XMLMapper.h"
+#include "Context.h"
 
 //---- XMLMapper ------------------------------------------------------------------
 RegisterResultMapper(XMLMapper);

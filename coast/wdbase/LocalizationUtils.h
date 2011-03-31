@@ -9,8 +9,9 @@
 #ifndef _LocalizationUtils_H
 #define _LocalizationUtils_H
 
-#include "Context.h"
 #include "Threads.h"
+
+class Context;
 
 class LocalizationUtils
 {

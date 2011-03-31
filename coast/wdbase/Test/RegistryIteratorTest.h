@@ -9,7 +9,6 @@
 #ifndef _RegistryIteratorTest_H
 #define _RegistryIteratorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- RegistryIteratorTest ----------------------------------------------------------

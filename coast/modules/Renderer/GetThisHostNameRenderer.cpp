@@ -6,10 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "GetThisHostNameRenderer.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemBase.h"
 #include "Dbg.h"
 #include "Resolver.h"

@@ -9,7 +9,6 @@
 #ifndef _RemoteStresserTest_H
 #define _RemoteStresserTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "StressAppTest.h"
 
 class Server;

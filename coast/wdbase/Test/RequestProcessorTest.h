@@ -9,7 +9,6 @@
 #ifndef _RequestProcessorTest_H
 #define _RequestProcessorTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 #include "RequestProcessor.h"
 

@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -----------------------------------------------------
 #include "StatementDescriptionTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "OracleStatement.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used -------------------------------------------------
 #include "AnyIterators.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- StatementDescriptionTest --------------------------------------------------------
 StatementDescriptionTest::StatementDescriptionTest(TString tname)

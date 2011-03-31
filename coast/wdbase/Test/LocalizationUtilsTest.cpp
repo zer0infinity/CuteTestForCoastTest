@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "LocalizationUtils.h"
-
-//--- interface include --------------------------------------------------------
 #include "LocalizationUtilsTest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 
 using namespace Coast;
-
-//--- c-library modules used ---------------------------------------------------
 
 LocalizationUtilsTest::LocalizationUtilsTest (TString tname)
 	: TestCaseType(tname)

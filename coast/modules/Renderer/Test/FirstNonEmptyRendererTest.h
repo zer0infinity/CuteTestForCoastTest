@@ -9,7 +9,6 @@
 #ifndef _FirstNonEmptyRendererTest_H
 #define _FirstNonEmptyRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "RendererTest.h"
 
 //---- FirstNonEmptyRendererTest ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _ErrorHandlerTest_H
 #define _ErrorHandlerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 #include "Mapper.h"
 

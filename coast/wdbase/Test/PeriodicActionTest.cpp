@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "DiffTimer.h"
-#include "Threads.h"
-#include "Context.h"
-#include "Action.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "PeriodicAction.h"
-
-//--- interface include --------------------------------------------------------
 #include "PeriodicActionTest.h"
+#include "DiffTimer.h"
+#include "Action.h"
+#include "TestSuite.h"
+#include "PeriodicAction.h"
 
 Condition PeriodicActionTest::fgCalledCond;
 Mutex PeriodicActionTest::fgCalledMutex("PeriodicActionTest");

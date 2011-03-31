@@ -9,7 +9,6 @@
 #ifndef _FileAccessControllerTests_H
 #define _FileAccessControllerTests_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 class UserDataAccessController;

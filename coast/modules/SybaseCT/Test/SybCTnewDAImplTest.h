@@ -9,7 +9,6 @@
 #ifndef _SybCTnewDAImplTest_H
 #define _SybCTnewDAImplTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------

@@ -9,7 +9,6 @@
 #ifndef _ServiceDispatcherTest_H
 #define _ServiceDispatcherTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- ServiceDispatcherTest ----------------------------------------------------------

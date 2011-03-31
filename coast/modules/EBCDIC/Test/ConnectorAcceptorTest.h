@@ -9,7 +9,6 @@
 #ifndef _ConnectorAcceptorTest_h_
 #define _ConnectorAcceptorTest_h_
 
-//---- TestFramework include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- ConnectorAcceptorTest ---------------------------------------------------

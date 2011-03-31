@@ -9,7 +9,6 @@
 #ifndef _StressAppTest_H
 #define _StressAppTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 class ROAnything;

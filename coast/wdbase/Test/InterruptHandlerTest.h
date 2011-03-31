@@ -9,7 +9,6 @@
 #ifndef _InterruptHandlerTest_H
 #define _InterruptHandlerTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- InterruptHandlerTest ----------------------------------------------------------

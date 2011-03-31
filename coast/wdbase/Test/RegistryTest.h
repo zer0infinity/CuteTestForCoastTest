@@ -9,7 +9,6 @@
 #ifndef _RegistryTest_H
 #define _RegistryTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

@@ -6,12 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include -------------------------------------------------------
 #include "TestTimer.h"
-
-//--- standard modules used ----------------------------------------------------
-
-//--- c-modules used -----------------------------------------------------------
 #if !defined (WIN32)
 #include <unistd.h>
 #endif

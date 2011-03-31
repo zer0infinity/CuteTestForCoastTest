@@ -6,20 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "LDAPDataAccessImpls.h"
-
-//--- project modules used -----------------------------------------------------
 #include "Renderer.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
-#include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
-#include <cstdlib>
-
-//--- LDAPAbstractDAI -----------------------------------------------------
 
 void ReleaseHandleInfo(Context &ctx, LDAPConnection *lc)
 {

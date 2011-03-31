@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "FieldRendererTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "FormRenderer.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include <iostream>
-
-//--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <time.h>
 #endif

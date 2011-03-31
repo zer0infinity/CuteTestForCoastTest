@@ -9,7 +9,6 @@
 #ifndef _ThreadsTest_H
 #define _ThreadsTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

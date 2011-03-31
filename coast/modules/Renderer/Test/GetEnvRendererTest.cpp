@@ -6,21 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "GetEnvRendererTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SystemBase.h"
 #include "Context.h"
 #include "Renderer.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- GetEnvRendererTest ----------------------------------------------------------------
 GetEnvRendererTest::GetEnvRendererTest(TString tstrName) : TestCaseType(tstrName)

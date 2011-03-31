@@ -9,7 +9,6 @@
 #ifndef _QueueWorkingModuleTest_H
 #define _QueueWorkingModuleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 //---- QueueWorkingModuleTest ----------------------------------------------------------

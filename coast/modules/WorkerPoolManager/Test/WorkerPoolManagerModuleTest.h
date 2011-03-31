@@ -9,7 +9,6 @@
 #ifndef _WorkerPoolManagerModuleTest_H
 #define _WorkerPoolManagerModuleTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 class WorkerPoolManagerModule;
 

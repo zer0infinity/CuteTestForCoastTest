@@ -9,7 +9,6 @@
 #ifndef _Base64WDRendererTest_H
 #define _Base64WDRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- Base64WDRendererTest ----------------------------------------------------------

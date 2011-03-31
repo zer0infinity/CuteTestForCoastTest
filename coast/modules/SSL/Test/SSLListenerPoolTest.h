@@ -9,7 +9,6 @@
 #ifndef _SSLListenerPoolTest_H
 #define _SSLListenerPoolTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "ListenerPoolTest.h"
 
 //---- ListenerPoolTest ----------------------------------------------------------

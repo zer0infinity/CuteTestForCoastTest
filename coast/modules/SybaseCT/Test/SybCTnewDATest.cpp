@@ -6,19 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SybCTnewDATest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SybCTnewDA.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "DiffTimer.h"
-#include "SystemLog.h"
-#include "Dbg.h"
+#include "Context.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------------
 SybCTnewDATest::SybCTnewDATest(TString tstrName) : TestCaseType(tstrName)

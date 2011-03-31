@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "EBCDICSocketStreamBuf.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "a2ee2a.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- EBCDICSocketStreamBuf ---------------------------------------------------
 EBCDICSocketStreamBuf::EBCDICSocketStreamBuf(Socket *socket, long timeout, long sockbufsz)

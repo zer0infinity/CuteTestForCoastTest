@@ -9,7 +9,6 @@
 #ifndef _HTMLCacheLoaderTest_H
 #define _HTMLCacheLoaderTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------

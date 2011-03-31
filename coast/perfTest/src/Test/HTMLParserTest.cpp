@@ -6,20 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "Context.h"
 #include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTMLParser.h"
-
-//--- interface include --------------------------------------------------------
 #include "HTMLParserTest.h"
 #include "AnyUtils.h"
 

@@ -9,7 +9,6 @@
 #ifndef _LDAPDAICachePolicyModule_H
 #define _LDAPDAICachePolicyModule_H
 
-//---- WDModule include -------------------------------------------------
 #include "CacheHandler.h"
 
 //--- LDAPDAIDataAcccessLoader -----------------------------------------------

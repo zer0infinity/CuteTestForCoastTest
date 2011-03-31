@@ -9,7 +9,6 @@
 #ifndef _ContainsRenderer_H
 #define _ContainsRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- ContainsRenderer ----------------------------------------------------------

@@ -13,6 +13,7 @@
 #include "TestSuite.h"
 #include "HierarchyInstallerWithConfig.h"
 #include "CheckStores.h"
+#include "Context.h"
 
 namespace {
     const char *_Value = "Value";

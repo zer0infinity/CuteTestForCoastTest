@@ -9,7 +9,6 @@
 #ifndef _RegExpAction_H
 #define _RegExpAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- RegExpAction ----------------------------------------------------------

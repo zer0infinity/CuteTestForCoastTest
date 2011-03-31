@@ -9,7 +9,6 @@
 #ifndef _PageRelatedRendererTest_H
 #define _PageRelatedRendererTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

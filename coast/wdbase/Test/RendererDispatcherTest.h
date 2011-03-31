@@ -9,7 +9,6 @@
 #ifndef _RendererDispatcherTest_H
 #define _RendererDispatcherTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- RendererDispatcherTest ----------------------------------------------------------

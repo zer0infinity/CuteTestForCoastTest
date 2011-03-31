@@ -6,24 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SybCTThreadTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "SybCTnewDAImpl.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "SystemLog.h"
-#include "Threads.h"
 #include "DataAccess.h"
-#include "DiffTimer.h"
 #include "Timers.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- SybCTThreadTest ----------------------------------------------------------------
 SybCTThreadTest::SybCTThreadTest(TString tstrName)

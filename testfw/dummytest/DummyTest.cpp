@@ -6,14 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "DummyTest.h"
-//--- standard modules used ----------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 
 DummyTest::DummyTest(TString tstrName)
 	: TestCaseType(tstrName)

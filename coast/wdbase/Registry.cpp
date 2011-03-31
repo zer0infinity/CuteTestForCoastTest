@@ -6,14 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "Registry.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "Policy.h"
 
 //---- Registry -----------------------------------------------------------------------
 void Registry::SetFinalize(bool finalize)

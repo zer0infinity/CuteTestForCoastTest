@@ -6,14 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Context.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
 #include "LoopTestAction.h"
 
 //---- LoopTestAction ---------------------------------------------------------------

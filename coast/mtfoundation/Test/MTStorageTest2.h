@@ -9,7 +9,6 @@
 #ifndef _MTStorageTest2_H
 #define _MTStorageTest2_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

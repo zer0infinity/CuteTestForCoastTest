@@ -9,8 +9,6 @@
 #ifndef _SSLSocketUtils_H
 #define _SSLSocketUtils_H
 
-//---- baseclass include -------------------------------------------------
-
 //---- framework classes -------------------------------------------------
 #include "SSLAPI.h"
 #include "Dbg.h"

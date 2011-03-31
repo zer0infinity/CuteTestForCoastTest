@@ -9,7 +9,6 @@
 #ifndef _StringTokenizeRenderer_H
 #define _StringTokenizeRenderer_H
 
-//---- Renderer include -------------------------------------------------
 #include "Renderer.h"
 
 //---- StringTokenizeRenderer ----------------------------------------------------------

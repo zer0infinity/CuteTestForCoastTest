@@ -6,19 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SSLModuleTest.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "SSLModule.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyLookupInterfaceAdapter.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- SSLModuleTest ----------------------------------------------------------------
 SSLModuleTest::SSLModuleTest(TString tstrName)

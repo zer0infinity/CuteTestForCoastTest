@@ -9,10 +9,9 @@
 #ifndef _TIMERS_H
 #define _TIMERS_H
 
-#include "AllocatorNewDelete.h"
+#include "WDModule.h"
 #include "DiffTimer.h"
 #include "Context.h"
-#include "WDModule.h"
 #include "Threads.h"
 
 //---- TimeLoggingModule ----------------------------------------------------------

@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "SybCTnewDA.h"
-
-//--- project modules used -----------------------------------------------------
 #include "oserror.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "SystemLog.h"
-#include "StringStream.h"
 #include "Timers.h"
 #include "SystemBase.h"
 #include "TimeStamp.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <algorithm>
 #include <limits>
 #include <cstring>
 

@@ -9,7 +9,6 @@
 #ifndef _SybCTThreadTest_H
 #define _SybCTThreadTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
 //---- SybCTThreadTest ----------------------------------------------------------

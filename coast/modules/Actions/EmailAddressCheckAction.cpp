@@ -6,13 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
 #include "EmailAddressCheckAction.h"
 
 //---- EmailAddressCheckAction ---------------------------------------------------------------

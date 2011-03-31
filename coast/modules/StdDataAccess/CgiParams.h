@@ -9,7 +9,6 @@
 #ifndef _CGIParams_H
 #define _CGIParams_H
 
-//---- Mapper include -------------------------------------------------
 #include "URI2FileNameMapper.h"
 
 //---- CgiParams ----------------------------------------------------------

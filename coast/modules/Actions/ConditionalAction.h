@@ -9,7 +9,6 @@
 #ifndef _ConditionalAction_H
 #define _ConditionalAction_H
 
-//---- Action include -------------------------------------------------
 #include "Action.h"
 
 //---- ConditionalAction ----------------------------------------------------------

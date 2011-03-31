@@ -9,7 +9,6 @@
 #ifndef _HTTPResponseMapperTest_H
 #define _HTTPResponseMapperTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTTPResponseMapperTest ----------------------------------------------------------

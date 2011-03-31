@@ -6,20 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "WorkerPoolManagerModuleTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "WorkerPoolManagerModule.h"
 #include "WorkerPoolManagerModulePoolManager.h"
-
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- WorkerPoolManagerModuleTest ----------------------------------------------------------------
 WorkerPoolManagerModuleTest::WorkerPoolManagerModuleTest(TString tstrName)

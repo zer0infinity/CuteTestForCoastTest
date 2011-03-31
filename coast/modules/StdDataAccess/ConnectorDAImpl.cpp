@@ -6,18 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ConnectorDAImpl.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "SSLSocket.h"
-#include "SystemLog.h"
 #include "SocketStream.h"
 #include "StringStream.h"
 #include "Timers.h"
-
-//--- c-modules used -----------------------------------------------------------
 #if defined(WIN32)
 #include <io.h>				// for SO_ERROR
 #else

@@ -9,7 +9,6 @@
 #ifndef _URLEncoderTest_H
 #define _URLEncoderTest_H
 
-//---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------

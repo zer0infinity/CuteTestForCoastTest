@@ -6,22 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
 #include "SystemAPI.h"
-
-//--- interface include --------------------------------------------------------
 #include "SystemAPITest.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "Anything.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <cstdlib>
 #if !defined(WIN32)
 #include <sys/time.h>

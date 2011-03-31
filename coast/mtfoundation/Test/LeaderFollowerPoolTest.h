@@ -9,7 +9,6 @@
 #ifndef _LeaderFollowerPoolTest_H
 #define _LeaderFollowerPoolTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
 class Socket;

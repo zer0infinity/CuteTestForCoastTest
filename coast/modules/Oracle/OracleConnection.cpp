@@ -13,7 +13,6 @@
 #include "AnyIterators.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-
 #include <string.h>	// for strlen
 Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
 ROAnything OracleConnection::fgDescriptionCacheRO( fgDescriptionCache );

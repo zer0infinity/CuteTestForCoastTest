@@ -6,15 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "ListAction.h"
-
-//--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Coast::Storage::Global());
 //---- ListAction ---------------------------------------------------------------

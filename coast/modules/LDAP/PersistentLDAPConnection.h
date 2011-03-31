@@ -9,7 +9,6 @@
 #ifndef _PersistentLDAPConnection_H
 #define _PersistentLDAPConnection_H
 
-//---- baseclass include --------------------------------------------------
 #include "LDAPConnection.h"
 
 //---- PersistentLDAPConnection ----------------------------------------------------------

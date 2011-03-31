@@ -9,7 +9,6 @@
 #ifndef _HTTPChunkedOStreamTest_H
 #define _HTTPChunkedOStreamTest_H
 
-//---- baseclass include -------------------------------------------------
 #include "TestCase.h"
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------

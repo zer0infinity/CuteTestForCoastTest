@@ -6,22 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
 #include "HTTPFileLoaderTest.h"
-
-//--- module under test --------------------------------------------------------
 #include "HTTPFileLoader.h"
 #include "URI2FileNameMapper.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
+#include "Context.h"
 
 //---- HTTPFileLoaderTest ----------------------------------------------------------------
 HTTPFileLoaderTest::HTTPFileLoaderTest(TString tname)

@@ -6,27 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- interface include --------------------------------------------------------
 #include "UniqueIdGen.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MD5.h"
 #include "SystemAPI.h"
 #include "SystemBase.h"
 #include "DiffTimer.h"
 #include "StringStream.h"
-
-//--- c-library modules used ---------------------------------------------------
 #include <iomanip>
 #include <cstring>
 #if !defined(WIN32)
 #include <sys/time.h>
 #endif
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- UniqueIdGen ----------------------------------------------------------------
 UniqueIdGen::UniqueIdGen()
