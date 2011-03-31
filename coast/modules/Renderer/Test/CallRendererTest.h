@@ -12,7 +12,6 @@
 #include "Anything.h"
 #include "StringStream.h"
 #include "Context.h"
-
 #include "RendererTest.h"
 
 //---- CallRendererTest ----------------------------------------------------------

@@ -11,7 +11,6 @@
 
 #include "Threads.h"
 #include "StatUtils.h"
-#include "ObserverIf.h"
 
 //---- ThreadPoolManager ------------------------------------------------
 //! abstract class which handles initialization, starting and termination of threads in a pool

@@ -9,7 +9,6 @@
 #ifndef _HTTPFileLoader_H
 #define _HTTPFileLoader_H
 
-//--- superclass interface ---
 #include "ReadFileDAImpl.h"
 
 //! FIXME: DataAccess to be refactored soon, do not stray HTTP knowledge around everywhere...

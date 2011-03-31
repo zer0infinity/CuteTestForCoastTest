@@ -16,7 +16,6 @@
 #define InterruptHandler WIN32InterruptHandler
 #endif
 
-//---- forward declaration -----------------------------------------------
 class RequestProcessor;
 class Context;
 class ServiceDispatcher;
@@ -25,16 +24,13 @@ class StatGatherer;
 class ServerPoolsManagerInterface;
 
 //---- ServersModule -----------------------------------------------------------
-class ServersModule : public WDModule
-{
+class ServersModule: public WDModule {
 public:
 	ServersModule(const char *);
-	~ServersModule();
-
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
-	virtual bool ResetInit(const ROAnything );
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetInit(const ROAnything);
+	virtual bool ResetFinis(const ROAnything);
 	// access implicitely protected by Server::fgReInitMutex
 	static Server *GetServerForReInit() {
 		return fgServerForReInit;
@@ -46,7 +42,6 @@ public:
 protected:
 	static Server *fgServerForReInit;
 };
-
 
 //---- Server -----------------------------------------------------------
 //!manages the components of the process
@@ -60,7 +55,7 @@ public:
 	//!support for named object
 	//! \param serverName name of the server
 	Server(const char *serverName);
-	~Server();
+	virtual ~Server();
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -222,12 +217,11 @@ class ServerThread;
 The MasterServer manages several servers as configured within ServerModules. Each server has its own thread of control. This allows having an own memory pool for the server instance to optimize for performance.
 The Server methods Init() and Terminate() will be called in DoStartedHook and DoTerminatedRunMethodHook respectively which allows usage of pool memory from within Init().
 */
-class MasterServer : public Server
-{
+class MasterServer: public Server {
 public:
-	MasterServer(const char *name);
-	~MasterServer();
-
+	MasterServer(const char *name) :
+		Server(name), fNumServers(0), fServerThreads(0) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) MasterServer(fName);

@@ -13,7 +13,6 @@
 #include "Threads.h"
 #include <ctpublic.h>
 
-//---- forward declaration -----------------------------------------------
 class SybCTnewDA;
 class PeriodicAction;
 

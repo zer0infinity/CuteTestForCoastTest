@@ -9,7 +9,6 @@
 #ifndef _WriteFileDAImpl_H
 #define _WriteFileDAImpl_H
 
-//--- superclass interface ---
 #include "FileDAImpl.h"
 
 //---- WriteFileDAImpl ----------------------------------------------------------

@@ -9,9 +9,9 @@
 #include "ThreadedStresserRunner.h"
 #include "DiffTimer.h"
 #include "Application.h"
-#include "Dbg.h"
 #include "SystemLog.h"
 #include "StresserThread.h"
+#include "MT_Storage.h"
 
 RegisterStresser(ThreadedStresserRunner);
 //---- ThreadedStresserRunner ----------------------------------------------------------------

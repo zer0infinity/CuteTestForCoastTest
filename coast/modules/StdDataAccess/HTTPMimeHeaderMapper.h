@@ -20,24 +20,26 @@
 //! "Mozilla" and a new header /fd-info with value "blah". If headers are added that already
 //! exists, the old ones are overwritten (thus the above suppressing of /server is not really
 //! necessary).
-class HTTPMimeHeaderMapper : public EagerResultMapper
-{
+class HTTPMimeHeaderMapper: public EagerResultMapper {
 public:
 	//--- constructors
-	HTTPMimeHeaderMapper(const char *name);
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
+	HTTPMimeHeaderMapper(const char *name) :
+		EagerResultMapper(name) {
+	}
+    /*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPMimeHeaderMapper(fName);
+	}
 	//! reads from istream a MIME header storing it under Mapper.HTTPHeader
 	//! \param key not used
 	//! \param is the stream to be parsed
 	//! \param ctx the context of the invocation
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx,  ROAnything config);
-	static void SuppressHeaders(Anything &header, ROAnything &suppresslist);
-	static void AddHeaders(Anything &header, ROAnything &addlist);
-	static void Substitute(Anything &header, ROAnything &addlist, Context &ctx);
-	static void StoreCookies(ROAnything const header, Context &ctx);
+	virtual bool DoPutStream(const char *key, std::istream & is, Context & ctx, ROAnything config);
+	static void SuppressHeaders(Anything & header, ROAnything & suppresslist);
+	static void AddHeaders(Anything & header, ROAnything & addlist);
+	static void Substitute(Anything & header, ROAnything & addlist, Context & ctx);
+	static void StoreCookies(const ROAnything header, Context &ctx);
 
 private:
 	HTTPMimeHeaderMapper();

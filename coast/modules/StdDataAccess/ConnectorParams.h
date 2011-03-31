@@ -9,7 +9,6 @@
 #ifndef _ConnectorParams_H
 #define _ConnectorParams_H
 
-//--- superclass interface ---
 #include "Context.h"
 
 class ParameterMapper;

@@ -11,7 +11,6 @@
 
 #include "ThreadPools.h"
 
-//---- forward declaration -----------------------------------------------
 class Reactor;
 class Acceptor;
 class Socket;

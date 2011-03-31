@@ -5,29 +5,15 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTTPMimeHeaderMapper.h"
 #include "MIMEHeader.h"
 #include "RE.h"
 #include "AnyIterators.h"
 #include "AnythingUtils.h"
-
 //---- HTTPMimeHeaderMapper ------------------------------------------------------------------
 RegisterResultMapper(HTTPMimeHeaderMapper);
 
-HTTPMimeHeaderMapper::HTTPMimeHeaderMapper(const char *name)
-	: EagerResultMapper(name)
-{
-	StartTrace(HTTPMimeHeaderMapper.Ctor);
-}
-
-IFAObject *HTTPMimeHeaderMapper::Clone(Allocator *a) const
-{
-	return new (a) HTTPMimeHeaderMapper(fName);
-}
-
-bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &ctx,  ROAnything config)
-{
+bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything config) {
 	// Ignore key, store under Mapper.HTTPHeader by default
 	StartTrace(HTTPMimeHeaderMapper.DoPutStream);
 	TraceAny(config, "My Config");
@@ -64,8 +50,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 	return result && is.good();
 }
 
-void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppresslist)
-{
+void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppresslist) {
 	for (long i = 0, sz = suppresslist.GetSize(); i < sz; ++i) {
 		String keytosuppress = suppresslist[i].AsCharPtr();
 		keytosuppress.ToLower();
@@ -75,8 +60,7 @@ void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppres
 	}
 }
 
-void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist)
-{
+void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist) {
 	for (long i = 0, sz = addlist.GetSize(); i < sz; ++i) {
 		String key(addlist.SlotName(i));
 		String hdr(addlist[i].AsString());
@@ -87,8 +71,7 @@ void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist)
 	}
 }
 
-void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Context &ctx)
-{
+void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Context &ctx) {
 	StartTrace(HTTPMimeHeaderMapper.Substitute);
 
 	TraceAny(ctx.GetQuery(), "query:");
@@ -138,24 +121,24 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	String strKeyValue(64L), strCookie(128L), strKey(32L), strValue(64L);
 	ROAnything roaCookie;
 	AnyExtensions::Iterator<ROAnything> cookieIterator(header[cookieID]);
-	while ( cookieIterator.Next(roaCookie) ) {
+	while (cookieIterator.Next(roaCookie)) {
 		TraceAny(roaCookie, "current cookie entry");
 		strCookie = roaCookie.AsString();
 		String cookieName(32L);
 		StringTokenizer semiTokenizer(strCookie, cookieEnd);
 		Anything anyNamedCookie;
-		while ( semiTokenizer.NextToken(strKeyValue) ) {
+		while (semiTokenizer.NextToken(strKeyValue)) {
 			StringTokenizer valueTokenizer(strKeyValue, '=');
-			if ( valueTokenizer.NextToken(strKey) ) {
+			if (valueTokenizer.NextToken(strKey)) {
 				strKey.TrimWhitespace();
 				strValue = valueTokenizer.GetRemainder();
-				if ( !cookieName.Length() ) {
+				if (!cookieName.Length()) {
 					cookieName = strKey;
-					if ( strValue.Length() ) {
+					if (strValue.Length()) {
 						anyNamedCookie[valueSlotName] = strValue;
 					}
 				} else {
-					if ( strValue.Length() ) {
+					if (strValue.Length()) {
 						anyNamedCookie[attrSlotName][strKey] = strValue;
 					} else {
 						anyNamedCookie[attrSlotName].Append(strKey);
@@ -163,31 +146,33 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 				}
 			}
 		}
-		if ( anyNamedCookie.GetSize() > 0 && cookieName.Length() ) {
+		if (anyNamedCookie.GetSize() > 0 && cookieName.Length()) {
 			String strStructured(destSlotname);
 			strStructured.Append(cookie_path_sep).Append("Structured").Append(cookie_path_sep).Append(cookieName);
 			TraceAny(anyNamedCookie, "storing named cookie at [" << strStructured << "]");
-			StorePutter::Operate(anyNamedCookie, ctx, "Session", strStructured,true,cookie_path_sep);
+			StorePutter::Operate(anyNamedCookie, ctx, "Session", strStructured, true, cookie_path_sep);
 		}
 	}
 	//!@FIXME: this part should be factored out into separate mapper
 	ROAnything anyCookies = ctx.Lookup(String(destSlotname).Append(cookie_path_sep).Append("Structured"), cookie_path_sep);
-	if ( anyCookies.GetSize() > 0 ) {
+	if (anyCookies.GetSize() > 0) {
 		TraceAny(anyCookies, "prepared cookie values");
 		String plainCookieString(256L), cookieName(32L);
 		AnyExtensions::Iterator<ROAnything> structureIter(anyCookies);
 		ROAnything roaEntry;
-		while ( structureIter.Next(roaEntry) ) {
+		while (structureIter.Next(roaEntry)) {
 			if (!plainCookieString.Length()) {
 				plainCookieString.Append("Cookie:");
 			}
 			structureIter.SlotName(cookieName);
 			//!@FIXME: in future we should decide on attributes to select correct value entry to use, currently we use the last one (roaEntry.GetSize()-1) if multiple entries exist
-			plainCookieString.Append(' ').Append(cookieName).Append('=').Append(roaEntry[roaEntry.GetSize()-1][valueSlotName].AsString()).Append(cookieEnd);
+			plainCookieString.Append(' ').Append(cookieName).Append('=').Append(roaEntry[roaEntry.GetSize() - 1][valueSlotName].AsString()).Append(
+					cookieEnd);
 		}
 		Anything anyPlainString(plainCookieString);
 		Trace("plain cookie string [" << plainCookieString << "]");
-		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(cookie_path_sep).Append("Plain"), false, cookie_path_sep);
+		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(cookie_path_sep).Append("Plain"), false,
+				cookie_path_sep);
 	}
 	TraceAny(ctx.Lookup("StoredCookies"), "cookies from context");
 }

@@ -11,28 +11,17 @@
 
 #include "TestCase.h"
 
-//---- SystemAPITest ----------------------------------------------------------
-//!TestCases description
 struct condthreadparam;
-class SystemAPITest : public TestFramework::TestCase
-{
+class SystemAPITest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	SystemAPITest(TString tstrName);
-
-	//!destroys the test case
-	~SystemAPITest();
-
-	//--- public api
-
+	SystemAPITest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 protected:
-	void PrintResult(Anything result );
+	void PrintResult(Anything result);
 	void MUTEXTest();
 	void SEMATest();
 	void CONDITIONSignalSingleTest();

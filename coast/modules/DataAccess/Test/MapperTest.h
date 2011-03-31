@@ -11,7 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- forward declaration -----------------------------------------------
 class Context;
 
 //---- MapperTest ----------------------------------------------------------

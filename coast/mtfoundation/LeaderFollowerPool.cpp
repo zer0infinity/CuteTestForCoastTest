@@ -10,12 +10,11 @@
 #include "StringStream.h"
 #include "Socket.h"
 #include "SystemLog.h"
-#include "Dbg.h"
 #include "SystemBase.h"
 #include <iomanip>
 #if !defined(WIN32)
+#include <errno.h>
 #include <sys/poll.h>
-#include <sys/select.h>
 #else
 #define USE_SELECT
 #endif

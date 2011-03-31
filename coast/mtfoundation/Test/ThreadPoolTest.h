@@ -11,24 +11,13 @@
 
 #include "TestCase.h"
 
-//---- ThreadPoolTest ----------------------------------------------------------
-//!TestCases description
-class ThreadPoolTest : public TestFramework::TestCase
-{
+class ThreadPoolTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	ThreadPoolTest(TString tstrName);
-
-	//!destroys the test case
-	~ThreadPoolTest();
-
-	//--- public api
-
+	ThreadPoolTest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!Tests Init Start Join
 	void JoinTest();

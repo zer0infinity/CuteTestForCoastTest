@@ -9,7 +9,6 @@
 #ifndef _CgiCaller_H
 #define _CgiCaller_H
 
-//--- superclass interface ---
 #include "HTTPFileLoader.h"
 
 //! DataAccess for calling programs via CGI (common gateway interface)

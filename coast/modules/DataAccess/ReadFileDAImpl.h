@@ -9,7 +9,6 @@
 #ifndef _ReadFileDAImpl_H
 #define _ReadFileDAImpl_H
 
-//--- superclass interface ---
 #include "FileDAImpl.h"
 
 //---- ReadFileDAImpl ----------------------------------------------------------

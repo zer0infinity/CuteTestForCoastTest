@@ -9,8 +9,6 @@
 #ifndef _SYSTEMAPI_H
 #define _SYSTEMAPI_H
 
-#include "foundation.h"
-
 #if defined(WIN32)
 #include <limits>
 #include <process.h>
@@ -325,9 +323,6 @@ extern "C" {
 
 #endif
 
-#include <errno.h>
-#include <signal.h>
-#include <stdio.h>
 #endif
 
 #endif

@@ -11,7 +11,6 @@
 
 #include "TestCase.h"
 
-//---- forward declaration -----------------------------------------------
 class TableCompressor;
 
 //---- TableCompressorTest ----------------------------------------------------------

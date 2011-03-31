@@ -13,21 +13,10 @@
 #include "SystemBase.h"
 #include "Anything.h"
 #include "Dbg.h"
-#include <cstdlib>
 #if !defined(WIN32)
+#include <errno.h>
 #include <sys/time.h>
 #endif
-
-//---- SystemAPITest ----------------------------------------------------------------
-SystemAPITest::SystemAPITest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(SystemAPITest.Ctor);
-}
-
-SystemAPITest::~SystemAPITest()
-{
-	StartTrace(SystemAPITest.Dtor);
-}
 
 // builds up a suite of testcases, add a line for each testmethod
 Test *SystemAPITest::suite ()
@@ -48,9 +37,7 @@ class SimpleTestThread
 {
 public:
 	SimpleTestThread(bool bDaemon = false, bool detached = true, bool suspended = false, bool bound = false);
-	~SimpleTestThread();
-
-	bool Start(THREADWRAPPERFUNCPROTO(wrapper), void *ThreadParam);
+    bool Start(THREADWRAPPERFUNCPROTO(wrapper), void *ThreadParam);
 
 	THREAD fThreadId;
 	bool fDaemon, fDetached, fSuspended, fBound;
@@ -61,10 +48,6 @@ SimpleTestThread::SimpleTestThread(bool bDaemon, bool detached, bool suspended, 
 	, fDetached(detached)
 	, fSuspended(suspended)
 	, fBound(bound)
-{
-}
-
-SimpleTestThread::~SimpleTestThread()
 {
 }
 

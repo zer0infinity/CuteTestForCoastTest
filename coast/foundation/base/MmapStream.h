@@ -11,7 +11,6 @@
 
 #if !defined(WIN32)
 #include <sys/mman.h>
-
 #include <cstdio>
 #include <iostream>
 #include <iomanip>

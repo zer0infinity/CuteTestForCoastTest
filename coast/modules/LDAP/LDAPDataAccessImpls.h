@@ -12,7 +12,6 @@
 #define _LDAPDataAccessImpls_H
 
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
 
 //--- other includes ---

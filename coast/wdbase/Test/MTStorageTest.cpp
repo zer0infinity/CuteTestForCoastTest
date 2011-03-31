@@ -9,7 +9,7 @@
 #include "MTStorageTest.h"
 #include "TestSuite.h"
 #include "Timers.h"
-#include "Dbg.h"
+#include "MT_Storage.h"
 
 //----- AllocTestThread -------------------------------------------------------------
 class AllocTestThread : public Thread
@@ -17,7 +17,6 @@ class AllocTestThread : public Thread
 public:
 	// Timings are done in nanoseconds, resolution scales it down to whatever you like
 	AllocTestThread(TString allocatorName, Allocator *alloc, MTStorageTest *mts);
-	~AllocTestThread() {	}
 	void Run();
 
 protected:
@@ -26,17 +25,12 @@ protected:
 	void DoTimingWith(TString allocatorName, Allocator *alloc);
 	TString fAllocatorName;
 	MTStorageTest *fTest;
-
 };
 
 //---- MTStorageTest ----------------------------------------------------------------
 MTStorageTest::MTStorageTest(TString tname) : TestCaseType(tname), fFinishedMutex("Finish"), fFinished(0), fStarted(false)
 {
 	THRSETCONCURRENCY(3);
-}
-
-MTStorageTest::~MTStorageTest()
-{
 }
 
 void MTStorageTest::GlobalAllocatorTiming()

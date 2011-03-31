@@ -12,7 +12,6 @@
 #include "WDBaseTestPolicies.h"
 #include "Context.h"
 
-//---- forward declaration -----------------------------------------------
 class STTestSession;
 
 //---- SessionTest ----------------------------------------------------------

@@ -13,7 +13,6 @@
 #include "Threads.h"
 #include "WPMStatHandler.h"
 
-//---- forward declaration -----------------------------------------------
 class OraclePooledConnection;
 class PeriodicAction;
 

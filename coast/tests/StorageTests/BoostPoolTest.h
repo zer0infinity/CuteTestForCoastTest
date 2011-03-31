@@ -10,7 +10,6 @@
 #define _BoostPoolTest_H
 
 #include "FoundationTestTypes.h"
-
 #include <boost/preprocessor/seq.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include <boost/preprocessor/seq/to_tuple.hpp>

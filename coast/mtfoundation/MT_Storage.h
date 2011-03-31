@@ -10,7 +10,6 @@
 #define _MT_Storage_H
 
 #include "SystemAPI.h"
-#include "MemHeader.h"
 #include "ITOStorage.h"
 
 class SimpleMutex;

@@ -8,15 +8,12 @@
 
 #include "ServerUtils.h"
 #include "Socket.h"
-#include "SystemLog.h"
 #include "Server.h"
 #include "RequestProcessor.h"
 #include "Timers.h"
 #include "SystemBase.h"
-#include "Dbg.h"
-#if defined(WIN32)
+#include <errno.h>
 #include <signal.h>
-#endif
 
 //---- InterruptHandler ------------------------------------------------------------------
 #if defined(WIN32)

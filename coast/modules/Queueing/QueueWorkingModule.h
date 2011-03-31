@@ -14,6 +14,7 @@
 #include "Queue.h"
 #include "AppLog.h"
 #include "StringStream.h"
+#include "MT_Storage.h"
 
 //---- QueueWorkingModule ----------------------------------------------------------
 //! Queue based module for message passing systems

@@ -9,7 +9,6 @@
 #ifndef _ReadXMLFileDAImpl_H
 #define _ReadXMLFileDAImpl_H
 
-//--- superclass interface ---
 #include "ReadFileDAImpl.h"
 
 //---- ReadXMLFileDAImpl ----------------------------------------------------------

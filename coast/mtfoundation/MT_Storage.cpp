@@ -11,11 +11,8 @@
 #include "Threads.h"
 #include "PoolAllocator.h"
 #include "SystemLog.h"
-#include "Dbg.h"
 #include <cstring>
-#if defined(WIN32)
-#include <cstdio>
-#endif
+#include <cstdio>	// for snprintf
 
 #if 1
 #define TrackLockerInit(lockvar) , lockvar(0)

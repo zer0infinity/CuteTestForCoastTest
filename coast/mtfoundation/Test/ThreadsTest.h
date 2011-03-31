@@ -10,25 +10,16 @@
 #define _ThreadsTest_H
 
 #include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
 #include "Threads.h"
 #include "DiffTimer.h"
 
-//---- ThreadsTest ----------------------------------------------------------
-//!single line description of the class
-//! further explanation of the purpose of the class
-//! this may contain <B>HTML-Tags</B>
-//! ...
-class ThreadsTest : public TestFramework::TestCase
-{
+class ThreadsTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-	ThreadsTest(TString tstrName);
-	~ThreadsTest();
-
+	ThreadsTest(TString tname) :
+		TestCaseType(tname), fMutex(tname) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!tests for argument passing in hooks
 	void ThreadHookArgsTest();
@@ -51,9 +42,7 @@ public:
 	void SimpleSemaphoreTest();
 	//!test Semaphore behaviour with multiple resources
 	void MultiSemaphoreTest();
-	//!test Conditions behaviour
-	void SimpleConditionsTest();
-	//!test recursive mutex behaviour
+    //!test recursive mutex behaviour
 	void RecursiveMutexTest();
 	//!simple nested mutexes in one thread
 	void SimpleRecursiveTest();

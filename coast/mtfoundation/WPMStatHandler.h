@@ -10,8 +10,6 @@
 #define _WPMStatHandler_H
 
 #include "StatUtils.h"
-
-//---- forward declaration -----------------------------------------------
 #include "DiffTimer.h"
 #include "Threads.h"
 

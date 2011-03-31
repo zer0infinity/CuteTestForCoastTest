@@ -11,7 +11,6 @@
 
 #include "TestCase.h"
 
-//---- forward declaration -----------------------------------------------
 class Allocator;
 class PoolAllocator;
 class GlobalAllocator;

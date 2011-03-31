@@ -12,9 +12,8 @@
 #include "Registry.h"
 #include "SystemBase.h"
 #include "SystemFile.h"
-#if defined(WIN32)
-#include <stdio.h>
-#endif
+#include <errno.h>
+#include <cstdio>
 using namespace Coast;
 
 //---- AppLogModule -----------------------------------------------------------
@@ -25,10 +24,6 @@ AppLogModule *AppLogModule::fgAppLogModule = 0;
 AppLogModule::AppLogModule(const char *name)
 	: WDModule(name)
 	, fRotator(0)
-{
-}
-
-AppLogModule::~AppLogModule()
 {
 }
 

@@ -11,7 +11,6 @@
 
 #include "ThreadPools.h"
 
-//---- forward declaration -----------------------------------------------
 //---- TestWorker -----------------------------------------------
 class TestWorker : public WorkerThread
 {

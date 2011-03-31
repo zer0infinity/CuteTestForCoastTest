@@ -10,10 +10,7 @@
 #define _ConfiguredLookupAdapter_H
 
 #include "LookupInterface.h"
-
 #include "Anything.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- newclass ----------------------------------------------------------
 //! LookupInterface with configured default

@@ -5,25 +5,13 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "ServerPoolsManagerInterface.h"
 #include "Registry.h"
 #include "Policy.h"
-
-//---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
+#include <errno.h>
 RegisterModule(ServerPoolsManagerInterfacesModule);
 
-ServerPoolsManagerInterfacesModule::ServerPoolsManagerInterfacesModule(const char *name)
-	: WDModule(name)
-{
-}
-
-ServerPoolsManagerInterfacesModule::~ServerPoolsManagerInterfacesModule()
-{
-}
-
-bool ServerPoolsManagerInterfacesModule::Init(const ROAnything config)
-{
+bool ServerPoolsManagerInterfacesModule::Init(const ROAnything config) {
 	if (config.IsDefined("ServerPoolsManagerInterfaces")) {
 		AliasInstaller ai("ServerPoolsManagerInterface");
 		return RegisterableObject::Install(config["ServerPoolsManagerInterfaces"], "ServerPoolsManagerInterface", &ai);
@@ -31,30 +19,23 @@ bool ServerPoolsManagerInterfacesModule::Init(const ROAnything config)
 	return false;
 }
 
-bool ServerPoolsManagerInterfacesModule::ResetFinis(const ROAnything )
-{
+bool ServerPoolsManagerInterfacesModule::ResetFinis(const ROAnything) {
 	AliasTerminator at("ServerPoolsManagerInterface");
 	return RegisterableObject::ResetTerminate("ServerPoolsManagerInterface", &at);
 }
 
-bool ServerPoolsManagerInterfacesModule::Finis()
-{
+bool ServerPoolsManagerInterfacesModule::Finis() {
 	return StdFinis("ServerPoolsManagerInterface", "ServerPoolsManagerInterfaces");
 }
 
 //---- ServerPoolsManagerInterface ------------------------------------------------------------------
-ServerPoolsManagerInterface::ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName)
-	: ConfNamedObject(ServerThreadPoolsManagerName)
-	, fReady(false)
-	, fbInTermination(false)
-	, fMutex("ServerPoolsManagerInterface")
-	, fCount(0L)
-{
-	StartTrace(ServerPoolsManagerInterface.Ctor);
+ServerPoolsManagerInterface::ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName) :
+	ConfNamedObject(ServerThreadPoolsManagerName), fReady(false), fbInTermination(false), fMutex("ServerPoolsManagerInterface"), fCount(0L) {
+	StartTrace(ServerPoolsManagerInterface.Ctor)
+	;
 }
 
-ServerPoolsManagerInterface::~ServerPoolsManagerInterface()
-{
+ServerPoolsManagerInterface::~ServerPoolsManagerInterface() {
 	StartTrace(ServerPoolsManagerInterface.Dtor);
 	fbInTermination = true;
 	// wake up potential blockers in IsReady and let them go out
@@ -62,31 +43,29 @@ ServerPoolsManagerInterface::~ServerPoolsManagerInterface()
 	{
 		LockUnlockEntry me(fMutex);
 		Trace("count:" << fCount);
-		while ( fCount > 0 ) {
+		while (fCount > 0) {
 			fCond.Wait(fMutex);
 			Trace("count:" << fCount);
 		}
 	}
 }
 
-void ServerPoolsManagerInterface::SetReady(bool ready)
-{
+void ServerPoolsManagerInterface::SetReady(bool ready) {
 	LockUnlockEntry me(fMutex);
 	fReady = ready;
 	fCond.BroadCast();
 }
 
-bool ServerPoolsManagerInterface::IsReady(bool ready, long timeout)
-{
+bool ServerPoolsManagerInterface::IsReady(bool ready, long timeout) {
 	StartTrace(ServerPoolsManagerInterface.IsReady);
 	bool bRet = false;
-	if ( !fbInTermination ) {
+	if (!fbInTermination) {
 		LockedValueIncrementDecrementEntry ce(fMutex, fCond, fCount);
 		LockUnlockEntry me(fMutex);
 		Trace("waiting on ready=" << (ready ? "true" : "false" ) << " fReady=" << (fReady ? "true" : "false" ));
-		while ( !fbInTermination && ( fReady != ready ) ) {
+		while (!fbInTermination && (fReady != ready)) {
 			long ret = fCond.TimedWait(fMutex, timeout);
-			if ( ret == TIMEOUTCODE ) {
+			if (ret == TIMEOUTCODE) {
 				break;
 			}
 			Trace("ready=" << (ready ? "true" : "false" ) << " fReady=" << (fReady ? "true" : "false" ));
@@ -97,4 +76,5 @@ bool ServerPoolsManagerInterface::IsReady(bool ready, long timeout)
 }
 
 //---- registry interface
-RegCacheImpl(ServerPoolsManagerInterface);	// FindServerPoolsManagerInterface()
+RegCacheImpl(ServerPoolsManagerInterface)
+; // FindServerPoolsManagerInterface()

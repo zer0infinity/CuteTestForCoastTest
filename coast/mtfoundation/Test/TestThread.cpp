@@ -6,17 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "TestThread.h"
 #include "WorkerPoolManagerTest.h"
-#include "TestSuite.h"
-#include "Dbg.h"
-
-//---- TestThread ----------------------------------------------------------------
-TestThread::TestThread(const char *name)
-	: Thread(name)
-{
-	StartTrace(TestThread.TestThread);
-}
+#include "TestThread.h"
 
 void TestThread::Run()
 {
@@ -36,18 +27,6 @@ void TerminateMeTestThread::Run()
 {
 	StartTrace(TerminateMeTestThread.Run);
 	CheckState(eTerminationRequested);
-}
-
-//--- TestThreadPool -------------------------------------------
-TestThreadPool::TestThreadPool()
-	: ThreadPoolManager("TestThreadPool")
-{
-	StartTrace(TestThreadPool.TestThreadPool);
-}
-
-TestThreadPool::~TestThreadPool()
-{
-	StartTrace(TestThreadPool.~TestThreadPool);
 }
 
 Thread *TestThreadPool::DoAllocThread(long i, ROAnything args)
@@ -75,11 +54,6 @@ bool TestThreadPool::AllThreadsTerminated()
 }
 
 //--- TerminateTestThreadPool -------------------------------------------
-TerminateTestThreadPool::TerminateTestThreadPool()
-	: TestThreadPool()
-{
-}
-
 Thread *TerminateTestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	return new (Coast::Storage::Global()) TerminateMeTestThread;
@@ -90,10 +64,6 @@ TestWorker::TestWorker(const char *name)
 	: WorkerThread(name)
 	, fWaitTimeInProcess(2)
 	, fWasPrepared(false)
-{
-}
-
-TestWorker::~TestWorker()
 {
 }
 

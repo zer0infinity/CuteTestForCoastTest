@@ -13,6 +13,7 @@
 #include "DataAccess.h"
 #include "Timers.h"
 #include "StringStream.h"
+#include "MT_Storage.h"
 
 //---- MultiThreadedTest ----------------------------------------------------------------
 MultiThreadedTest::MultiThreadedTest( TString tstrName ) :

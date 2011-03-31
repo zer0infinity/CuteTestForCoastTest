@@ -13,22 +13,14 @@
 class Context;
 //---- CgiCallerTest ----------------------------------------------------------
 //!Tests the cgi caller
-class CgiCallerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class CgiCallerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	CgiCallerTest(TString tstrName);
-
-	//!destroys the test case
-	~CgiCallerTest();
-
-	//--- public api
+	CgiCallerTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!call a CGI program created with PrepareScript
 	void ExecOkTests();

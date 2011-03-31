@@ -9,19 +9,6 @@
 #include "ObjectList_rTest.h"
 #include "TestSuite.h"
 #include "ObjectList_r.h"
-#include "Dbg.h"
-#include <deque>
-
-//---- ObjectList_rTest ----------------------------------------------------------------
-ObjectList_rTest::ObjectList_rTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ObjectList_rTest.Ctor);
-}
-
-ObjectList_rTest::~ObjectList_rTest()
-{
-	StartTrace(ObjectList_rTest.Dtor);
-}
 
 #define OBJECTLISTMACRO(listtype, allocatortype)\
 {\

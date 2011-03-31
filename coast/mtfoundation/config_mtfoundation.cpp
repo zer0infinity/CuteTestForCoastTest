@@ -8,15 +8,13 @@
 
 #include "config_mtfoundation.h"
 #include "InitFinisManagerMTFoundation.h"
-#include "SystemLog.h"
-#include "Threads.h"
 
 namespace {
 	void Init()
 	{
 		InitFinisManager::IFMTrace(">> mtfoundation::Init\n");
 		// initialize InitFinisManagerMTFoundation relative components
-		if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+		if ( InitFinisManagerMTFoundation::Instance() != 0 ) {
 			InitFinisManagerMTFoundation::Instance()->Init();
 		}
 		InitFinisManager::IFMTrace("<< mtfoundation::Init\n");
@@ -26,7 +24,7 @@ namespace {
 	{
 		InitFinisManager::IFMTrace(">> mtfoundation::Finis\n");
 		// finalize InitFinisManagerMTFoundation relative components
-		if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+		if ( InitFinisManagerMTFoundation::Instance() != 0 ) {
 			InitFinisManagerMTFoundation::Instance()->Finis();
 			delete InitFinisManagerMTFoundation::Instance();
 		}
@@ -36,8 +34,10 @@ namespace {
 
 #if defined(WIN32)
 #ifdef _DLL
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "AnyIterators.h"
+#include "Threads.h"
 
 DWORD fgThreadPtrKey;
 Anything fgThreads;

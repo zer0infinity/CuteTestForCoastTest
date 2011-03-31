@@ -10,8 +10,6 @@
 #define _SSLConnectorTest_H
 
 #include "FoundationTestTypes.h"
-
-//---- forward declaration -----------------------------------------------
 #include "Anything.h"
 
 class SSLConnector;

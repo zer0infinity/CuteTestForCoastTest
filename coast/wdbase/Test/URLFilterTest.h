@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- URLFilterTest ----------------------------------------------------------
 //!TestCases for the Registry class
 class URLFilterTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading

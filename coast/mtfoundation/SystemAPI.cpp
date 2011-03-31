@@ -9,8 +9,9 @@
 #include "SystemAPI.h"
 #include "Threads.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include <cstdio>
 #if !defined(WIN32)
+#include <errno.h>
 #include <sys/time.h>
 #endif
 

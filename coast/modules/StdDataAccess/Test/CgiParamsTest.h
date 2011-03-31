@@ -11,29 +11,15 @@
 
 #include "TestCase.h"
 
-//---- CgiParamsTest ----------------------------------------------------------
-//!TestCases description
-class CgiParamsTest : public TestFramework::TestCase
-{
+class CgiParamsTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	CgiParamsTest(TString tstrName);
-
-	//!destroys the test case
-	~CgiParamsTest();
-
-	//--- public api
-
+	CgiParamsTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
+	static Test *suite();
 	//!describe this testcase
 	void EnvironTest();
-
-protected:
 };
 
 #endif

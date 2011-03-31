@@ -13,24 +13,13 @@
 
 class WPMStatHandler;
 
-//---- WPMStatHandlerTest ----------------------------------------------------------
-//!TestCases description
-class WPMStatHandlerTest : public TestFramework::TestCase
-{
+class WPMStatHandlerTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	WPMStatHandlerTest(TString tstrName);
-
-	//!destroys the test case
-	~WPMStatHandlerTest();
-
-	//--- public api
-
+	WPMStatHandlerTest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!test the state of the statistics after construction
 	void ConstructorTest();

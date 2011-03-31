@@ -12,25 +12,21 @@
 #include "TestCase.h"
 #include "Threads.h"
 
-//---- forward declaration -----------------------------------------------
 class Allocator;
 class PoolAllocator;
 class GlobalAllocator;
 
 //---- MTStorageTest ----------------------------------------------------------
 //!Test driver for tracing facility
-class MTStorageTest : public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer
-{
+class MTStorageTest: public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer {
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;
 	typedef tBaseClass::tArgsRef tArgsRef;
 public:
 	//!constructors
 	MTStorageTest(TString tstrName);
-	~MTStorageTest();
-
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	void WaitForStart();
 	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);

@@ -11,7 +11,7 @@
 #include "TestSuite.h"
 #include "DataAccess.h"
 #include "Timers.h"
-
+#include "MT_Storage.h"
 //---- SybCTThreadTest ----------------------------------------------------------------
 SybCTThreadTest::SybCTThreadTest(TString tstrName)
 	: TestCaseType(tstrName)

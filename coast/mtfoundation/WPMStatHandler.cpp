@@ -7,8 +7,6 @@
  */
 
 #include "WPMStatHandler.h"
-#include "SystemLog.h"
-#include "Dbg.h"
 #include "boost/format.hpp"
 
 static DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;

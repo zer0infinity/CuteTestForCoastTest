@@ -12,7 +12,6 @@
 class String;
 class Context;
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
 
 //! DataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any

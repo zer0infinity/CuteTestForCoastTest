@@ -10,7 +10,6 @@
 #define _PipeStream_H
 
 #include "ITOString.h"//lint !e537
-
 #include <cstdio>
 #include <iostream>
 #include <iomanip>

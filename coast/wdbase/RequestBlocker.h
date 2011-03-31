@@ -12,7 +12,6 @@
 #include "WDModule.h"
 #include "Threads.h"
 
-//---- forward declaration -----------------------------------------------
 class RWLock;
 
 //---- RequestBlocker ----------------------------------------------------------

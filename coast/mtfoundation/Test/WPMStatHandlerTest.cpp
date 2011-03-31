@@ -6,25 +6,9 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
-#include "DiffTimer.h"
-#include "Threads.h"
-#include "Dbg.h"
-#include "TestSuite.h"
-#include "WPMStatHandler.h"
 #include "WPMStatHandlerTest.h"
-
-//---- WPMStatHandlerTest ----------------------------------------------------------------
-WPMStatHandlerTest::WPMStatHandlerTest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(WPMStatHandlerTest.Ctor);
-
-}
-
-WPMStatHandlerTest::~WPMStatHandlerTest()
-{
-	StartTrace(WPMStatHandlerTest.Dtor);
-}
+#include "WPMStatHandler.h"
+#include "TestSuite.h"
 
 bool WPMStatHandlerTest::AssertState(const WPMStatHandler &wpm, const Anything &state)
 {

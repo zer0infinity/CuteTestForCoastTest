@@ -9,7 +9,6 @@
 #ifndef _UniqueIdGen_H
 #define _UniqueIdGen_H
 
-//---- forward declaration -----------------------------------------------
 class MD5Signer;
 
 //---- other includes      -----------------------------------------------

@@ -11,8 +11,6 @@
 
 #include "ITOString.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- BasicAuthenticationData ----------------------------------------------------------
 //! Decoder for HTTP Basic authentication scheme
 class BasicAuthenticationData

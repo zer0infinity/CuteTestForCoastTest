@@ -59,9 +59,7 @@ class AppLogModule : public WDModule
 	friend class AppLogTest;
 public:
 	AppLogModule(const char *name);
-	virtual ~AppLogModule();
-
-	virtual bool Init(const ROAnything config);
+    virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 
 	/*! define importancy levels in increasing order for easier */

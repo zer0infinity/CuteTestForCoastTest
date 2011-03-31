@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- PageRelatedRendererTest ----------------------------------------------------------
 //!Test driver for tracing facility
 class PageRelatedRendererTest : public TestFramework::TestCase

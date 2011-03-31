@@ -12,7 +12,7 @@
 #include "MD5.h"
 #include "SystemLog.h"
 #include <cstring>
-
+#include <errno.h>
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()
 {

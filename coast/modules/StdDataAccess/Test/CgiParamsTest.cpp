@@ -9,22 +9,9 @@
 #include "CgiParamsTest.h"
 #include "CgiParams.h"
 #include "TestSuite.h"
-#include "Dbg.h"
 #include "Context.h"
 
-//---- CgiParamsTest ----------------------------------------------------------------
-CgiParamsTest::CgiParamsTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(CgiParamsTest.Ctor);
-}
-
-CgiParamsTest::~CgiParamsTest()
-{
-	StartTrace(CgiParamsTest.Dtor);
-}
-
-void CgiParamsTest::EnvironTest()
-{
+void CgiParamsTest::EnvironTest() {
 	StartTrace(CgiParamsTest.EnvironTest);
 
 	CgiParams cgip("testcgi");
@@ -52,13 +39,9 @@ void CgiParamsTest::EnvironTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *CgiParamsTest::suite ()
-{
+Test *CgiParamsTest::suite() {
 	StartTrace(CgiParamsTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, CgiParamsTest, EnvironTest);
-
 	return testSuite;
-
 }

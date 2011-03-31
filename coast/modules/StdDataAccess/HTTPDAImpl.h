@@ -9,7 +9,6 @@
 #ifndef _HTTPDAImpl_H
 #define _HTTPDAImpl_H
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
 
 class ConnectorParams;

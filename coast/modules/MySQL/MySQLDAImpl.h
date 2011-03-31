@@ -9,9 +9,7 @@
 #ifndef _MySQLDAImpl_H
 #define _MySQLDAImpl_H
 
-//--- superclass interface ---
 #include "DataAccessImpl.h"
-
 #include <mysql/mysql.h>
 
 //! DataAccess for

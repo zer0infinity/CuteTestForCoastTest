@@ -8,29 +8,16 @@
 
 #include "BoostPoolTest.h"
 #include "TestSuite.h"
-#include "TestTimer.h"
 #include <boost/pool/pool_alloc.hpp>
 #include <boost/pool/object_pool.hpp>
 #include "SystemLog.h"
 #define COAST_DISABLE_TRACE
-#include "STLStorage.h"
-#include "ITOStorage.h"
-#include "Threads.h"
-#include "Dbg.h"
 #include "ThreadPools.h"
+#include "MT_Storage.h"
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <stdlib.h>
-#include <string>
-#include <stdexcept>
-#include <iostream>
 #include <vector>
-#include <algorithm>
-#include <list>
-#include <deque>
 #include <set>
-#include <ctime>
-#include <cmath>
 
 //---- BoostPoolTest ----------------------------------------------------------------
 BoostPoolTest::BoostPoolTest(TString tstrName)

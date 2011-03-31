@@ -10,7 +10,6 @@
 #define IT_TESTFW_TestRunner_h_
 
 #include "TestTimer.h"
-
 #include <iosfwd>
 
 class Test;

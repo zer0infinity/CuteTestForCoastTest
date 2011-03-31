@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- ServerTest ----------------------------------------------------------
 //!TestCases for the Registry class
 class ServerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading

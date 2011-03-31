@@ -10,31 +10,14 @@
 #include "TestSuite.h"
 #include "ServerUtils.h"
 #include "Server.h"
-#if defined(WIN32)
 #include <signal.h>
-#endif
 
-
-//---- InterruptHandlerTest ----------------------------------------------------------------
-InterruptHandlerTest::InterruptHandlerTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(InterruptHandlerTest.InterruptHandlerTest);
-}
-
-InterruptHandlerTest::~InterruptHandlerTest()
-{
-	StartTrace(InterruptHandlerTest.Dtor);
-}
-
-void InterruptHandlerTest::setUp ()
-{
+void InterruptHandlerTest::setUp() {
 	StartTrace(InterruptHandlerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 }
 
-void InterruptHandlerTest::PidFileHandlingTest()
-{
+void InterruptHandlerTest::PidFileHandlingTest() {
 	StartTrace(InterruptHandlerTest.PidFileHandlingTest);
 	Server *server = Server::FindServer("Server");
 
@@ -57,14 +40,14 @@ void InterruptHandlerTest::PidFileHandlingTest()
 #endif
 			{
 				String cmd("kill -15 ");
-				cmd << (long)server->GetPid();
+				cmd << (long) server->GetPid();
 
 				// on linux: only after the start of the interrupt handler you have to correct pid
 				String pidfilename;
 				server->PIDFileName(pidfilename);
 				Trace("PIDFileName: <" << pidfilename << ">");
-				std::iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *)0, std::ios::in, true);
-				if ( t_assertm(Ios != 0, "expected pid file to be there") ) {
+				std::iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *) 0, std::ios::in, true);
+				if (t_assertm(Ios != 0, "expected pid file to be there")) {
 					delete Ios;
 				}
 				String msg("expected '");
@@ -83,19 +66,17 @@ void InterruptHandlerTest::PidFileHandlingTest()
 		String pidfilename;
 		server->PIDFileName(pidfilename);
 		Trace("trying to open <" << pidfilename << ">");
-		std::iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *)0);
-		if ( !t_assertm(Ios == 0, "expected pid file to be deleted") ) {
+		std::iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *) 0);
+		if (!t_assertm(Ios == 0, "expected pid file to be deleted")) {
 			delete Ios;
 		}
 	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *InterruptHandlerTest::suite ()
-{
+Test *InterruptHandlerTest::suite() {
 	StartTrace(InterruptHandlerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, InterruptHandlerTest, PidFileHandlingTest);
 	return testSuite;
 }
-

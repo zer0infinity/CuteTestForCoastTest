@@ -12,7 +12,6 @@
 #include "Session.h"
 #include "SessionListManager.h"
 
-//---- forward declaration -----------------------------------------------
 class Context;
 class SessionListManagerTest;
 

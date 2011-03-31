@@ -10,7 +10,6 @@
 #define _RendererTest_h_
 
 #include "TestCase.h"
-
 #include "Anything.h"
 #include "Context.h"
 #include "StringStream.h"

@@ -13,16 +13,6 @@
 #include "Context.h"
 
 //---- CgiCallerTest ----------------------------------------------------------------
-CgiCallerTest::CgiCallerTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(CgiCallerTest.Ctor);
-}
-
-CgiCallerTest::~CgiCallerTest()
-{
-	StartTrace(CgiCallerTest.Dtor);
-}
-
 void CgiCallerTest::ExecOkTests()
 {
 	StartTrace(CgiCallerTest.ExecOkTests);

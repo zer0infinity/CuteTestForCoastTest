@@ -11,7 +11,6 @@
 
 #include "RequestListener.h"
 
-//---- forward declarations ----
 class SSLSocket;
 
 typedef struct ssl_ctx_st SSL_CTX;

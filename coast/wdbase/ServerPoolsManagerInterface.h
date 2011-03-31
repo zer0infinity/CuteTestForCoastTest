@@ -9,33 +9,44 @@
 #ifndef _ServerPoolsManagerInterface_h_
 #define _ServerPoolsManagerInterface_h_
 
-#include "Threads.h"
 #include "WDModule.h"
+#include "Threads.h"
 
 class Server;
 class RequestProcessor;
 
 //---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
-class ServerPoolsManagerInterfacesModule : public WDModule
-{
+class ServerPoolsManagerInterfacesModule: public WDModule {
 public:
-	ServerPoolsManagerInterfacesModule(const char *);
-	virtual ~ServerPoolsManagerInterfacesModule();
-
+	ServerPoolsManagerInterfacesModule(const char *name) :
+		WDModule(name) {
+	}
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 	virtual bool ResetFinis(const ROAnything config);
 };
 
 //---- ServerThreadPoolsManager -----------------------------------------------------------
-class ServerPoolsManagerInterface: public ConfNamedObject
-{
+class ServerPoolsManagerInterface: public ConfNamedObject {
+	virtual RequestProcessor* DoGetRequestProcessor() = 0;
+
+	//!guard ready flag
+	Mutex fMutex;
+	//!synchronize ready changes
+	Mutex::ConditionType fCond;
+	long fCount;
+
+	// block the following default elements of this class
+	// because they're not allowed to be used
+	ServerPoolsManagerInterface();
+	ServerPoolsManagerInterface(const ServerPoolsManagerInterface &);
+	ServerPoolsManagerInterface &operator=(const ServerPoolsManagerInterface &);
 public:
 	ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName);
 	virtual ~ServerPoolsManagerInterface();
 
 	//!registry interface
-	RegCacheDef(ServerPoolsManagerInterface);	// FindServerThreadPoolsManager()
+	RegCacheDef(ServerPoolsManagerInterface); // FindServerThreadPoolsManager()
 
 	RequestProcessor* GetRequestProcessor() {
 		return DoGetRequestProcessor();
@@ -74,21 +85,6 @@ protected:
 
 	//!keep ready state
 	bool fReady, fbInTermination;
-
-private:
-	virtual RequestProcessor* DoGetRequestProcessor() = 0;
-
-	//!guard ready flag
-	Mutex fMutex;
-	//!synchronize ready changes
-	Mutex::ConditionType fCond;
-	long fCount;
-
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	ServerPoolsManagerInterface();
-	ServerPoolsManagerInterface(const ServerPoolsManagerInterface &);
-	ServerPoolsManagerInterface &operator=(const ServerPoolsManagerInterface &);
 };
 
 #define RegisterServerPoolsManagerInterface(name) RegisterObject(name, ServerPoolsManagerInterface)

@@ -12,10 +12,11 @@
 #include "DiffTimer.h"
 #include "StringStream.h"
 #include "TraceLocks.h"
-#include "PoolAllocator.h"
-#include "Dbg.h"
-#include <exception>
+#include "MT_Storage.h"
 #include <cstring>
+#if !defined(WIN32)
+#include <errno.h>
+#endif
 
 //#define TRACE_LOCKS_IMPL 1
 //#define POOL_STARTEDHOOK 1
@@ -77,9 +78,6 @@ public:
 		: InitFinisManagerMTFoundation(uiPriority) {
 		IFMTrace("ThreadInitializer created\n");
 	}
-
-	~ThreadInitializer()
-	{}
 
 	virtual void DoInit() {
 		IFMTrace("ThreadInitializer::DoInit\n");

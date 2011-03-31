@@ -9,9 +9,8 @@
 #include "ThreadPools.h"
 #include "StringStream.h"
 #include "SystemLog.h"
-#include "DiffTimer.h"
 #include "WPMStatHandler.h"
-#include "Dbg.h"
+#include "MT_Storage.h"
 #include <iomanip>
 
 //---- ThreadPoolManager ---------------------------------------------------------

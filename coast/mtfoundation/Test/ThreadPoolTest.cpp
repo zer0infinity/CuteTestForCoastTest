@@ -9,19 +9,6 @@
 #include "ThreadPoolTest.h"
 #include "TestThread.h"
 #include "TestSuite.h"
-#include "Dbg.h"
-
-//---- ThreadPoolTest ----------------------------------------------------------------
-ThreadPoolTest::ThreadPoolTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(ThreadPoolTest.Ctor);
-}
-
-ThreadPoolTest::~ThreadPoolTest()
-{
-	StartTrace(ThreadPoolTest.Dtor);
-}
 
 void ThreadPoolTest::JoinTest()
 {

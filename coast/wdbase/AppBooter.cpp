@@ -15,11 +15,11 @@
 #include "WDModule.h"
 #include "URLUtils.h"
 
-
 using namespace Coast;
 
 #include <iomanip>
 #if !defined(WIN32)
+#include <signal.h>
 // used for dynamic load of libraries
 #include <dlfcn.h>
 #endif

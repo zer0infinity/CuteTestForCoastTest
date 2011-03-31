@@ -11,7 +11,6 @@
 
 class Context;
 
-//--- superclass interface ---
 #include "DummyDAImpl.h"
 
 //! DummyDataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any, difference to base class - uses connector params

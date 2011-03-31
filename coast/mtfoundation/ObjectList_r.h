@@ -10,11 +10,8 @@
 #define _ObjectList_r_H
 
 #include "ObjectList.h"
-
-//---- standard-module include ----------------------------------------------
-#include "SystemLog.h"
 #include "Threads.h"
-
+#include <errno.h>
 //---- class ObjectList_r ----------------------------------------------------------------
 template <
 typename Tp,

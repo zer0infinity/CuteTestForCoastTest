@@ -13,7 +13,6 @@
 #include "DiffTimer.h"
 #include "Threads.h"
 
-//---- forward declaration -----------------------------------------------
 class Session;
 class Context;
 class PeriodicAction;

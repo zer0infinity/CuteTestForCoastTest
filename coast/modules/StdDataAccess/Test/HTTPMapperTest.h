@@ -12,7 +12,6 @@
 #include "WDBaseTestPolicies.h"
 #include "Anything.h"
 
-//---- forward declaration -----------------------------------------------
 class Anything;
 
 //---- HTTPMapperTest ----------------------------------------------------------

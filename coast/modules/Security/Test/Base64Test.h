@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- Base64Test ----------------------------------------------------------
 //!single line description of the class
 //! further explanation of the purpose of the class

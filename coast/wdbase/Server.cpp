@@ -17,6 +17,7 @@
 #include "RequestBlocker.h"
 #include "AnyIterators.h"
 #include "Policy.h"
+#include "MT_Storage.h"
 
 using namespace Coast;
 
@@ -50,7 +51,6 @@ public:
 	ServerReInitTerminator(const char *category)
 		: TerminationPolicy(category)
 	{}
-	virtual ~ServerReInitTerminator() {};
 
 protected:
 	virtual bool DoTerminate(Registry *r) {
@@ -69,10 +69,6 @@ ServersModule::ServersModule(const char *name)
 	: WDModule(name)
 {
 	SetServerForReInit(0);
-}
-
-ServersModule::~ServersModule()
-{
 }
 
 bool ServersModule::Init(const ROAnything config)
@@ -640,15 +636,6 @@ void Server::AddStatGatherer2Observe(StatGatherer *sg)
 
 //---- MasterServer -------------------------------------------------------------------
 RegisterServer(MasterServer);
-MasterServer::MasterServer(const char *name)
-	: Server(name)
-	, fNumServers(0)
-	, fServerThreads(0)
-{
-}
-MasterServer::~MasterServer()
-{
-}
 
 int MasterServer::DoInit()
 {

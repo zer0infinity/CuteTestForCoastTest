@@ -11,27 +11,21 @@
 
 #include "ThreadPools.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- TestThread ----------------------------------------------------------
 //!utility class - simple Thread to play around - Run returns immediately
-class TestThread : public Thread
-{
+class TestThread: public Thread {
 public:
-	TestThread(const char *name = "TestThread");
-	virtual ~TestThread() {
-		/*Terminate(); */
+	TestThread(const char *name = "TestThread") :
+		Thread(name) {
 	}
 	virtual void Run();
 };
 
 //---- TerminateMeTestThread ----------------------------------------------------------
 //!utility class - simple Thread to play around - Runs until Terminate is called
-class TerminateMeTestThread : public TestThread
-{
+class TerminateMeTestThread: public TestThread {
 public:
 	TerminateMeTestThread(bool willStart = true);
-	virtual ~TerminateMeTestThread() {}
 	virtual void Run();
 
 protected:
@@ -43,12 +37,11 @@ protected:
 };
 
 //! Thread pool that plays around with TestThreads
-class TestThreadPool: public ThreadPoolManager
-{
+class TestThreadPool: public ThreadPoolManager {
 public:
-	TestThreadPool();
-	~TestThreadPool();
-
+	TestThreadPool() :
+		ThreadPoolManager("TestThreadPool") {
+	}
 	bool AllThreadsStarted();
 	bool AllThreadsTerminated();
 
@@ -58,22 +51,18 @@ protected:
 };
 
 //! Thread pool that plays around with TerminateMeTestThread
-class TerminateTestThreadPool: public TestThreadPool
-{
+class TerminateTestThreadPool: public TestThreadPool {
 public:
-	TerminateTestThreadPool();
-
+	TerminateTestThreadPool() :
+		TestThreadPool() {
+	}
 protected:
 	virtual Thread *DoAllocThread(long i, ROAnything args);
 };
 
-//---- TestWorker -----------------------------------------------
-class TestWorker : public WorkerThread
-{
+class TestWorker: public WorkerThread {
 public:
 	TestWorker(const char *name = "TestWorker");
-	~TestWorker();
-
 protected:
 	//--- redefine the following virtual methods for your specific workers
 
@@ -94,8 +83,7 @@ protected:
 
 //---- SamplePoolManager ------------------------------------------------
 //! this class demonstrates how to properly subclass WorkerPoolManager
-class SamplePoolManager : public WorkerPoolManager
-{
+class SamplePoolManager: public WorkerPoolManager {
 public:
 	SamplePoolManager(const String &name);
 	~SamplePoolManager();
@@ -117,7 +105,7 @@ private:
 	SamplePoolManager &operator=(const SamplePoolManager &);
 
 protected:
-	TestWorker *fRequests;				// vector storing all request thread objects
+	TestWorker *fRequests; // vector storing all request thread objects
 };
 
 #endif

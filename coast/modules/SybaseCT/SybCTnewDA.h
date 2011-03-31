@@ -11,7 +11,6 @@
 
 #include "Threads.h"
 #include "Mapper.h"
-
 #include <ctpublic.h>
 
 //---- SybCTnewDA ----------------------------------------------------------

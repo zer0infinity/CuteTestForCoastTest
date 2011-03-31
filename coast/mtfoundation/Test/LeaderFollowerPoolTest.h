@@ -13,20 +13,12 @@
 
 class Socket;
 
-//---- LeaderFollowerPoolTest ----------------------------------------------------------
-//!tests LeaderFollowerPool
-class LeaderFollowerPoolTest : public TestFramework::TestCaseWithConfig
-{
+class LeaderFollowerPoolTest: public TestFramework::TestCaseWithConfig {
 public:
-	//!TestCase constructor
-	//! \param name name of the test
-	LeaderFollowerPoolTest(TString tstrName);
-
-	//!destroys the test case
-	~LeaderFollowerPoolTest();
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	LeaderFollowerPoolTest(TString tstrName) :
+		TestCaseType(tstrName), fEvents(0) {
+	}
+	static Test *suite();
 
 	//!test pool without acceptors
 	void NoReactorTest();

@@ -11,8 +11,6 @@
 
 #include "Stresser.h"
 
-//---- forward declaration -----------------------------------------------
-
 //---- RemoteStresser ----------------------------------------------------------
 //! connects to a StressServer and lets it stress
 //! The RemoteStresser's configuration look like this

@@ -10,27 +10,15 @@
 #define _WorkerPoolManagerTest_H
 
 #include "TestCase.h"
+#include "Threads.h"
 
-class Mutex;
-
-//---- WorkerPoolManagerTest ----------------------------------------------------------
-//!TestCases description
-class WorkerPoolManagerTest : public TestFramework::TestCase
-{
+class WorkerPoolManagerTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	WorkerPoolManagerTest(TString tstrName);
-
-	//!destroys the test case
-	~WorkerPoolManagerTest();
-
-	//--- public api
-
+	WorkerPoolManagerTest(TString tname) :
+		TestCaseType(tname), fCheckMutex("WorkerPoolManager") {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!test initialization
 	void InitTest();
