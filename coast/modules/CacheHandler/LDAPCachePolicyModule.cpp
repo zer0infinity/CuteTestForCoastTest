@@ -5,28 +5,15 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "LDAPCachePolicyModule.h"
-#include "Dbg.h"
-#include "SystemLog.h"
 #include "DataAccess.h"
 #include "Action.h"
+#include "Context.h"
 
 //---- LdapCachePolicyModule -----------------------------------------------------------
 RegisterModule(LdapCachePolicyModule);
 
-LdapCachePolicyModule::LdapCachePolicyModule(const char *name) : WDModule(name)
-{
-	StartTrace(LdapCachePolicyModule.LdapCachePolicyModule);
-}
-
-LdapCachePolicyModule::~LdapCachePolicyModule()
-{
-	StartTrace(LdapCachePolicyModule.~LdapCachePolicyModule);
-}
-
-bool LdapCachePolicyModule::Init(const ROAnything config)
-{
+bool LdapCachePolicyModule::Init(const ROAnything config) {
 	StartTrace(LdapCachePolicyModule.Init);
 	ROAnything ldapCachePolicyModuleConfig;
 	config.LookupPath(ldapCachePolicyModuleConfig, "LdapCachePolicyModule");
@@ -34,28 +21,26 @@ bool LdapCachePolicyModule::Init(const ROAnything config)
 
 	ROAnything dataAccesses(ldapCachePolicyModuleConfig["LdapDataAccess"]);
 	ROAnything dataAccessActions(ldapCachePolicyModuleConfig["LdapDataAccessAction"]);
-	if ( dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0 ) {
+	if (dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0) {
 		SystemLog::WriteToStderr("\tLdapCachePolicyModule::Init can't read needed configuration data.\n");
 		return false;
 	}
-	if ( InitialLoad(dataAccesses, LdapCachePolicyModule::dataaccess) 	== false ||
-		 InitialLoad(dataAccessActions, LdapCachePolicyModule::action) 	== false ) {
+	if (InitialLoad(dataAccesses, LdapCachePolicyModule::dataaccess) == false || InitialLoad(dataAccessActions,
+			LdapCachePolicyModule::action) == false) {
 		return false;
 	}
 	String failedDataAccesses;
 	CheckContractIsFulfilled(failedDataAccesses, dataAccesses);
 	CheckContractIsFulfilled(failedDataAccesses, dataAccessActions);
-	if (failedDataAccesses.Length() != 0 ) {
-		SystemLog::WriteToStderr(String("\tLdapCachePolicyModule::LDAP Query: ") << failedDataAccesses <<
-								 String(" returned no data.\n"));
+	if (failedDataAccesses.Length() != 0) {
+		SystemLog::WriteToStderr(String("\tLdapCachePolicyModule::LDAP Query: ") << failedDataAccesses << String(" returned no data.\n"));
 		return false;
 	}
 	SystemLog::WriteToStderr("\tLdapCachePolicyModule done\n");
 	return true;
 }
 
-bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType)
-{
+bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType) {
 	StartTrace(LdapCachePolicyModule.InitialLoad);
 	CacheHandler *cache = CacheHandler::Get();
 	bool ret(true);
@@ -64,11 +49,11 @@ bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCache
 		LdapActionLoader lal;
 		for (int i = 0; i < dataAccesses.GetSize(); ++i) {
 			String toDo(dataAccesses[i].AsString());
-			if ( daType == dataaccess ) {
+			if (daType == dataaccess) {
 				Trace("Loading ldl with: " << toDo);
 				cache->Load("LdapGetter", toDo, &ldl);
 			}
-			if ( daType == action ) {
+			if (daType == action) {
 				Trace("Loading lal with: " << toDo);
 				cache->Load("LdapGetter", toDo, &lal);
 			}
@@ -80,8 +65,7 @@ bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCache
 	return ret;
 }
 
-bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses)
-{
+bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses) {
 	StartTrace(LdapCachePolicyModule.CheckContractIsFulfilled);
 	bool ret(true);
 	for (int i = 0; i < dataAccesses.GetSize(); ++i) {
@@ -99,27 +83,22 @@ bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses,
 	return ret;
 }
 
-bool LdapCachePolicyModule::Finis()
-{
+bool LdapCachePolicyModule::Finis() {
 	StartTrace(LdapCachePolicyModule.Finis);
 	return true;
 }
 
-//--- LdapDataAccessLoader -----------------------------------------------
-LdapDataAccessLoader::LdapDataAccessLoader() { }
-LdapDataAccessLoader::~LdapDataAccessLoader() { }
-Anything LdapDataAccessLoader::Load(const char *ldapDa)
-{
+Anything LdapDataAccessLoader::Load(const char *ldapDa) {
 	StartTrace(LdapDataAccessLoader.Load);
 	Anything theResult;
-	if ( String(ldapDa).Length() ) {
+	if (String(ldapDa).Length()) {
 		Context ctx;
-		if ( DataAccess(ldapDa).StdExec(ctx) ) {
+		if (DataAccess(ldapDa).StdExec(ctx)) {
 			String strResultSlot = ctx.Lookup("ResultMapper.DestinationSlot", "Mapper");
 			ROAnything roaResult;
-			if ( ctx.Lookup(strResultSlot, roaResult ) ) {
+			if (ctx.Lookup(strResultSlot, roaResult)) {
 				TraceAny(roaResult, "Results for [" << ldapDa << "]");
-				if ( roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0 ) {
+				if (roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0) {
 					theResult = roaResult["LDAPResult"].DeepClone();
 				}
 			}
@@ -132,27 +111,22 @@ Anything LdapDataAccessLoader::Load(const char *ldapDa)
 	return theResult;
 }
 
-//--- LdapDataAccessLoader -----------------------------------------------
-LdapActionLoader::LdapActionLoader() { }
-LdapActionLoader::~LdapActionLoader() { }
-
-Anything LdapActionLoader::Load(const char *ldapDaAction)
-{
+Anything LdapActionLoader::Load(const char *ldapDaAction) {
 	StartTrace(LdapActionLoader.Load);
 	Anything theResult;
-	if ( String(ldapDaAction).Length() ) {
+	if (String(ldapDaAction).Length()) {
 		Context ctx;
 		String transition;
 		Anything config;
 		// Default constructs an action config containing the name of the LdapDataAccess to execute
 		// This may be overridden by the action implementing the DataAccess(es).
 		config[ldapDaAction]["DataAccess"] = ldapDaAction;
-		if ( Action::ExecAction(transition, ctx, config) ) {
+		if (Action::ExecAction(transition, ctx, config)) {
 			String strResultSlot = ctx.Lookup("ResultMapper.DestinationSlot", "Mapper");
 			ROAnything roaResult;
-			if ( ctx.Lookup(strResultSlot, roaResult ) ) {
+			if (ctx.Lookup(strResultSlot, roaResult)) {
 				TraceAny(roaResult, "Results for [" << ldapDaAction << "]");
-				if ( roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0 ) {
+				if (roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0) {
 					theResult = roaResult["LDAPResult"].DeepClone();
 				}
 			}
@@ -165,35 +139,20 @@ Anything LdapActionLoader::Load(const char *ldapDaAction)
 	return theResult;
 }
 
-//---- LdapCacheGetter ---------------------------------------------------------
-LdapCacheGetter::LdapCacheGetter(const String &dataAccess)
-	: fDA(dataAccess)
-{
-	StartTrace("LdapCacheGetter.LdapCacheGetter");
-}
-
-LdapCacheGetter::~LdapCacheGetter()
-{
-	StartTrace(LdapCacheGetter.~LdapCacheGetter);
-}
-
-bool LdapCacheGetter::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool LdapCacheGetter::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace(LdapCacheGetter.DoLookup);
 
 	return Get(result, fDA, key, delim, indexdelim);
 }
 
-ROAnything LdapCacheGetter::GetAll(const String &dataAccess)
-{
+ROAnything LdapCacheGetter::GetAll(const String &dataAccess) {
 	StartTrace1(LdapCacheGetter.GetAll, dataAccess);
 
 	CacheHandler *cache = CacheHandler::Get();
 	return cache ? cache->Get("LdapGetter", dataAccess) : ROAnything();
 }
 
-bool LdapCacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI)
-{
+bool LdapCacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI) {
 	StartTrace1(LdapCacheGetter.Get, key);
 
 	bool ret = GetAll(dataAccess).LookupPath(result, key, sepS, sepI);

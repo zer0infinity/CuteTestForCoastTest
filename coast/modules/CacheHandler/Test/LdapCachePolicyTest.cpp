@@ -10,18 +10,6 @@
 #include "LDAPCachePolicyModule.h"
 #include "TestSuite.h"
 
-//---- LdapCachePolicyTest ----------------------------------------------------------------
-LdapCachePolicyTest::LdapCachePolicyTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(LdapCachePolicyTest.Ctor);
-}
-
-LdapCachePolicyTest::~LdapCachePolicyTest()
-{
-	StartTrace(LdapCachePolicyTest.Dtor);
-}
-
 void LdapCachePolicyTest::NoDataReadTest()
 {
 	StartTrace(LdapCachePolicyTest.NoDataReadTest);

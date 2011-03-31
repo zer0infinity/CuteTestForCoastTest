@@ -12,31 +12,19 @@
 #include "CacheHandler.h"
 
 //--- LdapDataAccessLoader -----------------------------------------------
-class LdapDataAccessLoader : public CacheLoadPolicy
-{
+class LdapDataAccessLoader: public CacheLoadPolicy {
 public:
-	LdapDataAccessLoader();
-	~LdapDataAccessLoader();
-//! Method to get a cached ldap result
-//! Key must equal the name of a DataAccess definition as follows:
+	//! Method to get a cached ldap result
+	//! Key must equal the name of a DataAccess definition as follows:
 	virtual Anything Load(const char *lapDa);
-
-private:
-	// Instance variables
 };
 
 //--- LdapActionLoder --------------------------------------------------
-class LdapActionLoader : public CacheLoadPolicy
-{
+class LdapActionLoader: public CacheLoadPolicy {
 public:
-	LdapActionLoader();
-	~LdapActionLoader();
-//! Method to get a cached ldap result
-//! Key must equal the name of a DataAccess definition as follows:
+	//! Method to get a cached ldap result
+	//! Key must equal the name of a DataAccess definition as follows:
 	virtual Anything Load(const char *ldapDaAction);
-
-private:
-	// Instance variables
 };
 
 //--- LdapCachePolicyModule ------------------------------------------------------
@@ -47,41 +35,38 @@ private:
 //! <PRE> { /LdapDataAccessAction { DA1Action DA2Action }
 //! }</PRE>
 //! This allows you to define multiple ldap queries to be cached on initialization.
-class LdapCachePolicyModule : public WDModule
-{
+class LdapCachePolicyModule: public WDModule {
+	bool CheckContractIsFulfilled(String &failedDataAccesseses, const ROAnything dataAccesses);
+	friend class LdapCacheLoaderTest;
 public:
-	enum EDataAccessType { dataaccess, action };
-	LdapCachePolicyModule(const char *name);
-	~LdapCachePolicyModule();
-
+	enum EDataAccessType {
+		dataaccess, action
+	};
+	LdapCachePolicyModule(const char *name) :
+		WDModule(name) {
+	}
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 private:
+	//! Design by Contract: Every configured LDAPDataAccessImpl query must return data
 	bool InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType);
-//! Design by Contract: Every configured LDAPDataAccessImpl query must return data
-	bool CheckContractIsFulfilled(String &failedDataAccesseses, const ROAnything dataAccesses);
-	friend class LdapCacheLoaderTest;
 };
 
 //---- LdapCacheGetter -----------------------------------------------------------
 //! Invoke with Get(<DataAccessName>,<LookupPath>or<*>);
 //! Get("TestDA1",:0.DN");
 //! See test cases more examples.
-
-class LdapCacheGetter : public LookupInterface
-{
+class LdapCacheGetter: public LookupInterface {
+	String fDA;
 public:
-	LdapCacheGetter(const String &da);
-	~LdapCacheGetter();
-
+	LdapCacheGetter(const String &da) :
+		fDA(da) {
+	}
 	static bool Get(ROAnything &res, const String &da, const String &key, char sepS = '.', char sepI = ':');
 	static ROAnything GetAll(const String &dataAccess);
 
 protected:
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
-
-private:
-	String fDA;
 };
 
 #endif

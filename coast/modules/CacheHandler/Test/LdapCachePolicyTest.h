@@ -13,22 +13,14 @@
 
 //---- LdapCachePolicyTest ----------------------------------------------------------
 //:TestCases description
-class LdapCachePolicyTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
-{
+class LdapCachePolicyTest: public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//:TestCase constructor
-	//!param: name - name of the test
-	LdapCachePolicyTest(TString tstrName);
-
-	//!destroys the test case
-	~LdapCachePolicyTest();
-
-	//--- public api
+	LdapCachePolicyTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!Do some reinits to check behaviour on reset.
 	void ReInitTest();
