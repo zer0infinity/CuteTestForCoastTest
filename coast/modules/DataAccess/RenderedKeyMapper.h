@@ -68,6 +68,10 @@ protected:
 	/*! @copydoc ResultMapper::DoPutAny(const char *, Anything &, Context &, ROAnything) */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
+	//! Put \c is according to newly rendered key
+	/*! @copydoc ResultMapper::DoPutStream() */
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
+
 	//! implement special slotname logic to catch 'any' newly generated key using \c "*"
 	/*! @copydetails SelectScript() */
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;

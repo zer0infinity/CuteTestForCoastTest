@@ -150,5 +150,49 @@
 				}
 			}
 		}
+		/StreamPuttingTest {
+			/TmpStore {
+				/myStreamKey streamed
+			}
+			/Stream "This is my simulated\r\nstream to see if it still works"
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper {
+							/blubby {
+								/RootMapper *
+							}
+							/"*" {
+								/ConfigurableStoreResultMapper *
+							}
+						}
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						/ContextLookupRenderer myStreamKey
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+				/RootMapper *
+			}
+			/Result {
+				/TmpStore {
+					/streamed "This is my simulated\r\nstream to see if it still works"
+				}
+			}
+			/NotResult {
+				/SessionStore {
+					/StoredValues *
+				}
+				/TmpStore {
+					/StoredValues *
+				}
+			}
+		}
 	}
 }
