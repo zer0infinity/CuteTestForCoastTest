@@ -23,8 +23,8 @@
 	/KeySpec		Renderer specification
 	/StoreKeyAt		Renderer specification
 	/Store 			String
-	/<new-key>		Mapper specification
-	/"*"			catch all Mapper specification
+	/<new-key>		ResultMapper specification
+	/"*"			catch all ResultMapper specification
 }
 \endcode
  * @par \c KeySpec
@@ -42,11 +42,11 @@
  *
  * @par \c <new-key>
  * Optional, resulting key used to further map the value\n
- * Mapper specification used to further map/Put() the current value with the new key
+ * ResultMapper specification used to further map/Put() the current value with the new key
  *
  * @par \c "*"
  * Optional, catch all specification to be used for any key not explicitly caught\n
- * Mapper specification used to further map/Put() the current value with the new key
+ * ResultMapper specification used to further map/Put() the current value with the new key
  *
  */
 class RenderedKeyResultMapper: public ResultMapper {
