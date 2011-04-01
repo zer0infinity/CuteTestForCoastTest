@@ -11,30 +11,16 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- ConfigMapperTest ----------------------------------------------------------
-//! <B>single line description of the class</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class ConfigMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class ConfigMapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	/*! \param name name of the test and its configuration file */
-	ConfigMapperTest(TString tstrName);
-
-	//! destroys the test case
-	~ConfigMapperTest();
-
-	//--- public api
-
+	ConfigMapperTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	//! builds up a suite of tests
-	static Test *suite ();
-
-	TString getConfigFileName();
-
+	static Test *suite();
+	TString getConfigFileName() {
+		return "ConfigMapperTestConfig";
+	}
 	//! testing config mapper
 	void ConfigTest();
 };

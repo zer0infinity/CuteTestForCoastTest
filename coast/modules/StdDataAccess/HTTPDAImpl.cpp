@@ -245,7 +245,8 @@ bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context 
 		} else {
 			uploadSize = 0L;
 		}
-	} Trace("Request.BodyLength:" << uploadSize);
+	}
+	Trace("Request.BodyLength:" << uploadSize);
 	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
 	if (TriggerEnabled(HTTPDAImpl.SendInput)) {
 		String request(16384L);
@@ -256,8 +257,8 @@ bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context 
 				out->Put("Error", GenerateErrorMessage("Input Collection of ", context), context);
 				return false;
 			}
-		} Trace("Request:" << request);
-
+		}
+		Trace("Request:" << request);
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
 

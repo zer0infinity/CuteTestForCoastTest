@@ -11,29 +11,23 @@
 
 #include "Renderer.h"
 
-//---- StringLengthRenderer ----------------------------------------------------------
 //! really brief class description
 /*!
-\par Configuration
-\code
-{
-	/String		Rendererspec	mandatory, string to render lenght of
-}
-\endcode
-*/
-class StringLengthRenderer : public Renderer
-{
+ \par Configuration
+ \code
+ {
+ /String		Rendererspec	mandatory, string to render lenght of
+ }
+ \endcode
+ */
+class StringLengthRenderer: public Renderer {
 public:
-	//--- constructors
-	/*! \param name defines the name of the renderer */
-	StringLengthRenderer(const char *name);
-	~StringLengthRenderer();
-
-	/*! Renders ?? on <I>reply </I>
-		\param reply the stream where the rendered output is written on.
-		\param ctx the context the renderer runs within.
-		\param config the configuration of the renderer.
-	*/
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	StringLengthRenderer(const char *name) :
+		Renderer(name) {
+	}
+protected:
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 

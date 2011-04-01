@@ -12,19 +12,6 @@
 #include "AnyIterators.h"
 #include "Context.h"
 
-ConfigMapperTest::ConfigMapperTest(TString tstrName) :
-	TestCaseType(tstrName) {
-	StartTrace(ConfigMapperTest.ConfigMapperTest);
-}
-
-TString ConfigMapperTest::getConfigFileName() {
-	return "ConfigMapperTestConfig";
-}
-
-ConfigMapperTest::~ConfigMapperTest() {
-	StartTrace(ConfigMapperTest.Dtor);
-}
-
 void ConfigMapperTest::ConfigTest() {
 	StartTrace(ConfigMapperTest.ConfigTest);
 	String leafName("Test");
