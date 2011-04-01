@@ -177,6 +177,8 @@
 		/EnableAll		11
 		/DoLoadConfig	-11
 		/DoGetConfigName -11
+		/GetDestinationSlot -11
+		/DoGetDestinationSlot -11
 	}
 	/EagerResultMapper {
 		/MainSwitch 1100

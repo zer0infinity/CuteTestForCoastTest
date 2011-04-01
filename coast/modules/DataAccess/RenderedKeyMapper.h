@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- RenderedKeyResultMapper ----------------------------------------------------------
 //! Dynamically adjust the \c Put key according to Renderer specification
 /*! They key used to put the value will be rendered according to the given specification prior to putting it.
  * To extend the flexibility of rendering, the value itself will be pushed into the Context to allow using entries of
@@ -72,12 +71,15 @@ protected:
 	/*! @copydoc ResultMapper::DoPutStream() */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 
-	//! implement special slotname logic to catch 'any' newly generated key using \c "*"
-	/*! @copydetails SelectScript() */
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
+	//! Loop breaker, allow on the fly key renaming and call ResultMapper::DoPutAny() with \c slotname
+	/*! @copydoc ResultMapper::DoPutAnyWithSlotname() */
+	virtual bool DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname);
+
+	//! Loop breaker, allow on the fly key renaming and call ResultMapper::DoPutStream() with \c slotname
+	/*! @copydoc ResultMapper::DoPutStreamWithSlotname() */
+	virtual bool DoPutStreamWithSlotname(const char *key, std::istream &is, Context &ctx, ROAnything roaScript, const char *slotname);
 };
 
-//---- RenderedKeyParameterMapper ----------------------------------------------------------
 //! Dynamically adjust the \c Get key according to Renderer specification
 /*! They key used to get the value will be rendered according to the given specification prior to getting it.
  * To extend the flexibility of rendering the current key is also available in Context as \c MappedKey.

@@ -7,6 +7,90 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/ConfiguredTests {
+		/ValuePuttingTest {
+			/TmpStore {
+				/myStreamKey streamed
+			}
+			/Value "This is my simulated\r\nstream to see if it still works"
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper *
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						/ContextLookupRenderer myStreamKey
+					}
+					/blubby {
+						/RootMapper *
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+				/RootMapper *
+			}
+			/Result {
+				/SessionStore {
+					/StoredValues {
+						/streamed "This is my simulated\r\nstream to see if it still works"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/streamed *
+				}
+			}
+		}
+		/StreamPuttingTest {
+			/TmpStore {
+				/myStreamKey streamed
+			}
+			/Stream "This is my simulated\r\nstream to see if it still works"
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper *
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						/ContextLookupRenderer myStreamKey
+					}
+					/blubby {
+						/RootMapper *
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+				/RootMapper *
+			}
+			/Result {
+				/SessionStore {
+					/StoredValues {
+						/streamed "This is my simulated\r\nstream to see if it still works"
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/streamed *
+				}
+			}
+		}
 		/TestMappedKeyLookup {
 			/Value {
 				"something"
@@ -19,13 +103,14 @@
 						/ContextLookupRenderer {
 							MappedKey
 						}
+						Extended
 					}
 				}
 			}
 			/Result {
 				/TmpStore {
 					/StoredValues {
-						/blubby {
+						/blubbyExtended {
 							something
 						}
 					}
@@ -50,17 +135,18 @@
 						/ContextLookupRenderer {
 							MappedKey
 						}
+						Extended
 					}
 				}
 			}
 			/Result {
 				/TmpStore {
 					/StoredValues {
-						/blubby {
+						/blubbyExtended {
 							something
 						}
 					}
-					/MyStoredKey blubby
+					/MyStoredKey blubbyExtended
 				}
 			}
 			/NotResult {
@@ -69,6 +155,7 @@
 			}
 		}
 		/TestCatchAllPostMapping {
+			/SessionStore {}
 			/Value {
 				"something"
 			}
@@ -77,8 +164,10 @@
 				/ResultMapper {
 					/blubby {
 						/RenderedKeyResultMapper {
-							/"*" {
-								/ConfigurableStoreResultMapper *
+							/blubby {
+								/"*" {
+									/ConfigurableStoreResultMapper *
+								}
 							}
 						}
 					}
@@ -88,6 +177,7 @@
 						/ContextLookupRenderer {
 							MappedKey
 						}
+						Extended
 					}
 				}
 				/ConfigurableStoreResultMapper {
@@ -98,10 +188,15 @@
 			/Result {
 				/SessionStore {
 					/StoredValues {
-						/blubby {
+						/blubbyExtended {
 							something
 						}
 					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/StoredValues *
 				}
 			}
 		}
@@ -113,19 +208,21 @@
 			/MapperConfig {
 				/ResultMapper {
 					/blubby {
-						/RenderedKeyResultMapper {
-							/blubby {
-								/RootMapper *
-							}
-							/"*" {
-								/ConfigurableStoreResultMapper *
-							}
-						}
+						/RenderedKeyResultMapper *
 					}
 				}
 				/RenderedKeyResultMapper {
 					/KeySpec {
 						mynewkey
+					}
+					/blubby {
+						/ResultMapper *
+					}
+					/mynewkey {
+						/RootMapper *
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
 					}
 				}
 				/ConfigurableStoreResultMapper {
@@ -150,28 +247,31 @@
 				}
 			}
 		}
-		/StreamPuttingTest {
-			/TmpStore {
-				/myStreamKey streamed
+		/TestExplicitKeyPostMappingWithSlotRename {
+			/Value {
+				"something"
 			}
-			/Stream "This is my simulated\r\nstream to see if it still works"
 			/Putkey "blubby"
 			/MapperConfig {
 				/ResultMapper {
 					/blubby {
-						/RenderedKeyResultMapper {
-							/blubby {
-								/RootMapper *
-							}
-							/"*" {
-								/ConfigurableStoreResultMapper *
-							}
-						}
+						/RenderedKeyResultMapper *
 					}
 				}
 				/RenderedKeyResultMapper {
 					/KeySpec {
-						/ContextLookupRenderer myStreamKey
+						mynewkey
+					}
+					/blubby {
+						/ResultMapper *
+					}
+					/mynewkey {
+						/GiveItANewName {
+							/RootMapper *
+						}
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
 					}
 				}
 				/ConfigurableStoreResultMapper {
@@ -182,7 +282,9 @@
 			}
 			/Result {
 				/TmpStore {
-					/streamed "This is my simulated\r\nstream to see if it still works"
+					/GiveItANewName {
+						something
+					}
 				}
 			}
 			/NotResult {
@@ -190,6 +292,53 @@
 					/StoredValues *
 				}
 				/TmpStore {
+					/mynewkey *
+					/StoredValues *
+				}
+			}
+		}
+		/TestExplicitKeyPostMappingWithSlotRenameStream {
+			/Stream "This is my simulated\r\nstream to see if it still works"
+			/Putkey "blubby"
+			/MapperConfig {
+				/ResultMapper {
+					/blubby {
+						/RenderedKeyResultMapper *
+					}
+				}
+				/RenderedKeyResultMapper {
+					/KeySpec {
+						mynewkey
+					}
+					/blubby {
+						/ResultMapper *
+					}
+					/mynewkey {
+						/streamed {
+							/RootMapper *
+						}
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
+					}
+				}
+				/ConfigurableStoreResultMapper {
+					/DestinationSlot StoredValues
+					/Store	Session
+				}
+				/RootMapper *
+			}
+			/Result {
+				/TmpStore {
+					/streamed  "This is my simulated\r\nstream to see if it still works"
+				}
+			}
+			/NotResult {
+				/SessionStore {
+					/StoredValues *
+				}
+				/TmpStore {
+					/mynewkey *
 					/StoredValues *
 				}
 			}
