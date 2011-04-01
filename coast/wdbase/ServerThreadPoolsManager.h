@@ -14,8 +14,7 @@
 class RequestThreadsManager;
 class ListenerPool;
 
-class ServerThreadPoolsManager: public ServerPoolsManagerInterface
-{
+class ServerThreadPoolsManager: public ServerPoolsManagerInterface {
 public:
 	ServerThreadPoolsManager(const char *ServerThreadPoolsManagerName);
 	virtual ~ServerThreadPoolsManager();
@@ -51,8 +50,8 @@ public:
 
 protected:
 	/*! allocates a new ListenerPool and initializes it
-		\param server Server to use for the context and to retrieve params from
-		\return true in case the pool init was successful */
+	 \param server Server to use for the context and to retrieve params from
+	 \return true in case the pool init was successful */
 	bool SetupSocket(Server *server);
 	int SetupThreadPool(bool reinit, Server *server);
 

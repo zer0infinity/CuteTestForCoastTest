@@ -10,16 +10,15 @@
 #include "SystemLog.h"
 #include "Registry.h"
 #include "Policy.h"
+#include "Socket.h"
 
 //---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
-class AcceptorFactoriesReInitInstaller : public InstallerPolicy
-{
+class AcceptorFactoriesReInitInstaller: public InstallerPolicy {
 public:
-	AcceptorFactoriesReInitInstaller(const char *category)
-		: InstallerPolicy(category)
-	{}
-	virtual ~AcceptorFactoriesReInitInstaller() {};
+	AcceptorFactoriesReInitInstaller(const char *category) :
+		InstallerPolicy(category) {
+	}
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) {
@@ -30,13 +29,11 @@ protected:
 };
 
 //---- AcceptorFactoriesReInitTerminator ------------------------------------------------------
-class AcceptorFactoriesReInitTerminator : public TerminationPolicy
-{
+class AcceptorFactoriesReInitTerminator: public TerminationPolicy {
 public:
-	AcceptorFactoriesReInitTerminator(const char *category)
-		: TerminationPolicy(category)
-	{}
-	virtual ~AcceptorFactoriesReInitTerminator() {};
+	AcceptorFactoriesReInitTerminator(const char *category) :
+		TerminationPolicy(category) {
+	}
 
 protected:
 	virtual bool DoTerminate(Registry *r) {
@@ -45,22 +42,15 @@ protected:
 		return true;
 	}
 };
-
 //---- AcceptorFactoriesModule -----------------------------------------------------------
 RegisterModule(AcceptorFactoriesModule);
 
-AcceptorFactoriesModule::AcceptorFactoriesModule(const char *name) : WDModule(name)
-{
+AcceptorFactoriesModule::AcceptorFactoriesModule(const char *name) :
+	WDModule(name) {
 	StartTrace1(AcceptorFactoriesModule.Ctor, "Name: <" << NotNull(name) << ">");
 }
 
-AcceptorFactoriesModule::~AcceptorFactoriesModule()
-{
-	StartTrace(AcceptorFactoriesModule.Dtor);
-}
-
-bool AcceptorFactoriesModule::Init(const ROAnything config)
-{
+bool AcceptorFactoriesModule::Init(const ROAnything config) {
 	StartTrace(AcceptorFactoriesModule.Init);
 	if (config.IsDefined("AcceptorFactories")) {
 		HierarchyInstaller ai("AcceptorFactory");
@@ -69,43 +59,27 @@ bool AcceptorFactoriesModule::Init(const ROAnything config)
 	return false;
 }
 
-bool AcceptorFactoriesModule::Finis()
-{
+bool AcceptorFactoriesModule::Finis() {
 	StartTrace(AcceptorFactoriesModule.Finis);
 	return StdFinis("AcceptorFactory", "AcceptorFactories");
 }
 
-bool AcceptorFactoriesModule::ResetInit(const ROAnything config)
-{
+bool AcceptorFactoriesModule::ResetInit(const ROAnything config) {
 	AcceptorFactoriesReInitInstaller hi("AcceptorFactory");
 	return RegisterableObject::Install(config["AcceptorFactories"], "AcceptorFactory", &hi);
 }
 
-bool AcceptorFactoriesModule::ResetFinis(const ROAnything )
-{
+bool AcceptorFactoriesModule::ResetFinis(const ROAnything) {
 	AcceptorFactoriesReInitTerminator at("AcceptorFactory");
 	return RegisterableObject::ResetTerminate("AcceptorFactory", &at);
 }
 
-//---- AcceptorFactory -----------------------------------------------------------
-AcceptorFactory::AcceptorFactory(const char *AcceptorFactoryName)
-	: HierarchConfNamed(AcceptorFactoryName)
-{
-	StartTrace1(AcceptorFactory.Ctor, NotNull(AcceptorFactoryName));
-}
-
-AcceptorFactory::~AcceptorFactory()
-{
-	StartTrace(AcceptorFactory.Dtor);
-}
-
-Acceptor *AcceptorFactory::MakeAcceptor(AcceptorCallBack *ac)
-{
+Acceptor *AcceptorFactory::MakeAcceptor(AcceptorCallBack *ac) {
 	StartTrace(AcceptorFactory.MakeAcceptor);
 	Trace("fName: " << fName);
 	TraceAny(fConfig, "fConfig: ");
 
-	const char *address = Lookup("Address", (const char *)0);
+	const char *address = Lookup("Address", (const char *) 0);
 	long port = Lookup("Port", 80L);
 	long backlog = Lookup("Backlog", 50L);
 
@@ -113,11 +87,10 @@ Acceptor *AcceptorFactory::MakeAcceptor(AcceptorCallBack *ac)
 	return new Acceptor(address, port, backlog, ac);
 }
 
-bool AcceptorFactory::DoLoadConfig(const char *category)
-{
+bool AcceptorFactory::DoLoadConfig(const char *category) {
 	StartTrace1(AcceptorFactory.DoLoadConfig, "category: <" << NotNull(category) << "> object: <" << fName << ">");
 
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if (HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName)) {
 		// AcceptorFactories use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
 		Assert(!fConfig.IsNull());
@@ -125,44 +98,32 @@ bool AcceptorFactory::DoLoadConfig(const char *category)
 		return (!fConfig.IsNull());
 	}
 	String cfgFilename = GetConfigName();
-	SystemLog::Info(String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
+	SystemLog::Info(
+			String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
 	fConfig = Anything();
 	// because these object are hierarchical, it can be that some of them do not have their own config
 	// so we must not fail here
 	return true;
 }
 
-bool AcceptorFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
-{
+bool AcceptorFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const {
 	StartTrace1(AcceptorFactory.DoGetConfigName, "category: <" << NotNull(category) << "> object: <" << NotNull(objName) << ">");
 	configFileName = "Config";
 	Trace("returning <" << configFileName << "> true");
 	return true;
 }
 
-//---- registry interface
-RegCacheImpl(AcceptorFactory);	// FindAcceptorFactory()
+RegCacheImpl(AcceptorFactory); // FindAcceptorFactory()
 
 RegisterAcceptorFactory(AcceptorFactory);
 
-//-- ListenerThread -----------------------------------------------------------------
-ListenerThread::ListenerThread(AcceptorCallBack *ac)
-	: Thread("ListenerThread"), fCallBack(ac), fAcceptor(0)
-{
-	StartTrace(ListenerThread.ListenerThread);
-}
-
-ListenerThread::~ListenerThread()
-{
+ListenerThread::~ListenerThread() {
 	StartTrace(ListenerThread.Dtor);
-
-//	Terminate();
+	//	Terminate();
 	delete fAcceptor;
-
 }
 
-int ListenerThread::Init(ROAnything args)
-{
+int ListenerThread::Init(ROAnything args) {
 	StartTrace(ListenerThread.Init);
 
 	fAcceptorName = args.AsCharPtr("AcceptorFactory");
@@ -186,7 +147,7 @@ int ListenerThread::Init(ROAnything args)
 		return -1;
 	}
 	int retVal;
-	if ( (retVal = fAcceptor->PrepareAcceptLoop()) != 0) {
+	if ((retVal = fAcceptor->PrepareAcceptLoop()) != 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "server (" << fAcceptorName << ")  prepare accept failed");
 		Trace(logMsg << " with retVal " << (long)retVal );
@@ -200,21 +161,18 @@ int ListenerThread::Init(ROAnything args)
 }
 
 //:this method gets called from the threads callback function
-void ListenerThread::Run()
-{
+void ListenerThread::Run() {
 	StartTrace(ListenerThread.Run);
-	if ( fAcceptor ) {
+	if (fAcceptor) {
 		fAcceptor->RunAcceptLoop();
 	}
 }
 
-bool ListenerThread::DoStartRequestedHook(ROAnything args)
-{
+bool ListenerThread::DoStartRequestedHook(ROAnything args) {
 	return true;
 }
 
-void ListenerThread::DoTerminationRequestHook(ROAnything args)
-{
+void ListenerThread::DoTerminationRequestHook(ROAnything args) {
 	StartTrace(ListenerThread.DoTerminationRequestHook);
 	if (fAcceptor && fAcceptor->StopAcceptLoop()) {
 		String m;
@@ -223,24 +181,19 @@ void ListenerThread::DoTerminationRequestHook(ROAnything args)
 	}
 }
 
-//--- ListenerPool -------------------------------------------
-ListenerPool::ListenerPool(CallBackFactory *callBackFactory)
-	: ThreadPoolManager("ListenerPool")
-	, fCallBackFactory(callBackFactory)
-{
+ListenerPool::ListenerPool(CallBackFactory *callBackFactory) :
+	ThreadPoolManager("ListenerPool"), fCallBackFactory(callBackFactory) {
 	StartTrace(ListenerPool.Ctor);
 	Assert(fCallBackFactory);
 }
 
-ListenerPool::~ListenerPool()
-{
+ListenerPool::~ListenerPool() {
 	StartTrace(ListenerPool.Dtor);
 	Terminate(1, GetPoolSize() + 5);
 	delete fCallBackFactory;
 }
 
-Thread *ListenerPool::DoAllocThread(long i, ROAnything args)
-{
+Thread *ListenerPool::DoAllocThread(long i, ROAnything args) {
 	StartTrace(ListenerPool.DoAllocThread);
 	TraceAny(args, "threads arguments");
 	if (!fCallBackFactory) {

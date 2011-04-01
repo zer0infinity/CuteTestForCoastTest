@@ -12,12 +12,12 @@
 #include "SystemBase.h"
 #include "Dbg.h"
 
-//---- RegisterableObject ----------------------------------------------------------
+bool RegisterableObject::fgResetCache = false;
+
 void RegisterableObject::ResetCache(bool resetCache)
 {
 	fgResetCache = resetCache;
 }
-bool RegisterableObject::fgResetCache = false;
 
 RegisterableObject::RegisterableObject(const char *name)
 	: NamedObject()
@@ -27,8 +27,6 @@ RegisterableObject::RegisterableObject(const char *name)
 {
 }
 
-// support for registerable named objects
-// class API
 bool RegisterableObject::Install(const ROAnything installerSpec, const char *category, InstallerPolicy *installer)
 {
 	// this method installs a list of clones or aliases into the registry
@@ -127,7 +125,6 @@ bool RegisterableObject::IntFinalize()
 	return DoFinalize();
 }
 
-//---- ConfNamedObject ----------------------------------------------------------
 bool ConfNamedObject::IntInitialize(const char *category)
 {
 	StartTrace1(ConfNamedObject.IntInitialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">");
@@ -265,8 +262,6 @@ bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, 
 	return bSuccess;
 }
 
-//---- HierarchConfNamed ----------------------------------------------------------
-
 ConfNamedObject *HierarchConfNamed::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(HierarchConfNamed.DoConfiguredClone, "using [" << fName << "] as clone-base for [" << name << "]" );
@@ -278,16 +273,6 @@ ConfNamedObject *HierarchConfNamed::DoConfiguredClone(const char *category, cons
 		cno->SetSuper(this);
 	}
 	return cno;
-}
-
-void HierarchConfNamed::SetSuper(HierarchConfNamed *super)
-{
-	fSuper = super;
-}
-
-const HierarchConfNamed *HierarchConfNamed::GetSuper() const
-{
-	return fSuper;
 }
 
 bool HierarchConfNamed::DoLookup(const char *key, class ROAnything &result, char delim, char indexdelim) const

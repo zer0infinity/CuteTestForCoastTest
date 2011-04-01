@@ -9,35 +9,33 @@
 #ifndef _RequestListener_h_
 #define _RequestListener_h_
 
-#include "ThreadPools.h"
 #include "WDModule.h"
-#include "Socket.h"
+#include "ThreadPools.h"
 
-//---- AcceptorFactoriesModule -----------------------------------------------------------
-class AcceptorFactoriesModule : public WDModule
-{
+class AcceptorFactoriesModule: public WDModule {
 public:
 	AcceptorFactoriesModule(const char *);
-	virtual ~AcceptorFactoriesModule();
-
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 	virtual bool ResetInit(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything config);
 };
 
-//---- AcceptorFactory -----------------------------------------------------------
+class AcceptorCallBack;
+class Acceptor;
+
 //!Factory that produces Acceptor; allows configuration of ListenerPool with different Acceptors
-class AcceptorFactory : public HierarchConfNamed
-{
+class AcceptorFactory: public HierarchConfNamed {
+	AcceptorFactory();
+	AcceptorFactory(const AcceptorFactory &);
+	AcceptorFactory &operator=(const AcceptorFactory &);
 public:
 	//!standard named object constructor
-	AcceptorFactory(const char *AcceptorFactoryName);
-	//!does nothing
-	virtual ~AcceptorFactory();
-
+	AcceptorFactory(const char *AcceptorFactoryName) :
+		HierarchConfNamed(AcceptorFactoryName) {
+	}
 	//!registry interface
-	RegCacheDef(AcceptorFactory);	// FindAcceptorFactory()
+	RegCacheDef(AcceptorFactory); // FindAcceptorFactory()
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) AcceptorFactory(fName);
@@ -48,26 +46,28 @@ public:
 protected:
 	//!special impelementation of configuration loading
 	bool DoLoadConfig(const char *category);
-	//!overriden impelementation of config file handling
+	//!overridden implementation of config file handling
 	bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	AcceptorFactory();
-	AcceptorFactory(const AcceptorFactory &);
-	AcceptorFactory &operator=(const AcceptorFactory &);
 };
 
 #define RegisterAcceptorFactory(name) RegisterObject(name, AcceptorFactory)
 
-//---- ListenerThread -----------------------------------------------------------
 //!Thread that manages a passive connection end point using an Acceptor
-class ListenerThread : public Thread
-{
+class ListenerThread: public Thread {
+	ListenerThread();
+	ListenerThread(const ListenerThread &);
+	ListenerThread &operator=(const ListenerThread &);
+	//!the name of this listening end point used for creating the correct Acceptor in Init
+	String fAcceptorName;
+	//!object that parametrizes the acceptor
+	AcceptorCallBack *fCallBack;
+	//!Acceptor created by the acceptor factory
+	Acceptor *fAcceptor;
 public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
-	ListenerThread(AcceptorCallBack *ac);
+	ListenerThread(AcceptorCallBack *ac) :
+		Thread("ListenerThread"), fCallBack(ac), fAcceptor(0) {
+	}
 	//!deletes the acceptor
 	virtual ~ListenerThread();
 
@@ -80,13 +80,6 @@ public:
 	virtual void Run();
 
 protected:
-	//!the name of this listening end point used for creating the correct Acceptor in Init
-	String fAcceptorName;
-	//!object that parametrizes the acceptor
-	AcceptorCallBack *fCallBack;
-	//!Acceptor created by the acceptor factory
-	Acceptor *fAcceptor;
-
 	//!allocates callback and acceptor
 	//! \param args information about the server socket to create
 	//! \return returns true if bind succeeds; otherwise false
@@ -94,30 +87,22 @@ protected:
 
 	//!stops accept loop
 	virtual void DoTerminationRequestHook(ROAnything args);
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	ListenerThread();
-	ListenerThread(const ListenerThread &);
-	ListenerThread &operator=(const ListenerThread &);
 };
 
-//---- ListenerPool -----------------------------------------------------------
+class CallBackFactory;
 //! Thread pool that manages ListenerThreads
-class ListenerPool: public ThreadPoolManager
-{
+class ListenerPool: public ThreadPoolManager {
+	//!the factory object to create callback objects that are used to handle incoming connection requests
+	CallBackFactory *fCallBackFactory;
 public:
 	//!constructor is configured by a CallBackFactory that allows to allocate ListenerThreads with correct CallBack objects
 	ListenerPool(CallBackFactory *callBackFactory);
 	//!Terminates the ListenerPool and deletes the CallBackFactory
-	~ListenerPool();
+	virtual ~ListenerPool();
 
 protected:
 	//!bottleneck routine; allocates ListenerThreads and configures them with the correct callback
 	virtual Thread *DoAllocThread(long i, ROAnything args);
-
-	//!the factory object to create callback objects that are used to handle incoming connection requests
-	CallBackFactory *fCallBackFactory;
 };
 
 #endif

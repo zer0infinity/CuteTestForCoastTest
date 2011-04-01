@@ -19,8 +19,17 @@ class TerminationPolicy;
 
 //---- RegisterableObject ----------------------------------------------------------
 //!defines api to support registerable objects; objects registered with a name in a category
-class RegisterableObject : public NamedObject, public Coast::AllocatorNewDelete
-{
+class RegisterableObject: public NamedObject, public Coast::AllocatorNewDelete {
+	friend class WDModuleTest;
+	RegisterableObject();
+	RegisterableObject(const RegisterableObject &);
+	RegisterableObject &operator=(const RegisterableObject &);
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+	 \return true in case of success, false otherwise */
+	virtual bool IntInitialize(const char *category);
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+	 \return true in case of success, false otherwise */
+	virtual bool IntFinalize();
 public:
 	//! Named object constructor
 	/*! @param name Used to distinguish between objects of same type */
@@ -38,7 +47,7 @@ public:
 	}
 
 	//! query static initialized flag
-	bool IsStatic()	  {
+	bool IsStatic() {
 		return fStaticallyInitialized;
 	}
 
@@ -47,13 +56,13 @@ public:
 	bool Finalize();
 
 	/*! Check if object has successfully called DoInitialize()
-		\return true in case both steps were executed successfully, false otherwise */
+	 \return true in case both steps were executed successfully, false otherwise */
 	bool IsInitialized() const {
 		return DoIsInitialized();
 	}
 
 	//! implements API for naming support
-	virtual void SetName(const char *str)	{
+	virtual void SetName(const char *str) {
 		fName = str;
 	}
 
@@ -65,13 +74,12 @@ public:
 
 	//! implements API for getting name
 	virtual const char *GetName() const {
-		return (const char *)fName;
+		return (const char *) fName;
 	}
 
-	const String& getInstalledCategory() const { return fCategory; }
-
-	// support for registerable named objects
-	// this method gets called during initialization
+	const String& getInstalledCategory() const {
+		return fCategory;
+	}
 
 	//!installs additional objects according to installerspec and installer policy into category
 	static bool Install(const ROAnything installerSpec, const char *category, InstallerPolicy *ip);
@@ -82,23 +90,19 @@ public:
 	//!terminates category removing only the objects which are not installed by the static initializers and installs again with installerSpec
 	static bool Reset(const ROAnything installerSpec, const char *category, InstallerPolicy *installer, TerminationPolicy *terminator);
 
-	friend class WDModuleTest;
-
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
-		\return true in case of success, false otherwise */
+	 \return true in case of success, false otherwise */
 	virtual bool DoInitialize() {
 		return true;
-	};
-
+	}
 	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
-		\return true in case of success, false otherwise */
+	 \return true in case of success, false otherwise */
 	virtual bool DoFinalize() {
 		return true;
-	};
-
+	}
 	/*! Check if object has successfully called DoInitialize()
-		\return true in case both steps were executed successfully, false otherwise */
+	 \return true in case both steps were executed successfully, false otherwise */
 	virtual bool DoIsInitialized() const {
 		return fbInitialized;
 	}
@@ -117,27 +121,10 @@ protected:
 
 	//!flag that triggers reset of registry cache
 	static bool fgResetCache;
-
-private:
-	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
-		\return true in case of success, false otherwise */
-	virtual bool IntInitialize(const char *category);
-
-	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
-		\return true in case of success, false otherwise */
-	virtual bool IntFinalize();
-
-	//!do not use
-	RegisterableObject();
-	//!do not use
-	RegisterableObject(const RegisterableObject &);
-	//!do not use
-	RegisterableObject &operator=(const RegisterableObject &);
 };
 
 //!objects are generated as static variables by macro RegisterObject; installs RegisterableObject r with name in category
-class RegisterableObjectInstaller
-{
+class RegisterableObjectInstaller {
 public:
 	//!installs r into category with name; caches r into fObject
 	RegisterableObjectInstaller(const char *name, const char *category, RegisterableObject *r);
@@ -197,27 +184,21 @@ protected:
 //! therefore it installes simple aliases ( entries in the registry, that
 //! access the same object under different names eg. HTMLTemplateRenderer and
 //! HTML )
-class NotCloned : public RegisterableObject
-{
+class NotCloned: public RegisterableObject {
+	NotCloned();
+	NotCloned(const NotCloned &);
+	NotCloned &operator=(const NotCloned &);
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	NotCloned(const char *name)
-		: RegisterableObject(name)
-	{}
+	NotCloned(const char *name) :
+		RegisterableObject(name) {
+	}
 
 	//! Public api to return reference to this object instead of cloning, e.g. like a singleton
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
-		return const_cast<NotCloned*>(this);
+		return const_cast<NotCloned*> (this);
 	}
-
-private:
-	//!do not use
-	NotCloned();
-	//!do not use
-	NotCloned(const NotCloned &);
-	//!do not use
-	NotCloned &operator=(const NotCloned &);
 };
 
 //---- ConfNamedObject ----------------------------------------------------------
@@ -225,14 +206,25 @@ private:
 ConfNamedObject provides a protocol for handling configuration data
 it already provides a default implementation that is sufficient
 for most classes ( eg. Role and Page ) */
-class ConfNamedObject : public RegisterableObject, public virtual LookupInterface
-{
+class ConfNamedObject: public RegisterableObject, public virtual LookupInterface {
+	ConfNamedObject();
+	ConfNamedObject(const ConfNamedObject &);
+	ConfNamedObject &operator=(const ConfNamedObject &);
+	//! Configuration filename associated with this object
+	String fConfigName;
+	//! flag to track if config of object was loaded
+	bool fbConfigLoaded;
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+	 \return true in case of success, false otherwise */
+	virtual bool IntInitialize(const char *category);
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+	 \return true in case of success, false otherwise */
+	virtual bool IntFinalize();
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	ConfNamedObject(const char *name)
-		: RegisterableObject(name)
-		, fbConfigLoaded(false)
-	{}
+	ConfNamedObject(const char *name) :
+		RegisterableObject(name), fbConfigLoaded(false) {
+	}
 
 	//! Public api to create a configured clone object. The real work is delegated to DoConfiguredClone().
 	/*! After successful cloning, the objects configuration data gets loaded if possible.
@@ -259,7 +251,7 @@ public:
 
 	//! Getting the objects configuration if any
 	/*! @return returns the objects configuration as ROAnything
-	*/
+	 */
 	ROAnything GetConfig() const {
 		return fConfig;
 	}
@@ -274,28 +266,32 @@ public:
 	}
 
 protected:
+	//! the configuration of this object
+	/*!TODO: should be made private */
+	ROAnything fConfig;
+
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
-		\return true in case of success, false otherwise */
+	 \return true in case of success, false otherwise */
 	virtual bool DoInitialize();
 
 	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
-		\return true in case of success, false otherwise */
+	 \return true in case of success, false otherwise */
 	virtual bool DoFinalize();
 
 	/*! Check if object has successfully called DoCheckConfig() and DoInitialize()
-		\return true in case both steps were executed successfully, false otherwise */
+	 \return true in case both steps were executed successfully, false otherwise */
 	virtual bool DoIsInitialized() const {
-		return ( fbConfigLoaded && RegisterableObject::DoIsInitialized() );
+		return (fbConfigLoaded && RegisterableObject::DoIsInitialized());
 	}
 
 	/*! Check if configuration is loaded; load it if not done or bInitializeConfig = true
-		\param category Name of the category in which the objects configuration will be stored in the Cache
-		\param bInitializeConfig Reload configuration regardless of already being configured
-		\return true in case the object could be configured */
+	 \param category Name of the category in which the objects configuration will be stored in the Cache
+	 \param bInitializeConfig Reload configuration regardless of already being configured
+	 \return true in case the object could be configured */
 	bool DoCheckConfig(const char *category, bool bInitializeConfig = false);
 
 	/*! Unload configuration of given category
-		\return true in case the config could be unloaded successfully */
+	 \return true in case the config could be unloaded successfully */
 	bool DoUnloadConfig();
 
 	//! Creates a new object through cloning having a different name.
@@ -314,8 +310,8 @@ protected:
 
 	//! Load the objects configuration from an anything (file), subclasses may overwrite this hook.
 	/*! The loaded configuration file will be stored in the CacheHandler and this objects keeps a ROAnything reference in fConfig
-		If you provide your own implementation, be careful about the lifetime of the underlying Anything as the fConfig
-		ROAnything must always point to a valid AnyImpl */
+	 If you provide your own implementation, be careful about the lifetime of the underlying Anything as the fConfig
+	 ROAnything must always point to a valid AnyImpl */
 	virtual bool DoLoadConfig(const char *category);
 
 	//! Subclassed implementation of the LookupInterface, which checks if the key can be found inside our configuration (fConfig)
@@ -328,51 +324,31 @@ protected:
 	void SetConfigName(const char *cfgName) {
 		fConfigName = cfgName;
 	}
-
-	//! the configuration of this object
-	ROAnything fConfig;
-
-	//! Configuration filename associated with this object
-	String fConfigName;
-
-	//! flag to track if config of object was loaded
-	bool fbConfigLoaded;
-
-private:
-	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
-		\return true in case of success, false otherwise */
-	virtual bool IntInitialize(const char *category);
-
-	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
-		\return true in case of success, false otherwise */
-	virtual bool IntFinalize();
-
-	//!do not use
-	ConfNamedObject();
-	//!do not use
-	ConfNamedObject(const ConfNamedObject &);
-	//!do not use
-	ConfNamedObject &operator=(const ConfNamedObject &);
 };
 
 //---- HierarchConfNamed ----------------------------------------------------------
 //!configurable object; api for configuration support with hierachical object relationships (inheritance)
 //!implements inheritance relationship of configurations through super objects
-class HierarchConfNamed : public ConfNamedObject
-{
+class HierarchConfNamed: public ConfNamedObject {
+	HierarchConfNamed();
+	HierarchConfNamed(const HierarchConfNamed &);
+	HierarchConfNamed &operator=(const HierarchConfNamed &);
+	//!pointer to super object
+	HierarchConfNamed *fSuper;
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	HierarchConfNamed(const char *name)
-		: ConfNamedObject(name)
-		, fSuper(0)
-	{}
+	HierarchConfNamed(const char *name) :
+		ConfNamedObject(name), fSuper(0) {
+	}
 
 	//! hierarchical relationship API; set super object
-	void SetSuper(HierarchConfNamed *super);
-
+	void SetSuper(HierarchConfNamed *super) {
+		fSuper = super;
+	}
 	//! hierarchical relationship API; get super object
-	const HierarchConfNamed *GetSuper() const;
-
+	const HierarchConfNamed *GetSuper() const {
+		return fSuper;
+	}
 protected:
 	//! Creates a new object through cloning using a different name. The main feature is a configuration support with hierachical object relationships (inheritance).
 	/*!	@copydetails ConfNamedObject::ConfiguredClone() */
@@ -381,17 +357,6 @@ protected:
 	//! Subclassed implementation of the LookupInterface, which checks if the key can be found inside our configuration of any of our super classes.
 	/*! @copydetails LookupInterface::DoLookup() */
 	virtual bool DoLookup(const char *key, class ROAnything &resultconst, char delim, char indexdelim) const;
-
-	//!pointer to super object
-	HierarchConfNamed *fSuper;
-
-private:
-	//!do not use
-	HierarchConfNamed();
-	//!do not use
-	HierarchConfNamed(const HierarchConfNamed &);
-	//!do not use
-	HierarchConfNamed &operator=(const HierarchConfNamed &);
 };
 
 #endif

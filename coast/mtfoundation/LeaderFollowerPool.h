@@ -17,13 +17,9 @@ class Socket;
 
 //---- LeaderFollowerPool ----------------------------------------------------------
 //!implements leader follower thread pool; description see POSA2 p.447 ff
-class LeaderFollowerPool : public ThreadPoolManager
-{
+class LeaderFollowerPool: public ThreadPoolManager {
 public:
-	//--- constructors
 	LeaderFollowerPool(Reactor *reactor);
-	virtual ~LeaderFollowerPool();
-
 	//!wait for a request and demultiplex the handling of it
 	virtual void WaitForRequest(Thread *t, long timeout = 0);
 
@@ -58,42 +54,34 @@ protected:
 	Mutex fLFMutex;
 };
 
-//---- LeaderFollowerThread -----------------------------------------------------------
 //!Thread that manages a passive connection end point using an Acceptor
-class LeaderFollowerThread : public Thread
-{
+class LeaderFollowerThread: public Thread {
+	LeaderFollowerThread();
+	LeaderFollowerThread(const LeaderFollowerThread &);
+	LeaderFollowerThread &operator=(const LeaderFollowerThread &);
 public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
-	LeaderFollowerThread(LeaderFollowerPool *lfp, long timeout = 0);
-	//!deletes the acceptor
-	virtual ~LeaderFollowerThread();
-
+	LeaderFollowerThread(LeaderFollowerPool *lfp, long timeout = 0) :
+		Thread("LeaderFollowerThread"), fPool(lfp), fTimeout(timeout) {
+	}
 	//! start leader follower cycles
 	virtual void Run();
 
 protected:
 	LeaderFollowerPool *fPool;
 	long fTimeout;
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	LeaderFollowerThread();
-	LeaderFollowerThread(const LeaderFollowerThread &);
-	LeaderFollowerThread &operator=(const LeaderFollowerThread &);
 };
 
 struct pollfd;
 
-//--- HandleSet -----------------------------------------------
 //!manages a set of file descriptors as accept points
-class HandleSet
-{
+class HandleSet {
+	HandleSet(const HandleSet &);
+	HandleSet &operator=(const HandleSet &);
 public:
-	//! does nothing
-	HandleSet();
-
-	//!does nothing
+	HandleSet() :
+		fMutex("HandleSet"), fLastAcceptorUsedIndex(0) {
+	}
 	virtual ~HandleSet();
 
 	//!process socket connections
@@ -107,26 +95,14 @@ protected:
 	Acceptor *WaitForEvents(long timeout);
 
 	Anything fDemuxTable;
-	Mutex 	fMutex;
-	long	fLastAcceptorUsedIndex;// for handling fairness, index into fDemuxTable
-
-private:
-	//! do not use
-	HandleSet(const HandleSet &);
-	//! do not use
-	HandleSet &operator=(const HandleSet &);
+	Mutex fMutex;
+	long fLastAcceptorUsedIndex;// for handling fairness, index into fDemuxTable
 };
 
-//---- Reactor ----------------------------------------------------------
 //!reactor pattern; description see POSA2 p.179 ff
-class Reactor
-{
+class Reactor {
+	HandleSet fHandleSet;
 public:
-	//!does nothing
-	Reactor();
-
-	virtual ~Reactor();
-
 	//!process socket connections
 	virtual void ProcessEvents(LeaderFollowerPool *lfp, long timeout);
 
@@ -138,9 +114,6 @@ public:
 
 protected:
 	virtual void DoProcessEvent(Socket *) = 0;
-
-private:
-	HandleSet fHandleSet;
 };
 
 #endif

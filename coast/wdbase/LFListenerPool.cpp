@@ -12,6 +12,7 @@
 #include "RequestProcessor.h"
 #include "RequestListener.h"
 #include "WPMStatHandler.h"
+#include "Socket.h"
 #include <iomanip>
 
 LFListenerPool::LFListenerPool(RequestReactor *reactor)

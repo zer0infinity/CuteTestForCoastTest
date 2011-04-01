@@ -13,25 +13,9 @@
 #include "SystemLog.h"
 #include "AnyUtils.h"
 
-//--- CacheLoadPolicy -----------------------------------------------
-Anything CacheLoadPolicy::Load(const char *) {
-	return Anything(Coast::Storage::Global());
-}
+CacheHandler *CacheHandler::fgCacheHandler = 0;
+Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 
-//--- CacheLoadPolicy -----------------------------------------------
-AnythingLoaderPolicy::AnythingLoaderPolicy(const Anything &anyToCache) :
-	fCachedAny(anyToCache, Coast::Storage::Global()) {
-}
-
-AnythingLoaderPolicy::AnythingLoaderPolicy(const ROAnything roaToCache) :
-	fCachedAny(roaToCache.DeepClone(Coast::Storage::Global())) {
-}
-
-Anything AnythingLoaderPolicy::Load(const char *) {
-	return fCachedAny;
-}
-
-//--- SimpleAnyLoader -----------------------------------------------
 Anything SimpleAnyLoader::Load(const char *key) {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
 	Anything toLoad(Coast::Storage::Global());
@@ -46,9 +30,6 @@ Anything SimpleAnyLoader::Load(const char *key) {
 	}
 	return toLoad;
 }
-
-CacheHandler *CacheHandler::fgCacheHandler = 0;
-Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 
 class CacheHandlerMutexAllocator: public InitFinisManagerWDBase {
 public:
@@ -73,14 +54,6 @@ public:
 
 static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(10); // must be of higher priority than RegistryInitFinis !
 
-CacheHandler::CacheHandler() :
-	NotCloned("CacheHandler"), fCache(Coast::Storage::Global()) {
-}
-
-CacheHandler::~CacheHandler() {
-	fCache = Anything(Coast::Storage::Global());
-}
-
 void CacheHandler::Finis() {
 	StartTrace(CacheHandler.Finis);
 	if (fgCacheHandler) {
@@ -90,6 +63,7 @@ void CacheHandler::Finis() {
 }
 
 ROAnything CacheHandler::Reload(const char *group, const char *key, CacheLoadPolicy *clp) {
+	StartTrace1(CacheHandler.Reload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	LockUnlockEntry me(*fgCacheHandlerMutex);
 	Anything toCache(clp->Load(key), fCache.GetAllocator());
 	if (!toCache.IsNull()) {
@@ -156,7 +130,6 @@ CacheHandler *CacheHandler::Get() {
 	}
 	return fgCacheHandler;
 }
-//---- CacheHandlerModule -----------------------------------------------------------
 RegisterModule(CacheHandlerModule);
 
 bool CacheHandlerModule::Init(const ROAnything) {

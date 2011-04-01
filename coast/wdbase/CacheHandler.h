@@ -59,7 +59,10 @@ class CacheLoadPolicy {
 public:
 	virtual ~CacheLoadPolicy() {
 	}
-	virtual Anything Load(const char *key);
+
+	virtual Anything Load(const char *key) {
+		return Anything(Coast::Storage::Global());
+	}
 };
 
 //--- SimpleAnyLoader -----------------------------------------------
@@ -72,10 +75,15 @@ public:
 //! Dummy policy wrap an Anything to cache
 class AnythingLoaderPolicy: public CacheLoadPolicy {
 public:
-	AnythingLoaderPolicy(const Anything &anyToCache);
-	AnythingLoaderPolicy(const ROAnything roaToCache);
-	virtual Anything Load(const char *);
-
+	AnythingLoaderPolicy(const Anything &anyToCache) :
+		fCachedAny(anyToCache, Coast::Storage::Global()) {
+	}
+	AnythingLoaderPolicy(const ROAnything roaToCache) :
+		fCachedAny(roaToCache.DeepClone(Coast::Storage::Global())) {
+	}
+	virtual Anything Load(const char *) {
+		return fCachedAny;
+	}
 private:
 	Anything fCachedAny;
 };
@@ -113,9 +121,20 @@ private:
 class CacheHandler: public NotCloned {
 	friend class CacheHandlerMutexAllocator;
 
+	// the central cache data structure
+	Anything fCache;
+
+	// the one and only cache handler in the system
+	static CacheHandler *fgCacheHandler;
+	// this mutex protects the cache handler from concurrent access
+	static Mutex *fgCacheHandlerMutex;
 public:
-	CacheHandler();
-	~CacheHandler();
+	CacheHandler() :
+		NotCloned("CacheHandler"), fCache(Coast::Storage::Global()) {
+	}
+	virtual ~CacheHandler() {
+		fCache = Anything(Coast::Storage::Global());
+	}
 
 	// this operation loads a cache identified by a group, key pair
 	// how the cache is built is defined by the CacheLoadPolicy
@@ -139,15 +158,6 @@ public:
 	// accessor to the one and only cache handler
 	static CacheHandler *Get();
 	static void Finis();
-
-private:
-	// the central cache data structure
-	Anything fCache;
-
-	// the one and only cache handler in the system
-	static CacheHandler *fgCacheHandler;
-	// this mutex protects the cache handler from concurrent access
-	static Mutex *fgCacheHandlerMutex;
 };
 
 #endif
