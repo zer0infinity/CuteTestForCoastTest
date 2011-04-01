@@ -551,7 +551,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAn
 					Trace("Calling " << slotname << " with it's default config...");
 					retval = m->Put(key, value, ctx);
 				} else {
-					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
+					TraceAny(roaScript, "Calling " << slotname << " with " << slotname << "->SelectScript(\"" << NotNull(key) << "\", ...)");
 					retval = m->DoPutAny(key, value, ctx, m->SelectScript(key, roaScript, ctx));
 				}
 			} else {
@@ -563,13 +563,6 @@ bool ResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAn
 	// store the base destination slot in temp store now
 	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = anyPath["ResultMapper"]["DestinationSlot"].AsString();
 	return retval;
-}
-
-bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname)
-{
-	StartTrace1(ResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
-	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
-	return DoPutAny(slotname, value, ctx, roaScript);
 }
 
 bool ResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script)
@@ -609,18 +602,32 @@ bool ResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, 
 					Trace("Calling " << slotname << " with it's default config...");
 					retval = m->Put(key, is, ctx);
 				} else {
-					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]");
+					TraceAny(roaScript, "Calling " << slotname << " with " << slotname << "->SelectScript(\"" << NotNull(key) << "\", ...)");
 					retval = m->DoPutStream(key, is, ctx, m->SelectScript(key, roaScript, ctx));
 				}
 			} else {
 				Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
-				retval = DoPutStream(slotname, is, ctx, roaScript);
+				retval = DoPutStreamWithSlotname(key, is, ctx, roaScript, slotname);
 			}
 		}
 	}
 	// store the base destination slot in temp store now
 	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = anyPath["ResultMapper"]["DestinationSlot"].AsString();
 	return retval;
+}
+
+bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname)
+{
+	StartTrace1(ResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+	return DoPutAny(slotname, value, ctx, roaScript);
+}
+
+bool ResultMapper::DoPutStreamWithSlotname(const char *key, std::istream &is, Context &ctx, ROAnything roaScript, const char *slotname)
+{
+	StartTrace1(ResultMapper.DoPutStreamWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+	return DoPutStream(slotname, is, ctx, roaScript);
 }
 
 void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx)

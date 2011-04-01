@@ -403,7 +403,7 @@ protected:
 		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
-	//! Almost the same as DoPutAny but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not Mappers.
+	//! Almost the same as DoPutAny but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not ResultMappers.
 	/*! @param key the key usually defines the associated kind of output-value
 		@param value the value to be mapped
 		@param ctx the context of the invocation
@@ -419,6 +419,15 @@ protected:
 		@param script current mapper configuration as ROAnything
 		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
+
+	//! Almost the same as DoPutStream but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not ResultMappers.
+	/*! @param key the key usually defines the associated kind of output-value
+		@param is stream whose content will be mapped
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool DoPutStreamWithSlotname(const char *key, std::istream &is, Context &ctx, ROAnything roaScript, const char *slotname);
 
 	/*! Hook for breaking recursion in mapper script interpretation. Store the value in tmpstore under tmp.slot.key, where slot is retrieved with GetDestinationSlot(). if slot == "", then value is stored under tmp.key directly key may NOT be empty (fails otherwise).
 		@param key name used to distinguish kind of output
