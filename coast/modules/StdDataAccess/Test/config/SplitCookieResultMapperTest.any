@@ -60,11 +60,7 @@
 					/Delim ","
 					/HTTPHeader {
 						/SET-COOKIE {
-							/RenderedKeyResultMapper {
-								/"*" {
-									/ConfigurableStoreResultMapper *
-								}
-							}
+							/RenderedKeyResultMapper *
 						}
 					}
 				}
@@ -75,6 +71,9 @@
 						/ContextLookupRenderer {
 							MappedKey
 						}
+					}
+					/"*" {
+						/ConfigurableStoreResultMapper *
 					}
 				}
 				/ConfigurableStoreResultMapper {
