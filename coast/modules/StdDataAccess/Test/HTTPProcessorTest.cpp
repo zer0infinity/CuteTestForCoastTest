@@ -19,16 +19,7 @@
 #include "AnyUtils.h"
 #include "Renderer.h"
 #include "AnyIterators.h"
-
-//---- HTTPProcessorTest ----------------------------------------------------------------
-HTTPProcessorTest::HTTPProcessorTest(TString tname) :
-	TestCaseType(tname) {
-	StartTrace(HTTPProcessorTest.HTTPProcessorTest);
-}
-
-TString HTTPProcessorTest::getConfigFileName() {
-	return "HTTPProcessorTestConfig";
-}
+#include "HTTPConstants.h"
 
 namespace {
 	String GetFirstResponseLine(String const &result) {
@@ -101,7 +92,7 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	{
 		Anything tmpStore;
 		OStringStream os;
-		tmpStore["ResponseCode"] = 599L;
+		tmpStore[Coast::HTTP::_httpProtocolCodeSlotname] = 599L;
 		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
 		httpProcessor->RenderProtocolStatus(os, ctx);
 		assertCharPtrEqual( "HTTP/1.1 599 Unknown Error" ENDL "Connection: close" ENDL, os.str() );
@@ -109,8 +100,8 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	{
 		OStringStream os;
 		Anything tmpStore;
-		tmpStore["ResponseCode"] = 413L;
-		tmpStore["ResponseMsg"] = "BlaBla";
+		tmpStore[Coast::HTTP::_httpProtocolCodeSlotname] = 413L;
+		tmpStore[Coast::HTTP::_httpProtocolMsgSlotname] = "BlaBla";
 		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
 		httpProcessor->RenderProtocolStatus(os, ctx);
 		assertCharPtrEqual( "HTTP/1.1 413 BlaBla" ENDL "Connection: close" ENDL, os.str() );

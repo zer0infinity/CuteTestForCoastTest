@@ -12,20 +12,9 @@
 #include "Dbg.h"
 #include "StringStream.h"
 #include "Context.h"
+#include "HTTPConstants.h"
 
-//---- HTTPResponseMapperTest ----------------------------------------------------------------
-HTTPResponseMapperTest::HTTPResponseMapperTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(HTTPResponseMapperTest.Ctor);
-}
-
-HTTPResponseMapperTest::~HTTPResponseMapperTest()
-{
-	StartTrace(HTTPResponseMapperTest.Dtor);
-}
-
-void HTTPResponseMapperTest::TestParsedResponse()
-{
+void HTTPResponseMapperTest::TestParsedResponse() {
 	StartTrace(HTTPResponseMapperTest.TestParsedResponse);
 	String strIn("HTTP/1.1 200 Ok\r\n");
 	IStringStream is(strIn);
@@ -34,12 +23,11 @@ void HTTPResponseMapperTest::TestParsedResponse()
 	Context ctx;
 	t_assert(m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);
-	assertEqual(200L, result["Code"].AsLong(0));
-	assertEqual("Ok", result["Msg"].AsCharPtr());
-	assertEqual("HTTP/1.1", result["HTTP-Version"].AsCharPtr());
+	assertEqual(200L, result[Coast::HTTP::_httpProtocolCodeSlotname].AsLong(0));
+	assertEqual("Ok", result[Coast::HTTP::_httpProtocolMsgSlotname].AsCharPtr());
+	assertEqual("HTTP/1.1", result[Coast::HTTP::_httpProtocolVersionSlotname].AsCharPtr());
 }
-void HTTPResponseMapperTest::TestBadResponseLine()
-{
+void HTTPResponseMapperTest::TestBadResponseLine() {
 	StartTrace(HTTPResponseMapperTest.TestBadResponseLine);
 	String strIn("HTTP/1.1 ");
 	IStringStream is(strIn);
@@ -48,19 +36,15 @@ void HTTPResponseMapperTest::TestBadResponseLine()
 	Context ctx;
 	t_assert(!m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);
-	assertEqual(-1L, result["Code"].AsLong(-1));
-	assertEqual("undefined", result["Msg"].AsCharPtr("undefined"));
-	assertEqual("HTTP/1.1", result["HTTP-Version"].AsCharPtr());
+	assertEqual(-1L, result[Coast::HTTP::_httpProtocolCodeSlotname].AsLong(-1));
+	assertEqual("undefined", result[Coast::HTTP::_httpProtocolMsgSlotname].AsCharPtr("undefined"));
+	assertEqual("HTTP/1.1", result[Coast::HTTP::_httpProtocolVersionSlotname].AsCharPtr());
 }
 
-// builds up a suite of testcases, add a line for each testmethod
-Test *HTTPResponseMapperTest::suite ()
-{
+Test *HTTPResponseMapperTest::suite() {
 	StartTrace(HTTPResponseMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, HTTPResponseMapperTest, TestParsedResponse);
 	ADD_CASE(testSuite, HTTPResponseMapperTest, TestBadResponseLine);
-
 	return testSuite;
 }

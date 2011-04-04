@@ -11,25 +11,13 @@
 
 #include "TestCase.h"
 
-//---- HTTPHeaderRendererTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class HTTPHeaderRendererTest : public TestFramework::TestCase
-{
+class HTTPHeaderRendererTest: public TestFramework::TestCase {
 public:
-	//! TestCase constructor
-	//! \param name name of the test
-	HTTPHeaderRendererTest(TString name);
-
-	//! destroys the test case
-	~HTTPHeaderRendererTest();
-
+	HTTPHeaderRendererTest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
+	static Test *suite();
 	//! describe this testcase
 	void SingleLine();
 	//! describe this testcase
@@ -38,7 +26,6 @@ public:
 	void MultiLine();
 	//! describe this testcase
 	void WholeHeaderConfig();
-
 };
 
 #endif

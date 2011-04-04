@@ -11,7 +11,6 @@
 
 #include "Action.h"
 
-//---- StoreAction ----------------------------------------------------------
 //! Stores a rendered Value into a slot in a store.
 /*! @section storeactionconfiguration StoreAction Configuration
  * @par \c Value
@@ -23,18 +22,16 @@
  * @par \c Destination
  * See \ref storeputterconfiguration "StorePutter Configuration" to see options.
  */
-class StoreAction : public Action
-{
+class StoreAction: public Action {
 public:
-	//! constructors
-	StoreAction(const char *name);
-	~StoreAction();
-
-	/*! Executes the action configuration to store value
-	 * \param transitionToken (in/out) the event passed by the caller, can be modified.
-	 * \param ctx the context the action runs within.
-	 * \param config the configuration of the action.
-	 * \return true if the action run successfully, false if an error occurred. */
+	StoreAction(const char *name) :
+		Action(name) {
+	}
+protected:
+	/*! copy a optionally rendered value into a slot in a store
+	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
+	 * @return true if slot does not exist anymore
+	 * @return false when Slot was not defined */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

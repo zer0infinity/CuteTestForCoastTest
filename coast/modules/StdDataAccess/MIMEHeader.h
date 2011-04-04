@@ -29,30 +29,26 @@ class MIMEHeader: public LookupInterface {
 	//!contains the request/reply header
 	Anything fHeader;
 	Coast::URLUtils::NormalizeTag fNormalizeKey;
-
 	MIMEHeader(const MIMEHeader &);
 public:
 	//! represent a mime header
-	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift);
-
+	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift) :
+		fNormalizeKey(normalizeKey) {
+	}
 	//! read the MIME header from is
 	/*! reads MIME header from is withlimit the line size to detect misuse of server */
-	bool ParseHeaders(std::istream &is, long const maxlinelen = cDefaultMaxLineSz, long const maxheaderlen = cDefaultMaxHeaderSz);
-
+	bool ParseHeaders(std::istream & is, const long maxlinelen = cDefaultMaxLineSz, const long maxheaderlen = cDefaultMaxHeaderSz);
 	//! answer if we are a header of a multipart MIME message
 	bool IsMultiPart() const;
-
 	//! return the cached boundary string that separates multipart MIME messages
 	/*! This function is only useful if Content-Type is multipart/form-data
 	 * \return boundary String
 	 */
 	String GetBoundary() const;
-
 	//! Get value of "content-length" header field
 	/*! Only valid if the canonical "content-length" header field was set
 	 \return length as set in the header or -1 if none set */
 	long GetContentLength() const;
-
 	//! the complete header information as an Anything
 	Anything GetInfo() const {
 		return fHeader;
@@ -60,27 +56,30 @@ public:
 
 	struct InvalidLineException {
 		String fMessage, fLine;
-		InvalidLineException(String const& msg, String const& line) throw () :
+		InvalidLineException(const String & msg, const String & line) throw () :
 			fMessage(msg), fLine(line) {
 		}
-		virtual const char* what() const throw () {
+
+		const virtual char *what() const throw () {
 			return fMessage;
 		}
 	};
 	struct SizeExceededException: MIMEHeader::InvalidLineException {
 		long fMaxSize, fActualSize;
-		SizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+		SizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			MIMEHeader::InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
 			fMessage.Append("; max: ").Append(fMaxSize).Append(" actual: ").Append(fActualSize);
 		}
+
 	};
 	struct LineSizeExceededException: MIMEHeader::SizeExceededException {
-		LineSizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+		LineSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			SizeExceededException(msg, line, lMaxSize, lActualSize) {
 		}
+
 	};
 	struct HeaderSizeExceededException: MIMEHeader::SizeExceededException {
-		HeaderSizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) throw () :
+		HeaderSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			SizeExceededException(msg, line, lMaxSize, lActualSize) {
 		}
 	};

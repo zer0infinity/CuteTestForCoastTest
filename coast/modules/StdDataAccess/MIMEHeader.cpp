@@ -11,15 +11,11 @@
 #include "AnythingUtils.h"
 #include "AnyIterators.h"
 #include "RE.h"
+#include "HTTPConstants.h"
 //#include "RECompiler.h"
 #include <iostream>
 #include <cstdio>	// for EOF
 #include <cstring>  // for strlen
-
-MIMEHeader::MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey) :
-	fNormalizeKey(normalizeKey) {
-	StartTrace(MIMEHeader.Ctor);
-}
 
 namespace Coast {
 	namespace StreamUtils {
@@ -52,14 +48,13 @@ namespace {
 	char const headerArgumentsDelimiter = ',';
 	char const valueArgumentDelimiter = '=';
 
-	String const strSplitfields("^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)", -1, Coast::Storage::Global());
-//	Anything const headersREProgram = RECompiler().compile(strSplitfields);
+//	Anything const headersREProgram = RECompiler().compile(Coast::HTTP::_httpSplitFieldsRegularExpression);
 
 	void StoreKeyValue(Anything &headers, String const& strKey, String const &strValue)
 	{
 		StartTrace(MIMEHeader.StoreKeyValue);
 		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
-		RE multivalueRE(strSplitfields, RE::MATCH_ICASE);
+		RE multivalueRE(Coast::HTTP::_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
 		if ( multivalueRE.ContainedIn(strKey) ) {
 			Anything &anyValues = headers[strKey];
 			Coast::URLUtils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, Coast::URLUtils::eUpshift);

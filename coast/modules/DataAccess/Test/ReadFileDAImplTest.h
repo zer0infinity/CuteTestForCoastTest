@@ -11,29 +11,13 @@
 
 #include "TestCase.h"
 
-//---- ReadFileDAImplTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class ReadFileDAImplTest : public TestFramework::TestCase
-{
+class ReadFileDAImplTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	ReadFileDAImplTest(TString tstrName);
-
-	//! destroys the test case
-	~ReadFileDAImplTest();
-
-	//--- public api
-
+	ReadFileDAImplTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
+	static Test *suite();
 	//! describe this testcase
 	void GetFileStreamTest();
 	void GetFileNameTest();

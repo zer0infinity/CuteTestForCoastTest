@@ -12,6 +12,7 @@
 #include "AppLog.h"
 #include "AnythingUtils.h"
 #include "StringStream.h"
+#include "HTTPConstants.h"
 
 RegisterRequestProcessor(HTTPProcessorWithChecks);
 
@@ -22,8 +23,8 @@ namespace {
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage["ResponseCode"] = errorcode;
-		anyMessage["ResponseMsg"] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -116,7 +117,7 @@ void HTTPProcessorWithChecks::DoHandleVerifyError(std::ostream &reply, Context &
 //		if ( reject ) {
 //			if ( !!Ios ) {
 //				Anything anyErrCode = errcode;
-//				StorePutter::Operate(anyErrCode, ctx, "Tmp", "HTTPStatus.ResponseCode");
+//				StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
 //				Error(Ios, msg, ctx);
 //				Ios << ENDL;
 //				Ios.flush();

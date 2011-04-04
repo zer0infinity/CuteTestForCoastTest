@@ -10,87 +10,77 @@
 #include "HTTPProtocolReplyRenderer.h"
 #include "TestSuite.h"
 #include "StringStream.h"
+#include "HTTPConstants.h"
 
-//---- HTTPProtocolReplyRendererTest ----------------------------------------------------------------
-void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine()
-{
+void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine() {
 	StartTrace(HTTPProtocolReplyRendererTest.ReasonLessErrorReplyLine);
-	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
 	Context c;
+	Anything tmpStore(c.GetTmpStore());
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolCodeSlotname] = 500L;
 	OStringStream response;
-	c.GetTmpStore()["HTTPStatus"]["ResponseCode"] = 500L;
-	r.RenderAll(response, c, ROAnything());
+	Anything anyConfig;
+	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
+	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 500 Server Error\r\nConnection: close\r\n", response.str());
-	assertEqual(500L, c.Lookup("HTTPStatus.ResponseCode", -1L));
+	assertEqual(500L, c.Lookup(String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname), -1L));
 }
 
-void HTTPProtocolReplyRendererTest::ReasonLessReplyLine()
-{
+void HTTPProtocolReplyRendererTest::ReasonLessReplyLine() {
 	StartTrace(HTTPProtocolReplyRendererTest.ReasonLessReplyLine);
-	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
 	Context c;
 	OStringStream response;
-	r.RenderAll(response, c, ROAnything());
+	Anything anyConfig;
+	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
+	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\nConnection: close\r\n", response.str());
-	assertEqual(200L, c.Lookup("HTTPStatus.ResponseCode", -1L));
+	assertEqual(200L, c.Lookup(String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname), -1L));
 }
 
-void HTTPProtocolReplyRendererTest::ConnectionCloseTest()
-{
+void HTTPProtocolReplyRendererTest::ConnectionCloseTest() {
 	StartTrace(HTTPProtocolReplyRendererTest.ConnectionCloseTest);
-	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
-
 	Anything config;
-
 	config["PersistentConnections"] = 1L;
-
 	Context c(config);
-
 	OStringStream response;
-	r.RenderAll(response, c, ROAnything());
+	Anything anyConfig;
+	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
+	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\nConnection: close\r\n", response.str());
-
 	Anything tmpStore(c.GetTmpStore());
 	tmpStore["Keep-Alive"] = 1L;
-
 	OStringStream response2;
-	r.RenderAll(response2, c, ROAnything());
+	Renderer::Render(response2, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\n", response2.str());
 }
 
-void HTTPProtocolReplyRendererTest::RequestSuccessfulReplyLine()
-{
+void HTTPProtocolReplyRendererTest::RequestSuccessfulReplyLine() {
 	StartTrace(HTTPProtocolReplyRendererTest.RequestSuccessfulReplyLine);
-	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
 	Context c;
 	Anything tmpStore(c.GetTmpStore());
-	tmpStore["HTTPStatus"]["HTTPVersion"] = "HTTP/1.1";
-	tmpStore["HTTPStatus"]["ResponseCode"] = 200L;
-	tmpStore["HTTPStatus"]["ResponseMsg"] = "OK";
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolVersionSlotname] = "HTTP/1.1";
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolCodeSlotname] = 200L;
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolMsgSlotname] = "OK";
 	OStringStream response;
-	r.RenderAll(response, c, ROAnything());
+	Anything anyConfig;
+	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
+	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\nConnection: close\r\n", response.str());
 	OStringStream response2;
-	tmpStore["HTTPStatus"]["HTTPVersion"] = "HTTP/1.0";
-	tmpStore["HTTPStatus"]["ResponseMsg"] = "OKEYDOKEY";
-	r.RenderAll(response2, c, ROAnything());
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolVersionSlotname] = "HTTP/1.0";
+	tmpStore["HTTPStatus"][Coast::HTTP::_httpProtocolMsgSlotname] = "OKEYDOKEY";
+	Renderer::Render(response2, c, anyConfig);
 	assertEqual("HTTP/1.0 200 OKEYDOKEY\r\n", response2.str());
 }
 
-void HTTPProtocolReplyRendererTest::DefaultReasonPhraseTest()
-{
+void HTTPProtocolReplyRendererTest::DefaultReasonPhraseTest() {
 	StartTrace(HTTPProtocolReplyRendererTest.DefaultReasonPhraseTest);
-
 	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
-
 	assertEqual("OK", r.DefaultReasonPhrase(200L));
-
 	assertEqual("Unknown Error", r.DefaultReasonPhrase(555));
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *HTTPProtocolReplyRendererTest::suite ()
-{
+Test *HTTPProtocolReplyRendererTest::suite() {
 	StartTrace(HTTPProtocolReplyRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, RequestSuccessfulReplyLine);

@@ -5,39 +5,35 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTTPFileLoader.h"
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "Renderer.h"
 #include "Dbg.h"
-
-//--- HTTPFileLoader -----------------------------------------------------
+#include "HTTPConstants.h"
 RegisterDataAccessImpl(HTTPFileLoader);
 
-bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
 
 	Anything statusSpec;
 
 	Anything verSpec;
-	verSpec[0L]["ContextLookupRenderer"] = "Mapper.HTTPVersion";
-	statusSpec["HTTPVersion"] = verSpec;
+	verSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::_httpProtocolVersionSlotname);
+	statusSpec[Coast::HTTP::_httpProtocolVersionSlotname] = verSpec;
 
 	Anything resCodeSpec;
-	resCodeSpec[0L]["ContextLookupRenderer"] = "Mapper.ResponseCode";
-	statusSpec["ResponseCode"] = resCodeSpec;
+	resCodeSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::_httpProtocolCodeSlotname);
+	statusSpec[Coast::HTTP::_httpProtocolCodeSlotname] = resCodeSpec;
 
 	Anything resMsgSpec;
-	resMsgSpec[0L]["ContextLookupRenderer"] = "Mapper.ResponseMsg";
-	statusSpec["ResponseMsg"] = resMsgSpec;
+	resMsgSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::_httpProtocolMsgSlotname);
+	statusSpec[Coast::HTTP::_httpProtocolMsgSlotname] = resMsgSpec;
 
 	return out->Put("HTTPStatus", statusSpec, context);
 }
 
-bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
 
 	GenReplyStatus(context, in, out);
@@ -49,9 +45,9 @@ bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, Resul
 
 	Anything condSpec;
 	condSpec["ContextCondition"] = "Mapper.content-length";
-	condSpec["Defined"]   = contentLengthSpec;
+	condSpec["Defined"] = contentLengthSpec;
 
-//!@FIXME allow for content-compression...
+	//!@FIXME allow for content-compression...
 
 	Anything headerSpec;
 	headerSpec[0L] = "Content-Type: ";
@@ -62,8 +58,7 @@ bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, Resul
 	return out->Put("HTTPHeader", headerSpec, context);
 }
 
-bool HTTPFileLoader::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPFileLoader::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPFileLoader.Exec);
 	bool retVal = true;
 	String filename;
@@ -74,9 +69,9 @@ bool HTTPFileLoader::Exec( Context &context, ParameterMapper *in, ResultMapper *
 	SubTrace(FileName, "FileName:<" << filename << ">");
 
 	retVal = GenReplyHeader(context, in, out) && retVal;
-	retVal = out->Put("HTTPVersion", String("HTTP/1.1"), context) && retVal; // PS Fix binary &
+	retVal = out->Put(Coast::HTTP::_httpProtocolVersionSlotname, String("HTTP/1.1"), context) && retVal; // PS Fix binary &
 
-	if ( retVal ) {
+	if (retVal) {
 		retVal = ProcessFile(filename, context, in, out);
 	}
 
@@ -87,8 +82,7 @@ bool HTTPFileLoader::Exec( Context &context, ParameterMapper *in, ResultMapper *
 	return retVal;
 }
 
-void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace1(HTTPFileLoader.ProduceErrorReply, "Filename: >" << filename << "<");
 
 	long errorCode(context.Lookup("HTTPError", 400L));
@@ -111,8 +105,8 @@ void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context,
 	Trace("errorCode :" << errorCode );
 	Trace("errorMsg :" << errormsg );
 
-	out->Put("ResponseCode", errorCode, context);
-	out->Put("ResponseMsg", errormsg, context);
+	out->Put(Coast::HTTP::_httpProtocolCodeSlotname, errorCode, context);
+	out->Put(Coast::HTTP::_httpProtocolMsgSlotname, errormsg, context);
 	out->Put("content-type", String("text/html"), context);
 	IStringStream is(errorReply);
 	out->Put("HTTPBody", is, context);
@@ -120,8 +114,7 @@ void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context,
 	TraceAny(context.GetTmpStore()["Mapper"], "Error handling");
 }
 
-bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace1(HTTPFileLoader.ProcessFile, "Filename: >" << filename << "<");
 
 	bool retVal = true;
@@ -130,11 +123,11 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 	Ios = Coast::System::OpenStream(filename, ext, std::ios::in | std::ios::binary);
 	if (Ios) {
 		Trace("Stream opened ok");
-		retVal = out->Put("ResponseCode", 200L, context) && retVal;
-		retVal = out->Put("ResponseMsg", String("Ok"), context) && retVal;
+		retVal = out->Put(Coast::HTTP::_httpProtocolCodeSlotname, 200L, context) && retVal;
+		retVal = out->Put(Coast::HTTP::_httpProtocolMsgSlotname, String("Ok"), context) && retVal;
 
 		long posDot = filename.StrRChr('.');
-		if ( posDot != -1 ) {
+		if (posDot != -1) {
 			ext = filename.SubString(posDot + 1, filename.Length());
 		}
 		String ctquery("Ext2MIMETypeMap");
@@ -142,11 +135,11 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 		retVal = out->Put("content-type", String(context.Lookup(ctquery, "text/plain")), context) && retVal;
 
 		ul_long ulFileSize = 0ULL;
-		if ( Coast::System::GetFileSize(filename, ulFileSize) ) {
+		if (Coast::System::GetFileSize(filename, ulFileSize)) {
 			Trace("file [" << filename << "] has size (stat): " << (l_long)ulFileSize);
-			retVal = out->Put("content-length", (long)ulFileSize, context) && retVal;
+			retVal = out->Put("content-length", (long) ulFileSize, context) && retVal;
 		}
-		retVal = out->Put("HTTPBody", (*(std::istream *)Ios), context) && retVal;
+		retVal = out->Put("HTTPBody", (*(std::istream *) Ios), context) && retVal;
 		delete Ios;
 	} else {
 		retVal = false;

@@ -95,7 +95,7 @@
 			/TmpStore {
 				/StoredMapper {
 					/HTTPResponse {
-						/Code 400
+						/ResponseCode 400
 					}
 					/Output {
 						/Tokens "Information irrelevant"
@@ -125,7 +125,7 @@
 			/TmpStore {
 				/StoredMapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Tokens "Hallo Goödbye"
@@ -144,7 +144,7 @@
 		/"Mustnot Token Hallo Present In Step 3" {
 			/UseConfig "ResponseCodeWrong"
 			/Replace {
-				/TmpStore.StoredMapper.HTTPResponse.Code "200"
+				/TmpStore.StoredMapper.HTTPResponse.ResponseCode "200"
 				/TmpStore.StoredMapper.Output.Tokens "Hallo Gxxdbye"
 				/Result.TmpStore.result.ErrorMessage:1
 					"In step:3<no label found>Unwanted Token <hallo> DID occur in page:Server/Path/xy\r\r\nPage contained:hallo gxxdbye"
@@ -153,7 +153,7 @@
 		/"Must Token Goodbye Missing" {
 			/UseConfig "Mustnot Token Hallo Present In Step 3"
 			/Replace {
-				/TmpStore.StoredMapper.HTTPResponse.Code "200"
+				/TmpStore.StoredMapper.HTTPResponse.ResponseCode "200"
 				/TmpStore.StoredMapper.Output.Tokens "Hallo Gxxdbye"
 				/Result.TmpStore.result.ErrorMessage:2
 					"In step:4<no label found>Wanted Token <goodbye> not found in page:Server/Path/xy\r\r\nPage contained:hallo gxxdbye"

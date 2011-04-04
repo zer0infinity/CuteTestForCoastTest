@@ -5,36 +5,34 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "SimpleDataAccessService.h"
 #include "Timers.h"
 #include "Renderer.h"
 #include "DataAccess.h"
 #include "RequestProcessor.h"
 #include "StringStream.h"
+#include "HTTPConstants.h"
 
-//---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);
 
-//---- SimpleDataAccessService ----------------------------------------------------------------
-bool SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
-{
+bool SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx) {
 	StartTrace(SimpleDataAccessService.DoHandleService);
-	if (!!reply ) {
+	if (!!reply) {
 		String service;
 		this->GetName(service);
 
 		Anything tmpStore(ctx.GetTmpStore());
 		Trace("Executing data access: " << service);
 
-		if ( DataAccess(service).StdExec(ctx) ) {
-			MethodTimer(SimpleDataAccessService.DoHandleService, "Processing output", ctx);
+		if (DataAccess(service).StdExec(ctx)) {
+			MethodTimer(SimpleDataAccessService.DoHandleService, "Processing output", ctx)
+			;
 		} else {
 			Trace("error something wrong with service:" << service);
 			Anything mapinfo = tmpStore["Mapper"];
-			if (!(mapinfo.IsDefined("HTTPStatus") && mapinfo["HTTPStatus"].IsDefined("ResponseCode"))) {
-				mapinfo["ResponseCode"] = 500L;
-				mapinfo["ResponseMsg"] = "internal server error";
+			if (!(mapinfo.IsDefined("HTTPStatus") && mapinfo["HTTPStatus"].IsDefined(Coast::HTTP::_httpProtocolCodeSlotname))) {
+				mapinfo[Coast::HTTP::_httpProtocolCodeSlotname] = 500L;
+				mapinfo[Coast::HTTP::_httpProtocolMsgSlotname] = "internal server error";
 
 				mapinfo["HTTPBody"] = "SimpleDataAccessService::DoHandleService some error occured";
 			}

@@ -15,7 +15,6 @@
 class MIMEHeader;
 class Context;
 
-//--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
 class HTTPRequestReader {
 	//!product output a request anything
@@ -28,13 +27,13 @@ class HTTPRequestReader {
 	long fRequestBufferSize;
 public:
 	//!reads request from ios on behalf of processor
-	HTTPRequestReader(MIMEHeader &header);
-
+	HTTPRequestReader(MIMEHeader &header) :
+		fHeader(header), fRequestBufferSize(0) {
+	}
 	//!read a request and handle error through ios
-	bool ReadRequest(Context &ctx, std::iostream &Ios);
-
+	bool ReadRequest(Context & ctx, std::iostream & Ios);
 	//!get the resulting anything if read request was successful
-	Anything const& GetRequest();
+	const Anything & GetRequest();
 };
 
 #endif

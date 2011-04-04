@@ -24,12 +24,15 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPResponseMapperTest(TString tstrName);
-
-	//! destroys the test case
-	~HTTPResponseMapperTest();
-
-	//--- public api
+	HTTPResponseMapperTest(TString tstrName)
+    :TestCaseType(tstrName)
+    {
+}
+    //! destroys the test case
+	~HTTPResponseMapperTest()
+    {
+}
+    //--- public api
 
 	//! builds up a suite of testcases for this test
 	static Test *suite ();

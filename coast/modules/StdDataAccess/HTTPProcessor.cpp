@@ -16,6 +16,7 @@
 #include "AppLog.h"
 #include "AnythingUtils.h"
 #include "StringStream.h"
+#include "HTTPConstants.h"
 
 RegisterRequestProcessor(HTTPProcessor);
 
@@ -26,8 +27,8 @@ namespace {
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage["ResponseCode"] = errorcode;
-		anyMessage["ResponseMsg"] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -122,7 +123,7 @@ namespace Coast {
 namespace {
 	void ErrorReply(std::ostream &reply, const String &msg, Context &ctx) {
 		StartTrace1(HTTPProcessor.ErrorReply, "message [" << msg << "]");
-		long errorCode = ctx.Lookup("HTTPStatus.ResponseCode", 400L);
+		long errorCode = ctx.Lookup(String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname), 400L);
 		String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
 		Coast::HTTP::RenderHTTPProtocolStatus(reply, ctx);
 		reply << "content-type: text/html" << ENDL << ENDL;
@@ -153,8 +154,8 @@ namespace {
 		if ( ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot","NonExistingSlotname"), roaErrorMessages) ) {
 			LogError(ctx);
 			//!@FIXME: maybe we should log all of them?
-			Anything anyErrCode = roaErrorMessages[0L]["ResponseCode"].DeepClone();
-			StorePutter::Operate(anyErrCode, ctx, "Tmp", "HTTPStatus.ResponseCode");
+			Anything anyErrCode = roaErrorMessages[0L][Coast::HTTP::_httpProtocolCodeSlotname].DeepClone();
+			StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
 			ErrorReply(reply, roaErrorMessages[0L]["ErrorMessage"].AsString(), ctx);
 		}
 	}

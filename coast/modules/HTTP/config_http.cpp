@@ -9,24 +9,19 @@
 #include "InitFinisManager.h"
 
 namespace {
-	void Init()
-	{
+	void Init() {
 		InitFinisManager::IFMTrace(">> http::Init\n");
 		InitFinisManager::IFMTrace("<< http::Init\n");
 	}
-
-	void Finis()
-	{
+	void Finis() {
 		InitFinisManager::IFMTrace(">> http::Finis\n");
 		InitFinisManager::IFMTrace("<< http::Finis\n");
 	}
 }
 
-extern "C" void __attribute__ ((constructor)) http_init()
-{
+extern "C" void __attribute__ ((constructor)) http_init() {
 	Init();
 }
-extern "C" void __attribute__ ((destructor)) http_fini()
-{
+extern "C" void __attribute__ ((destructor)) http_fini() {
 	Finis();
 }

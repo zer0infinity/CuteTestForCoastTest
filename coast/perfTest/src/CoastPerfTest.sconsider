@@ -6,7 +6,7 @@ Import('*')
 buildSettings = {
     packagename : {
         'includeSubdir'    : '',
-        'linkDependencies' : ['CoastDataAccess', 'CoastSSL'],
+        'linkDependencies' : ['CoastDataAccess', 'CoastSSL', 'CoastHTTP'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
         'public' : {

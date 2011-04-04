@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/DLL {}
 	/Modules {
@@ -35,7 +34,6 @@
 	{
 		/WholeHeaderConfig
 		{
-
 			/Env
 			{
 				/Data
@@ -50,11 +48,10 @@
 					/HeaderSlot "Data"
 				}
 			}
-			/Expected "adummyheaderline"
+			/Expected "adummyheaderline\r\n"
 		}
 		/SingleLine1
 		{
-
 			/Env
 			{
 				/Data
@@ -73,7 +70,6 @@
 		}
 		/SingleLine2
 		{
-
 			/Env
 			{
 				/Data
@@ -89,7 +85,6 @@
 		}
 		/SingleLineMultiValue
 		{
-
 			/Env
 			{
 				/Data
@@ -113,7 +108,6 @@
 		}
 		/MultiLine
 		{
-
 			/Env
 			{
 				/Data
@@ -135,7 +129,6 @@
 		}
 		/MultiValues1
 		{
-
 			/Env
 			{
 				/Data
@@ -164,11 +157,10 @@
 				}
 			}
 			/Expected
-"set-cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nset-cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\nset-cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nset-cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;, Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;, Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nConnection: close\r\nContent-Type: text/html\r\n"
+"set-cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nset-cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\nset-cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nset-cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nset-cookie2: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\nset-cookie2: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nConnection: close\r\nContent-Type: text/html\r\n"
 		}
 		/MultiValues2
 		{
-
 			/Env
 			{
 				/Data
@@ -280,6 +272,30 @@
 			}
 			/Expected "WWW-Authenticate: NTLM, Basic\r\n"
 		}
-
+		/BackendValuesPutback {
+			/Env {
+                /HTTPHeader {
+                  /CONNECTION {
+                    "close"
+                  }
+                  /DATE "Mon, 04 Apr 2011 06:17:09 GMT"
+                  /LOCATION "/Transactions.aspx"
+                  /SET-COOKIE {
+                    ".ASPXAUTH=D8718557E91F30013E1D7166AC2D673336022C3F7C07D9EB8792EACCC29CE01316B892C586173D705EDF810CCF7A15A1033D75A1A02148B906D516B5F8E2D7620D9A69FA21DBB86E8392E6C9B04F5089; path=/"
+                    ".ASPXAUTH=621F744D2E9B74AE1278AF48FE6A04C265E9C3E82BCD49029F181D6E6EB26905E177CE17E539104F21A15906B963C9776A48DB55F9BE5ECB0004B444632FB21CCBDA530104976788B6561C1AF1F13ED3; path=/; secure; HttpOnly"
+                  }
+                  /CACHE-CONTROL {
+                    "private"
+                  }
+                  /CONTENT-TYPE "text/html; charset=utf-8"
+                  /CONTENT-LENGTH "4842"
+                }
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "HTTPHeader"
+			}
+			/Expected "CONNECTION: close\r\nDATE: Mon, 04 Apr 2011 06:17:09 GMT\r\nLOCATION: /Transactions.aspx\r\nSET-COOKIE: .ASPXAUTH=D8718557E91F30013E1D7166AC2D673336022C3F7C07D9EB8792EACCC29CE01316B892C586173D705EDF810CCF7A15A1033D75A1A02148B906D516B5F8E2D7620D9A69FA21DBB86E8392E6C9B04F5089; path=/\r\nSET-COOKIE: .ASPXAUTH=621F744D2E9B74AE1278AF48FE6A04C265E9C3E82BCD49029F181D6E6EB26905E177CE17E539104F21A15906B963C9776A48DB55F9BE5ECB0004B444632FB21CCBDA530104976788B6561C1AF1F13ED3; path=/; secure; HttpOnly\r\nCACHE-CONTROL: private\r\nCONTENT-TYPE: text/html; charset=utf-8\r\nCONTENT-LENGTH: 4842\r\n"
+		}
 	}
 }

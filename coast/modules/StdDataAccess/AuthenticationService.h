@@ -11,14 +11,12 @@
 
 #include "ServiceHandler.h"
 
-//---- AuthenticationService ----------------------------------------------------------
-class AuthenticationService : public ServiceHandler
-{
-public:
-	//--- constructors
+class AuthenticationService: public ServiceHandler {
 	AuthenticationService();
-	AuthenticationService(const char *authenticationServiceHandlerName);
-	~AuthenticationService();
+public:
+	AuthenticationService(const char *authenticationServiceHandlerName) :
+		ServiceHandler(authenticationServiceHandlerName) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) AuthenticationService(fName);

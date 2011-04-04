@@ -93,7 +93,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Forms {
@@ -185,7 +185,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Links {
@@ -214,7 +214,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Forms {
@@ -254,7 +254,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Forms {
@@ -296,7 +296,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Forms {
@@ -337,7 +337,7 @@
 			/TmpStore {
 				/Mapper {
 					/HTTPResponse {
-						/Code 200
+						/ResponseCode 200
 					}
 					/Output {
 						/Forms {

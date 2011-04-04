@@ -17,7 +17,6 @@
 #include "NameUsingOutputMapperTest.h"
 #include "LoopBackDAImplTest.h"
 #include "SlotnameOutputMapperTest.h"
-#include "SimpleDAServiceTest.h"
 #include "ReadFileDAImplTest.h"
 #include "WriteFileDAImplTest.h"
 #include "ConfigMapperTest.h"
@@ -39,7 +38,6 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, NameUsingOutputMapperTest);
 	ADD_SUITE(runner, ConfiguredActionTest);
 	ADD_SUITE(runner, SlotnameOutputMapperTest);
-	ADD_SUITE(runner, SimpleDAServiceTest);
 	ADD_SUITE(runner, ReadFileDAImplTest);
 	ADD_SUITE(runner, WriteFileDAImplTest);
 	ADD_SUITE(runner, ConfigMapperTest);

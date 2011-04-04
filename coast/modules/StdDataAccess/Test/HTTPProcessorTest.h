@@ -11,20 +11,17 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- HTTPProcessorTest ----------------------------------------------------------
-//!Test the HTTPProcessor
-class HTTPProcessorTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class HTTPProcessorTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//!TestCase constructor
-	//! \param name name of the test
-	HTTPProcessorTest(TString tstrName);
-
+	HTTPProcessorTest(TString tname) :
+		TestCaseType(tname) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
-	TString getConfigFileName();
-
+	TString getConfigFileName() {
+		return "HTTPProcessorTestConfig";
+	}
 	void IsZipEncodingAcceptedByClientTest();
 
 	//!tests input read method

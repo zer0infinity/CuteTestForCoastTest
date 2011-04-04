@@ -5,85 +5,73 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTTPHeaderRenderer.h"
-#include "StringStream.h"
+#include "AnyIterators.h"
+#include "RE.h"
+#include "HTTPConstants.h"
 
-//---- HTTPHeaderRenderer ---------------------------------------------------------------
 RegisterRenderer(HTTPHeaderRenderer);
 
-HTTPHeaderRenderer::HTTPHeaderRenderer(const char *name) : Renderer(name) { }
+namespace {
+    const char *_HeaderSlot = "HeaderSlot";
+	char const _headerNamedDelimiter = ':';
+	char const _headerArgumentsDelimiter = ',';
+	char const _whiteSpace = ' ';
+	char const _newlineDelim = '\0';
+	char const *_newLine = ENDL;
 
-HTTPHeaderRenderer::~HTTPHeaderRenderer() { }
+	void putValuesOnSameLine(std::ostream &reply, Context &ctx, String const& strKey, ROAnything &values) {
+		AnyExtensions::Iterator<ROAnything> entryIter(values);
+		ROAnything entry;
+		bool first = true;
+		reply << strKey << _headerNamedDelimiter << _whiteSpace;
+		while (entryIter.Next(entry)) {
+			if ( not first ) reply << _headerArgumentsDelimiter << _whiteSpace;
+			Renderer::Render(reply, ctx, entry);
+			first = false;
+		}
+		reply << _newLine;
+	}
+	void putValuesOnMultipleLines(std::ostream &reply, Context &ctx, String const& strKey, ROAnything &values) {
+		AnyExtensions::Iterator<ROAnything> entryIter(values);
+		ROAnything entry;
+		while (entryIter.Next(entry)) {
+			reply << strKey << _headerNamedDelimiter << _whiteSpace;
+			Renderer::Render(reply, ctx, entry);
+			reply << _newLine;
+		}
+	}
+	void RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config) {
+		StartTrace(HTTPHeaderRenderer.RenderHeader);
+		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
+		RE multivalueRE(Coast::HTTP::_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
+		AnyExtensions::Iterator<ROAnything> headerStructureIter(config);
+		ROAnything fieldValues;
+		String strSlotname;
+		while (headerStructureIter.Next(fieldValues)) {
+			if ( not headerStructureIter.SlotName(strSlotname) ) {
+				//! prepared "header: value" entry or a Renderer specification
+				Renderer::Render(reply, ctx, fieldValues);
+				reply << _newLine;
+			} else {
+				if ( multivalueRE.ContainedIn(strSlotname) ) {
+					putValuesOnSameLine(reply, ctx, strSlotname, fieldValues);
+				} else {
+					putValuesOnMultipleLines(reply, ctx, strSlotname, fieldValues);
+				}
+			}
+		}
+	}
+}
 
-void HTTPHeaderRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void HTTPHeaderRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(HTTPHeaderRenderer.RenderAll);
 	String slotname;
-	if (config.IsDefined("HeaderSlot")) {
-		slotname = Renderer::RenderToString(ctx, config["HeaderSlot"]);
+	if (config.IsDefined(_HeaderSlot)) {
+		slotname = Renderer::RenderToString(ctx, config[_HeaderSlot]);
 	} else {
 		slotname = Renderer::RenderToString(ctx, config);
 	}
 	Trace("using slotname: " << slotname);
 	RenderHeader(reply, ctx, ctx.Lookup(slotname));
 }
-
-void HTTPHeaderRenderer::RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
-	StartTrace(HTTPHeaderRenderer.RenderHeader);
-	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
-		String slot = config.SlotName(i);
-		if (slot.Length() == 0) {
-			Renderer::Render(reply, ctx, config[i]);
-		} else {
-			String slotUpperCase(slot);
-			slotUpperCase.ToUpper();
-			if ( slotUpperCase == "SET-COOKIE" ) {
-				RenderMultipleLineHeaderField(reply, ctx, slot, config[i]);
-			} else {
-				reply << slot << ": ";
-				RenderValues(reply, ctx, config[i]);
-				reply << ENDL;
-			}
-		}
-	}
-}
-
-void HTTPHeaderRenderer::RenderValues(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
-	StartTrace(HTTPHeaderRenderer.RenderValues);
-	Render(reply, ctx, config[0L]);
-	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
-		reply << ", ";
-		Renderer::Render(reply, ctx, config[i]);
-	}
-}
-
-void HTTPHeaderRenderer::RenderMultipleLineHeaderField(std::ostream &reply, Context &ctx, const String &slot, const ROAnything &config)
-{
-	StartTrace(HTTPHeaderRenderer.RenderMultipleLineHeaderField);
-	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
-		reply << slot << ": ";
-		Renderer::Render(reply, ctx, config[i]);
-		reply << ENDL;
-	}
-}
-
-//SOP's spike for MIMEHeader Symmetry
-//void HTTPHeaderRenderer::RenderValues(std::ostream &reply, Context &ctx, const ROAnything &config)
-//{
-//	//?? use quotes? and comma , ?
-//	if (config.SlotName(0L))
-//		reply << config.SlotName(0L) << '=';
-//	Render(reply,ctx,config[0L]);
-//	for(long i=1; i<config.GetSize(); i++)
-//	{
-//		if (config.SlotName(i))
-//			reply << "; "<<config.SlotName(i)<<'=';
-//		else
-//			reply << ", ";
-//		Renderer::Render(reply,ctx,config[i]);
-//	}
-//}
-

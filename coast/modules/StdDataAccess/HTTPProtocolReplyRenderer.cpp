@@ -9,10 +9,9 @@
 #include "HTTPProtocolReplyRenderer.h"
 #include "RequestProcessor.h"
 #include "Server.h"
-#include "Dbg.h"
 #include "AnythingUtils.h"
+#include "HTTPConstants.h"
 
-//---- HTTPProtocolReplyRenderer ---------------------------------------------------------------
 RegisterRenderer(HTTPProtocolReplyRenderer);
 
 namespace {
@@ -76,21 +75,21 @@ void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, con
 		realConfig = (config.IsNull() ? ctx.Lookup("HTTPStatus") : config);
 	}
 
-	String httpVersion = Renderer::RenderToString(ctx, realConfig["HTTPVersion"]);
+	String httpVersion = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::_httpProtocolVersionSlotname]);
 	if (not httpVersion.Length()) {
 		httpVersion = "HTTP/1.1";
 	}
 	reply << httpVersion << ' ';
 
-	long status = Renderer::RenderToString(ctx, realConfig["ResponseCode"]).AsLong(-1L);
+	long status = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::_httpProtocolCodeSlotname]).AsLong(-1L);
 	if ( status < 0L ) {
 		status = 200L;
 	}
 	Assert(status >= 100L && status < 600L);
 	reply << status << ' ';
 
-	if (realConfig.IsDefined("ResponseMsg")) {
-		Renderer::Render(reply, ctx, realConfig["ResponseMsg"]);
+	if (realConfig.IsDefined(Coast::HTTP::_httpProtocolMsgSlotname)) {
+		Renderer::Render(reply, ctx, realConfig[Coast::HTTP::_httpProtocolMsgSlotname]);
 	} else {
 		Renderer::Render(reply, ctx, Anything(DefaultReasonPhrase(status)));
 	}
@@ -98,7 +97,7 @@ void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, con
 
 	//!@FIXME: side effects, remove!!
 	Anything anyStatus = status;
-	StorePutter::Operate(anyStatus, ctx, "Tmp", "HTTPStatus.ResponseCode");
+	StorePutter::Operate(anyStatus, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
 	if (httpVersion.IsEqual("HTTP/1.1")) {
 		if (status >= 400 || realConfig["CloseConnection"].AsBool(false)) {
 			RequestProcessor::ForceConnectionClose(ctx);

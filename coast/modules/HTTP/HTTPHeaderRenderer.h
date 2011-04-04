@@ -11,36 +11,25 @@
 
 #include "Renderer.h"
 
-//---- HTTPHeaderRenderer ----------------------------------------------------------
 //! Interpret an anything and render it as a MIME Header
 /*!
-\par Configuration
-\code
+ \par Configuration
+ \code
 {
 	/HeaderSlot		Rendererspec	[optional], or use first value
 	...
 }
 \endcode
-
 */
-class HTTPHeaderRenderer : public Renderer
-{
+class HTTPHeaderRenderer: public Renderer {
 public:
-	//--- constructors
-	HTTPHeaderRenderer(const char *name);
-	~HTTPHeaderRenderer();
-
-	//! Renders ?? on <I>reply </I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	HTTPHeaderRenderer(const char *name) :
+		Renderer(name) {
+	}
+protected:
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
-
-private:
-	void RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config);
-	void RenderValues(std::ostream &reply, Context &ctx, const ROAnything &config);
-	void RenderMultipleLineHeaderField(std::ostream &reply, Context &ctx, const String &slot, const ROAnything &config);
-
 };
 
 #endif

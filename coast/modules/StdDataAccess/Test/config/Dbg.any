@@ -311,6 +311,14 @@
 		/MainSwitch						200
 		/EnableAll						200
 	}
+	/HTTPProtocolReplyRenderer {
+		/MainSwitch			20
+		/EnableAll			20
+	}
+	/HTTPProtocolReplyRendererTest {
+		/MainSwitch			20
+		/EnableAll			20
+	}
 	/ConnectorDAImplTest {
 		/MainSwitch			20
 		/EnableAll			20

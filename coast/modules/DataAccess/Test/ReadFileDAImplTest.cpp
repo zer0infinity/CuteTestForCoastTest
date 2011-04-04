@@ -11,19 +11,7 @@
 #include "ReadFileDAImpl.h"
 #include "Context.h"
 
-//---- ReadFileDAImplTest ----------------------------------------------------------------
-ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ReadFileDAImplTest.Ctor);
-}
-
-ReadFileDAImplTest::~ReadFileDAImplTest()
-{
-	StartTrace(ReadFileDAImplTest.Dtor);
-}
-
-void ReadFileDAImplTest::GetFileNameTest()
-{
+void ReadFileDAImplTest::GetFileNameTest() {
 	StartTrace(ReadFileDAImplTest.GetFileNameTest);
 
 	ReadFileDAImpl hfl("test");
@@ -58,8 +46,7 @@ void ReadFileDAImplTest::GetFileNameTest()
 	assertEqual("any", ext);
 }
 
-void ReadFileDAImplTest::GetFileStreamTest()
-{
+void ReadFileDAImplTest::GetFileStreamTest() {
 	StartTrace(ReadFileDAImplTest.GetFileStreamTest);
 	ReadFileDAImpl hfl("test");
 	ParameterMapper mp("test");
@@ -86,8 +73,7 @@ void ReadFileDAImplTest::GetFileStreamTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ReadFileDAImplTest::suite ()
-{
+Test *ReadFileDAImplTest::suite() {
 	StartTrace(ReadFileDAImplTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

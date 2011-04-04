@@ -5,29 +5,14 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "CompareValuesMapper.h"
 #include "Renderer.h"
-
-//---- CompareValuesMapper ------------------------------------------------------------------
 RegisterResultMapper(CompareValuesMapper);
 
-CompareValuesMapper::CompareValuesMapper(const char *name)
-	: ResultMapper(name)
-{
-	StartTrace(CompareValuesMapper.Ctor);
-}
-
-IFAObject *CompareValuesMapper::Clone(Allocator *a) const
-{
-	return new (a) CompareValuesMapper(fName);
-}
-
-bool CompareValuesMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script)
-{
+bool CompareValuesMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(CompareValuesMapper.DoPutAny, NotNull(key));
 	ROAnything roaRightValue, roaLeftValue, roaOperator;
-	if ( Lookup("RightValue", roaRightValue) && Lookup("LeftValue", roaLeftValue) && Lookup("Operator", roaOperator) ) {
+	if (Lookup("RightValue", roaRightValue) && Lookup("LeftValue", roaLeftValue) && Lookup("Operator", roaOperator)) {
 		String strRightValue, strOperator, strLeftValue;
 		TraceAny(roaLeftValue, "spec how to obtain left value to compare");
 		TraceAny(roaRightValue, "spec how to obtain right value to compare");
@@ -40,20 +25,20 @@ bool CompareValuesMapper::DoPutAny(const char *key, Anything &value, Context &ct
 
 		Trace("now testing for [" << strLeftValue << " " << strOperator << " " << strRightValue << "]");
 		bool bPutResult = false;
-		if ( strOperator.IsEqual("==") ) {
+		if (strOperator.IsEqual("==")) {
 			bPutResult = (strLeftValue.AsLong(0L) == strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("!=") ) {
+		} else if (strOperator.IsEqual("!=")) {
 			bPutResult = (strLeftValue.AsLong(0L) != strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual(">=") ) {	// must be before < because of possible partial match
+		} else if (strOperator.IsEqual(">=")) { // must be before < because of possible partial match
 			bPutResult = (strLeftValue.AsLong(0L) >= strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual(">") ) {
+		} else if (strOperator.IsEqual(">")) {
 			bPutResult = (strLeftValue.AsLong(0L) > strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("<=") ) {	// must be before < because of possible partial match
+		} else if (strOperator.IsEqual("<=")) { // must be before < because of possible partial match
 			bPutResult = (strLeftValue.AsLong(0L) <= strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("<") ) {
+		} else if (strOperator.IsEqual("<")) {
 			bPutResult = (strLeftValue.AsLong(0L) < strRightValue.AsLong(0L));
 		}
-		if ( bPutResult ) {
+		if (bPutResult) {
 			Trace("comparison yields true, putting result");
 			return ResultMapper::DoPutAny(key, value, ctx, script);
 		}

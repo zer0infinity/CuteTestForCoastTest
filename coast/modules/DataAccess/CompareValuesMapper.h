@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- CompareValuesMapper ----------------------------------------------------------
 //! Mapper to conditionally put a result based on a configurable comparison operation
 /*!
 <B>Configuration for configured Mapper in OutputMapperMeta.any:</B><PRE>
@@ -70,27 +69,22 @@ Results after DataAccess using this Mapper:
 	}
 }</pre>
 */
-class CompareValuesMapper : public ResultMapper
-{
-public:
-	//--- constructors
-	CompareValuesMapper(const char *name);
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
-protected:
-	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
-
-private:
+class CompareValuesMapper: public ResultMapper {
 	CompareValuesMapper();
 	CompareValuesMapper(const CompareValuesMapper &);
 	CompareValuesMapper &operator=(const CompareValuesMapper &);
+public:
+	CompareValuesMapper(const char *name) :
+		ResultMapper(name) {
+	}
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) CompareValuesMapper(fName);
+	}
+protected:
+	//! evaluate operation and map the result if comparison evaluated to true
+	/*! @copydoc ResultMapper::DoPutAny() */
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 };
 
 #endif

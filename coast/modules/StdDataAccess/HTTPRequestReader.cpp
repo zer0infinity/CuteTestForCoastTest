@@ -12,13 +12,7 @@
 #include "Dbg.h"
 #include "AnythingUtils.h"
 #include "HTTPProtocolReplyRenderer.h"
-
-//---- HTTPRequestReader -----------------------------------------------------------
-HTTPRequestReader::HTTPRequestReader(MIMEHeader &header)
-	: fHeader(header), fRequestBufferSize(0)
-{
-	StartTrace(HTTPRequestReader.HTTPRequestReader);
-}
+#include "HTTPConstants.h"
 
 namespace {
 	String const strGET("GET", Coast::Storage::Global());
@@ -27,8 +21,8 @@ namespace {
 		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
 		Anything anyMessage;
 		anyMessage["Component"] = "HTTPRequestReader";
-		anyMessage["ResponseCode"] = errorcode;
-		anyMessage["ResponseMsg"] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");

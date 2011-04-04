@@ -5,34 +5,24 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
-#include "Anything.h"
+#include "StoreAction.h"
 #include "Renderer.h"
 #include "AnythingUtils.h"
-#include "Dbg.h"
-#include "StoreAction.h"
 
-//---- StoreAction ---------------------------------------------------------------
 RegisterAction(StoreAction);
 
-StoreAction::StoreAction(const char *name) : Action(name) { }
-
-StoreAction::~StoreAction() { }
-
-bool StoreAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
-{
+bool StoreAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config) {
 	StartTrace(StoreAction.DoExecAction);
 
 	ROAnything destConfig;
 	ROAnything valueConfig;
-	if (! (config.LookupPath(destConfig, "Destination") &&
-		   config.LookupPath(valueConfig, "Value")) ) {
+	if (!(config.LookupPath(destConfig, "Destination") && config.LookupPath(valueConfig, "Value"))) {
 		return false;
 	}
 
 	TraceAny(valueConfig, "Value config");
 	Anything value;
-	if ( config["DoRender"].AsBool(true) ) {
+	if (config["DoRender"].AsBool(true)) {
 		String renderedValue;
 		Renderer::RenderOnString(renderedValue, ctx, valueConfig);
 		Trace("Rendered value: [" << renderedValue << "]");

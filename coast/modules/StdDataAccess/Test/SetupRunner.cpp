@@ -32,6 +32,7 @@
 #include "MimeHeaderResultMapperTest.h"
 #include "SplitCookieResultMapperTest.h"
 #include "MSAjaxFixFieldLengthResultMapperTest.h"
+#include "SimpleDAServiceTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -55,6 +56,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, URI2FileNameTest);
 	ADD_SUITE(runner, CgiCallerTest);
 
+	ADD_SUITE(runner, SimpleDAServiceTest);
 	ADD_SUITE(runner, HTTPFileLoaderTest);
 	ADD_SUITE(runner, HTTPDAImplTest);
 	ADD_SUITE(runner, MailDATest);

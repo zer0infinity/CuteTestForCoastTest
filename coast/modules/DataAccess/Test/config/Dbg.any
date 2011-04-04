@@ -107,18 +107,6 @@
 		/MainSwitch 10
 		/EnableAll	10
 	}
-	/SimpleDAServiceTest {
-		/MainSwitch 10
-		/EnableAll	10
-	}
-	/SimpleDataAccessService {
-		/MainSwitch 10
-		/EnableAll	10
-	}
-	/WebAppService {
-		/MainSwitch 10
-		/EnableAll	10
-	}
 	/ServiceDispatcher {
 		/MainSwitch 10
 		/EnableAll	10

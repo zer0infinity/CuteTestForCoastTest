@@ -5,15 +5,13 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "CgiCaller.h"
 #include "Anything.h"
 #include "StringStream.h"
 #include "PipeExecutor.h"
 #include "Context.h"
 #include "Dbg.h"
-
-//--- CgiCaller -----------------------------------------------------
+#include "HTTPConstants.h"
 RegisterDataAccessImpl(CgiCaller);
 
 namespace {
@@ -38,26 +36,21 @@ namespace {
 
 }
 
-bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
-
 	GenReplyStatus(context, in, out);
-
 	Anything headerSpec;
 	headerSpec[0L] = ""; // cgi provides its own header and ENDL ENDL
 	SubTraceAny(HTTPHeader, headerSpec, "HTTPHeader:");
 	return out->Put("HTTPHeader", headerSpec, context);
 }
 
-void CgiCaller::SplitPath(const String &fullPath, String &path, String &file)
-{
+void CgiCaller::SplitPath(const String &fullPath, String &path, String &file) {
 	StartTrace1(CgiCaller.SplitPath, "Filename: >" << fullPath << "<");
 	SplitRChar(fullPath, '/', path, file);
 }
 
-bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace1(CgiCaller.ProcessFile, "Filename: >" << filename << "<");
 
 	String path, file;
@@ -81,13 +74,13 @@ bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterM
 		if (cgi.Start() && (ioStream = cgi.GetStream())) {
 			// the following is tricky, because of potential pipe blocking
 			// if something large is passed, we do not check for now.
-			in->Get("stdin", *(std::ostream *)ioStream, context); // provide cgi's stdin
+			in->Get("stdin", *(std::ostream *) ioStream, context); // provide cgi's stdin
 			cgi.ShutDownWriting();
-			retVal = out->Put("ResponseCode", 200L, context) && retVal;
-			retVal = out->Put("ResponseMsg", String("Ok"), context) && retVal;
+			retVal = out->Put(Coast::HTTP::_httpProtocolCodeSlotname, 200L, context) && retVal;
+			retVal = out->Put(Coast::HTTP::_httpProtocolMsgSlotname, String("Ok"), context) && retVal;
 			// call HTTPHeader rendering ?
-			retVal = out->Put("HTTPBody", *(std::istream *)ioStream, context) && retVal; // return cgi's output
-			long exitStatus = (long)cgi.TerminateChild();
+			retVal = out->Put("HTTPBody", *(std::istream *) ioStream, context) && retVal; // return cgi's output
+			long exitStatus = (long) cgi.TerminateChild();
 			Trace("cgi terminated exit status was " << exitStatus);
 			// we ignore the childs exit status as the response code has already been set
 		} else {
