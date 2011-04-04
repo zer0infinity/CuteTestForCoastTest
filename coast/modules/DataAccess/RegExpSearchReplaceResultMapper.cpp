@@ -50,10 +50,11 @@ namespace {
 			}
 			String sReplacement = getSimpleOrRenderedString(ctx, roaEntry[_Replacement]);
 			RE aRE(sPattern, static_cast<RE::eMatchFlags> (roaEntry[_MatchFlags].AsLong(0L)));
-			Trace("String [" << sText << "], applying pattern [" << sPattern << "]");
+			SubTrace(traceText, "String [" << sText << "]");
+			Trace("applying pattern [" << sPattern << "]");
 			sText = aRE.Subst(sText, sReplacement, roaEntry[_ReplaceAll].AsBool(true));
 		} while (expressionIterator.Next(roaEntry));
-		Trace("replaced text [" << sText << "]");
+		SubTrace(traceText, "replaced text [" << sText << "]");
 	}
 }
 //---- RegExpSearchReplaceResultMapper ----------------------------------------------------------------
