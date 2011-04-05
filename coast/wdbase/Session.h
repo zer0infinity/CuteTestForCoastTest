@@ -244,13 +244,11 @@ protected:
 
 //---- SessionInfo ----------------------------------------------------------
 //! collects session information
-class SessionInfo : public Action
-{
+class SessionInfo: public Action {
 public:
-	//--- constructors
-	SessionInfo(const char *name);
-	virtual ~SessionInfo();
-
+	SessionInfo(const char *name) :
+		Action(name) {
+	}
 	//! does the information collecting
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 

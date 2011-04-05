@@ -10,34 +10,25 @@
 
 #include "Session.h"
 #include "TraceLocks.h"
-#include "SystemLog.h"
 #include "Role.h"
 #include "Page.h"
 #include "Renderer.h"
 #include "LocalizationUtils.h"
-#include "Dbg.h"
 #include "AnythingUtils.h"
 
-class AccessTimer
-{
+class AccessTimer {
 public:
 	Session *fSession;
-	AccessTimer(Session *session);
-	~AccessTimer();
-
-	void Use() { }
+	AccessTimer(Session *session) :
+		fSession(session) {
+	}
+	~AccessTimer() {
+		fSession->ResetAccessTime();
+	}
+	void Use() {
+	}
 };
 
-AccessTimer::AccessTimer(Session *session) : fSession(session)
-{
-}
-
-AccessTimer::~AccessTimer()
-{
-	fSession->ResetAccessTime();
-}
-
-//---- Session -----------------------------------------------------------
 Session::Session(const char *name)
 	: NotCloned(name)
 	, fMutex("Session")
@@ -105,8 +96,6 @@ void Session::Init(const char *id, Context &ctx)
 	logMsg << fId;
 	SystemLog::Info(logMsg);
 }
-
-//---- Getters, Setters
 
 const char *Session::GetId() const
 {
@@ -216,9 +205,8 @@ Role *Session::GetRole(Context &ctx) const
 	return role;
 }
 
-String Session::GetRoleName(Context &ctx, String const &strDefaultRolename) const
-{
-	return ((ROAnything)fStore)["RoleName"].AsString(strDefaultRolename);
+String Session::GetRoleName(Context &ctx, String const &strDefaultRolename) const {
+	return ((ROAnything) fStore)["RoleName"].AsString(strDefaultRolename);
 }
 
 bool Session::IsBusy()
@@ -242,48 +230,38 @@ void Session::Notify(ESessionEvt evt, Context &ctx)
 	IntNotify(evt, ctx);
 }
 
-void Session::IntNotify(ESessionEvt evt, Context &ctx)
-{
+void Session::IntNotify(ESessionEvt evt, Context &ctx) {
 	StatTrace(Session.IntNotify, "virtual function not overridden!", Coast::Storage::Current());
 }
 
 //--- immutable context
-bool Session::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Session::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Session.Lookup, "key: <" << NotNull(key) << ">");
 	return ROAnything(fStore).LookupPath(result, key, delim, indexdelim);
 }
 
-//---- Session Store Mgmt
-
-TrickyThing &Session::GetRoleStoreGlobal()
-{
-	return (TrickyThing &)fStore["RoleStore"];
+TrickyThing &Session::GetRoleStoreGlobal() {
+	return (TrickyThing &) fStore["RoleStore"];
 }
 
-TrickyThing &Session::GetStoreGlobal()
-{
+TrickyThing &Session::GetStoreGlobal() {
 	return fStore;
 }
 
-void Session::PutInStore(const char *key, const Anything &a)
-{
+void Session::PutInStore(const char *key, const Anything &a) {
 	fStore[key] = a;
 }
 
-void Session::HTMLDebugStore(std::ostream &reply, bool printAny)
-{
-	if ( TriggerEnabled(Session.HTMLSessionStore) || printAny ) {
+void Session::HTMLDebugStore(std::ostream &reply, bool printAny) {
+	if (TriggerEnabled(Session.HTMLSessionStore) || printAny) {
 		reply << "Session Store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
 }
 
-void Session::RemoveFromStore(const char *key)
-{
+void Session::RemoveFromStore(const char *key) {
 	fStore.Remove(key);
 }
 
-//---- entry points
 bool Session::MakeInvalid(Context &ctx)
 {
 	TRACE_LOCK_START("MakeInvalid");
@@ -534,7 +512,7 @@ namespace {
 		ROAnything roTransition;
 		if (context.Lookup("DefaultAction", roTransition) ) {
 			TraceAny(roTransition, "transition/action evaluation config");
-			transition.Trim(0);
+			transition.clear();
 			Renderer::RenderOnString( transition, context, roTransition );
 		} else {
 			transition = "Home";
@@ -730,8 +708,7 @@ bool Session::AfterPageInsert(Context &context, String &action, String &pagename
 	return CameFromPageInsert(context, action, pagename);
 }
 
-void Session::PrepareLogout(Context &context, String &transition, String &currentpage)
-{
+void Session::PrepareLogout(Context &context, String &transition, String &currentpage) {
 	StartTrace(Session.PrepareLogout);
 	transition = "Logout";
 	currentpage = context.Lookup("StartPage", "HomePage");
@@ -839,7 +816,6 @@ bool Session::InReAuthenticate(Role *r, Context &context)
 	return false;
 }
 
-//------------------------------------------------------------------------------------
 Role *Session::CheckRoleExchange(const char *action, Context &c) const
 {
 	StartTrace1(Session.CheckRoleExchange, "action: <" << NotNull(action) << ">");
@@ -868,7 +844,6 @@ Role *Session::CheckRoleExchange(const char *action, Context &c) const
 }
 
 // URL state management
-
 void Session::CollectLinkState(Anything &a, Context &c) const
 {
 	if (fAddress.Length() > 0) {
@@ -984,15 +959,9 @@ void Session::Normalize(Anything &query)
 	}
 }
 
-//--- SessionInfo ---
 RegisterAction(SessionInfo);
 
-SessionInfo::SessionInfo(const char *name) : Action(name) { }
-
-SessionInfo::~SessionInfo() { }
-
-bool SessionInfo::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
-{
+bool SessionInfo::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config) {
 	StartTrace(SessionInfo.DoExecAction);
 	Session *s = ctx.GetSession();
 	if (s) {
@@ -1004,8 +973,7 @@ bool SessionInfo::DoExecAction(String &transitionToken, Context &ctx, const ROAn
 	return false;
 }
 
-bool SessionInfo::DoGetInfo(Session *s, Anything &info, Context &ctx)
-{
+bool SessionInfo::DoGetInfo(Session *s, Anything &info, Context &ctx) {
 	StartTrace(SessionInfo.DoGetInfo);
 	return false;
 }

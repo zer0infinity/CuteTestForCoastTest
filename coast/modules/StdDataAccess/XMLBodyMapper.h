@@ -76,22 +76,22 @@ Maps to
 }
 \endcode
 */
-class XMLBodyMapper : public ResultMapper
-{
+class XMLBodyMapper: public ResultMapper {
+	XMLBodyMapper();
+	XMLBodyMapper(const XMLBodyMapper &);
+	XMLBodyMapper &operator=(const XMLBodyMapper &);
 public:
-	XMLBodyMapper(const char *name) : ResultMapper(name) { }
-	~XMLBodyMapper()	{ }
-
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	XMLBodyMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) XMLBodyMapper(fName);
 	}
-
+protected:
+	/*! @copydoc ResultMapper::DoFinalPutStream() */
 	bool DoFinalPutStream(const char *key, std::istream &is, Context &ctx);
-private:
-	XMLBodyMapper();
-	XMLBodyMapper(const XMLBodyMapper &);
-	XMLBodyMapper &operator=(const XMLBodyMapper &);
 };
 
 #endif

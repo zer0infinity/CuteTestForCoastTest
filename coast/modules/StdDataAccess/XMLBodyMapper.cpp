@@ -10,13 +10,12 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-
-// Utilities ---
-class TagToken
-{
+class TagToken {
+	String fTag;
 public:
-	TagToken(String Tag): fTag(Tag) {};
-	~TagToken() {};
+	TagToken(String Tag) :
+		fTag(Tag) {
+	}
 
 	bool IsValid() {
 		return (fTag.Length() != 0);
@@ -26,43 +25,32 @@ public:
 			return false;
 		}
 		return fTag[0L] == '/';
-	};
+	}
 	String GetTag() {
-		if (IsEndTag())	{
+		if (IsEndTag()) {
 			return fTag.SubString(1);
 		}
 		return fTag;
-	};
+	}
 	bool MatchesTag(String OtherTag) {
 		OtherTag.ToUpper();
 		String thisTag = GetTag();
 		thisTag.ToUpper();
 		return (thisTag == OtherTag);
-	};
-
-private:
-	String fTag;
+	}
 };
 
-class XMLTagParser
-{
-public:
-	XMLTagParser() {};
-	~XMLTagParser() {};
-
-	Anything DoParse(std::istream &Is);
-
-private:
+class XMLTagParser {
 	void ProcessElement(std::istream &Is, TagToken &Tag, Anything Result);
 	Anything ProcessContent(std::istream &Is, TagToken &Tag);
 	TagToken ReadNextTag(std::istream &Is, String &LeadingText);
 	bool ParseTag(std::istream &Is, String &Tag);
 	bool ReadToExpectedChar(char ExpectedChar, std::istream &Is, String &Content);
-
+public:
+	Anything DoParse(std::istream &Is);
 };
 
-Anything XMLTagParser::DoParse(std::istream &Is)
-{
+Anything XMLTagParser::DoParse(std::istream &Is) {
 	StartTrace(XMLTagParser.DoParse);
 
 	String garbageTilTheFirstTag;
@@ -76,13 +64,12 @@ Anything XMLTagParser::DoParse(std::istream &Is)
 	return result;
 }
 
-void XMLTagParser::ProcessElement(std::istream &Is, TagToken &Tag, Anything Result)
-{
+void XMLTagParser::ProcessElement(std::istream &Is, TagToken &Tag, Anything Result) {
 	StartTrace(XMLTagParser.ProcessElement);
 
 	Anything content = ProcessContent(Is, Tag);
 	String tag = Tag.GetTag();
-	if ( Result.IsDefined(tag)) {
+	if (Result.IsDefined(tag)) {
 		if (Result[tag].SlotName(0)) {
 			// pack first item
 			Anything firstItem = Result[tag];
@@ -97,8 +84,7 @@ void XMLTagParser::ProcessElement(std::istream &Is, TagToken &Tag, Anything Resu
 	TraceAny(Result, "Result");
 }
 
-Anything XMLTagParser::ProcessContent(std::istream &Is, TagToken &Tag)
-{
+Anything XMLTagParser::ProcessContent(std::istream &Is, TagToken &Tag) {
 	StartTrace(XMLTagParser.ProcessContent);
 
 	Anything result;
@@ -127,11 +113,9 @@ Anything XMLTagParser::ProcessContent(std::istream &Is, TagToken &Tag)
 
 	TraceAny(result, "Result");
 	return result;
-
 }
 
-TagToken XMLTagParser::ReadNextTag(std::istream &Is, String &LeadingText)
-{
+TagToken XMLTagParser::ReadNextTag(std::istream &Is, String &LeadingText) {
 	StartTrace(XMLTagParser.ReadNextTag);
 
 	if (!ReadToExpectedChar('<', Is, LeadingText)) {
@@ -143,8 +127,7 @@ TagToken XMLTagParser::ReadNextTag(std::istream &Is, String &LeadingText)
 	return TagToken(tag);
 }
 
-bool XMLTagParser::ParseTag(std::istream &Is, String &Tag)
-{
+bool XMLTagParser::ParseTag(std::istream &Is, String &Tag) {
 	StartTrace(XMLTagParser.ParseTag);
 	String tagContent;
 	if (ReadToExpectedChar('>', Is, tagContent)) {
@@ -155,12 +138,11 @@ bool XMLTagParser::ParseTag(std::istream &Is, String &Tag)
 	return false;
 }
 
-bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, std::istream &Is, String &Content)
-{
+bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, std::istream &Is, String &Content) {
 	StartTrace(XMLTagParser.ReadToExpectedChar);
 	char c;
 
-	while ( Is.get(c).good() ) {
+	while (Is.get(c).good()) {
 		if (c == ExpectedChar) {
 			return true;
 		}
@@ -169,17 +151,11 @@ bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, std::istream &Is, Strin
 	// Comment here we could throw an UnexpectedEndOfFile Exception for easier errorhandling
 	return false;
 }
-
-//--- XMLBodyMapper ---------------------------
 RegisterResultMapper(XMLBodyMapper);
 
-// --- Put API
-bool XMLBodyMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
-{
+bool XMLBodyMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx) {
 	StartTrace(XMLBodyMapper.DoPutStream);
-
 	XMLTagParser parser;
 	Anything result = parser.DoParse(is);
 	return DoFinalPutAny(key, result, ctx);
 }
-
