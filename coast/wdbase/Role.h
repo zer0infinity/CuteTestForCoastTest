@@ -16,7 +16,6 @@
 class Session;
 class Context;
 
-//---- RolesModule -----------------------------------------------------------
 class RolesModule: public WDModule {
 public:
 	RolesModule(const char *name) :

@@ -108,17 +108,13 @@ void Role::PrepareTmpStore(Context &c) {
 	// now extract state from URL into TmpStore
 	StartTrace1(Role.PrepareTmpStore, fName << ":");
 	ROAnything stateFullList;
-
 	if (Lookup("StateFull", stateFullList)) {
 		TraceAny(stateFullList, "State full list");
-
 		Anything query = c.GetQuery();
 		Anything fields = query["fields"];
 		Anything tmpStore = c.GetTmpStore();
-
 		for (int i = 0, szf = stateFullList.GetSize(); i < szf; ++i) {
 			const char *stateName = stateFullList[i].AsCharPtr(0);
-
 			if (stateName) {
 				//--- don't overwrite entries already there
 				bool stateAlreadyDefined = tmpStore.IsDefined(stateName);
@@ -134,7 +130,8 @@ void Role::PrepareTmpStore(Context &c) {
 					}
 				}
 			}
-		} TraceAny(tmpStore, "Tempstore after");
+		}
+		TraceAny(tmpStore, "Tempstore after");
 	}
 }
 
@@ -142,13 +139,10 @@ bool Role::GetNewPageName(Context &c, String &transition, String &pagename) cons
 	// this method implements the default page resolving mechanism
 	// it searches a new page through a lookup in the action/page map
 	// table, defined in the role's *.any file
-
 	StartTrace1(Role.GetNewPageName, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
-
 	if (IsStayOnSamePageToken(transition)) {
 		return true;
 	}
-
 	ROAnything entry;
 	if (GetNextActionConfig(entry, transition, pagename)) {
 		// now look for new map entries consisting of page and action
@@ -157,7 +151,8 @@ bool Role::GetNewPageName(Context &c, String &transition, String &pagename) cons
 			newpagename = entry["Page"].AsCharPtr(0);
 		} else {
 			newpagename = entry[0L].AsCharPtr(0);
-		} Trace("returning newPageName: <" << NotNull(newpagename) << ">");
+		}
+		Trace("returning newPageName: <" << NotNull(newpagename) << ">");
 		if (newpagename) {
 			pagename = newpagename;
 			if (entry.GetSize() > 1) {
@@ -198,13 +193,13 @@ bool Role::IsStayOnSamePageToken(String &transition) const {
 	if (transition == "StayOnSamePage" || (Lookup("StayOnSamePageTokens", tokens) && tokens.Contains(transition))) {
 		transition = "PreprocessAction";
 		bIsStayToken = true;
-	} Trace("resulting token <" << transition << "> is " << (bIsStayToken?"":"not ") << "to StayOnSamePage");
+	}
+	Trace("resulting token <" << transition << "> is " << (bIsStayToken?"":"not ") << "to StayOnSamePage");
 	return bIsStayToken;
 }
 
 void Role::CollectLinkState(Anything &stateIn, Context &c) {
 	StartTrace(Role.CollectLinkState);
-
 	// copy selected fields from TmpStore into Link
 	// the symmetric operation is in GetNewPageName
 	ROAnything stateFullList, roaStatefulEntry;
@@ -251,16 +246,13 @@ String Role::GetRequestRoleName(Context &ctx) {
 // detailed parameters of the query in DoVerify
 bool Role::Verify(Context &c, String &transition, String &pagename) const {
 	StartTrace1(Role.Verify, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
-	// if the action is always possible (e.g. logout) no further checking
-	// is necessary
+	// if the action is always possible (e.g. logout) no further checking is necessary
 	if (TransitionAlwaysOK(transition)) {
 		return true;
 	}
-
 	// we check the role level by role name
 	// if no role is defined in the query we use the default defined in slot DefaultRole or as last resort, use the Role base class
 	String name = GetRequestRoleName(c);
-
 	// check the level of the role it is defined in the config
 	// assuming some levels of roles (e.g. Guest < Customer < PaymentCustomer)
 	if (CheckLevel(name)) {
@@ -269,7 +261,6 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const {
 		Trace("role level is OK");
 		return DoVerify(c, transition, pagename);
 	}
-
 	// We have a level which is too low for this
 	// query, we can't proceed without authentication
 	Trace("role level not equal");

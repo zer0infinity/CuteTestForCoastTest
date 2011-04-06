@@ -13,7 +13,6 @@
 #include "URLFilter.h"
 #include "TraceLocks.h"
 #include "Session.h"
-#include "Registry.h"
 #include "PeriodicAction.h"
 #include "TimeStamp.h"
 #include "StringStream.h"
@@ -22,29 +21,24 @@
 #include "Policy.h"
 #include <iomanip>
 
-//---- CleanSessions ----------------------------------------------------------
 //: triggers cleanup of sessions
-class CleanSessions : public Action
-{
+class CleanSessions: public Action {
 public:
-	//--- constructors
-	CleanSessions(const char *name);
-	~CleanSessions();
-
+	CleanSessions(const char *name) :
+		Action(name) {
+	}
 	//:cleans the session list from timeouted sessions
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 
 bool SessionListManager::fgFinalize = false;
-void SessionListManager::SetFinalize(bool finalize)
-{
+void SessionListManager::SetFinalize(bool finalize) {
 	fgFinalize = finalize;
 }
 SessionListManager *SessionListManager::fgSessionListManager = 0;
 Mutex SessionListManager::fgSessionListManagerMutex("SessionListManager");
 
-void stopcleaner()
-{
+void stopcleaner() {
 	SessionListManager::SetFinalize(true);
 	SessionListManager *pSLM = SessionListManager::SLM();
 	if (pSLM) {
@@ -52,8 +46,7 @@ void stopcleaner()
 	}
 }
 
-SessionListManager *SessionListManager::SLM()
-{
+SessionListManager *SessionListManager::SLM() {
 	if (!fgSessionListManager && !fgFinalize) {
 		LockUnlockEntry me(fgSessionListManagerMutex);
 		if (!fgSessionListManager && !fgFinalize) {
@@ -91,11 +84,6 @@ SessionListManager::SessionListManager(const char *name)
 	long pid = Coast::System::getpid();
 #endif
 	ss << std::hex << hostid << "!" << std::dec << (unsigned long) abs(pid);
-}
-
-SessionListManager::~SessionListManager()
-{
-	StartTrace(SessionListManager.~SessionListManager);
 }
 
 bool SessionListManager::Init(const ROAnything config)
@@ -167,42 +155,36 @@ bool SessionListManager::ResetInit(const ROAnything config)
 	return ret;
 }
 
-Session *SessionListManager::DoMakeSession(Context &ctx)
-{
+Session *SessionListManager::DoMakeSession(Context &ctx) {
 	StartTrace(SessionListManager.DoMakeSession);
-
-	if ( fSessionFactory ) {
+	if (fSessionFactory) {
 		return fSessionFactory->DoMakeSession(ctx);
 	}
 	return new (Coast::Storage::Global()) Session("Session");
 }
 
-Session *SessionListManager::MakeSession(Context &ctx)
-{
+Session *SessionListManager::MakeSession(Context &ctx) {
 	StartTrace(SessionListManager.MakeSession);
 	TRACE_LOCK_START("MakeSession");
 	Session *session = 0;
 	long sessionsCount = GetNumberOfSessions();
 	Trace("fSessionsCount: " << sessionsCount << " fMaxSessionsAllowed: " << fMaxSessionsAllowed);
-	if ( sessionsCount >= fMaxSessionsAllowed) {
+	if (sessionsCount >= fMaxSessionsAllowed) {
 		// try to make room for new session
 		sessionsCount = CleanupSessions(ctx, true);
 	}
-	if ( sessionsCount < fMaxSessionsAllowed ) {
+	if (sessionsCount < fMaxSessionsAllowed) {
 		session = DoMakeSession(ctx);
 		ctx.Push(session);
 	}
 	return session;
-
 }
 
-Session *SessionListManager::LookupSession(const String &id, Context &ctx)
-{
+Session *SessionListManager::LookupSession(const String &id, Context &ctx) {
 	StartTrace(SessionListManager.LookupSession);
-
 	Session *session = 0;
 	Trace("SessionId:<" << id << ">");
-	if ( id.Length() > 0 ) {
+	if (id.Length() > 0) {
 		session = IntLookupSession(id, ctx);
 	}
 	return session;
@@ -241,8 +223,7 @@ void SessionListManager::DisableSession(const String &sessionId, Context &ctx)
 	return;						 // Disable session is ok if session is removed or not there.
 }
 
-Session *SessionListManager::CreateSession(String &sessionId, Context &ctx)
-{
+Session *SessionListManager::CreateSession(String &sessionId, Context &ctx) {
 	StartTrace(SessionListManager.CreateSession);
 	Session *session = MakeSession(ctx);
 	if (session) {
@@ -253,30 +234,24 @@ Session *SessionListManager::CreateSession(String &sessionId, Context &ctx)
 		Trace("Session allocation failed");
 		SystemLog::Error("can't create session");
 	}
-
 	return session;
 }
 
-String &SessionListManager::InitSession(String &id, Session *session, Context &ctx)
-{
+String &SessionListManager::InitSession(String &id, Session *session, Context &ctx) {
 	StartTrace(SessionListManager.InitSession);
-
 	Anything any(ctx.GetRequest());
 	Anything query;
-	if (any.LookupPath(query, "query")) {	// look for session id in query
+	if (any.LookupPath(query, "query")) { // look for session id in query
 		// modify query, so its obvious, that this query created a new session
 		query["SessionIsNew"] = Anything(true);
 		// set session id  if defined
 		id = ROAnything(query)["sessionId"].AsCharPtr("");
 	}
-	if ( id.Length() == 0 ) {	// session id not set, generate one
+	if (id.Length() == 0) { // session id not set, generate one
 		GetNextId(id, ctx);
 	}
 	session->Init(id, ctx);
 	return id;
-
-	return id;
-
 }
 
 void SessionListManager::AddSession(const String &id, Session *session, Context &ctx)
@@ -355,8 +330,7 @@ void SessionListManager::GetNextId(String &s, Context &ctx)
 	s.Append("_").Append(fNextId);
 }
 
-String SessionListManager::GetUniqueInstanceId()
-{
+String SessionListManager::GetUniqueInstanceId() {
 	return String(fUniqueInstanceId, Coast::Storage::Current());
 }
 
@@ -739,67 +713,43 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 	return ret;
 }
 
-//---- SessionFactory -----------------------------------------------------------
-SessionFactory::SessionFactory(const char *SessionFactoryName) : HierarchConfNamed(SessionFactoryName)
-{
-	StartTrace1(SessionFactory.Ctor, NotNull(SessionFactoryName));
-}
-
-SessionFactory::~SessionFactory()
-{
-	StartTrace(SessionFactory.Dtor);
-}
-
-Session *SessionFactory::DoMakeSession(Context &ctx)
-{
+Session *SessionFactory::DoMakeSession(Context &ctx) {
 	StartTrace(SessionFactory.DoMakeSession);
 	Trace("fName: " << fName);
 	return new (Coast::Storage::Global()) Session(fName);
 }
 
-Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy)
-{
+Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy) {
 	StartTrace(SessionFactory.DoPrepareSession);
 	return session;
 }
 
-bool SessionFactory::DoLoadConfig(const char *category)
-{
+bool SessionFactory::DoLoadConfig(const char *category) {
 	StartTrace1(SessionFactory.DoLoadConfig, "category: <" << NotNull(category) << ">");
-
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if (HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName)) {
 		// AcceptorFactories use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
 		Assert(!fConfig.IsNull());
 		TraceAny(fConfig, "fConfig: ");
 		return (!fConfig.IsNull());
 	}
-
 	Trace("fConfig is null, returning false");
 	fConfig = Anything();
 	return false;
 }
 
-bool SessionFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
-{
+bool SessionFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const {
 	StartTrace1(SessionFactory.DoGetConfigName, "category: <" << NotNull(category) << "> object: <" << NotNull(objName) << ">");
 	configFileName = "Config";
 	Trace("returning <" << configFileName << "> true");
 	return true;
 }
 
-RegCacheImpl(SessionFactory);	// FindPage()
 RegisterSessionFactory(SessionFactory);
 
-//--- CleanupSessions ---
 RegisterAction(CleanSessions);
 
-CleanSessions::CleanSessions(const char *name) : Action(name) { }
-
-CleanSessions::~CleanSessions() { }
-
-bool CleanSessions::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
-{
+bool CleanSessions::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config) {
 	StartTrace(CleanSessions.DoExecAction);
 	SessionListManager *slm = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	if (slm) {
@@ -809,20 +759,9 @@ bool CleanSessions::DoExecAction(String &transitionToken, Context &ctx, const RO
 	return false;
 }
 
-//---- SessionFactoriesModule -----------------------------------------------------------
 RegisterModule(SessionFactoriesModule);
 
-SessionFactoriesModule::SessionFactoriesModule(const char *name)
-	: WDModule(name)
-{
-}
-
-SessionFactoriesModule::~SessionFactoriesModule()
-{
-}
-
-bool SessionFactoriesModule::Init(const ROAnything config)
-{
+bool SessionFactoriesModule::Init(const ROAnything config) {
 	StartTrace(SessionFactoriesModule.Init);
 	TraceAny(config, "config");
 	if (config.IsDefined("SessionFactories")) {
@@ -832,15 +771,13 @@ bool SessionFactoriesModule::Init(const ROAnything config)
 	return false;
 }
 
-bool SessionFactoriesModule::ResetFinis(const ROAnything config)
-{
+bool SessionFactoriesModule::ResetFinis(const ROAnything config) {
 	StartTrace(SessionFactoriesModule.ResetFinis);
 	AliasTerminator at("SessionFactory");
 	return RegisterableObject::ResetTerminate("SessionFactory", &at);
 }
 
-bool SessionFactoriesModule::Finis()
-{
+bool SessionFactoriesModule::Finis() {
 	StartTrace(SessionFactoriesModule.Finis);
 	return StdFinis("SessionFactory", "SessionFactories");
 }

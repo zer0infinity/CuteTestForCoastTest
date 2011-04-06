@@ -12,34 +12,33 @@
 #include "WDModule.h"
 #include "DiffTimer.h"
 #include "Threads.h"
+#include "Registry.h"
 
 class Session;
 class Context;
 class PeriodicAction;
 class URLFilter;
 
-//---- SessionFactoriesModule -----------------------------------------------------------
-class SessionFactoriesModule : public WDModule
-{
+class SessionFactoriesModule: public WDModule {
 public:
-	SessionFactoriesModule(const char *name);
-	virtual ~SessionFactoriesModule();
-
+	SessionFactoriesModule(const char *name) :
+		WDModule(name) {
+	}
 	virtual bool Init(const ROAnything config);
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
-//---- SessionFactory -----------------------------------------------------------
 //!factory for session creation
-class SessionFactory : public HierarchConfNamed
-{
+class SessionFactory: public HierarchConfNamed {
+	SessionFactory();
+	SessionFactory(const SessionFactory &);
+	SessionFactory &operator=(const SessionFactory &);
 public:
-	SessionFactory(const char *SessionFactoryName);
-	virtual ~SessionFactory();
-
-	//! registry interface
-	RegCacheDef(SessionFactory);	// FindSessionFactory()
+	SessionFactory(const char *SessionFactoryName) :
+		HierarchConfNamed(SessionFactoryName) {
+	}
+	RegCacheImplInline(SessionFactory) // FindSessionFactory()
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) SessionFactory(fName);
@@ -54,13 +53,6 @@ protected:
 	bool DoLoadConfig(const char *category);
 	//!sets config name to Config -> reads configuration from Config.any
 	bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	SessionFactory();
-	SessionFactory(const SessionFactory &);
-	SessionFactory &operator=(const SessionFactory &);
 };
 
 #define RegisterSessionFactory(name) RegisterObject(name, SessionFactory)
@@ -72,14 +64,10 @@ private:
 \b retrieval: sessions are retrieved through the session key\n
 \b deletion: sessions can be actively disabled (but not deleted);\n
 Sessions will be deleted by a SessionCleanerThread running periodically. */
-class SessionListManager: public WDModule
-{
+class SessionListManager: public WDModule {
 public:
 	//!it exists only one since it is a not cloned
 	SessionListManager(const char *name);
-	//!does nothing since everything should be done in Finis
-	virtual ~SessionListManager();
-
 	static SessionListManager *SLM();
 	static void SetFinalize(bool finalize);
 
@@ -89,7 +77,7 @@ public:
 	//!finalize SessionList (delete all Sessions) during termination phase
 	virtual bool Finis();
 	//!terminate SessionListManager for reset
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 	//!reinitializes max values and restarts session cleaner thread
 	virtual bool ResetInit(const ROAnything config);
 
@@ -98,17 +86,17 @@ public:
 	//!find a session using a sessionId as key defined in args; the args list must first be prepared by FilterQuery
 	virtual Session *LookupSession(const String &id, Context &ctx);
 	//!prepares the session by checking its state and verifying it; tries to create a new session if not verified
-	virtual Session *PrepareSession(Session *, bool &isBusy, Context &ctx);	// prepare or create a session
+	virtual Session *PrepareSession(Session *, bool &isBusy, Context &ctx); // prepare or create a session
 	//!disable a session using a sessionId as key; removes it from the active sessions list but does not delete it
 	virtual void DisableSession(const String &id, Context &ctx);
 	//! clean up sessions that have had a timeout; locks fSessionsMutex
 	virtual long CleanupSessions(Context &ctx, bool forceLock = false);
 	//! Retrieves information about the session list and stores the information in slot \b SessionInfo in the TmpStore, locks fSessionsMutex
 	/*! \param sessionListInfo the resulting anything containing all session information grouped by session id
-		\param ctx Context used
-		\param config Configuration used when only a subset of all available Sessions should get listed, valid names are \c Start and \c PageSize
-		\return true if lock could be obtained
-		\return false otherwise */
+	 \param ctx Context used
+	 \param config Configuration used when only a subset of all available Sessions should get listed, valid names are \c Start and \c PageSize
+	 \return true if lock could be obtained
+	 \return false otherwise */
 	virtual bool SessionListInfo(Anything &sessionListInfo, Context &ctx, const ROAnything &config);
 	//! retrieves information about a specific session; locks fSessionsMutex
 	virtual bool GetASessionsInfo(Anything &sessionInfo, const String &sessionId, Context &ctx, const ROAnything &config);
@@ -123,7 +111,7 @@ public:
 
 	//!ID that's unique across multiple hosts and/or processes.
 	//!May depend on IP address (through gethostid()).
-	virtual	String GetUniqueInstanceId();
+	virtual String GetUniqueInstanceId();
 
 protected:
 	friend class SessionListManagerTest;

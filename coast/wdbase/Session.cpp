@@ -17,15 +17,13 @@
 #include "AnythingUtils.h"
 
 class AccessTimer {
-public:
 	Session *fSession;
+public:
 	AccessTimer(Session *session) :
 		fSession(session) {
 	}
 	~AccessTimer() {
 		fSession->ResetAccessTime();
-	}
-	void Use() {
 	}
 };
 
@@ -64,8 +62,7 @@ Session::~Session()
 	}
 }
 
-void Session::Init(const char *id, Context &ctx)
-{
+void Session::Init(const char *id, Context &ctx) {
 	StartTrace1(Session.Init, "id <" << NotNull(id) << ">");
 	// is entrypoint but doesn't need Mutex, since it is similar to a constructor
 	fId = id;
@@ -74,22 +71,19 @@ void Session::Init(const char *id, Context &ctx)
 	if (pRole) {
 		PutInStore("RoleName", pRole->GetName());
 	}
-
 	// extract some information from environment
 	// for verification purposes
 	Anything env(ctx.GetEnvStore());
 	fRemoteAddr = ctx.Lookup("header.REMOTE_ADDR", "");
 	fBrowser = ctx.Lookup("header.USER-AGENT", "");
-
 	// extract some information from query arguments
 	Anything query(ctx.GetQuery());
 	fAddress = 0;
 	fPort = -1;
-
-	if ( query.IsDefined("adr") ) { // PS: keep care of duplicate entries!
+	if (query.IsDefined("adr")) { // PS: keep care of duplicate entries!
 		fAddress = query["adr"][0L].AsCharPtr("");
 	}
-	if ( query.IsDefined("port") ) {
+	if (query.IsDefined("port")) {
 		fPort = query["port"][0L].AsLong(-1);
 	}
 	String logMsg("created: ");
@@ -97,25 +91,21 @@ void Session::Init(const char *id, Context &ctx)
 	SystemLog::Info(logMsg);
 }
 
-const char *Session::GetId() const
-{
-	return (const char *)fId;
+const char *Session::GetId() const {
+	return (const char *) fId;
 }
 
-long Session::GetAccessTime() const
-{
+long Session::GetAccessTime() const {
 	// assumption fMutex is already set by caller
 	return fAccessTime;
 }
 
-void Session::ResetAccessTime()
-{
+void Session::ResetAccessTime() {
 	// assumption fMutex is already set by caller
 	fAccessTime = time(0);
 }
 
-void Session::ResetTimeAndFlags()
-{
+void Session::ResetTimeAndFlags() {
 	TRACE_LOCK_START("ResetTimeAndFlags");
 	if (fMutex.TryLock()) {
 		fTerminated = false;
@@ -124,17 +114,15 @@ void Session::ResetTimeAndFlags()
 	}
 }
 
-long Session::GetAccessCounter() const
-{
+long Session::GetAccessCounter() const {
 	// assumption fMutex is already set by caller
 	return fAccessCounter;
 }
 
-bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName)
-{
+bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName) {
 	StartTrace(Session.GetSessionInfo);
 	bool ret = false;
-	if ( !IsBusy() ) {
+	if (!IsBusy()) {
 		Trace("Session not busy");
 		ctx.Push(this);
 		ROAnything roaConfig;
@@ -152,22 +140,20 @@ bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char
 	return ret;
 }
 
-long Session::GetTimeout(Context &ctx) const
-{
+long Session::GetTimeout(Context &ctx) const {
 	Role *role = GetRole(ctx);
 	// assumption fMutex is already set by caller
 	if (role) {
 		return role->GetTimeout();
 	}
-	return 60;	// one minute
+	return 60; // one minute
 }
 
-void Session::SetRole(Role *newRole, Context &ctx)
-{
+void Session::SetRole(Role *newRole, Context &ctx) {
 	StartTrace(Session.SetRole);
 	// assumption fMutex is already set by caller
 	Role *oldRole = GetRole(ctx);
-	if (newRole != oldRole || !fStore.IsDefined("RoleName") ) {
+	if (newRole != oldRole || !fStore.IsDefined("RoleName")) {
 		String oldRoleName("none");
 		String newRoleName("none");
 		if (newRole) {
@@ -346,13 +332,12 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 }
 
 namespace {
-	bool CheckHeader(Context &ctx, const String &hdrSlot, const String &expValue, const String &turnOffSlot, String &reason)
-	{
-		StartTrace1(Session.CheckHeader, "looking up [" << hdrSlot << "]");
+	bool isHeaderFieldStillTheSame(Context &ctx, const String &hdrSlot, const String &expValue, const String &turnOffSlot, String &reason) {
+		StartTrace1(Session.isHeaderFieldStillTheSame, "looking up [" << hdrSlot << "]");
 		reason.Trim(0);
 		String currValue = ctx.Lookup(hdrSlot).AsString();
 		Trace("expected [" << expValue << "] current [" << currValue << "]");
-		if ( !currValue.IsEqual(expValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
+		if (!currValue.IsEqual(expValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
 			if (currValue.Length() == 0) {
 				reason << " Requests " << hdrSlot << " info is null";
 			} else {
@@ -364,45 +349,31 @@ namespace {
 	}
 }
 
-bool Session::Verify(Context &ctx)
-{
+bool Session::Verify(Context &ctx) {
 	StartTrace(Session.Verify);
 	TRACE_LOCK_START("Verify");
 	LockUnlockEntry mutex(fMutex);
-	Anything env(ctx.GetEnvStore());
-	String logMsg(fId);
-
-	// check for termination flag
 	if (fTerminated) {
+		String logMsg(fId);
 		logMsg << " Session already terminated";
 		SystemLog::Info(logMsg);
 		return false;
 	}
-
 	ResetAccessTime();
-
 	String reason;
-	if (!CheckHeader(ctx, "header.REMOTE_ADDR", fRemoteAddr, "InstableRemoteAdress", reason)) {
+	if (!isHeaderFieldStillTheSame(ctx, "header.REMOTE_ADDR", fRemoteAddr, "InstableRemoteAdress", reason) || !isHeaderFieldStillTheSame(ctx, "header.USER-AGENT", fBrowser, "InstableUserAgent", reason)) {
 		SystemLog::Info(reason);
 		return false;
 	}
-	if (!CheckHeader(ctx, "header.USER-AGENT", fBrowser, "InstableUserAgent", reason)) {
-		SystemLog::Info(reason);
-		return false;
-	}
-
-	// so far everything seems to be fine
 	return true;
 }
 
-bool Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig)
-{
+bool Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig) {
 	StartTrace(Session.RenderNextPage);
 	bool status = false;
 	if (fMutex.TryLock()) {
 		TRACE_LOCK_START("RenderNextPage");
 		AccessTimer at(this);
-		at.Use();
 		++fAccessCounter;
 		status = DoRenderNextPage(reply, ctx);
 		fMutex.Unlock();
@@ -412,42 +383,35 @@ bool Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything
 	return status;
 }
 
-bool Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
-{
+bool Session::DoRenderNextPage(std::ostream &reply, Context &ctx) {
 	StartTrace(Session.DoRenderNextPage);
-
 	ctx.SetRole(GetRole(ctx));
-
 	String transition, currentpage;
 	SetupContext(ctx, transition, currentpage);
-
 	DoFindNextPage(ctx, transition, currentpage);
-
 	Page *newPage = Page::FindPage(currentpage);
 	// lets hope we got a new page
 	if (newPage) {
 		// Now Start a new page...
 		newPage->Start(reply, ctx);
 		return true;
-	} else {
-		Anything anyError;
-		anyError["Component"] = "Session::DoRenderNextPage";
-		anyError["ResponseCode"] = 404;
-		anyError["SessionId"] = GetId();
-		anyError["ErrorMessage"] = String("Page [").Append(currentpage).Append("] not found.");
-		StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "Session.Error"), true);
-		String logMsg(GetId());
-		logMsg << " Session::RenderNextPage: newPage == 0";
-		SYSWARNING(logMsg);
 	}
+	Anything anyError;
+	anyError["Component"] = "Session::DoRenderNextPage";
+	anyError["ResponseCode"] = 404;
+	anyError["SessionId"] = GetId();
+	anyError["ErrorMessage"] = String("Page [").Append(currentpage).Append("] not found.");
+	StorePutter::Operate(anyError, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "Session.Error"), true);
+	String logMsg(GetId());
+	logMsg << " Session::RenderNextPage: newPage == 0";
+	SYSWARNING(logMsg);
 	return false;
 }
 
-bool Session::DoRenderBusyPage(std::ostream &reply, Context &ctx)
-{
+bool Session::DoRenderBusyPage(std::ostream &reply, Context &ctx) {
 	StartTrace(Session.RenderBusyPage);
 	Page *p = Page::FindPage("BusyPage");
-	if ( p ) {
+	if (p) {
 		p->Start(reply, ctx);
 		return true;
 	}
@@ -455,8 +419,7 @@ bool Session::DoRenderBusyPage(std::ostream &reply, Context &ctx)
 }
 
 //--- auxiliary methods and hooks for RenderNextPage
-void Session::DoFindNextPage(Context &context, String &transition, String &currentpage)
-{
+void Session::DoFindNextPage(Context &context, String &transition, String &currentpage) {
 	StartTrace(Session.DoFindNextPage);
 	Trace( "before transition =<" << transition << "> page = <" << currentpage << ">" << " role of session = <" << GetRoleName(context) << ">");
 	bool done = false;
@@ -464,27 +427,25 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 	String strLastTransition(transition), strLastPage(currentpage), strInitialPage(currentpage);
 	GetRole(context)->PrepareTmpStore(context);
 	do {
-	starttransition:
-		if (!NeedsPageInsert(context, transition, currentpage)) {
-			if (!FinishPage(context, transition, currentpage)) {
-			}
+		if (NeedsPageInsert(context, transition, currentpage)) {
+			SaveToDelayed(context, transition, currentpage);
+		} else {
+			FinishPage(context, transition, currentpage);
 			if (AfterPageInsert(context, transition, currentpage) && RetrieveFromDelayed(context, transition, currentpage)) {
 				done = false;
-				goto starttransition;
+				continue;
 			}
-		} else {
-			SaveToDelayed(context, transition, currentpage);
 		}
-		if (!GetRole(context)->Synchronize(context)) {
+		if (not GetRole(context)->Synchronize(context)) {
 			PrepareLogout(context, transition, currentpage);
 			done = true;
 		}
-		if (!GetRole(context)->GetNewPageName(context, transition, currentpage)) {
+		if (not GetRole(context)->GetNewPageName(context, transition, currentpage)) {
 			currentpage = context.Lookup("ErrorPage", "ErrorPage");
 		}
 		done = PreparePage(context, transition, currentpage) || done;
-		if ( !done ) {
-			if ( strLastTransition == transition && strLastPage == currentpage ) {
+		if (not done) {
+			if (strLastTransition == transition && strLastPage == currentpage) {
 				// increment loop counter to be able to break when we detect no change in transition and page over time
 				++lLoopCount;
 				Trace("Detected same transition [" << transition << "] and page [" << currentpage << "] as before!, LoopCount:" << lLoopCount);
@@ -496,8 +457,8 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 			Trace("last transition =<" << strLastTransition << "> page = <" << strLastPage << ">");
 			Trace("intermediate transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << GetRoleName(context) << ">");
 		}
-	} while ( !done && ( lLoopCount < 2L ) );
-	if ( !done ) {
+	} while (not done && (lLoopCount < 2L));
+	if (not done) {
 		SYSERROR("Cancelled DoFindNextPage due to potential endless loop on Page [" << strLastPage << "] and Token [" << strLastTransition << "], InitialPage was [" << strInitialPage << "]");
 	}
 	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << GetRoleName(context) << ">");
@@ -518,21 +479,15 @@ namespace {
 	}
 }
 
-void Session::SetupContext(Context &context, String &transition, String &pagename)
-{
+void Session::SetupContext(Context &context, String &transition, String &pagename) {
 	StartTrace(Session.SetupContext);
-	Anything env(context.GetEnvStore());	// get environment
-	Anything query(context.GetQuery());		// get query
-
-	Normalize(query);	// remove "fld_" first implicit dependency to FieldRenderers
+	Anything query(context.GetQuery());
+	Normalize(query); // remove "fld_" first implicit dependency to FieldRenderers
 	//!@FIXME this dependency should be removed
 	//			the prefix mechanism should be standardized
 	//			with several types e.g. buttons
-
 	TraceAny(query, "query");
-
 	context.SetLanguage(LocalizationUtils::FindLanguageKey(context, context.Lookup("Language", "E")));
-
 	// the action to be executed
 	getDefaultAction(context, transition);
 	if (query.IsDefined("action")) {
@@ -541,19 +496,17 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 			transition = theToken;
 		}
 	}
-
 	// we have to finish the last page (so as to exec Action)
 	// so lets try to extract a page from the query
 	pagename = context.Lookup("StartPage", "HomePage"); // use default
 	if (query.IsDefined("page")) {
-		pagename = query["page"].AsCharPtr(pagename);	// use AsCharPtr() as to catch NULL
+		pagename = query["page"].AsCharPtr(pagename); // use AsCharPtr() as to catch NULL
 	}
-
-	if ( query.IsDefined("delayedIndex") ) {
+	if (query.IsDefined("delayedIndex")) {
 		// save delayed environment to keep lookup semantics consistent
 		Anything tmpStore(context.GetTmpStore());
 		long delayedIndex = query["delayedIndex"].AsLong(0L);
-		if ( delayedIndex >= 0 ) {
+		if (delayedIndex >= 0) {
 			tmpStore["delayed"] = fStore["delayed"][delayedIndex];
 		}
 	}
@@ -570,12 +523,12 @@ void Session::SetInReauthenticate(Context &context) {
 	tmpStore["InReauthenticate"] = roleName;
 }
 
-void Session::ForcedLogin(Context &context, String &transition, String &currentpage) {
+void Session::prepareForcedLogin(Context &context, String &transition, String &currentpage) {
 	// we always go the transition "Login" for wrong roles
 	transition = "Login";
 	// and start this transition from the /StartPage or HomePage
 	currentpage = context.Lookup("StartPage", "HomePage");
-	StatTrace(Session.ForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Coast::Storage::Current());
+	StatTrace(Session.prepareForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Coast::Storage::Current());
 }
 
 bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage) {
@@ -584,7 +537,7 @@ bool Session::NeedsPageInsert(Context &context, String &transition, String &curr
 		bNeedsInsert = RequirePageInsert(context, transition, currentpage);
 	} else {
 		// the role is insufficient
-		ForcedLogin(context, transition, currentpage);
+		prepareForcedLogin(context, transition, currentpage);
 	}
 	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", Coast::Storage::Current());
 	return bNeedsInsert;
@@ -661,13 +614,12 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 	}
 }
 
-bool Session::FinishPage(Context &context, String &action, String &pagename)
-{
+bool Session::FinishPage(Context &context, String &action, String &pagename) {
 	StartTrace1(Session.FinishPage, "Action: <" << action << ">, PageName: <" << pagename << ">");
 	// is a role change necessary?
 	if (pagename.Length() > 0) {
 		Page *oldPage = Page::FindPage(pagename);
-		if ( oldPage && !oldPage->Finish(action, context) ) {
+		if (oldPage && !oldPage->Finish(action, context)) {
 			// stay on page because we fail to successfully postprocess it
 			String msg;
 			msg << "Finalizing page <" << pagename << "> failed";
@@ -678,8 +630,7 @@ bool Session::FinishPage(Context &context, String &action, String &pagename)
 	return true;
 }
 
-bool Session::AfterPageInsert(Context &context, String &action, String &pagename)
-{
+bool Session::AfterPageInsert(Context &context, String &action, String &pagename) {
 	StartTrace(Session.AfterPageInsert);
 	Role *newrole = CheckRoleExchange(action, context);
 	if (newrole) {
@@ -707,18 +658,17 @@ void Session::PrepareLogout(Context &context, String &transition, String &curren
 	currentpage = context.Lookup("StartPage", "HomePage");
 }
 
-bool Session::CameFromPageInsert(Context &context, String &action, String &pagename)
-{
+bool Session::CameFromPageInsert(Context &context, String &action, String &pagename) {
 	StartTrace(Session.CameFromPageInsert);
 	// just a hook for page inserts aside from role changes
 	// invent a configuration item that looks if pagename and action match
 	// e.g. /InsertedPages { /action { "Page1" "Page2" } }
-//    ROAnything insertedpages=context.Lookup("InsertedPages");
-//    if (insertedpages.IsDefined(action)){
-//        ROAnything pages = insertedpages[action];
-//        return pages.Contains(pagename);
-//    }
-//
+	//    ROAnything insertedpages=context.Lookup("InsertedPages");
+	//    if (insertedpages.IsDefined(action)){
+	//        ROAnything pages = insertedpages[action];
+	//        return pages.Contains(pagename);
+	//    }
+	//
 	return false;
 }
 
@@ -768,10 +718,8 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 	return false;
 }
 
-bool Session::PreparePage(Context &context, String &transition, String &currentpage)
-{
+bool Session::PreparePage(Context &context, String &transition, String &currentpage) {
 	StartTrace1(Session.PreparePage, "Transition: <" << transition << ">, Page: <" << currentpage << ">");
-
 	Page *p = Page::FindPage(currentpage);
 	if (p) {
 		bool ret = p->Prepare(transition, context);
@@ -793,42 +741,39 @@ bool Session::PreparePage(Context &context, String &transition, String &currentp
 	return false; // try one more time for ErrorPage
 }
 
-bool Session::InReAuthenticate(Role *r, Context &context)
-{
+bool Session::InReAuthenticate(Role *r, Context &context) {
 	// check the reauthenticate flag to prevent
 	// endless recursive reauthentication
 	// of roles because of wrong configuration
 	// or malicious implementation of Role::Verify
 	Anything tmpStore(context.GetTmpStore());
-	if ( r && tmpStore.IsDefined("InReauthenticate")) {
+	if (r && tmpStore.IsDefined("InReauthenticate")) {
 		String rolename;
-		if ( r->GetName(rolename) && rolename == tmpStore["InReauthenticate"].AsCharPtr(0)) {
+		if (r->GetName(rolename) && rolename == tmpStore["InReauthenticate"].AsCharPtr(0)) {
 			return true; // yes we are trying to reauthenticate
 		}
 	}
 	return false;
 }
 
-Role *Session::CheckRoleExchange(const char *action, Context &c) const
-{
+Role *Session::CheckRoleExchange(const char *action, Context &c) const {
 	StartTrace1(Session.CheckRoleExchange, "action: <" << NotNull(action) << ">");
-
 	// a role change is only possible if we can find RoleChanges in the context
 	String strActionToRoleEntry("RoleChanges.");
 	strActionToRoleEntry.Append(action);
 	ROAnything roaActionToRoleEntry = c.Lookup(strActionToRoleEntry);
 	Role *contextRole = GetRole(c);
-	if ( contextRole ) {
+	if (contextRole) {
 		String strEntrynameToOldRole(strActionToRoleEntry);
 		strEntrynameToOldRole.Append('.').Append(contextRole->GetName());
 		Trace("role lookup string appended with current rolename [" << strEntrynameToOldRole << "]");
-		if ( c.Lookup(strEntrynameToOldRole, roaActionToRoleEntry) ) {
+		if (c.Lookup(strEntrynameToOldRole, roaActionToRoleEntry)) {
 			strActionToRoleEntry = strEntrynameToOldRole;
 		}
 	}
 	TraceAny(roaActionToRoleEntry, "reduced role entry");
 	String roleName;
-	if ( roaActionToRoleEntry.GetType() != AnyArrayType ) {
+	if (roaActionToRoleEntry.GetType() != AnyArrayType) {
 		roleName = roaActionToRoleEntry.AsString(roleName);
 	}
 	Trace("action to role entry to lookup in context [" << strActionToRoleEntry << "] resulted in rolename [" << roleName << "]");
@@ -837,8 +782,7 @@ Role *Session::CheckRoleExchange(const char *action, Context &c) const
 }
 
 // URL state management
-void Session::CollectLinkState(Anything &a, Context &c) const
-{
+void Session::CollectLinkState(Anything &a, Context &c) const {
 	if (fAddress.Length() > 0) {
 		a["adr"] = fAddress;
 	}
@@ -861,8 +805,7 @@ void Session::CollectLinkState(Anything &a, Context &c) const
 	}
 }
 
-bool Session::Info(Anything &info, Context &ctx)
-{
+bool Session::Info(Anything &info, Context &ctx) {
 	StartTrace(Session.Info);
 	info["Role"] = GetRoleName(ctx, Role::GetDefaultRoleName(ctx));
 	info["Accessed"] = GetAccessCounter();
@@ -874,8 +817,7 @@ bool Session::Info(Anything &info, Context &ctx)
 	return true;
 }
 
-bool Session::Ref()
-{
+bool Session::Ref() {
 	// Assumption mutex is set by caller (method is protected)
 	StartTrace(Session.Ref);
 	++fRefCount;
@@ -883,8 +825,7 @@ bool Session::Ref()
 	return true;
 }
 
-bool Session::UnRef()
-{
+bool Session::UnRef() {
 	// Assumption mutex is set by caller (method is protected)
 	StartTrace(Session.UnRef);
 	String msg;
@@ -900,8 +841,7 @@ bool Session::UnRef()
 	}
 }
 
-long Session::GetRefCount() const
-{
+long Session::GetRefCount() const {
 	// Assumption mutex is set by caller (method is protected)
 	StartTrace(Session.GetRefCount);
 	return fRefCount;
@@ -911,16 +851,14 @@ const String Session::FR_FIELDPREFIX = "fld_";
 const String Session::FR_BUTTONPREFIX = "b_";
 const String Session::FR_IMAGEPREFIX = "i_";
 
-void Session::Normalize(Anything &query)
-{
+void Session::Normalize(Anything &query) {
 	Anything fields(query["fields"]);
-	Anything koord(query["Click"]);			// Stores Image.x and Image.y koordinates
-
+	Anything koord(query["Click"]); // Stores Image.x and Image.y koordinates
 	//Separate fields
 	long s = query.GetSize();
 	for (long i = 0; i < s; ++i) {
 		String slotname = query.SlotName(i);
-		if (! slotname.IsEqual("")) {
+		if (!slotname.IsEqual("")) {
 			if (slotname.SubString(0, FR_FIELDPREFIX.Length()).IsEqual(FR_FIELDPREFIX)) {
 				// "pure" field
 				slotname = slotname.SubString(FR_FIELDPREFIX.Length());

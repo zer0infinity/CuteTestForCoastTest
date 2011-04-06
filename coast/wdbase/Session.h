@@ -134,7 +134,7 @@ protected:
 	//! \param ctx request Context
 	//! \param transition will get set to "Login"
 	//! \param currentpage will get the name of \b StartPage
-	void ForcedLogin(Context &ctx, String &transition, String &currentpage);
+	void prepareForcedLogin(Context &ctx, String &transition, String &currentpage);
 	//! mark tmpstore so that InReAuthenticate will return true later on
 	void SetInReauthenticate(Context &context);
 	//!check for recursive calls of ReAuthenticate on the same role
