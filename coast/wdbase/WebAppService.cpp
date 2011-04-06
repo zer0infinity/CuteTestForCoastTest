@@ -152,6 +152,7 @@ void WebAppService::DecodeWDQuery(Anything &query, const Anything &request)
 			Add2Query(query, request["REQUEST_BODY"]);
 		}
 	}
+	TraceAny(query, "prepared query");
 }
 
 void WebAppService::Add2Query(Anything &query, const Anything &queryItems, bool overwrite)

@@ -7,22 +7,13 @@
  */
 #include "Role.h"
 #include "Session.h"
-#include "Registry.h"
 #include "Renderer.h"
 #include "AnyIterators.h"
 #include "Policy.h"
 #include <typeinfo>
 #include <cstring>
 
-//---- RolesModule -----------------------------------------------------------
 RegisterModule(RolesModule);
-
-RolesModule::RolesModule(const char *name) :
-	WDModule(name) {
-}
-
-RolesModule::~RolesModule() {
-}
 
 bool RolesModule::Init(const ROAnything config) {
 	if (config.IsDefined("Roles")) {
@@ -40,20 +31,8 @@ bool RolesModule::ResetFinis(const ROAnything config) {
 bool RolesModule::Finis() {
 	return StdFinis("Role", "Roles");
 }
-//---- Role --------------------------------------------------------------------------
+
 RegisterRole(Role);
-
-Role::Role(const char *name) :
-	HierarchConfNamed(name) {
-}
-
-Role::~Role() {
-	StatTrace(Role.Misc, "~Role: <" << fName << ">", Coast::Storage::Current());
-}
-
-IFAObject *Role::Clone(Allocator *a) const {
-	return new (a) Role(fName);
-}
 
 bool Role::Init(Context &) {
 	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Coast::Storage::Current());
@@ -302,18 +281,18 @@ bool Role::DoVerify(Context &, String &, String &) const {
 	return true;
 }
 
-RegCacheImpl(Role)
-; // FindRole()
-
 String Role::GetDefaultRoleName(Context &ctx) {
-	String ret;
+	StartTrace(Role.GetDefaultRoleName);
+	String role;
 	ROAnything rspec;
 	if (ctx.Lookup("DefaultRole", rspec)) {
-		Renderer::RenderOnString(ret, ctx, rspec);
+		Renderer::RenderOnString(role, ctx, rspec);
+		Trace("rendered DefaultRole [" << role << "]");
 	} else {
-		ret = "Role";
+		role = "Role";
+		Trace("using default [" << role << "]");
 	}
-	return ret;
+	return role;
 }
 
 Role *Role::FindRoleWithDefault(const char *role_name, Context &ctx, const char *dflt) {

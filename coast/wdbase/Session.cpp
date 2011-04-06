@@ -187,8 +187,7 @@ void Session::SetRole(Role *newRole, Context &ctx)
 	}
 }
 
-Role *Session::GetRole(Context &ctx) const
-{
+Role *Session::GetRole(Context &ctx) const {
 	StartTrace(Session.GetRole);
 	// assumption fMutex is already set by caller
 	Role *role = 0;
@@ -209,8 +208,7 @@ String Session::GetRoleName(Context &ctx, String const &strDefaultRolename) cons
 	return ((ROAnything) fStore)["RoleName"].AsString(strDefaultRolename);
 }
 
-bool Session::IsBusy()
-{
+bool Session::IsBusy() {
 	TRACE_LOCK_START("IsBusy");
 	bool isBusy = true;
 
@@ -221,8 +219,7 @@ bool Session::IsBusy()
 	return isBusy;
 }
 
-void Session::Notify(ESessionEvt evt, Context &ctx)
-{
+void Session::Notify(ESessionEvt evt, Context &ctx) {
 	StartTrace1(Session.Notify, "trying to get session lock");
 	TRACE_LOCK_START("Notify");
 	LockUnlockEntry me(fMutex);
@@ -562,8 +559,7 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 	}
 }
 
-void Session::SetInReauthenticate(Context &context)
-{
+void Session::SetInReauthenticate(Context &context) {
 	Anything tmpStore(context.GetTmpStore());
 	Role *r = context.GetRole();
 	String roleName("Role");
@@ -574,8 +570,7 @@ void Session::SetInReauthenticate(Context &context)
 	tmpStore["InReauthenticate"] = roleName;
 }
 
-void Session::ForcedLogin(Context &context, String &transition, String &currentpage)
-{
+void Session::ForcedLogin(Context &context, String &transition, String &currentpage) {
 	// we always go the transition "Login" for wrong roles
 	transition = "Login";
 	// and start this transition from the /StartPage or HomePage
@@ -583,11 +578,9 @@ void Session::ForcedLogin(Context &context, String &transition, String &currentp
 	StatTrace(Session.ForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Coast::Storage::Current());
 }
 
-bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage)
-{
+bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage) {
 	bool bNeedsInsert(true);
-	// we only check the role for non-empty queries
-	if (context.GetQuery().IsNull() || GetRole(context)->Verify(context, transition, currentpage)) {
+	if (GetRole(context)->Verify(context, transition, currentpage)) {
 		bNeedsInsert = RequirePageInsert(context, transition, currentpage);
 	} else {
 		// the role is insufficient
