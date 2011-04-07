@@ -231,23 +231,10 @@ bool Role::TransitionAlwaysOK(const String &transition) const {
 	return (transition == "Logout");
 }
 
-String Role::GetRequestRoleName(Context &ctx) {
-	String name;
-	Anything query = ctx.GetQuery();
-	if (query.IsDefined("role")) {
-		name = query["role"].AsString(name);
-		StatTrace(Role.GetRequestRoleName, "got query role <" << name << ">", Coast::Storage::Current());
-	} else {
-		name = GetDefaultRoleName(ctx);
-		StatTrace(Role.GetRequestRoleName, "got default role <" << name << ">", Coast::Storage::Current());
-	}
-	return name;
-}
-
 // this method verifies the authentication level of role
 // if everything is ok it let's the subclass verify the
 // detailed parameters of the query in DoVerify
-bool Role::Verify(Context &c, String &transition, String &pagename) const {
+bool Role::Verify(Context &ctx, String &transition, String &pagename) const {
 	StartTrace1(Role.Verify, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
 	// if the action is always possible (e.g. logout) no further checking is necessary
 	if (TransitionAlwaysOK(transition)) {
@@ -255,14 +242,14 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const {
 	}
 	// we check the role level by role name
 	// if no role is defined in the query we use the default defined in slot DefaultRole or as last resort, use the Role base class
-	String name = GetRequestRoleName(c);
+	String name = GetRequestRoleName(ctx, transition);
 	// check the level of the role it is defined in the config
 	// assuming some levels of roles (e.g. Guest < Customer < PaymentCustomer)
 	if (CheckLevel(name)) {
 		// We have the right role level
 		// let's check the query parameters
 		Trace("role level is OK");
-		return DoVerify(c, transition, pagename);
+		return DoVerify(ctx, transition, pagename);
 	}
 	// We have a level which is too low for this
 	// query, we can't proceed without authentication
@@ -306,4 +293,17 @@ Role *Role::FindRoleWithDefault(const char *role_name, Context &ctx, const char 
 		}
 	}
 	return ret;
+}
+
+String Role::DoGetRequestRoleName(Context & ctx, String const &transition) const {
+	String name;
+	Anything query = ctx.GetQuery();
+	if (query.IsDefined("role")) {
+		name = query["role"].AsString(name);
+		StatTrace(Role.DoGetRequestRoleName, "got query role <" << name << ">", Coast::Storage::Current());
+	} else {
+		name = GetDefaultRoleName(ctx);
+		StatTrace(Role.DoGetRequestRoleName, "got default role <" << name << ">", Coast::Storage::Current());
+	}
+	return name;
 }
