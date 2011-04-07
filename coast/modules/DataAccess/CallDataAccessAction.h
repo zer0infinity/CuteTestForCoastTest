@@ -11,7 +11,6 @@
 
 #include "Action.h"
 
-//---- CallDataAccessAction ----------------------------------------------------------
 //! Action to perform a DataAccess
 //! Preferred (by rum) Alias : CallDA <BR>
 //! Configuration has one slot
@@ -24,20 +23,18 @@
 //! or maybe one might prefer the short cut form that consists only in the
 //! NameOfTheDataAccessToPerform
 //! e.g. { /CallDA NameOfTheDataAccessToPerform }
-class CallDataAccessAction : public Action
-{
+class CallDataAccessAction: public Action {
 public:
-	//--- constructors
-	CallDataAccessAction(const char *name);
-	~CallDataAccessAction();
-
+	CallDataAccessAction(const char *name) :
+		Action(name) {
+	}
+protected:
 	//!Calls the DataAccess
 	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
 	//! \param c the context the action runs within.
 	//! \param config the configuration of the action.
 	//! \return true if the DataAccess run successfully, false if an error occurred.
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
-
 };
 
 #endif

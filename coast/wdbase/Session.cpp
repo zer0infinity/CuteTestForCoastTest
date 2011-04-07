@@ -27,25 +27,15 @@ public:
 	}
 };
 
-Session::Session(const char *name)
-	: NotCloned(name)
-	, fMutex("Session")
-	, fTerminated(false)
-	, fStore(Coast::Storage::Global())
-	, fId(Coast::Storage::Global())
-	, fAddress(Coast::Storage::Global())
-	, fAccessCounter(1)
-	, fAccessTime(time(NULL))
-	, fRemoteAddr(Coast::Storage::Global())
-	, fBrowser(Coast::Storage::Global())
-	, fRefCount(0L)
-{
+Session::Session(const char *name) :
+	NotCloned(name), fMutex("Session"), fTerminated(false), fStore(Coast::Storage::Global()), fId(Coast::Storage::Global()),
+			fAddress(Coast::Storage::Global()), fAccessCounter(1), fAccessTime(time(NULL)), fRemoteAddr(Coast::Storage::Global()),
+			fBrowser(Coast::Storage::Global()), fRefCount(0L) {
 	StartTrace(Session.Session);
-	fStore["RoleStore"] = Anything(Anything::ArrayMarker(),fStore.GetAllocator());
+	fStore["RoleStore"] = Anything(Anything::ArrayMarker(), fStore.GetAllocator());
 }
 
-Session::~Session()
-{
+Session::~Session() {
 	StartTrace1(Session.~Session, "Session id: <" << fId << ">");
 	String logMsg("deleted");
 	logMsg << " " << fId;
@@ -197,7 +187,6 @@ String Session::GetRoleName(Context &ctx, String const &strDefaultRolename) cons
 bool Session::IsBusy() {
 	TRACE_LOCK_START("IsBusy");
 	bool isBusy = true;
-
 	if (fMutex.TryLock()) {
 		isBusy = false;
 		fMutex.Unlock();
@@ -245,10 +234,9 @@ void Session::RemoveFromStore(const char *key) {
 	fStore.Remove(key);
 }
 
-bool Session::MakeInvalid(Context &ctx)
-{
+bool Session::MakeInvalid(Context &ctx) {
 	TRACE_LOCK_START("MakeInvalid");
-	if ( fMutex.TryLock() ) {
+	if (fMutex.TryLock()) {
 		StartTrace1(Session.MakeInvalid, "Session id: <" << fId << ">");
 		String logMsg("Session: <");
 		logMsg << fId << "> invalidation request";
@@ -257,7 +245,7 @@ bool Session::MakeInvalid(Context &ctx)
 		// invalidate session by setting last access time before timeout period
 		fAccessTime = time(0) - GetTimeout(ctx) - 1;
 		if (ctx.GetSession() == this) {
-			ctx.Push((Session *)0);
+			ctx.Push((Session *) 0);
 		}
 		fMutex.Unlock();
 		return true;
@@ -265,14 +253,13 @@ bool Session::MakeInvalid(Context &ctx)
 	return false;
 }
 
-bool Session::IsTerminated()
-{
+bool Session::IsTerminated() {
 	StartTrace(Session.IsTerminated);
 	// assumption if s can't aqcuire its internal lock
 	// the session is not terminated
 	TRACE_LOCK_START("IsTerminated");
 	bool isTerminated = false;
-	if ( fMutex.TryLock() ) {
+	if (fMutex.TryLock()) {
 		isTerminated = fTerminated;
 		fMutex.Unlock();
 	}
@@ -280,8 +267,7 @@ bool Session::IsTerminated()
 	return isTerminated;
 }
 
-bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
-{
+bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant) {
 	StartTrace1(Session.IsDeletable, "secs: " << secs << " roleNotRelevant: " << (roleNotRelevant ? "true" : "false"));
 	// assumption if Session can't acquire its internal lock
 	// the session is not terminated
@@ -294,7 +280,7 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 	long delta = 0;
 	long timeout = 0;
 	// keep locked code as short as possible
-	if ( fMutex.TryLock() ) {
+	if (fMutex.TryLock()) {
 		isBusy = false;
 		// First check whether this session is referenced somewhere
 		if (fRefCount == 0) {
@@ -302,7 +288,7 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 		}
 		// If we are operating on the disabled session store, the timeout doesn't matter
 		// We do this to save memory by freeing the disabled sessions.
-		if ( roleNotRelevant == false ) {
+		if (roleNotRelevant == false) {
 			delta = (secs - fAccessTime);
 			timeout = GetTimeout(ctx);
 			isTimeout = (delta >= timeout);
@@ -316,17 +302,16 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 		fMutex.Unlock();
 	}
 	if (isBusy) {
-		msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed <<
-			" isTimeout " << isTimeout << " [" << delta << "," << timeout << "] isDeletable 0";
+		msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed << " isTimeout " << isTimeout << " [" << delta
+				<< "," << timeout << "] isDeletable 0";
 		SystemLog::Info(msg);
 		return false;
 	}
-
 	if (isUnRefed && isTimeout) {
 		isDeletable = true;
 	}
-	msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed <<
-		" isTimeout " << isTimeout << " [" << delta << "," << timeout << "] isDeletable " << isDeletable;
+	msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed << " isTimeout " << isTimeout << " [" << delta
+			<< "," << timeout << "] isDeletable " << isDeletable;
 	SystemLog::Info(msg);
 	return isDeletable;
 }
@@ -561,8 +546,7 @@ bool Session::RequirePageInsert(Context &context, String &transition, String &cu
 	return false;
 }
 
-void Session::SaveToDelayed(Context &context, String &transition, String &pagename)
-{
+void Session::SaveToDelayed(Context &context, String &transition, String &pagename) {
 	StartTrace(Session.SaveToDelayed);
 	if (!InReAuthenticate(GetRole(context), context)) {
 		// to prevent endless loops
@@ -572,7 +556,6 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 		Anything delayed = context.GetQuery().DeepClone(fStore.GetAllocator());
 		Anything tmpStore(context.GetTmpStore());
 		TraceAny(delayed, "Session: <" << fId << "> original query content");
-
 		if (context.GetEnvStore()["header"].IsDefined("HTTPS")) {
 			delayed["HTTPS"] = context.GetEnvStore()["header"]["HTTPS"].AsBool(0L);
 		}
@@ -581,7 +564,6 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 		}
 		// preserve selected entries of the environment
 		ROAnything preserve;
-
 		if (context.Lookup("DelayedEnvironment", preserve)) {
 			Anything env(context.GetEnvStore());
 			Anything delayedEnv;
@@ -620,13 +602,13 @@ bool Session::FinishPage(Context &context, String &action, String &pagename) {
 	if (pagename.Length() > 0) {
 		Page *oldPage = Page::FindPage(pagename);
 		if (oldPage && !oldPage->Finish(action, context)) {
-			// stay on page because we fail to successfully postprocess it
+			// stay on page because we failed to successfully postprocess it
 			String msg;
 			msg << "Finalizing page <" << pagename << "> failed";
 			Trace(msg);
 			return false; // stuck user on page, because we failed
 		}
-	} // nothing to do
+	}
 	return true;
 }
 
@@ -635,13 +617,10 @@ bool Session::AfterPageInsert(Context &context, String &action, String &pagename
 	Role *newrole = CheckRoleExchange(action, context);
 	if (newrole) {
 		if (newrole->Init(context)) {
-			// yes we really got it
 			String roleName;
 			newrole->GetName(roleName);
 			Trace("after Role Init succeed:<" << NotNullStr(roleName) << "> action:<" << action << ">");
 			SetRole(newrole, context);
-
-			// update context
 			context.SetRole(newrole);
 			return true;
 		} else {
@@ -672,15 +651,14 @@ bool Session::CameFromPageInsert(Context &context, String &action, String &pagen
 	return false;
 }
 
-bool Session::RetrieveFromDelayed(Context &context, String &action, String &currentpage)
-{
+bool Session::RetrieveFromDelayed(Context &context, String &action, String &currentpage) {
 	StartTrace1(Session.RetrieveFromDelayed, "Session: <" << fId << "> Action: <" << action << "> CurrentPage: <" << currentpage << ">");
 	// but first we have to check whether the current action triggers a role exchange has already happened
 	ROAnything roaQuery(context.GetQuery());
 	TraceAny(((ROAnything)fStore)["delayed"], "delayed content in session");
 	if (fStore.IsDefined("delayed") && roaQuery.IsDefined("delayedIndex")) {
 		long index = roaQuery["delayedIndex"].AsLong(0);
-		if ( index >= 0 ) {
+		if (index >= 0) {
 			Anything delayed(fStore["delayed"][index], fStore.GetAllocator());
 			// restore old environment
 			Anything previousEnv(fStore.GetAllocator());
@@ -690,7 +668,7 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 				TraceAny(env, "env before modification");
 				for (long i = 0, sz = previousEnv.GetSize(); i < sz; ++i) {
 					const char *slot = previousEnv.SlotName(i);
-					env[slot] = previousEnv[i]; // this will copy
+					env[slot] = previousEnv[i]; //! this will copy
 				}
 				TraceAny(env, "modified env");
 			}
@@ -699,35 +677,34 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 			if (fStore["delayed"].GetSize() == 0) {
 				fStore.Remove("delayed"); // clean up
 			}
-
 			String transition;
 			getDefaultAction(context, transition);
 			Trace("transition [" << transition << "]");
 			String lastAction(delayed["action"].AsCharPtr(transition));
 			const char *lastpage = delayed["page"].AsCharPtr(context.Lookup("StartPage", "HomePage"));
 			Trace("lastpage [" << lastpage << "] lastAction [" << lastAction << "]");
-			if ( lastAction.Length() > 0 ) {
+			if (lastAction.Length() > 0) {
 				// yes there was really something to do
 				action = lastAction;
 				currentpage = lastpage;
 				Trace("final action [" << action << "] on page [" << currentpage << "]");
-				return true; // re-iterate in RenderNextPage
+				return true; //! re-iterate in RenderNextPage
 			}
 		}
 	}
 	return false;
 }
 
-bool Session::PreparePage(Context &context, String &transition, String &currentpage) {
+bool Session::PreparePage(Context &ctx, String &transition, String &currentpage) {
 	StartTrace1(Session.PreparePage, "Transition: <" << transition << ">, Page: <" << currentpage << ">");
 	Page *p = Page::FindPage(currentpage);
 	if (p) {
-		bool ret = p->Prepare(transition, context);
+		bool ret = p->Prepare(transition, ctx);
 		Trace(currentpage << ".Prepare() " << (ret?"successful":"failed") << " -> transition [" << transition << "]");
 		return ret;
 	}
 	Trace("oops, could not find page [" << currentpage << "]");
-	String errorpage = context.Lookup("ErrorPage", "ErrorPage");
+	String errorpage = ctx.Lookup("ErrorPage", "ErrorPage");
 	if (currentpage == errorpage) {
 		// we have already tried to find the error page
 		String msg(fId);
@@ -756,18 +733,18 @@ bool Session::InReAuthenticate(Role *r, Context &context) {
 	return false;
 }
 
-Role *Session::CheckRoleExchange(const char *action, Context &c) const {
+Role *Session::CheckRoleExchange(const char *action, Context &ctx) const {
 	StartTrace1(Session.CheckRoleExchange, "action: <" << NotNull(action) << ">");
 	// a role change is only possible if we can find RoleChanges in the context
 	String strActionToRoleEntry("RoleChanges.");
 	strActionToRoleEntry.Append(action);
-	ROAnything roaActionToRoleEntry = c.Lookup(strActionToRoleEntry);
-	Role *contextRole = GetRole(c);
+	ROAnything roaActionToRoleEntry = ctx.Lookup(strActionToRoleEntry);
+	Role *contextRole = GetRole(ctx);
 	if (contextRole) {
 		String strEntrynameToOldRole(strActionToRoleEntry);
 		strEntrynameToOldRole.Append('.').Append(contextRole->GetName());
 		Trace("role lookup string appended with current rolename [" << strEntrynameToOldRole << "]");
-		if (c.Lookup(strEntrynameToOldRole, roaActionToRoleEntry)) {
+		if (ctx.Lookup(strEntrynameToOldRole, roaActionToRoleEntry)) {
 			strActionToRoleEntry = strEntrynameToOldRole;
 		}
 	}
@@ -782,7 +759,7 @@ Role *Session::CheckRoleExchange(const char *action, Context &c) const {
 }
 
 // URL state management
-void Session::CollectLinkState(Anything &a, Context &c) const {
+void Session::CollectLinkState(Anything &a, Context &ctx) const {
 	if (fAddress.Length() > 0) {
 		a["adr"] = fAddress;
 	}
@@ -790,13 +767,13 @@ void Session::CollectLinkState(Anything &a, Context &c) const {
 		a["port"] = fPort;
 	}
 	a["sessionId"] = fId;
-	Page *page = c.GetPage();
+	Page *page = ctx.GetPage();
 	if (page) {
 		String pName;
 		page->GetName(pName);
 		a["page"] = pName;
 	}
-	Anything query = c.GetQuery();
+	Anything query = ctx.GetQuery();
 	if (query.IsDefined("SessionIsNew")) {
 		query.Remove("SessionIsNew");
 	}

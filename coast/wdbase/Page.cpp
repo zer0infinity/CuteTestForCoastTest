@@ -10,97 +10,83 @@
 #include "Renderer.h"
 #include "Action.h"
 #include "Timers.h"
-#include "Registry.h"
 #include "HTTPStreamStack.h"
 #include "RequestProcessor.h"
 #include "Policy.h"
 
-//---- PagesModule -----------------------------------------------------------
+const char* Page::gpcCategory = "Page";
+const char* Page::gpcConfigPath = "Pages";
 RegisterModule(PagesModule);
 
-bool PagesModule::Init(const ROAnything config)
-{
-	if (config.IsDefined("Pages")) {
-		HierarchyInstaller hi("Page");
-		return RegisterableObject::Install(config["Pages"], "Page", &hi);
+bool PagesModule::Init(const ROAnything config) {
+	ROAnything roaConfig;
+	if (config.LookupPath(roaConfig, Page::gpcConfigPath)) {
+		HierarchyInstaller ai(Page::gpcCategory);
+		return RegisterableObject::Install(roaConfig, Page::gpcCategory, &ai);
 	}
 	return false;
 }
 
-bool PagesModule::ResetFinis(const ROAnything config)
-{
-	AliasTerminator at("Page");
-	return RegisterableObject::ResetTerminate("Page", &at);
+bool PagesModule::ResetFinis(const ROAnything config) {
+	AliasTerminator at(Page::gpcCategory);
+	return RegisterableObject::ResetTerminate(Page::gpcCategory, &at);
 }
 
-bool PagesModule::Finis()
-{
-	return StdFinis("Page", "Pages");
+bool PagesModule::Finis() {
+	return StdFinis(Page::gpcCategory, Page::gpcConfigPath);
 }
-
-//---- Page --------------------------------------------------------------------------
 RegisterPage(Page);
 
-Page::Page(const char *title) :  HierarchConfNamed(title)
-{
+Page::Page(const char *title) :
+	HierarchConfNamed(title) {
 	SetName(title);
 }
 
-IFAObject *Page::Clone(Allocator *a) const
-{
+IFAObject *Page::Clone(Allocator *a) const {
 	StartTrace(Page.Clone);
 	return new (a) Page(fName);
 }
 
-void Page::Mime(std::ostream &reply, Context &c)
-{
+void Page::Mime(std::ostream &reply, Context &c) {
 	reply << "Content-type: text/html" << ENDL;
 }
 
-void Page::Header(std::ostream &reply, Context &)
-{
+void Page::Header(std::ostream &reply, Context &) {
 	reply << "<html><head><title>" << fName << "</title></head>\n<body>";
 }
 
-void Page::Title(std::ostream &reply, Context &)
-{
+void Page::Title(std::ostream &reply, Context &) {
 	reply << "<h1>" << fName << "</h1>";
 }
 
-void Page::Body(std::ostream &reply, Context &)
-{
-	reply << "..." ;
+void Page::Body(std::ostream &reply, Context &) {
+	reply << "...";
 }
 
-void Page::Footer(std::ostream &reply, Context &)
-{
+void Page::Footer(std::ostream &reply, Context &) {
 	reply << "</body></html>\n";
 }
 
-void Page::Start(std::ostream &reply, Context &context)
-{
+void Page::Start(std::ostream &reply, Context &context) {
 	StartTrace1(Page.Start, fName << ":");
 	context.SetPage(this);
 	Render(reply, context);
 }
 
-bool Page::Prepare(String &transitionToken, Context &context)
-{
+bool Page::Prepare(String &transitionToken, Context &context) {
 	StartTrace1(Page.Prepare, fName << ": <" << transitionToken << ">");
-	if ( !transitionToken.Length() ) {
+	if (!transitionToken.Length()) {
 		return true;
 	}
 	return ProcessToken(transitionToken, context);
 }
 
-bool Page::Finish(String &transitionToken, Context &context)
-{
+bool Page::Finish(String &transitionToken, Context &context) {
 	StartTrace1(Page.Finish, fName << ": <" << transitionToken << ">");
 	return ProcessToken(transitionToken, context);
 }
 
-bool Page::ProcessToken(String &transitionToken, Context &context)
-{
+bool Page::ProcessToken(String &transitionToken, Context &context) {
 	StartTrace1(Page.ProcessToken, fName << ": <" << transitionToken << ">");
 	context.SetPage(this);
 	ROAnything roaTransitionConfig = context.Lookup(transitionToken);
@@ -108,13 +94,11 @@ bool Page::ProcessToken(String &transitionToken, Context &context)
 	return Action::ExecAction(transitionToken, context, roaTransitionConfig);
 }
 
-void Page::Preprocess(Context &c)
-{
+void Page::Preprocess(Context &c) {
 	StatTrace(Page.Preprocess, fName << ":", Coast::Storage::Current());
 }
 
-void Page::Render(std::ostream &reply, Context &ctx)
-{
+void Page::Render(std::ostream &reply, Context &ctx) {
 	StartTrace1(Page.Render, "<" << fName << ">");
 	MethodTimer(Page.Render, "", ctx);
 	if (TriggerEnabled(Page.Render.TracePage)) {
@@ -125,8 +109,8 @@ void Page::Render(std::ostream &reply, Context &ctx)
 		replyInt << ENDL;
 		RenderProtocolBody(replyInt, ctx);
 		RenderProtocolTail(replyInt, ctx);
-		SystemLog::WriteToStderr(String("Page::Render\n") << "------------ start -----------\n" << dbg
-				<< "------------  end ------------\n");
+		SystemLog::WriteToStderr(
+				String("Page::Render\n") << "------------ start -----------\n" << dbg << "------------  end ------------\n");
 	}
 	//SOP: try if we can get better responsiveness releasing the session
 	SessionReleaser slr(ctx);
@@ -162,10 +146,7 @@ void Page::RenderProtocolStatus(std::ostream &reply, Context &ctx) {
 
 void Page::RenderProtocolHeader(std::ostream &reply, Context &ctx) {
 	StartTrace1(Page.RenderProtocolHeader, "<" << fName << ">");
-
-	// this part is optional
 	ROAnything httpHeader(ctx.Lookup("HTTPHeader"));
-
 	if (!httpHeader.IsNull()) {
 		Renderer::Render(reply, ctx, httpHeader);
 	} else {
@@ -193,16 +174,13 @@ void Page::RenderProtocolBody(std::ostream &reply, Context &ctx) {
 	}
 }
 
-void Page::RenderProtocolTail(std::ostream &reply, Context &ctx)
-{
+void Page::RenderProtocolTail(std::ostream &reply, Context &ctx) {
 	StartTrace1(Page.RenderProtocolTail, "<" << fName << ">");
 	//!@FIXME: this is a temporary workaround to only render Debug output onto html pages
 	OStringStream ostr;
 	RenderProtocolHeader(ostr, ctx);
-	if ( ostr.str().Contains("text/html") ) {
+	if (ostr.str().Contains("text/html")) {
 		// we render optional debug output
 		ctx.HTMLDebugStores(reply);
 	}
 }
-
-RegCacheImpl(Page);	// FindPage()

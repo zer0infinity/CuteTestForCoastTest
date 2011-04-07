@@ -12,10 +12,11 @@
 #include "HierarchyInstallerWithConfig.h"
 #include "DataAccessImpl.h"
 #include "ServiceHandler.h"
+#include "Page.h"
+#include "Role.h"
 
 using namespace Coast;
 
-//---- BackendConfigLoaderModule -----------------------------------------------------------
 RegisterModule(BackendConfigLoaderModule);
 
 Anything BackendConfigLoaderModule::backendConfigurations = Anything(Anything::ArrayMarker(),Storage::Global());
@@ -102,6 +103,16 @@ bool BackendConfigLoaderModule::RegisterBackend(const String& backendName, ROAny
 		TraceAny(roaObjectConfig, "DataAccessImpl config");
 		HierarchyInstallerWithConfig ip(DataAccessImpl::gpcCategory, roaBackendConfig);
 		ret = RegisterableObject::Install(roaObjectConfig, DataAccessImpl::gpcCategory, &ip) && ret;
+	}
+	if (roaBackendConfig.LookupPath(roaObjectConfig, Page::gpcConfigPath)) {
+		TraceAny(roaObjectConfig, "Page config");
+		HierarchyInstallerWithConfig ip(Page::gpcCategory, roaBackendConfig);
+		ret = RegisterableObject::Install(roaObjectConfig, Page::gpcCategory, &ip) && ret;
+	}
+	if (roaBackendConfig.LookupPath(roaObjectConfig, Role::gpcConfigPath)) {
+		TraceAny(roaObjectConfig, "Role config");
+		HierarchyInstallerWithConfig ip(Role::gpcCategory, roaBackendConfig);
+		ret = RegisterableObject::Install(roaObjectConfig, Role::gpcCategory, &ip) && ret;
 	}
 	if (roaBackendConfig.LookupPath(roaObjectConfig, ServiceHandler::gpcConfigPath)) {
 		TraceAny(roaObjectConfig, "ServiceHandler config");

@@ -11,9 +11,6 @@
 
 #include "WDModule.h"
 
-class Context;
-
-//---- BackendConfigLoaderModule -----------------------------------------------------------
 class BackendConfigLoaderModule: public WDModule {
 	bool RegisterBackend(const String& backendName, ROAnything roaBackendConfig);
 	Anything GetBackendList();

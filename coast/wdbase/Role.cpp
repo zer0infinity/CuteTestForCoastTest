@@ -14,25 +14,28 @@
 #include <cstring>
 
 RegisterModule(RolesModule);
+RegisterRole(Role);
+
+const char* Role::gpcCategory = "Role";
+const char* Role::gpcConfigPath = "Roles";
 
 bool RolesModule::Init(const ROAnything config) {
-	if (config.IsDefined("Roles")) {
-		HierarchyInstaller hi("Role");
-		return RegisterableObject::Install(config["Roles"], "Role", &hi);
+	ROAnything roaConfig;
+	if (config.LookupPath(roaConfig, Role::gpcConfigPath)) {
+		HierarchyInstaller ai(Role::gpcCategory);
+		return RegisterableObject::Install(roaConfig, Role::gpcCategory, &ai);
 	}
 	return false;
 }
 
 bool RolesModule::ResetFinis(const ROAnything config) {
-	AliasTerminator at("Role");
-	return RegisterableObject::ResetTerminate("Role", &at);
+	AliasTerminator at(Role::gpcCategory);
+	return RegisterableObject::ResetTerminate(Role::gpcCategory, &at);
 }
 
 bool RolesModule::Finis() {
-	return StdFinis("Role", "Roles");
+	return StdFinis(Role::gpcCategory, Role::gpcConfigPath);
 }
-
-RegisterRole(Role);
 
 bool Role::Init(Context &) {
 	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Coast::Storage::Current());

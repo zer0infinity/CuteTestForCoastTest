@@ -11,21 +11,19 @@
 
 #include "Context.h"
 #include "WDModule.h"
+#include "Registry.h"
 
-//---- ServiceDispatchersModule -----------------------------------------------------------
 class ServiceDispatchersModule: public WDModule {
 public:
 	ServiceDispatchersModule(const char *name) :
 		WDModule(name) {
 	}
-
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
 class ServiceHandler;
-//---- ServiceDispatcher -----------------------------------------------------------
 //!dispatches handling of the request to a service handler using context information
 //!standard implementation looks for "DefaultService" entry in Context and uses "WebAppService" if nothing is found<br>
 //!no rendering takes place for efficiency reason
@@ -38,11 +36,11 @@ class ServiceDispatcher: public HierarchConfNamed {
 	ServiceDispatcher &operator=(const ServiceDispatcher &);
 public:
 	//!standard named object constructor
-	ServiceDispatcher(const char *serviceDispatcherName);
-	virtual ~ServiceDispatcher();
-
+	ServiceDispatcher(const char *serviceDispatcherName) :
+		HierarchConfNamed(serviceDispatcherName) {
+	}
 	//!registry interface
-	RegCacheDef(ServiceDispatcher); // FindServiceDispatcher()
+	RegCacheImplInline(ServiceDispatcher);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) ServiceDispatcher(fName);
@@ -58,7 +56,6 @@ public:
 	virtual String FindServiceName(Context &ctx);
 };
 
-//---- RendererDispatcher -----------------------------------------------------------
 //!uses a table to map uri prefixes to rendered service names;
 //!a table driven mapping is used to render service names<br>
 //!the uri prefix of the request is mapped to a service name using a map defined in the context with the tag <b>URIPrefix2ServiceMap</b><br>
@@ -74,15 +71,12 @@ public:
 	RendererDispatcher(const char *rendererDispatcherName) :
 		ServiceDispatcher(rendererDispatcherName) {
 	}
-
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) RendererDispatcher(fName);
 	}
-
 	//!uses a table to map uri prefixes to service name; renders entry found, if nothing matches, renders "DefaultService"
 	virtual String FindServiceName(Context &ctx);
-
 protected:
 	//!Workhorse of FindServiceName
 	long FindURIPrefixInList(const String &requestURI, const ROAnything &uriPrefixList);

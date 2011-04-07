@@ -9,28 +9,23 @@
 #ifndef _WebAppService_H
 #define _WebAppService_H
 
-
 #include "ServiceHandler.h"
 
-//---- WebAppService ----------------------------------------------------------
 //!single line description of the class
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class WebAppService : public ServiceHandler
-{
+class WebAppService: public ServiceHandler {
 	friend class WebAppServiceTest;
 public:
 	//!standard named object constructor
 	WebAppService(const char *name) :
 		ServiceHandler(name) {
 	}
-
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) WebAppService(fName);
 	}
-
 protected:
 	//!handles requested service
 	virtual bool DoHandleService(std::ostream &os, Context &ctx);
@@ -54,7 +49,6 @@ protected:
 	void Add2Query(Anything &query, const Anything &queryItems, bool overWrite = false);
 
 	void ExtractPostBodyFields(Anything &query, const Anything &requestBody);
-
 };
 
 #endif

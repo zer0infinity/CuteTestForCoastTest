@@ -91,6 +91,9 @@ public:
 	 */
 	static long GetRoleLevel(const Role *pRole);
 
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
+
 protected:
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

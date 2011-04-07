@@ -10,22 +10,21 @@
 #define _PAGE_H
 
 #include "WDModule.h"
+#include "Registry.h"
+#include "Dbg.h"
 
 class Context;
 
-//---- PagesModule -----------------------------------------------------------
 class PagesModule: public WDModule {
 public:
 	PagesModule(const char *name) :
 		WDModule(name) {
 	}
-
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything);
 	virtual bool Finis();
 };
 
-//---- Page -------------------------------------------------------------------
 //!abstraction for generation of html page content; it manages preparation, rendering and postprocessing of pages
 //!a page manages the preparation, rendering and postprocessing of pages.<br>
 //!Preparation and postprocessing uses the Action class to execute code related to transition tokens.<br>
@@ -58,7 +57,10 @@ public:
 	//!postprocessing of a request coming from this page
 	virtual bool Finish(String &action, Context &context);
 
-	RegCacheDef(Page);	// FindPage()
+	RegCacheImplInline(Page);
+
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
 
 protected:
 	//! transition token processing
