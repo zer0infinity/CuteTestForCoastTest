@@ -11,28 +11,27 @@
 
 #include "Renderer.h"
 
-//---- HTTPStringEncodeRenderer ----------------------------------------------------------
 //! URL-Encode given string
 /*!
  * @section htser1 Renderer configuration
-\code
-{
-	/String
-}
-\endcode
+ \code
+ {
+ /String
+ }
+ \endcode
  * @par \c String
  * Mandatory\n
  * String value which gets URL encoded
  */
-class HTTPStringEncodeRenderer : public Renderer
-{
+class HTTPStringEncodeRenderer: public Renderer {
 	HTTPStringEncodeRenderer();
 public:
 	/*! Default constructor for NamedObject
 	 * @param name defines the name of the Renderer */
-	HTTPStringEncodeRenderer(const char *name);
-	~HTTPStringEncodeRenderer();
-
+	HTTPStringEncodeRenderer(const char *name) :
+		Renderer(name) {
+	}
+protected:
 	/*! Renders URL encoded string onto stream
 	 * @param reply the stream where the rendered output is written on.
 	 * @param ctx the context the renderer runs within.
