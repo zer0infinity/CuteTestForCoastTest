@@ -6,19 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "StringLengthRenderer.h"
-#include "Dbg.h"
 RegisterRenderer(StringLengthRenderer);
 
 void StringLengthRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(StringLengthRenderer.RenderAll);
 	ROAnything roaSlotConfig;
-	String strValue, strLength;
+	String strValue;
 	if (config.LookupPath(roaSlotConfig, "Value")) {
 		RenderOnString(strValue, ctx, roaSlotConfig);
 	} else {
-		Trace("Error in StringLengthRenderer::RenderAll, Value not defined");
-		reply << "";
-		return;
+		RenderOnString(strValue, ctx, config);
 	}
 	Trace("Value: [" << strValue << "]");
 	reply << strValue.Length();
