@@ -17,13 +17,7 @@
 typedef int Unicode;
 
 enum EAlign {
-	eLeft,
-	eTop = eLeft,
-	eCenter,
-	eBase,
-	eRight,
-	eBottom = eRight,
-	eJustified
+	eLeft, eTop = eLeft, eCenter, eBase, eRight, eBottom = eRight, eJustified
 };
 
 //---- HTMLParser -----------------------------------------------------------
@@ -31,82 +25,163 @@ enum EAlign {
 // extremely simple parser for HTML files: does not consider hierachical
 // structure of HTML... only at the tag level... (special treatment of
 // <SCRIPT> tag  and comments)
-class HTMLParser
-{
+class HTMLParser {
 public:
-	HTMLParser();
-	virtual ~HTMLParser() {};
+	HTMLParser()
+    :fLine(1), fExitParser(false)
+    {
+}
+    virtual ~HTMLParser() {
+	}
 
 	enum TagType {
 		eUNKNOWN = -1, eNONE = 0,
 
 		// document structure
-		eHTML, eBODY, eHEAD, eDOCTYPE, eBANNER, eDIV, eFOOTNOTE,
+		eHTML,
+		eBODY,
+		eHEAD,
+		eDOCTYPE,
+		eBANNER,
+		eDIV,
+		eFOOTNOTE,
 
 		// head section
-		eTITLE,	eISINDEX, eMETA, eLINK,	eBASE, eSCRIPT, eSTYLE, eNEXTID,
+		eTITLE,
+		eISINDEX,
+		eMETA,
+		eLINK,
+		eBASE,
+		eSCRIPT,
+		eSTYLE,
+		eNEXTID,
 
 		// block-level elements
 		// headings
-		eHEADER_1, eHEADER_2, eHEADER_3, eHEADER_4, eHEADER_5, eHEADER_6,
+		eHEADER_1,
+		eHEADER_2,
+		eHEADER_3,
+		eHEADER_4,
+		eHEADER_5,
+		eHEADER_6,
 		// text containers
-		ePARAGRAPH,	ePREFORMAT,	eBLOCKQUOTE, eADDRESS, eCREDIT,
+		ePARAGRAPH,
+		ePREFORMAT,
+		eBLOCKQUOTE,
+		eADDRESS,
+		eCREDIT,
 		// lists
-		eUNORDERED_LIST, eORDERED_LIST, eDIRECTORY, eMENU, eLIST_ITEM,
-		eDEF_LIST, eDEF_TERM, eDEF_DEF, eLISTHEADER,
+		eUNORDERED_LIST,
+		eORDERED_LIST,
+		eDIRECTORY,
+		eMENU,
+		eLIST_ITEM,
+		eDEF_LIST,
+		eDEF_TERM,
+		eDEF_DEF,
+		eLISTHEADER,
 		// others
-		eDIVISION, eCENTER, eHRULE,
-		eFORM, eINPUT, eSELECT, eOPTION, eTEXTAREA,
-		eTABLE, eCAPTION, eTABLECELL, eTABLEHEADER, eTABLEROW,
-		eCOLUMN, eTABLEHEAD, eTBODY, eTABLEFOOTER,
-		eFRAME, eFRAMESET,
+		eDIVISION,
+		eCENTER,
+		eHRULE,
+		eFORM,
+		eINPUT,
+		eSELECT,
+		eOPTION,
+		eTEXTAREA,
+		eTABLE,
+		eCAPTION,
+		eTABLECELL,
+		eTABLEHEADER,
+		eTABLEROW,
+		eCOLUMN,
+		eTABLEHEAD,
+		eTBODY,
+		eTABLEFOOTER,
+		eFRAME,
+		eFRAMESET,
 		eNOTE,
 
 		// text-level elements
 		// logical markup
-		eEMPHASIZED, eSTRONG, eDEFINITION, eCODE, eSAMPLE,
-		eKEYBOARD, eVARIABLE, eCITATION, eCOMMAND, eARGUMENT,
-		eACRONYM, eDELETED, ePERSON, eINSERTED, eAUTHOR,
-		eABBREV, eQUOTATION_MARK, eLANGUAGE, eBLINK,
+		eEMPHASIZED,
+		eSTRONG,
+		eDEFINITION,
+		eCODE,
+		eSAMPLE,
+		eKEYBOARD,
+		eVARIABLE,
+		eCITATION,
+		eCOMMAND,
+		eARGUMENT,
+		eACRONYM,
+		eDELETED,
+		ePERSON,
+		eINSERTED,
+		eAUTHOR,
+		eABBREV,
+		eQUOTATION_MARK,
+		eLANGUAGE,
+		eBLINK,
 		// physical markup
-		eTELETYPE, eITALIC, eUNDERLINE, eSTRIKEOUT, eBOLD,
-		eBIG, eSMALL, eSUBSCRIPT, eSUPERSCRIPT,
-		eFONT, eBASEFONT,
+		eTELETYPE,
+		eITALIC,
+		eUNDERLINE,
+		eSTRIKEOUT,
+		eBOLD,
+		eBIG,
+		eSMALL,
+		eSUBSCRIPT,
+		eSUPERSCRIPT,
+		eFONT,
+		eBASEFONT,
 		// embedded object
-		eEMBEDDED, eFIGURE, eOVERLAY, eIMAGE, eMATH, eOBJECT,
+		eEMBEDDED,
+		eFIGURE,
+		eOVERLAY,
+		eIMAGE,
+		eMATH,
+		eOBJECT,
 		// special markup
 		eANCHOR,
-		eAPPLET, ePARAM, eTEXTFLOW, eMARQUEE,
-		eLINEBREAK, eNOBR, eWBR, eTAB,
-		eMAP, eAREA
+		eAPPLET,
+		ePARAM,
+		eTEXTFLOW,
+		eMARQUEE,
+		eLINEBREAK,
+		eNOBR,
+		eWBR,
+		eTAB,
+		eMAP,
+		eAREA
 	};
 
 	struct TagInfo {
 		const char *fName;
-#if defined(WIN32)
-		TagType fCode;
-#else
 		HTMLParser::TagType fCode;
-#endif
 	};
-
 	virtual long IntParse();
-
 	virtual Unicode IntGet();
-	virtual void IntPutBack(Unicode c);
-
-	virtual void IntPut(const String &);
-	virtual void IntPut(Unicode c);
+	virtual void IntPutBack(Unicode c) {
+	}
+	virtual void IntPut(const String &) {
+	}
+	virtual void IntPut(Unicode c) {
+	}
 	void Put(const String &s);
 	void PutSpecial(Unicode c, const String &name);
-	virtual void IntComment(const String &comment);
-	virtual void IntPushNode(Anything &);
-	virtual void IntTag(int type, const char *tag);
-	virtual void IntArgument(const String &key, const String &value);
-
-	virtual void IntFlush();
-	virtual void IntError(long line, const String &msg);
-
+	virtual void IntComment(const String &comment) {
+	}
+	virtual void IntPushNode(Anything &) {
+	}
+	virtual void IntTag(int type, const char *tag) {
+	}
+	virtual void IntArgument(const String &key, const String &value) {
+	}
+	virtual void IntFlush() {
+	}
+	virtual void IntError(long line, const String &msg) {
+	}
 	static TagType LookupTag(const char *name);
 	static Unicode LookupSpecial(const char *name);
 	static EAlign LookupAlign(const char *value);
@@ -123,9 +198,11 @@ protected:
 	void ParseCharacterEntity();
 	Unicode NextToken(String &token, bool withDelims = false, bool accEqual = false);
 
-	void Exit();
-
-	Unicode Get();
+	void Exit()
+    {
+	fExitParser = true;
+}
+    Unicode Get();
 
 	void Error(const String &msg);
 
@@ -136,55 +213,73 @@ private:
 
 	static TagInfo TagTable[];
 };
-//---- AAT_HTMLReader ---------------------------------------------------------------------------
-class AAT_HTMLReader
-{
+
+class AAT_HTMLReader {
 public:
-	AAT_HTMLReader(std::istream *fp = 0);
-
-	Unicode Get();
-	void PutBack(char c);
-
+	AAT_HTMLReader(std::istream *fp = 0) :
+		fFile(fp) {
+	}
+	int Get();
+	void PutBack(char c) {
+		fFile ? fFile->putback(c) : (*fFile);
+	}
 protected:
 	std::istream *fFile;
 };
 
-//---- AAT_HTMLWriter ---------------------------------------------------------------------------
-class AAT_HTMLWriter
-{
+class AAT_HTMLWriter {
 public:
-	AAT_HTMLWriter() { }
-	virtual ~AAT_HTMLWriter() { }
-
-	virtual void Put(char c);
-	virtual void Put(Unicode c);
-	virtual void Put(const String &);
-
-	virtual void Flush();
-
-	virtual void Tag(int type, const char *tag);
-	virtual void Argument(const String &key, const String &value);
-	virtual void PushNode(Anything &node);
-	virtual void Comment(const String &comment);
-
+	AAT_HTMLWriter() {
+	}
+	virtual ~AAT_HTMLWriter() {
+	}
+	virtual void Put(char c) {
+	}
+	virtual void Put(Unicode c) {
+	}
+	virtual void Put(const String&) {
+	}
+	virtual void Flush() {
+	}
+	virtual void Tag(int type, const char *tag) {
+	}
+	virtual void Argument(const String &key, const String &value) {
+	}
+	virtual void PushNode(Anything & node) {
+	}
+	virtual void Comment(const String & comment) {
+	}
 	virtual void Error(long line, const String &msg);
 };
 
-//---- AAT_StdHTMLParser -----
-class AAT_StdHTMLParser : public HTMLParser
-{
+class AAT_StdHTMLParser: public HTMLParser {
 public:
-	AAT_StdHTMLParser(AAT_HTMLReader &reader, AAT_HTMLWriter &writer);
-
+	AAT_StdHTMLParser(AAT_HTMLReader & reader, AAT_HTMLWriter & writer) :
+		fReader(reader), fWriter(writer) {
+	}
 protected:
-	Unicode IntGet();
-	void IntPutBack(Unicode c);
-	void IntFlush();
-	void IntPut(const String &);
-	void IntPut(Unicode c);
-	void IntComment(const String &comment);
-	void IntPushNode(Anything &);
-	void IntTag(int type, const char *tag );
+	Unicode IntGet() {
+		return fReader.Get();
+	}
+	void IntPutBack(Unicode c) {
+		fReader.PutBack(c);
+	}
+	void IntFlush() {
+		fWriter.Flush();
+	}
+	void IntPut(const String &str) {
+		fWriter.Put(str);
+	}
+	void IntPut(Unicode c) {
+		fWriter.Put(c);
+	}
+	void IntComment(const String &comment) {
+		fWriter.Comment(comment);
+	}
+	void IntPushNode(Anything &node) {
+		fWriter.PushNode(node);
+	}
+	void IntTag(int type, const char *tag);
 	void IntArgument(const String &key, const String &value);
 	void IntError(long line, const String &msg);
 
@@ -196,12 +291,13 @@ private:
 // copy - paste - delete reuse of Juergens HTMLParser
 // we don't need a reply here only some special tags like hrefs, imgs, forms ...
 //---- MyHTMLWriter ---------------------------------------------------------------------------
-class MyHTMLWriter : public AAT_HTMLWriter
-{
+class MyHTMLWriter: public AAT_HTMLWriter {
 public:
-	MyHTMLWriter( Anything &urls ) : fUrls(urls), fStoreTitle(0), fRequestFailed(0), fFormNr(-1), fTitle(""), fAllStringsInPage(""), fInScript(false)
-	{ }
-	virtual ~MyHTMLWriter() { }
+	MyHTMLWriter(Anything &urls) :
+		fUrls(urls), fStoreTitle(0), fRequestFailed(0), fFormNr(-1), fTitle(""), fAllStringsInPage(""), fInScript(false) {
+	}
+	virtual ~MyHTMLWriter() {
+	}
 
 	virtual void Put(char c);
 	virtual void Put(Unicode c);
@@ -216,7 +312,7 @@ public:
 	virtual void Comment(const String &comment);
 
 	virtual void Error(long line, const String &msg);
-	virtual bool GetReqFailed( void );
+	virtual bool GetReqFailed(void);
 
 protected:
 	void RenderImageTag(int t, const char *s, Anything &node, const char *wrap = "src");
@@ -230,8 +326,6 @@ protected:
 	void RenderFormTag(int t, const char *s, Anything &node);
 	void RenderInputTag(int t, const char *s, Anything &node);
 	void RenderSelectTag(int t, const char *s, Anything &node);
-
-protected:
 
 	Anything &fUrls;
 	bool fStoreTitle;
