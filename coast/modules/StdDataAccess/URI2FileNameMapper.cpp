@@ -8,12 +8,10 @@
 
 #include "URI2FileNameMapper.h"
 #include "SystemFile.h"
-#include "Dbg.h"
 #include "Context.h"
 
 using namespace Coast;
 
-//---- URI2FileNameMapper ------------------------------------------------------------------
 RegisterParameterMapper(URI2FileNameMapper);
 
 bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &ctx)

@@ -7,7 +7,6 @@
  */
 
 #include "XMLBodyMapper.h"
-#include "StringStream.h"
 #include "Dbg.h"
 
 class TagToken {

@@ -6,11 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "CgiCaller.h"
-#include "Anything.h"
-#include "StringStream.h"
 #include "PipeExecutor.h"
 #include "Context.h"
-#include "Dbg.h"
 #include "HTTPConstants.h"
 RegisterDataAccessImpl(CgiCaller);
 

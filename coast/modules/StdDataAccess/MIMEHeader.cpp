@@ -8,12 +8,9 @@
 
 #include "MIMEHeader.h"
 #include "Dbg.h"
-#include "AnythingUtils.h"
-#include "AnyIterators.h"
 #include "RE.h"
 #include "HTTPConstants.h"
 //#include "RECompiler.h"
-#include <iostream>
 #include <cstdio>	// for EOF
 #include <cstring>  // for strlen
 

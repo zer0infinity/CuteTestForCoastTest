@@ -5,54 +5,47 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTTPMapper.h"
-#include "StringStream.h"
 #include "Timers.h"
-#include "Dbg.h"
 #include "CacheHandler.h"
 #include "AnyIterators.h"
-
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
-void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue)
-{
+void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
 	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
 
 	os << slotname << ": ";
 	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
 	long elSz = rvalue.GetSize();
 	for (long j = 0; j < elSz; ++j) {
-		if ( slotname == "COOKIE" ) {
+		if (slotname == "COOKIE") {
 			os << NotNull(rvalue.SlotName(j)) << '=';
 		}
 		os << rvalue[j].AsCharPtr("");
 		if (j < (elSz - 1)) {
-			os << (( slotname == "COOKIE" ) ? "; " : ", ");
+			os << ((slotname == "COOKIE") ? "; " : ", ");
 		}
 	}
 	os << ENDL;
 }
 
-bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue)
-{
+bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
 	StartTrace(HTTPHeaderParameterMapper.HandleMoreLinesForHeaderField);
 
 	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
 	long elSz = rvalue.GetSize();
 	bool handled = false;
 	for (long j = 0; j < elSz; ++j) {
-		if ( slotname == "SET-COOKIE" ) {
+		if (slotname == "SET-COOKIE") {
 			handled = true;
-			os << slotname << ": "  << rvalue[j].AsCharPtr("") << ENDL;
+			os << slotname << ": " << rvalue[j].AsCharPtr("") << ENDL;
 		}
 	}
 	return handled;
 }
 
 namespace {
-	static void SuppressListToUpper(ROAnything suppressList, Anything &suppressListToUpper)
-	{
+	static void SuppressListToUpper(ROAnything suppressList, Anything &suppressListToUpper) {
 		const long size = suppressList.GetSize();
 		for (long i = 0; i < size; ++i) {
 			if (suppressList[i].GetType() == AnyArrayType) {
@@ -65,22 +58,21 @@ namespace {
 }
 
 namespace {
-	static const char *gsGroupName="HeaderMapperCache";
-	static const char *gsSuppressName="Suppress";
+	static const char *gsGroupName = "HeaderMapperCache";
+	static const char *gsSuppressName = "Suppress";
 }
 
-bool HTTPHeaderParameterMapper::DoInitialize()
-{
+bool HTTPHeaderParameterMapper::DoInitialize() {
 	StartTrace1(HTTPHeaderParameterMapper.DoInitialize, "cat <" << fCategory << "> name <" << fName << ">");
 	ROAnything roaSuppressList(fConfig[gsSuppressName]);
 	Anything suppresslist;
 	SuppressListToUpper(roaSuppressList, suppresslist);
 	TraceAny(suppresslist, "suppress list to cache");
-	if ( !suppresslist.IsNull() ) {
+	if (!suppresslist.IsNull()) {
 		Anything toCache = Anything(Anything::ArrayMarker());
 		toCache[gsSuppressName] = suppresslist;
-		CacheHandler *cache= CacheHandler::Get();
-		if ( cache ) {
+		CacheHandler *cache = CacheHandler::Get();
+		if (cache) {
 			AnythingLoaderPolicy loader(toCache);
 			ROAnything roaList = cache->Load(gsGroupName, GetName(), &loader);
 			TraceAny(roaList, "cached suppress list");
@@ -93,9 +85,9 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 	StartTrace1(HTTPHeaderParameterMapper.DoLookup, "fName <" << GetName() << ">");
 	// check first in cache with this object name as prefix
 	bool bValueFound = false;
-	if ( String(key).StartsWith(gsSuppressName) ) {
+	if (String(key).StartsWith(gsSuppressName)) {
 		CacheHandler *cache = CacheHandler::Get();
-		ROAnything roaCache = cache ? cache->Get(gsGroupName, GetName()): ROAnything();
+		ROAnything roaCache = cache ? cache->Get(gsGroupName, GetName()) : ROAnything();
 		TraceAny(roaCache, "result from cache for [" << GetName() << "]");
 		if (!roaCache.IsNull()) {
 			bValueFound = roaCache.LookupPath(result, key);
@@ -103,33 +95,32 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 		}
 	}
 	// delegate further if not found yet
-	if ( !bValueFound ) {
+	if (!bValueFound) {
 		bValueFound = HierarchConfNamed::DoLookup(key, result, delim, indexdelim);
 		TraceAny(result, "uncached result of parent DoLookup delegation at key [" << key << "]");
 	}
 	return bValueFound;
 }
 
-bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
-{
+bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info) {
 	StartTrace1(HTTPHeaderParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
 
 	bool mapSuccess = true;
 	ROAnything headerfields(ctx.Lookup(key));
 	TraceAny(headerfields, "Headerfields available for key " << key);
 
-	if ( !headerfields.IsNull() ) {
+	if (!headerfields.IsNull()) {
 		String strFieldName;
 		ROAnything roaValue;
 		AnyExtensions::Iterator<ROAnything> headerIterator(headerfields);
 		while (headerIterator.Next(roaValue)) {
-			if ( headerIterator.SlotName(strFieldName) ) {
+			if (headerIterator.SlotName(strFieldName)) {
 				strFieldName.ToUpper();
 				String strKey(gsSuppressName);
 				strKey.Append('.').Append(strFieldName);
 				Trace("trying to Lookup [" << strKey << "] in own or config");
 				// map non suppressed headerfields
-				if ( Lookup(strKey).AsLong(0L) == 0L ) {
+				if (Lookup(strKey).AsLong(0L) == 0L) {
 					Anything value;
 					ROAnything rvalue;
 					Trace("slot: " << strFieldName);
@@ -138,7 +129,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 					} else {
 						rvalue = value;
 					}
-					if ( !HandleMoreLinesForHeaderField(os, strFieldName, rvalue) ) {
+					if (!HandleMoreLinesForHeaderField(os, strFieldName, rvalue)) {
 						HandleOneLineForHeaderField(os, strFieldName, rvalue);
 					}
 				}
@@ -147,20 +138,17 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 	} else {
 		TraceAny(ctx.GetTmpStore(), "no headers, get ReqHeader in tmp store:");
 		String strHeaderfields;
-		if ( ( mapSuccess = Get("ReqHeader", strHeaderfields, ctx) ) ) {
+		if ((mapSuccess = Get("ReqHeader", strHeaderfields, ctx))) {
 			os << strHeaderfields;
 		}
 	}
 	Trace("retval: " << mapSuccess);
 	return mapSuccess;
 }
-
-//--- HTTPBodyResultMapper ---------------------------
 RegisterResultMapper(HTTPBodyResultMapper);
 RegisterResultMapperAlias(HTTPBodyMapper, HTTPBodyResultMapper);
 
-bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
-{
+bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx) {
 	StartTrace(HTTPBodyResultMapper.DoFinalPutStream);
 	DAAccessTimer(HTTPBodyResultMapper.DoFinalPutStream, "", ctx);
 	String body;
@@ -169,8 +157,7 @@ bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, std::istream &is, C
 	return DoFinalPutAny(key, anyVal, ctx);
 }
 
-void HTTPBodyResultMapper::ReadBody(String &body, std::istream &is, Context &ctx)
-{
+void HTTPBodyResultMapper::ReadBody(String &body, std::istream &is, Context &ctx) {
 	StartTrace(HTTPBodyResultMapper.ReadBody);
 
 	long contentLength = ctx.Lookup("Mapper.content-length", -1L);
@@ -179,24 +166,22 @@ void HTTPBodyResultMapper::ReadBody(String &body, std::istream &is, Context &ctx
 		body.Append(is, contentLength);
 	} else {
 		char c;
-		while ( is.get(c).good() ) {
+		while (is.get(c).good()) {
 			body.Append(c);
 		}
 	}
 	Trace("Body[" << body.Length() << "]");
 	Trace("<" << body << ">");
 }
-
 RegisterParameterMapper(HTTPBodyParameterMapper);
 RegisterParameterMapperAlias(HTTPBodyMapper, HTTPBodyParameterMapper);
-bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx)
-{
+bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx) {
 	StartTrace1(HTTPBodyParameterMapper.DoFinalGetStream, NotNull(key));
 
 	ROAnything params(ctx.Lookup(key)); //!@FIXME ??: use Get(key,any,ctx) instead?
 	bool mapSuccess = true;
 
-	if ( !params.IsNull() ) {
+	if (!params.IsNull()) {
 		// map a configured set of params
 		long bPSz = params.GetSize();
 		for (long i = 0; i < bPSz; ++i) {
@@ -209,7 +194,7 @@ bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os
 			if (lookupVal && (mapSuccess = Get(lookupVal, value, ctx))) {
 				Trace("Param[" << lookupVal << "]=<" << value << ">");
 				os << lookupVal << "=" << value;
-				if (i <  (bPSz - 1)) {
+				if (i < (bPSz - 1)) {
 					os << "&";
 				}
 			} else {
@@ -220,7 +205,7 @@ bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os
 		}
 	} else {
 		String bodyParams;
-		if ( ( mapSuccess = Get(key, bodyParams, ctx) ) ) {
+		if ((mapSuccess = Get(key, bodyParams, ctx))) {
 			os << bodyParams;
 		}
 	}

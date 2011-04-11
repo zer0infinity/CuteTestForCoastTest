@@ -5,32 +5,16 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "SubStringRenderer.h"
-#include "Dbg.h"
-
-//---- SubStringRenderer ---------------------------------------------------------------
 RegisterRenderer(SubStringRenderer);
 
-SubStringRenderer::SubStringRenderer(const char *name)
-	: Renderer(name)
-{
-}
-
-SubStringRenderer::~SubStringRenderer()
-{
-}
-
-void SubStringRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void SubStringRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(SubStringRenderer.RenderAll);
-
-	long start = RenderToString(ctx, config["Start"]).AsLong(0L);
-	long len   = RenderToString(ctx, config["Length"]).AsLong(-1L);
 	String str;
-
 	Renderer::RenderOnString(str, ctx, config["String"]);
 	if (str.Length()) {
+		long start = RenderToString(ctx, config["Start"]).AsLong(0L);
+		long len = RenderToString(ctx, config["Length"]).AsLong(-1L);
 		String ret(str.SubString(start, len));
 		Trace("SubString(" << start << "," << len << ")-->" << ret);
 		reply << ret;

@@ -9,32 +9,26 @@
 #ifndef _DummyHTTPDAImpl_H
 #define _DummyHTTPDAImpl_H
 
-class Context;
-
 #include "DummyDAImpl.h"
 
 //! DummyDataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any, difference to base class - uses connector params
-class DummyHTTPDAImpl : public DummyDAImpl
-{
+class DummyHTTPDAImpl: public DummyDAImpl {
+	DummyHTTPDAImpl();
+	DummyHTTPDAImpl(const DummyHTTPDAImpl &);
+	DummyHTTPDAImpl &operator=(const DummyHTTPDAImpl &);
 public:
-	DummyHTTPDAImpl(const char *name);
-	~DummyHTTPDAImpl();
-
+	DummyHTTPDAImpl(const char *name) :
+		DummyDAImpl(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) DummyHTTPDAImpl(fName);
+	}
 	//! executes the transaction
 	//! \param c The context of the transaction
 	//! \pre fData2Send contains the HTTP-Request
 	//! \post fData2Get contains either an slot /MsgReceived containing the HTTP Response or the slot /Error storing information about the error occured.
 	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
-
-private:
-	//constructor
-	DummyHTTPDAImpl();
-	DummyHTTPDAImpl(const DummyHTTPDAImpl &);
-	//assignement
-	DummyHTTPDAImpl &operator=(const DummyHTTPDAImpl &);
 };
 
 /* Don't add stuff after this #endif */

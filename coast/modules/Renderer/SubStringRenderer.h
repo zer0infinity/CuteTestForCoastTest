@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- SubStringRenderer ----------------------------------------------------------
 //! String.SubString() as Renderer
 /*!
 \par Configuration
@@ -23,13 +22,13 @@
 }
 \endcode
 */
-class SubStringRenderer : public Renderer
-{
+class SubStringRenderer: public Renderer {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	SubStringRenderer(const char *name);
-	~SubStringRenderer();
-
+	SubStringRenderer(const char *name) :
+		Renderer(name) {
+	}
+protected:
 	//! Renders String.SubString() from \c Start with length \c Length onto \em reply
 	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);

@@ -9,13 +9,8 @@
 #include "MIMEHeaderTest.h"
 #include "MIMEHeader.h"
 #include "TestSuite.h"
-#include "Anything.h"
-#include "StringStream.h"
-#include "URLUtils.h"
 #include "AnyUtils.h"
-#include "Dbg.h"
 
-//---- MIMEHeaderTest ----------------------------------------------------------------
 void MIMEHeaderTest::SimpleHeaderTest() {
 	StartTrace(MIMEHeaderTest.SimpleHeaderTest);
 
@@ -75,16 +70,8 @@ void MIMEHeaderTest::ConfiguredTests() {
 	}
 }
 
-#include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/qi_char_.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/std_pair.hpp>
-#include "ITOString.h"
-#include <vector>
 
 namespace client {
 	namespace qi = boost::spirit::qi;

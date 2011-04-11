@@ -7,23 +7,13 @@
  */
 
 #include "HTTPPostRequestBodyParser.h"
-#include "Anything.h"
 #include "StringStream.h"
-#include "URLUtils.h"
 #include "MIMEHeader.h"
 #include "Dbg.h"
 
-HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader)
-	: fHeader(mainheader)
-{
-	StartTrace(HTTPPostRequestBodyParser.Ctor);
-}
-
-bool HTTPPostRequestBodyParser::Parse(std::istream &input)
-{
+bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.Parse);
 	TraceAny(fHeader.GetInfo(), "Header: ");
-
 	if (fHeader.IsMultiPart()) {
 		Trace("Multipart detected");
 		return ParseMultiPart(input, fHeader.GetBoundary());
@@ -39,7 +29,7 @@ bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	if (!fHeader.Lookup("CONTENT-TYPE", contenttype)) {
 		return false;
 	}
-	if ( contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1 ) {
+	if (contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
 		if (not a.Import(input) || a.IsNull()) {
@@ -84,8 +74,7 @@ void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
 	Coast::URLUtils::DecodeAll(result);
 }
 
-bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String &bound, String &body)
-{
+bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String &bound, String &body) {
 	StartTrace1(HTTPPostRequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
 	char c = '\0';
 	bool newLineFoundLastLine = false;
@@ -96,7 +85,7 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 		String line;
 		line.Append(input, 4096L, Coast::StreamUtils::LF);
 		fUnparsedContent.Append(line);
-		if ( Coast::StreamUtils::LF == input.peek() && input.get(c).good() ) {
+		if (Coast::StreamUtils::LF == input.peek() && input.get(c).good()) {
 			fUnparsedContent.Append(c);
 			newLineFoundThisLine = true;
 		}
@@ -104,10 +93,10 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 
 		long nextDoubleDash = line.Contains("--");
 		Trace("nextDoubleDash: " << nextDoubleDash);
-		if ( nextDoubleDash != -1L ) {
+		if (nextDoubleDash != -1L) {
 			long boundPos = line.Contains(bound);
 			Trace("Boundary position: <" << boundPos << ">");
-			if ( boundPos != -1L ) {
+			if (boundPos != -1L) {
 				if (boundPos >= nextDoubleDash + 2L) {
 					boundaryseen = true;
 					if (body.Length() > 0L) {
@@ -115,7 +104,7 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 						Coast::URLUtils::TrimENDL(body);
 
 						Trace("Body in Multipart: <" << body << ">");
-						return ((nextDoubleDash != -1L) && (line[(long)(nextDoubleDash+1L)] == '-'));
+						return ((nextDoubleDash != -1L) && (line[(long) (nextDoubleDash + 1L)] == '-'));
 					}
 				}
 				if (boundPos <= nextDoubleDash - bound.Length()) {
@@ -133,13 +122,11 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 		}
 		newLineFoundLastLine = newLineFoundThisLine;
 	}
-	Trace("Body in Multipart: <" << body << ">");
-	Assert(!input.good());
+	Trace("Body in Multipart: <" << body << ">");Assert(!input.good());
 	return false;
 }
 
-bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream &input, const String &bound)
-{
+bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream &input, const String &bound) {
 	// assume next on input is bound and a line separator
 	StartTrace(HTTPPostRequestBodyParser.ParseMultiPart);
 	bool endReached = false;
@@ -150,13 +137,13 @@ bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream &input, const String
 		String body;
 		endReached = ReadToBoundary(input, bound, body);
 		Trace("Body: <" << body << ">");
-		if ( body.Length() ) {
+		if (body.Length()) {
 			IStringStream innerpart(body);
 			MIMEHeader hinner;
 			try {
 				if (hinner.ParseHeaders(innerpart)) {
 					Anything partInfo;
-					if (!hinner.GetInfo().IsDefined("CONTENT-TYPE") ) {
+					if (!hinner.GetInfo().IsDefined("CONTENT-TYPE")) {
 						hinner.GetInfo()["CONTENT-TYPE"] = "multipart/part";
 					}
 					partInfo["header"] = hinner.GetInfo();

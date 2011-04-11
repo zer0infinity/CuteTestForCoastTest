@@ -12,7 +12,6 @@
 #include "SecurityModule.h"
 #include "Context.h"
 
-//--- SMTPState -----------------
 class SMTPState: public NotCloned {
 	// abstract base class for communication states
 public:

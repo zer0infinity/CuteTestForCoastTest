@@ -9,21 +9,21 @@
 #ifndef _DummyDAImpl_H
 #define _DummyDAImpl_H
 
-class String;
-class Context;
-
 #include "DataAccessImpl.h"
 
 //! DataAccess for performing HTTP Requests, uses meta data defined in HTTPMeta.any
-class DummyDAImpl: public DataAccessImpl
-{
+class DummyDAImpl: public DataAccessImpl {
+	DummyDAImpl();
+	DummyDAImpl(const DummyDAImpl &);
+	DummyDAImpl &operator=(const DummyDAImpl &);
 public:
-	DummyDAImpl(const char *name);
-	~DummyDAImpl();
-
+	DummyDAImpl(const char *name) :
+		DataAccessImpl(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const;
-
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) DummyDAImpl(fName);
+	}
 	//! executes the transaction
 	//! \param c The context of the transaction
 	//! \pre fData2Send contains the HTTP-Request
@@ -43,19 +43,11 @@ protected:
 	//! \param context the context for this call
 	//! \param in ParameterMapper
 	//! \param out ResultMapper
-	virtual bool DoExec( Context &context, ParameterMapper *in, ResultMapper *out);
+	virtual bool DoExec(Context &context, ParameterMapper *in, ResultMapper *out);
 
-	virtual bool RenderReply( String &theReply, Context &context, ResultMapper *out  );
-	virtual String GetReplyMatchingRequest( Anything &recording, Context &context, String &request );
-	virtual bool BuildRequest( String &request, Context &context, ParameterMapper *in );
-
-private:
-	//constructor
-	DummyDAImpl();
-	DummyDAImpl(const DummyDAImpl &);
-	//assignement
-	DummyDAImpl &operator=(const DummyDAImpl &);
+	virtual bool RenderReply(String &theReply, Context &context, ResultMapper *out);
+	virtual String GetReplyMatchingRequest(Anything &recording, Context &context, String &request);
+	virtual bool BuildRequest(String &request, Context &context, ParameterMapper *in);
 };
 
-/* Don't add stuff after this #endif */
 #endif		//not defined _DummyDAImpl_H

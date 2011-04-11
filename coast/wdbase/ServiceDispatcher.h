@@ -28,11 +28,8 @@ class ServiceHandler;
 //!standard implementation looks for "DefaultService" entry in Context and uses "WebAppService" if nothing is found<br>
 //!no rendering takes place for efficiency reason
 class ServiceDispatcher: public HierarchConfNamed {
-	//! block the following default elements of this class because they're not allowed to be used
 	ServiceDispatcher();
-	//! block the following default elements of this class because they're not allowed to be used
 	ServiceDispatcher(const ServiceDispatcher &);
-	//! block the following default elements of this class because they're not allowed to be used
 	ServiceDispatcher &operator=(const ServiceDispatcher &);
 public:
 	//!standard named object constructor
@@ -62,8 +59,6 @@ public:
 //!the service name can be a renderer specification<br>
 //!if nothing matches the <b>DefaultService</b> Entry is used
 class RendererDispatcher: public ServiceDispatcher {
-	// block the following default elements of this class
-	// because they're not allowed to be used
 	RendererDispatcher();
 	RendererDispatcher(const RendererDispatcher &);
 	RendererDispatcher &operator=(const RendererDispatcher &);

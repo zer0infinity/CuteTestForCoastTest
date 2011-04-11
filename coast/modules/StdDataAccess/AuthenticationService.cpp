@@ -6,14 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "AuthenticationService.h"
-#include "SystemLog.h"
-#include "SecurityModule.h"
 #include "HTTPProcessor.h"	// for Coast::HTTP
 #include "Renderer.h"
 #include "AccessManager.h"
-#include "Dbg.h"
 #include "BasicAuthenticationData.h"
 #include "HTTPConstants.h"
+
 RegisterServiceHandler(AuthenticationService);
 
 bool AuthenticationService::DoHandleService(std::ostream &os, Context &ctx) {

@@ -5,31 +5,11 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "DummyDAImpl.h"
-#include "Anything.h"
 #include "StringStream.h"
-#include "SystemLog.h"
-#include "Context.h"
-#include "Mapper.h"
-#include "DiffTimer.h"
 #include "Timers.h"
 #include "AnyUtils.h"
-#include "Dbg.h"
-
-//--- DummyDAImpl -----------------------------------------------------
 RegisterDataAccessImpl( DummyDAImpl);
-
-DummyDAImpl::DummyDAImpl(const char *name) :
-	DataAccessImpl(name) {
-}
-
-DummyDAImpl::~DummyDAImpl() {
-}
-
-IFAObject *DummyDAImpl::Clone(Allocator *a) const {
-	return new (a) DummyDAImpl(fName);
-}
 
 bool DummyDAImpl::HandleError(const char *msg, Context &context) {
 	// does very little right now...
@@ -55,7 +35,6 @@ bool DummyDAImpl::RenderReply(String &theReply, Context &context, ResultMapper *
 
 bool DummyDAImpl::BuildRequest(String &request, Context &context, ParameterMapper *in) {
 	Anything tmpStore(context.GetTmpStore());
-
 	StartTrace(DummyDAImpl.BuildRequest);
 	{
 		OStringStream os(&request);

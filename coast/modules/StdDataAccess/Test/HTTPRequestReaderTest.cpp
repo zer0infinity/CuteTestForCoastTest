@@ -10,27 +10,10 @@
 #include "HTTPRequestReader.h"
 #include "TestSuite.h"
 #include "Context.h"
-#include "HTTPProcessor.h"
 #include "MIMEHeader.h"
-#include "Dbg.h"
-#include "StringStream.h"
 #include "StringStreamSocket.h"
 #include "AnyIterators.h"
 #include "AnyUtils.h"
-
-//---- HTTPRequestReaderTest ----------------------------------------------------------------
-HTTPRequestReaderTest::HTTPRequestReaderTest(TString tstrName) :
-	TestCaseType(tstrName) {
-	StartTrace(HTTPRequestReaderTest.HTTPRequestReaderTest);
-}
-
-TString HTTPRequestReaderTest::getConfigFileName() {
-	return "HTTPRequestReaderTestConfig";
-}
-
-HTTPRequestReaderTest::~HTTPRequestReaderTest() {
-	StartTrace(HTTPRequestReaderTest.Dtor);
-}
 
 void HTTPRequestReaderTest::ReadMinimalInputTest() {
 	StartTrace(HTTPRequestReaderTest.ReadMinimalInputTest);
@@ -42,7 +25,8 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
 		TString caseName;
 		aEntryIterator.SlotName(caseName);
-		if ( not caseName.Length() ) caseName.Append("failed at idx:").Append(aEntryIterator.Index());
+		if (not caseName.Length())
+			caseName.Append("failed at idx:").Append(aEntryIterator.Index());
 
 		MIMEHeader header;
 		HTTPRequestReader reader(header);
@@ -58,7 +42,7 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		OStringStream oss;
 		ctx.DebugStores("bla", oss, true);
 		Trace(oss.str());
-		if (cConfig["Expected"].IsDefined("TmpStore") ) {
+		if (cConfig["Expected"].IsDefined("TmpStore")) {
 			assertAnyCompareEqual(cConfig["Expected"]["TmpStore"], ctx.GetTmpStore(), caseName, '.', ':');
 		}
 	}

@@ -7,9 +7,7 @@
  */
 #include "HTTPFileLoader.h"
 #include "StringStream.h"
-#include "SystemFile.h"
 #include "Renderer.h"
-#include "Dbg.h"
 #include "HTTPConstants.h"
 RegisterDataAccessImpl(HTTPFileLoader);
 

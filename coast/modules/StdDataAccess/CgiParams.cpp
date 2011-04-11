@@ -5,28 +5,21 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "CgiParams.h"
 #include "SystemFile.h"
-#include "Dbg.h"
 #include "Renderer.h"
-
-
-//---- CgiParams ------------------------------------------------------------------
 RegisterParameterMapper(CgiParams);
 
-CgiParams::CgiParams(const char *name) : URI2FileNameMapper(name)
-{
+CgiParams::CgiParams(const char *name) :
+	URI2FileNameMapper(name) {
 	StartTrace(CgiParams.Ctor);
 }
 
-IFAObject *CgiParams::Clone(Allocator *a) const
-{
+IFAObject *CgiParams::Clone(Allocator *a) const {
 	return new (a) CgiParams(fName);
 }
 
-void CgiParams::AddToEnvironment(Context &ctx, Anything &env, ROAnything additionalenv)
-{
+void CgiParams::AddToEnvironment(Context &ctx, Anything &env, ROAnything additionalenv) {
 	StartTrace(CgiParams.AddToEnvironment);
 
 	for (long i = 0, sz = additionalenv.GetSize(); i < sz; ++i) {
@@ -38,8 +31,7 @@ void CgiParams::AddToEnvironment(Context &ctx, Anything &env, ROAnything additio
 	}
 }
 
-bool CgiParams::DoGetAny(const char *key, Anything &value, Context &ctx,  ROAnything config)
-{
+bool CgiParams::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything config) {
 	StartTrace1(CgiParams.DoGetAny, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx, const ROAnything &config)");
 	String k(key); // for easier comparison
 	if (k == "cgienv") {
@@ -54,8 +46,7 @@ bool CgiParams::DoGetAny(const char *key, Anything &value, Context &ctx,  ROAnyt
 	return URI2FileNameMapper::DoGetAny(key, value, ctx, config);
 }
 
-bool CgiParams::DoGetStream(const char *key, std::ostream &os, Context &ctx,  ROAnything config)
-{
+bool CgiParams::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything config) {
 	StartTrace1(CgiParams.DoGetStream, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx, const ROAnything &config)");
 	String k(key); // for easier comparison
 	if (k == "stdin") {
@@ -72,12 +63,11 @@ bool CgiParams::DoGetStream(const char *key, std::ostream &os, Context &ctx,  RO
 	return URI2FileNameMapper::DoGetStream(key, os, ctx, config);
 }
 
-bool CgiParams::ResolveInvalidFile(String &path, String &uri, String &value, Context &ctx)
-{
+bool CgiParams::ResolveInvalidFile(String &path, String &uri, String &value, Context &ctx) {
 	StartTrace(CgiParams.ResolveInvalidFile);
 	Trace("path :" << path << ": uri :" << uri << ":");
 	long ixslash = uri.StrChr('/');
-	if ( ixslash >= 1) {
+	if (ixslash >= 1) {
 		String pgm = path;
 		pgm << uri.SubString(0, ixslash - 1);
 		if (Coast::System::IsRegularFile(pgm)) {
@@ -89,8 +79,7 @@ bool CgiParams::ResolveInvalidFile(String &path, String &uri, String &value, Con
 	return URI2FileNameMapper::ResolveInvalidFile(path, uri, value, ctx);
 }
 
-void CgiParams::SynthesizeMinimalCGIEnvironment(Anything &env, Context &ctx)
-{
+void CgiParams::SynthesizeMinimalCGIEnvironment(Anything &env, Context &ctx) {
 	StartTrace(CgiParams.SynthesizeMinimalCGIEnvironment);
 
 	env["SERVER_SOFTWARE"] = "Coast/2.0";

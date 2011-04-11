@@ -9,7 +9,6 @@
 #include "HTTPResponseMapperTest.h"
 #include "TestSuite.h"
 #include "HTTPResponseMapper.h"
-#include "Dbg.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "HTTPConstants.h"

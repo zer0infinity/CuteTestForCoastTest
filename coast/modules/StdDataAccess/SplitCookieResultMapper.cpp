@@ -8,7 +8,6 @@
 
 #include "SplitCookieResultMapper.h"
 #include "AnyIterators.h"
-#include "AnythingUtils.h"
 
 namespace {
 	const char cookieValuesSeparator = ';';

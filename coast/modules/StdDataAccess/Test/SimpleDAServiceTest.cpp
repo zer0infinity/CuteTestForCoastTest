@@ -14,21 +14,8 @@
 #include "AnyIterators.h"
 #include "ServiceHandler.h"
 
-//---- SimpleDAServiceTest ----------------------------------------------------------------
-SimpleDAServiceTest::SimpleDAServiceTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(SimpleDAServiceTest.Ctor);
-}
-
-SimpleDAServiceTest::~SimpleDAServiceTest()
-{
-	StartTrace(SimpleDAServiceTest.Dtor);
-}
-
 //:use the ServiceDispatcher to obtain a simple service
-void SimpleDAServiceTest::SimpleDispatch()
-{
+void SimpleDAServiceTest::SimpleDispatch() {
 	StartTrace(SimpleDAServiceTest.SimpleDispatch);
 	{
 		// test with objects configuration
@@ -50,13 +37,12 @@ void SimpleDAServiceTest::SimpleDispatch()
 	}
 }
 //: try to use it with a very simple DataAccess backend
-void SimpleDAServiceTest::SimpleServiceCall()
-{
-	StartTrace(SimpleDAServiceTest.SimpleServiceCall);
+void SimpleDAServiceTest::SimpleServiceCall() {
+	StartTrace(SimpleDAServiceTest.SimpleServiceCall)
+	;
 }
 //: try to use it with a missing DataAccess backend
-void SimpleDAServiceTest::FailedServiceCall()
-{
+void SimpleDAServiceTest::FailedServiceCall() {
 	StartTrace(SimpleDAServiceTest.FailedServiceCall);
 	RequestProcessor *httpProcessor = RequestProcessor::FindRequestProcessor("TestHTTPProcessor");
 	Anything anyTmpStore, anyRequest, env;
@@ -64,7 +50,7 @@ void SimpleDAServiceTest::FailedServiceCall()
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
 	while (aEntryIterator.Next(caseConfig)) {
 		TString caseName;
-		if ( !aEntryIterator.SlotName(caseName) ) {
+		if (!aEntryIterator.SlotName(caseName)) {
 			caseName << "At index: " << aEntryIterator.Index();
 		}
 		AnyLookupInterfaceAdapter<ROAnything> lia(caseConfig);
@@ -80,8 +66,7 @@ void SimpleDAServiceTest::FailedServiceCall()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *SimpleDAServiceTest::suite ()
-{
+Test *SimpleDAServiceTest::suite() {
 	StartTrace(SimpleDAServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, SimpleDAServiceTest, SimpleDispatch);
@@ -95,7 +80,8 @@ public:
 	//!named object shared by all requests
 	TestHTTPProcessor(const char *processorName) :
 		RequestProcessor(processorName) {
-		StartTrace(TestHTTPProcessor.ctor);
+		StartTrace(TestHTTPProcessor.ctor)
+		;
 	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
@@ -141,6 +127,5 @@ protected:
 		Trace(ostr.str());
 	}
 };
-
 //--- TestHTTPProcessor ----------------------------------------------------------
 RegisterRequestProcessor(TestHTTPProcessor);

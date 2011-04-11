@@ -11,8 +11,6 @@
 
 #include "Mapper.h"
 
-class Registry;
-
 //---- DataAccessImplsModule -----------------------------------------------------------
 //! WDModule to initialize, configure and register DataAccessImpl objects
 /*! @section DataAccessImplsModuleDescription Description

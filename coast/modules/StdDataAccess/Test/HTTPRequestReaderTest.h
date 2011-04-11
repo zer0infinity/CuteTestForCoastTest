@@ -11,25 +11,16 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- HTTPRequestReaderTest ----------------------------------------------------
 class HTTPRequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	HTTPRequestReaderTest(TString tstrName);
-
-	//! destroys the test case
-	~HTTPRequestReaderTest();
-
-	//--- public api
-
+	HTTPRequestReaderTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	//! builds up a suite of testcases for this test
 	static Test *suite();
-
-	TString getConfigFileName();
-
+	TString getConfigFileName() {
+		return "HTTPRequestReaderTestConfig";
+	}
 	//! describe this testcase
 	void ReadMinimalInputTest();
 };

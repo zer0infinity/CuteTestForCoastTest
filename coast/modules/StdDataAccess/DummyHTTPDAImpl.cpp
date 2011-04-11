@@ -7,22 +7,7 @@
  */
 #include "DummyHTTPDAImpl.h"
 #include "ConnectorParams.h" // for ConnectorParams
-#include "Mapper.h"
-#include "Context.h"
-#include "Dbg.h"
-//--- DummyHTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(DummyHTTPDAImpl);
-
-DummyHTTPDAImpl::DummyHTTPDAImpl(const char *name) :
-	DummyDAImpl(name) {
-}
-
-DummyHTTPDAImpl::~DummyHTTPDAImpl() {
-}
-
-IFAObject *DummyHTTPDAImpl::Clone(Allocator *a) const {
-	return new (a) DummyHTTPDAImpl(fName);
-}
 
 bool DummyHTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(DummyHTTPDAImpl.Exec);

@@ -8,7 +8,6 @@
 
 #include "TestRunner.h"
 
-//--- test cases ---------------------------------------------------------------
 #include "HTTPResponseMapperTest.h"
 #include "HTTPMimeHeaderMapperTest.h"
 #include "HTTPDAImplTest.h"
@@ -18,7 +17,6 @@
 #include "MailDATest.h"
 #include "CgiCallerTest.h"
 #include "CgiParamsTest.h"
-#include "ConfiguredActionTest.h"
 #include "AuthenticationServiceTest.h"
 #include "HTTPFileLoaderTest.h"
 #include "MIMEHeaderTest.h"
