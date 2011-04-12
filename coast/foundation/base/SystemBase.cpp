@@ -13,6 +13,9 @@
 #include <errno.h>
 #include <cstring>
 #include <fcntl.h>
+#if defined(__APPLE__)
+#include <crt_externs.h>
+#endif
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>
@@ -399,8 +402,15 @@ void Coast::System::GetProcessEnvironment(Anything &anyEnv)
 {
 	StartTrace(System.GetProcessEnvironment);
 	extern char **environ;
-	for (long i = 0; environ && environ[i] ; ++i) {
-		String entry(environ[i]);
+	char **envp =
+#if defined(__APPLE__)
+			* _NSGetEnviron()
+#else
+			environ
+#endif
+			;
+	for (long i = 0; envp && envp[i] ; ++i) {
+		String entry(envp[i]);
 		Trace("entry = <" << entry << ">");
 		long equalsign = entry.StrChr('=');
 		if (equalsign >= 0) {

@@ -22,7 +22,7 @@
 #endif
 #include <fcntl.h>
 #include <errno.h>
-#if defined(sun)
+#if defined(sun) || defined(__APPLE__)
 #include <signal.h>	/* for kill() */
 #endif
 
