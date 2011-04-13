@@ -10,43 +10,28 @@
 #include "SystemFile.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
-#include "Dbg.h"
 
 using namespace Coast;
-
-//---- TemplatesCacheModule -----------------------------------------------------------
 RegisterModule(TemplatesCacheModule );
 
-TemplatesCacheModule::TemplatesCacheModule(const char *name) : WDModule(name)
-{
-}
-
-TemplatesCacheModule::~TemplatesCacheModule()
-{
-}
-
-bool TemplatesCacheModule::Init(const ROAnything config)
-{
+bool TemplatesCacheModule::Init(const ROAnything config) {
 	StartTrace(TemplatesCacheModule.Init);
 	TraceAny(config["HTMLTemplateConfig"], "my config");
 	HTMLTemplateRenderer::BuildCache(config["HTMLTemplateConfig"]);
 	return true;
 }
 
-bool TemplatesCacheModule::Finis()
-{
+bool TemplatesCacheModule::Finis() {
 	// PS: here we should flush the cache, shouldn't we?
 	// we do nothing here because CacheHandler flushes his cache
 	// when reset
 	return true;
 }
 
-//--- HTMLTemplateCacheLoader --------------------------------------------------
-Anything HTMLTemplateCacheLoader::Load(const char *key)
-{
+Anything HTMLTemplateCacheLoader::Load(const char *key) {
 	StartTrace1(HTMLTemplateCacheLoader.Load, "key: " << key);
 	Anything cache(Coast::Storage::Global());
-	std::istream *fp = System::OpenIStream(key, (const char *)"html");
+	std::istream *fp = System::OpenIStream(key, (const char *) "html");
 	if (fp) {
 		std::istream &reader = *fp;
 		BuildCache(cache, reader, key);
@@ -60,8 +45,7 @@ Anything HTMLTemplateCacheLoader::Load(const char *key)
 	return cache;
 }
 
-void HTMLTemplateCacheLoader::BuildCache(Anything &cache, std::istream &reader, const char *filename)
-{
+void HTMLTemplateCacheLoader::BuildCache(Anything &cache, std::istream &reader, const char *filename) {
 	StartTrace(HTMLTemplateCacheLoader.BuildCache);
 	if (fParser) {
 		TraceAny(froaConfig["ParserConfig"], "parser config to use");
@@ -71,9 +55,7 @@ void HTMLTemplateCacheLoader::BuildCache(Anything &cache, std::istream &reader, 
 	}
 }
 
-//--- HTMLTemplateCacheBuilder ------------------------------------------------------
-void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
-{
+void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config) {
 	StartTrace(HTMLTemplateCacheBuilder.BuildCache);
 	SystemLog::WriteToStderr("\tBuilding HTML Templates cache");
 
@@ -89,7 +71,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 	TemplateParser tp;
 	HTMLTemplateCacheLoader htcl(&tp, config);
 
-	while ( cache && st.NextToken(templateDir) ) {
+	while (cache && st.NextToken(templateDir)) {
 		// cache templates of template dir
 		filepath = rootDir;
 		filepath << System::Sep() << templateDir;
@@ -97,7 +79,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 		CacheDir(filepath, cache, &htcl, langDirMap, fileNameMap);
 
 		// search over localized dirs
-		for ( long j = 0, sz = langDirMap.GetSize(); j < sz; ++j) {
+		for (long j = 0, sz = langDirMap.GetSize(); j < sz; ++j) {
 			//reset filepath
 			filepath = rootDir;
 			filepath << System::Sep() << templateDir;
@@ -118,15 +100,15 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 	SystemLog::WriteToStderr(" done\n");
 }
 
-void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap)
-{
+void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap,
+		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
 	Anything fileList = System::DirFileList(filepath, "html");
 	String fileKey;
 
 	// process all files
-	for ( long i = 0, sz = fileList.GetSize(); i < sz; ++i ) {
+	for (long i = 0, sz = fileList.GetSize(); i < sz; ++i) {
 		const char *file = fileList[i].AsCharPtr("");
 		fileKey << filepath << System::Sep() << file;
 		// smothen path not to load relative-path files more than once
@@ -144,15 +126,15 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 	}
 }
 
-void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const char *langKey, Anything &fileNameMap)
-{
+void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const char *langKey,
+		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
 	Anything fileList = System::DirFileList(filepath, "html");
 	String fileKey;
 
 	// process all files
-	for ( long i = 0, sz = fileList.GetSize(); i < sz; ++i ) {
+	for (long i = 0, sz = fileList.GetSize(); i < sz; ++i) {
 		const char *file = fileList[i].AsCharPtr("");
 		fileKey << filepath << System::Sep() << file;
 		// smothen path not to load relative-path files more than once

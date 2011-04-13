@@ -5,7 +5,6 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "SecurityModule.h"
 #include "StringStream.h"
 #include "Registry.h"
@@ -13,8 +12,6 @@
 #include "SystemFile.h"
 #include "DiffTimer.h"
 #include "Policy.h" /* for GetHRTIME() */
-
-// ------------------- SecurityModule ---------------------------------------------
 RegisterModule(SecurityModule);
 
 const char *SecurityItem::fgcLegacyMasterKey = ".u8&ey%2lv$skb?";
@@ -25,26 +22,20 @@ const char *SecurityItem::fgcLegacyMasterKey = ".u8&ey%2lv$skb?";
 		var=SafeCast(FindSecurityItem(_QUOTE_(Type)),Type);\
 	} Assert(var);
 
-//----- SecurityItem --- factored commonality
-
-long SecurityItem::GetNamePrefixFromEncodedText(String &scramblername, const String &encodedText)
-{
+long SecurityItem::GetNamePrefixFromEncodedText(String &scramblername, const String &encodedText) {
 	StartTrace(SecurityItem.GetNamePrefixFromEncodedText);
 	Trace("Scrambled Text: " << encodedText);
 	scramblername.Trim(0L);
 	for (long i = 0, sz = encodedText.Length(); i <= sz && ':' != encodedText[i] && '-' != encodedText[i]; ++i) {
 		scramblername.Append(encodedText[i]);
 	}
-
 	Trace("scramblername: " << scramblername);
 	return scramblername.Length();
 }
 
-void SecurityItem::Encode(const char *itemtouse, String &encodedText, const String &cleartext)
-{
+void SecurityItem::Encode(const char *itemtouse, String &encodedText, const String &cleartext) {
 	StartTrace1(SecurityItem.Encode, "using SecurityItem <" << itemtouse << ">");
 	FindSecurityItemWithDefault(encoder, itemtouse, SecurityItem);
-
 	String name(itemtouse);
 	if (encoder) {
 		encoder->GetName(name);
@@ -58,8 +49,7 @@ void SecurityItem::Encode(const char *itemtouse, String &encodedText, const Stri
 	Trace("result :<" << encodedText << ">\n");
 }
 
-bool SecurityItem::Decode(String &cleartext, const String &encodedText)
-{
+bool SecurityItem::Decode(String &cleartext, const String &encodedText) {
 	StartTrace(SecurityItem.Decode);
 	String encodername;
 	long delimiterposition = 0;
@@ -72,34 +62,28 @@ bool SecurityItem::Decode(String &cleartext, const String &encodedText)
 	return encoder && encoder->DoDecode(cleartext, encodedText.SubString(delimiterposition + 1, encodedText.Length()));
 }
 
-bool SecurityItem::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
-{
+bool SecurityItem::DoGetConfigName(const char *category, const char *objName, String &configFileName) const {
 	configFileName = "SecurityItems";
 	return true;
 }
 
-bool SecurityItem::DoLoadConfig(const char *category)
-{
+bool SecurityItem::DoLoadConfig(const char *category) {
 	StartTrace1(SecurityItem.DoLoadConfig, fName);
 	SystemLog::WriteToStderr(".");
-	if ( HierarchConfNamed::DoLoadConfig(category)) {
-		if ( fConfig.IsDefined(fName) ) {
-			// trx impls use only a subset of the whole configuration file
+	if (HierarchConfNamed::DoLoadConfig(category)) {
+		if (fConfig.IsDefined(fName)) {
 			fConfig = fConfig[fName];
-			TraceAny(fConfig, "Config:");
-			Assert(!fConfig.IsNull());
-
+			TraceAny(fConfig, "Config:");Assert(!fConfig.IsNull());
 			return Init(fConfig);
 		}
 		Trace("nothing to configure");
-		return true; // nothing to configure
+		return true;
 	}
 	Trace("DoLoadConfig of HierarchConfNamed failed");
-	return false; // faile to load config
+	return false;
 }
 
-bool SecurityItem::Init(ROAnything config)
-{
+bool SecurityItem::Init(ROAnything config) {
 	StartTrace1(SecurityItem.Init, fName);
 	bool bRetCode = false;
 	if (config.IsDefined("Key")) {
@@ -123,18 +107,14 @@ bool SecurityItem::Init(ROAnything config)
 	return bRetCode;
 }
 
-// the following code is from keyscrambler in Frontdoor which might be obsoleted by that
-bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
-{
+bool SecurityItem::DoLoadKeyFile(const char *name, String &key) {
 	StartTrace1(SecurityItem.DoLoadKeyFile, name);
-	// search file with path
-	// open file with relative path
-	String resolvedFileName =  Coast::System::GetFilePath(name, (const char *)0);
+	String resolvedFileName = Coast::System::GetFilePath(name, (const char *) 0);
 	std::iostream *Ios = Coast::System::OpenIStream(resolvedFileName, "");
-	if ( Ios ) {
+	if (Ios) {
 		String sBuf(4096);
-		char *buf = (char *)(const char *) sBuf;
-		while ( !(Ios->eof()) ) {
+		char *buf = (char *) (const char *) sBuf;
+		while (!(Ios->eof())) {
 			Ios->getline(buf, 4096);
 			key.Append(buf);
 		}
@@ -146,12 +126,11 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
 	return false;
 }
 
-String SecurityItem::GenerateRandomString(long length)
-{
+String SecurityItem::GenerateRandomString(long length) {
 	String result(length);
 	for (; length > 0; --length) {
 #if !defined(WIN32)
-		result.Append((char)lrand48());
+		result.Append((char) lrand48());
 #else
 		result.Append((char)rand());
 #endif
@@ -159,36 +138,18 @@ String SecurityItem::GenerateRandomString(long length)
 	return result;
 }
 
-//----
-String	SecurityModule::fgScrambler(Coast::Storage::Global());
-String	SecurityModule::fgEncoder(Coast::Storage::Global());
-String	SecurityModule::fgSigner(Coast::Storage::Global());
-String	SecurityModule::fgCompressor(Coast::Storage::Global());
+String SecurityModule::fgScrambler(Coast::Storage::Global());
+String SecurityModule::fgEncoder(Coast::Storage::Global());
+String SecurityModule::fgSigner(Coast::Storage::Global());
+String SecurityModule::fgCompressor(Coast::Storage::Global());
 
-SecurityModule::SecurityModule(const char *name) : WDModule(name)
-{
-}
-
-SecurityModule::~SecurityModule()
-{
-}
-
-bool SecurityModule::Init(const ROAnything config)
-/* in: config: Server configuration
-  ret: true if successful, false otherwise.
- what: Only writes a message and installs itself
- note: Derived classes must call this method at the end of their Init to install
-	   themselves! (InstallHandler is private)
-	   Usually derived classes do not need to override Init if they do not want
-	   to do anything by themselves. Installation happens automatically.
-*/
-{
+bool SecurityModule::Init(const ROAnything config) {
 	StartTrace( SecurityModule.Init );
 	bool result = true;
 	TraceAny(config, "Config");
 	SystemLog::WriteToStderr(String("\t") << fName << ". ");
 #if !defined(WIN32)
-	srand48((long)GetHRTIME());
+	srand48((long) GetHRTIME());
 #else
 	srand((long)GetHRTIME());
 #endif
@@ -201,12 +162,12 @@ bool SecurityModule::Init(const ROAnything config)
 	fgCompressor = moduleConfig["Compressor"].AsCharPtr("Compressor");
 
 	HierarchyInstaller hi("SecurityItem");
-	result =  RegisterableObject::Install(moduleConfig["SecurityItems"], "SecurityItem", &hi);
+	result = RegisterableObject::Install(moduleConfig["SecurityItems"], "SecurityItem", &hi);
 
 	// TableCompressor is special, it needs the complete Config.any for /Expand Roles /Expand Pages /Expand Actions
 	// can be removed if this is never used. Frontdoor doesn't rely on this feature
 	Compressor *compressor = Compressor::FindCompressor(fgCompressor);
-	if ( compressor ) {
+	if (compressor) {
 		compressor->Init(config);
 	}
 	SystemLog::WriteToStderr(result ? "done\n" : "failed\n");
@@ -214,11 +175,10 @@ bool SecurityModule::Init(const ROAnything config)
 	return result;
 }
 
-bool SecurityModule::ResetInit(const ROAnything config)
-{
+bool SecurityModule::ResetInit(const ROAnything config) {
 	StartTrace(SecurityModule.ResetInit);
 	ROAnything moduleConfig(config[fName]);
-	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
+	if (moduleConfig["DoNotReset"].AsBool(0) == 1) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Init() on reset\n";
 		SystemLog::WriteToStderr(msg);
@@ -227,11 +187,10 @@ bool SecurityModule::ResetInit(const ROAnything config)
 	return SecurityModule::Init(config);
 }
 
-bool SecurityModule::ResetFinis(const ROAnything config)
-{
+bool SecurityModule::ResetFinis(const ROAnything config) {
 	StartTrace(SecurityModule.ResetFinis);
 	ROAnything moduleConfig(config[fName]);
-	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
+	if (moduleConfig["DoNotReset"].AsBool(0) == 1) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Finis() on reset\n";
 		SystemLog::WriteToStderr(msg);
@@ -241,31 +200,19 @@ bool SecurityModule::ResetFinis(const ROAnything config)
 	return RegisterableObject::ResetTerminate("SecurityItem", &at);
 }
 
-bool SecurityModule::Finis()
-/* ret: true if successful, false otherwise.
-*/
-{
+bool SecurityModule::Finis() {
 	StartTrace(SecurityModule.Finis);
 	return StdFinis("SecurityItem", "SecurityItems");
 }
 
 //#define URLSTAT_TRACING
-// URL encryption an decryption
-void SecurityModule::ScrambleState(String &result, const Anything &state)
-/* in: state: some data, usually the state information for a Coast link
-  out: result: The state data appended in linearized form.
- what: Standard URLUtils, no real encryption.
-*/
-{
+void SecurityModule::ScrambleState(String &result, const Anything &state) {
 	StartTrace(SecurityModule.ScrambleState);
-
 	TraceAny(state, "input state");
-
 	String compressedText;
 	String signedText;
 	String cryptText;
 	String encodedText;
-
 	Compressor::Compress(fgCompressor, compressedText, state);
 
 	if (compressedText.Length() > 0) {
@@ -278,7 +225,6 @@ void SecurityModule::ScrambleState(String &result, const Anything &state)
 		Trace("scrambled text:<" << cryptText << ">");
 		// encode scrambled url
 		Encoder::Encode(fgEncoder, encodedText, cryptText);
-
 		// Append it to URL
 		result.Append(encodedText);
 
@@ -286,9 +232,9 @@ void SecurityModule::ScrambleState(String &result, const Anything &state)
 		SystemLog::WriteToStderr(String("URL comp<") << compressedText << ">\n");
 		SystemLog::WriteToStderr("URL: (c, e, c, p) ");
 		// do some length tracking
-		long rawLen =	compressedText.Length();
-		long resLen =	encodedText.Length();
-		long cryptLen =	cryptText.Length();
+		long rawLen = compressedText.Length();
+		long resLen = encodedText.Length();
+		long cryptLen = cryptText.Length();
 		SystemLog::WriteToStderr(String() << rawLen << ", ");
 		SystemLog::WriteToStderr(String() << cryptLen << ", ");
 		SystemLog::WriteToStderr(String() << resLen << ", ");
@@ -296,32 +242,24 @@ void SecurityModule::ScrambleState(String &result, const Anything &state)
 #endif
 	}
 	Trace("resulting text <" << result << ">");
-
 } // DoScrambleState
 
-bool SecurityModule::UnscrambleState(Anything &state, const String &s)
-/* in: s: A pointer to a null terminated array of char containing scrambled data
-		  This contains exactly the characters appended by the previous method.
-  out: state: The unscrambled data
- rets: true if unscrambling was possible, false if somebody tried to unscramble garbage
- what: Standard URLUtils decryption, does not decrypt serious URL's
-*/
-{
+bool SecurityModule::UnscrambleState(Anything &state, const String &s) {
 	StartTrace(SecurityModule.UnscrambleState);
 	Trace("StateString: " << s);
 	String crypt(s.Length());
-	if ( Encoder::Decode( crypt, s ) ) {
+	if (Encoder::Decode(crypt, s)) {
 		Trace("Decoded ok: <" << crypt << ">");
 		String signedText(crypt.Length());
-		if ( Scrambler::Unscramble(signedText, crypt) ) {
+		if (Scrambler::Unscramble(signedText, crypt)) {
 			Trace("Unscrambled ok: <" << signedText << ">");
 			String compressedText(signedText.Length());
-			if ( Signer::Check(compressedText, signedText) ) {
+			if (Signer::Check(compressedText, signedText)) {
 				Trace("Checked ok: <" << compressedText << ">");
 #ifdef URLSTAT_TRACING
 				SystemLog::WriteToStderr(String("URL2exp<") << compressedText << ">\n");
 #endif
-				if ( Compressor::Expand(state, compressedText) ) {
+				if (Compressor::Expand(state, compressedText)) {
 					TraceAny(state, "state: ");
 					return true;
 				}
@@ -335,69 +273,33 @@ bool SecurityModule::UnscrambleState(Anything &state, const String &s)
 	return false;
 } // DoUnscrambleState
 
-//--- SecurityItem --------------------------------------------------------------
-RegCacheImpl(SecurityItem);		// FindSecurityItem()
-//--- Scrambler -----------------------------------------------------------------
-
+RegCacheImpl(SecurityItem)
+; // FindSecurityItem()
 RegisterScrambler(Scrambler);
 RegisterAliasSecurityItem(ascs, Scrambler);
 // register legacy keymanager generated names with a 0 appended
 RegisterAliasSecurityItem(ascs0, Scrambler);
 RegisterAliasSecurityItem(Scrambler0, Scrambler);
 
-Scrambler::Scrambler(const char *name) : SecurityItem(name)
-{
-
-}
-
-Scrambler::~Scrambler()
-{
-
-}
-
-void Scrambler::Scramble(const char *encodername, String &encodedText, const String &cleartext)
-{
+void Scrambler::Scramble(const char *encodername, String &encodedText, const String &cleartext) {
 	StartTrace(Scrambler.Scramble);
 	Trace("Scrambler: " << encodername);
 	SecurityItem::Encode(encodername, encodedText, cleartext);
 }
 
-bool Scrambler::Unscramble(String &cleartext, const String &encodedText)
-{
+bool Scrambler::Unscramble(String &cleartext, const String &encodedText) {
 	StartTrace(Scrambler.Unscramble);
 	Trace("Scrambled Text: " << encodedText);
 	return SecurityItem::Decode(cleartext, encodedText);
 }
-//--- Encoder -----------------------------------------------------------------
 RegisterEncoder(Encoder);
 RegisterAliasSecurityItem(asce, Encoder);
-
-Encoder::Encoder(const char *name) : SecurityItem(name)
-{
-}
-
-Encoder::~Encoder()
-{
-}
-
-//--- Compressor -----------------------------------------------------------------
 RegisterCompressor(Compressor);
 RegisterAliasSecurityItem(comp, Compressor);
 
-Compressor::Compressor(const char *name) : SecurityItem(name)
-{
-}
-
-Compressor::~Compressor()
-{
-}
-
-void Compressor::Compress(const char *theName, String &encodedText, const Anything &cleartext)
-{
+void Compressor::Compress(const char *theName, String &encodedText, const Anything &cleartext) {
 	Compressor *compressor = Compressor::FindCompressor(theName);
-
-	if ( !compressor ) {
-		// do nothing
+	if (!compressor) {
 		return;
 	}
 	String name;
@@ -407,8 +309,7 @@ void Compressor::Compress(const char *theName, String &encodedText, const Anythi
 	encodedText << name << '-' << result;
 }
 
-bool Compressor::Expand(Anything &result, const String &encodedText)
-{
+bool Compressor::Expand(Anything &result, const String &encodedText) {
 	StartTrace(Compressor.Decode);
 	String compressorname;
 	long delimiterposition = 0;
@@ -421,59 +322,30 @@ bool Compressor::Expand(Anything &result, const String &encodedText)
 	return compressor && compressor->DoExpand(result, encodedText.SubString(delimiterposition + 1, encodedText.Length()));
 }
 
-void Compressor::DoCompress(String &encodedText, const Anything &dataIn)
-{
-	// default implementation:
-	// no compression at all
-	// just stream out anything
-
+void Compressor::DoCompress(String &encodedText, const Anything &dataIn) {
 	OStringStream os(&encodedText);
 	dataIn.PrintOn(os, false);
 }
 
-bool Compressor::Init(ROAnything config)
-{
-	// do nothing
+bool Compressor::Init(ROAnything config) {
 	return true;
 }
 
-bool Compressor::DoExpand(Anything &dataOut, const String &scrambledText)
-{
-	// default implementation:
-	// no expansion at all
-	// just stream in anything
-
+bool Compressor::DoExpand(Anything &dataOut, const String &scrambledText) {
 	IStringStream is(scrambledText);
 	dataOut.Import(is);
-
 	return true;
 }
-
-//--- Signer -----------------------------------------------------------------
-
 RegisterSigner(Signer);
 RegisterAliasSecurityItem(nos, Signer);
-Signer::Signer() : SecurityItem("nos")
-{
-}
 
-Signer::Signer(const char *name) : SecurityItem(name)
-{
-}
-
-Signer::~Signer()
-{
-}
-
-void Signer::Sign(const char *signername, String &encodedText, const String &cleartext)
-{
+void Signer::Sign(const char *signername, String &encodedText, const String &cleartext) {
 	StartTrace(Signer.Sign);
 	Trace("Signer: " << signername);
 	SecurityItem::Encode(signername, encodedText, cleartext);
 }
 
-bool Signer::Check(String &cleartext, const String &scrambledText)
-{
+bool Signer::Check(String &cleartext, const String &scrambledText) {
 	StartTrace(Signer.Check);
 	return SecurityItem::Decode(cleartext, scrambledText);
 }

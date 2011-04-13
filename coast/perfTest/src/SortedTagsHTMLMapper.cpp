@@ -12,7 +12,6 @@
 #include "Context.h"
 #include "Dbg.h"
 
-//---- SortedTagsHTMLMapper -----------------------------------------------------------
 RegisterResultMapper(SortedTagsHTMLMapper);
 
 bool SortedTagsHTMLMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {

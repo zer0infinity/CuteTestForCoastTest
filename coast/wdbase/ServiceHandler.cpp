@@ -14,8 +14,7 @@ const char* ServiceHandler::gpcConfigPath = "ServiceHandlers";
 
 ServiceHandler::ServiceHandler(const char *ServiceHandlerName) :
 	HierarchConfNamed(ServiceHandlerName) {
-	StartTrace(ServiceHandler.Ctor);
-	Trace("name:" << ServiceHandlerName);
+	StatTrace(ServiceHandler.Ctor, ServiceHandlerName, Coast::Storage::Current());
 }
 
 bool ServiceHandler::HandleService(std::ostream &os, Context &ctx) {

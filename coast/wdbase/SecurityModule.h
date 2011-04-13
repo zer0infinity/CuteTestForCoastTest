@@ -17,14 +17,17 @@ class Context;
 class TRXContext;
 class String;
 
-//---- Scrambler -----------------------------------------------------------
-class SecurityItem: public HierarchConfNamed
-{
+class SecurityItem: public HierarchConfNamed {
+	SecurityItem();
+	SecurityItem(const SecurityItem &);
+	SecurityItem &operator=(const SecurityItem &);
 public:
-	SecurityItem(const char *name) : HierarchConfNamed(name) { }
-	virtual ~SecurityItem() {}
+	SecurityItem(const char *name) :
+		HierarchConfNamed(name) {
+	}
 
-	virtual void InitKey(const String &key) {} // deliberately non-const! useful for Scrambler and Signer
+	virtual void InitKey(const String &key) {
+	} // deliberately non-const! useful for Scrambler and Signer
 	virtual void DoEncode(String &scrambledText, const String &cleartext) const {
 		scrambledText = cleartext;
 	}
@@ -42,8 +45,7 @@ public:
 
 	// factor common code to retrieve the name of a security item from the encoded text
 	// returns position in encodedText to continue from. if 0 this means no name was found
-	static long GetNamePrefixFromEncodedText(String &theName, const String &encodedText);
-	RegCacheDef(SecurityItem);		// FindSecurityItem()
+	static long GetNamePrefixFromEncodedText(String &theName, const String &encodedText);RegCacheDef(SecurityItem); // FindSecurityItem()
 
 protected:
 	// generate the config file name (without extension, which is assumed to be any)
@@ -61,18 +63,16 @@ protected:
 	virtual bool Init(ROAnything config);
 
 	static const char *fgcLegacyMasterKey;
-
-private:
-	SecurityItem();
-	SecurityItem(const SecurityItem &);
-	SecurityItem &operator=(const SecurityItem &);
 };
 
-class Scrambler :  public SecurityItem
-{
+class Scrambler: public SecurityItem {
+	Scrambler();
+	Scrambler(const Scrambler &);
+	Scrambler &operator=(const Scrambler &);
 public:
-	Scrambler(const char *name);
-	virtual ~Scrambler();
+	Scrambler(const char *name) :
+		SecurityItem(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) Scrambler(fName);
@@ -84,21 +84,18 @@ public:
 	static Scrambler *FindScrambler(const char *name) {
 		return SafeCast(FindSecurityItem(name), Scrambler);
 	}
-//	RegCacheDef(Scrambler);		// FindScrambler()
-
-private:
-	// block copy constructor and operator equal
-	Scrambler();
-	Scrambler(const Scrambler &);
-	Scrambler &operator=(const Scrambler &);
 };
 
-class Signer :  public SecurityItem
-{
+class Signer: public SecurityItem {
+	Signer(const Signer &);
+	Signer &operator=(const Signer &);
 public:
-	Signer();
-	Signer(const char *name);
-	virtual ~Signer();
+	Signer() :
+		SecurityItem("nos") {
+	}
+	Signer(const char *name) :
+		SecurityItem(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) Signer(fName);
@@ -109,50 +106,38 @@ public:
 	static Signer *FindSigner(const char *name) {
 		return SafeCast(FindSecurityItem(name), Signer);
 	}
-
-//	RegCacheDef(Signer);
-
-private:
-	// block copy constructor and operator equal
-	Signer(const Signer &);
-	Signer &operator=(const Signer &);
 };
 
-//---- Encoder -----------------------------------------------------------
-class Encoder : public SecurityItem
-{
+class Encoder: public SecurityItem {
+	Encoder();
+	Encoder(const Encoder &);
+	Encoder &operator=(const Encoder &);
 public:
-	Encoder(const char *name);
-	virtual ~Encoder();
+	Encoder(const char *name) :
+		SecurityItem(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) Encoder(fName);
 	}
-
 	static bool GetEncoderName(String &encodername, const String &encodedText);
 	static Encoder *FindEncoder(const char *name) {
 		return SafeCast(FindSecurityItem(name), Encoder);
 	}
-
-//	RegCacheDef(Encoder);
-private:
-	// block copy constructor and operator equal
-	Encoder();
-	Encoder(const Encoder &);
-	Encoder &operator=(const Encoder &);
 };
 
-//---- Compressor -----------------------------------------------------------
-class Compressor :  public SecurityItem
-{
+class Compressor: public SecurityItem {
+	Compressor();
+	Compressor(const Compressor &);
+	Compressor &operator=(const Compressor &);
 public:
-	Compressor(const char *name);
-	virtual ~Compressor();
+	Compressor(const char *name) :
+		SecurityItem(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) Compressor(fName);
 	}
-
 	//!initialize compressor with config if necessary
 	virtual bool Init(ROAnything config);
 
@@ -165,33 +150,41 @@ public:
 	static Compressor *FindCompressor(const char *name) {
 		return SafeCast(FindSecurityItem(name), Compressor);
 	}
-
-//	RegCacheDef(Compressor);
-private:
-	// block copy constructor and operator equal
-	Compressor();
-	Compressor(const Compressor &);
-	Compressor &operator=(const Compressor &);
 };
 
-//---- SecurityModule -----------------------------------------------------------
-class SecurityModule : public WDModule
-{
+class SecurityModule: public WDModule {
 public:
 	// Module methods
-	SecurityModule(const char *name);
-	virtual ~SecurityModule();
+	SecurityModule(const char *name) :
+		WDModule(name) {
+	}
+	/* in: config: Server configuration
+	 ret: true if successful, false otherwise.
+	 what: Only writes a message and installs itself
+	 note: Derived classes must call this method at the end of their Init to install
+	 themselves! (InstallHandler is private)
+	 Usually derived classes do not need to override Init if they do not want
+	 to do anything by themselves. Installation happens automatically.
+	 */
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetInit(const ROAnything config);
 	virtual bool Finis();
-	virtual bool ResetFinis(const ROAnything );
+	virtual bool ResetFinis(const ROAnything);
 
-	// URL encryption an decryption
+	/* in: state: some data, usually the state information for a Coast link
+	 out: result: The state data appended in linearized form.
+	 what: Standard URLUtils, no real encryption.
+	 */
 	static void ScrambleState(String &result, const Anything &state);
+	/* in: s: A pointer to a null terminated array of char containing scrambled data
+	 This contains exactly the characters appended by the previous method.
+	 out: state: The unscrambled data
+	 rets: true if unscrambling was possible, false if somebody tried to unscramble garbage
+	 what: Standard URLUtils decryption, does not decrypt serious URL's
+	 */
 	static bool UnscrambleState(Anything &state, const String &s);
 
 protected:
-
 	static String fgScrambler;
 	static String fgEncoder;
 	static String fgSigner;
