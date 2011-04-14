@@ -106,7 +106,7 @@ public:
 		eEmpty = 1,									//!< the queue did not contain any elements when accessing it
 		eFull = eEmpty << 1,						//!< the queue was already full when trying to put an element
 		eBlocked = eFull << 1,						//!< the requested queue side is not accessible
-		eError = eBlocked << 1,						//!< internal error occured
+		eError = eBlocked << 1,						//!< internal error occurred
 		eAcquireFailed = eError << 1,				//!< internal error about acquiring a semaphore
 		eTryAcquireFailed = eAcquireFailed << 1,	//!< internal error about trying to acquire a semaphore
 		eDead = eTryAcquireFailed << 1,				//!< queue already destructed
@@ -116,7 +116,7 @@ public:
 	/*! Either blocking or non-blocking calls are possible by setting bTryLock appropriately. By default, blocking calls are made.
 		When the queue will get shut down, blocking callers will get released and informed by StatusCode::eBlocked
 		\param anyElement element to put into queue
-		\param bTryLock specify non-/blocking call, when set to true and the queue is alread full, the method will exit with an appropriate StatusCode
+		\param bTryLock specify non-/blocking call, when set to true and the queue is already full, the method will exit with an appropriate StatusCode
 		\return depending on internal state, a corresponding code will be returned */
 	StatusCode Put(ElementTypeRef anyElement, bool bTryLock = false) {
 		StartTrace(Queue.Put);

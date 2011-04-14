@@ -34,7 +34,7 @@ extern "C" HRTIME gettimes();
 //---- DiffTimer ----------------------------------------------------------
 //! Timer infrastructure to measure elapsed time in program scopes.
 /*! The Timer can be setup to return a scaled result based on the resolution specified when constructing it.
-\note The accurracy depends on the system timer used for measurement. Therefor you should not expect more precise results than the appropriate platform default. */
+\note The accuracy depends on the system timer used for measurement. Therefore you should not expect more precise results than the appropriate platform default. */
 class DiffTimer
 {
 public:
@@ -42,7 +42,7 @@ public:
 
 	//! used to specify unit of measurement
 	enum eResolution {
-		eClockTicks = 0,			/*!< use platform specific maximal resolution, following system dependant maximal values exist:
+		eClockTicks = 0,			/*!< use platform specific maximal resolution, following system dependent maximal values exist:
 										- Linux: 100 ticks per second, eg. 10ms steps
 										- Sun: 1000000000 ticks per second, eg. 1ns steps
 										- Win32: 1000 ticks per second, eg. 1ms steps */
@@ -62,9 +62,6 @@ public:
 
 	//! assignement operator for difftimers
 	DiffTimer &operator=(const DiffTimer &dt);
-
-	//! destructor
-	~DiffTimer() { }
 
 	/*! difference in ticks per seconds since last start; timer is not reset
 		\param simulatedValue defines return value for predictable testcases
