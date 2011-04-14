@@ -11,7 +11,9 @@
 #include "SystemFile.h"
 #include "SSLSocket.h"
 #include "AnyLookupInterfaceAdapter.h"
-
+#if defined(sun) && OS_RELMAJOR == 5 && OS_RELMINOR <= 8
+#include "DiffTimer.h"
+#endif
 using namespace Coast;
 
 static void thread_setup(void);
@@ -46,9 +48,8 @@ SSLModule::SSLModule(const char *name) :
 	ERR_load_ERR_strings();
 	ERR_load_crypto_strings();
 
-#ifdef __sun
-	// SOP: seed the random number generator on Solaris
-	//     because it lacks /dev/random (up to Solaris 8)
+#if defined(sun) && OS_RELMAJOR == 5 && OS_RELMINOR <= 8
+	// SOP: seed the random number generator on Solaris because it lacks /dev/random (up to Solaris 8)
 	unsigned int randseed = (unsigned int)GetHRTIME();
 	unsigned int SSLRandSeed[1024];
 	for (size_t i = 0; i < sizeof(SSLRandSeed) / sizeof(unsigned int); i++) {
