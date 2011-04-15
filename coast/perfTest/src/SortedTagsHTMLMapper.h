@@ -23,17 +23,13 @@ public:
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) SortedTagsHTMLMapper(fName);
 	}
-	//! reads an HTML document out of a string
-	//! creates a stream out of the string and calls DoPutStream (see above)
-	virtual bool Put(const char *key, const String &value, Context &ctx);
 protected:
-	//! reads an HTML document from istream
 	//! The HTML is parsed and the tags are put into an Anything, which is then stored in [MapperName][key]
-	//! \param key defines the target slotname under tmp.<MapperName>
-	//! \param is the stream to be mapped
-	//! \param ctx the thread context of the invocation
-	//! \param config ignored
-	//! \return returns true if the mapping was successful otherwise false
+	/*! @copydoc ResultMapper::DoPutAny() */
+	virtual bool DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script);
+
+	//! The HTML is parsed and the tags are put into an Anything, which is then stored in [MapperName][key]
+	/*! @copydoc ResultMapper::DoPutStream() */
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
 };
 

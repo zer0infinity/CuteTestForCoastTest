@@ -15,7 +15,7 @@
 RegisterResultMapper(SortedTagsHTMLMapper);
 
 bool SortedTagsHTMLMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {
-	StartTrace1(SortedTagsHTMLMapper.PutStream, NotNull(key));
+	StartTrace1(SortedTagsHTMLMapper.DoPutStream, NotNull(key));
 
 	bool analyseReply = ctx.Lookup("SortedTagsHTMLMapperAnalyseReply", 0L);
 
@@ -40,8 +40,12 @@ bool SortedTagsHTMLMapper::DoPutStream(const char *key, std::istream &is, Contex
 	return (!analyseReply ? DoFinalPutStream("Output", is, ctx) : false);
 }
 
-bool SortedTagsHTMLMapper::Put(const char *key, const String &value, Context &ctx) {
-	StartTrace1(SortedTagsHTMLMapper.PutString, NotNull(key));
-	IStringStream is(value);
-	return ResultMapper::Put(key, is, ctx);
+bool SortedTagsHTMLMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
+	StartTrace1(SortedTagsHTMLMapper.DoPutAny, NotNull(key));
+	if (value.GetType() != AnyArrayType) {
+		String sText = value.AsString();
+		IStringStream is(sText);
+		return DoPutStream(key, is, ctx, script);
+	}
+	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
