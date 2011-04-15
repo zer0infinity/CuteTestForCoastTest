@@ -11,9 +11,6 @@
 
 #include "Action.h"
 
-class Context;
-
-//---- StringsEqualAction ----------------------------------------------------------
 //! Compares if the two strings are equal
 /*!
 \par Configuration
@@ -26,13 +23,12 @@ class Context;
 
 Result is True (1) or False (0)
 */
-class StringsEqualAction : public Action
-{
+class StringsEqualAction: public Action {
 public:
-	//--- constructors
-	StringsEqualAction(const char *name);
-	~StringsEqualAction();
-
+	StringsEqualAction(const char *name) :
+		Action(name) {
+	}
+protected:
 	//:DoSomething method for configured Actions
 	//!param: transitionToken - (in/out) the event passed by the caller, can be modified.
 	//!param: ctx - the context the action runs within.

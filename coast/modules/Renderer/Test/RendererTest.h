@@ -10,22 +10,17 @@
 #define _RendererTest_h_
 
 #include "TestCase.h"
-#include "Anything.h"
 #include "Context.h"
 #include "StringStream.h"
 
-//---- RendererTest -----------------------------------------------------------
-class RendererTest : public TestFramework::TestCase
-{
+class RendererTest: public TestFramework::TestCase {
 public:
 	RendererTest(TString tstrName);
-	virtual ~RendererTest();
+	void setUp();
+	static Test *suite();
 
-	void setUp ();
-	static Test *suite ();
-
-	virtual void printResult( const char *str0, const char *str1 );
-	virtual void printReplyBody( const char *MethodeName );
+	virtual void printResult(const char *str0, const char *str1);
+	virtual void printReplyBody(const char *MethodeName);
 
 protected:
 	Context fContext;

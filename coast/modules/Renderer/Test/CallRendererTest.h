@@ -9,36 +9,23 @@
 #ifndef _CallRendererTest_H
 #define _CallRendererTest_H
 
-#include "Anything.h"
-#include "StringStream.h"
-#include "Context.h"
 #include "RendererTest.h"
 
-//---- CallRendererTest ----------------------------------------------------------
 //! test the new Call (aka Lambda) Renderer
 /*!
-Testcase to create test-first the proposed CallRenderer.
-This renderer should allow the reuse of complex renderer specifications
-by passing parameters to the renderer via the context, thus local
-throughout a page
-this may contain <B>HTML-Tags</B>
-*/
-class CallRendererTest : public RendererTest
-{
+ Testcase to create test-first the proposed CallRenderer.
+ This renderer should allow the reuse of complex renderer specifications
+ by passing parameters to the renderer via the context, thus local
+ throughout a page
+ this may contain <B>HTML-Tags</B>
+ */
+class CallRendererTest: public RendererTest {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	CallRendererTest(TString tstrName);
-
-	//! destroys the test case
-	~CallRendererTest();
-
-	//--- public api
-
+	CallRendererTest(TString tstrName) :
+		RendererTest(tstrName) {
+	}
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//! Call a CallRenderer with an empty config
 	void EmptyCallTest();

@@ -5,20 +5,10 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "CallRenderer.h"
-#include "SystemLog.h"
-#include "Dbg.h"
-
-//---- CallRenderer ---------------------------------------------------------------
 RegisterRenderer(CallRenderer);
 
-CallRenderer::CallRenderer(const char *name) : Renderer(name) { }
-
-CallRenderer::~CallRenderer() { }
-
-void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(CallRenderer.RenderAll);
 	Anything params;
 	ROAnything callee;
@@ -33,8 +23,7 @@ void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything
 	Renderer::Render(reply, ctx, callee);
 }
 
-ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee)
-{
+ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee) {
 	StartTrace(CallRenderer.IntGetCallee);
 	if (callee.GetType() != AnyArrayType) {
 		const char *callname = callee.AsCharPtr(0);
@@ -49,30 +38,21 @@ ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee)
 	return callee;
 }
 
-Anything CallRenderer::DoGetParameters(Context &ctx, const ROAnything &config)
-{
+Anything CallRenderer::DoGetParameters(Context &ctx, const ROAnything &config) {
 	return config.DeepClone();
 }
 
-Anything CallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config)
-{
+Anything CallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config) {
 	StartTrace(CallRenderer.DoGetPositionalParameters);
 	Anything result;
 	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
-		result[String("$")<<i] = config[i].DeepClone();
+		result[String("$") << i] = config[i].DeepClone();
 	}
 	return result;
 }
-
-//---- EagerCallRenderer ---------------------------------------------------------------
 RegisterRenderer(EagerCallRenderer);
 
-EagerCallRenderer::EagerCallRenderer(const char *name) : CallRenderer(name) { }
-
-EagerCallRenderer::~EagerCallRenderer() { }
-
-Anything EagerCallRenderer::DoGetParameters(Context &ctx, const ROAnything &config)
-{
+Anything EagerCallRenderer::DoGetParameters(Context &ctx, const ROAnything &config) {
 	Anything result;
 	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		result[config.SlotName(i)] = Renderer::RenderToString(ctx, config[i]);
@@ -80,12 +60,11 @@ Anything EagerCallRenderer::DoGetParameters(Context &ctx, const ROAnything &conf
 	return result;
 }
 
-Anything EagerCallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config)
-{
+Anything EagerCallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config) {
 	StartTrace(PositionalCallRenderer.DoGetPositionalParameters);
 	Anything result;
 	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
-		result[String("$")<<i] = Renderer::RenderToString(ctx, config[i]);
+		result[String("$") << i] = Renderer::RenderToString(ctx, config[i]);
 	}
 	return result;
 }

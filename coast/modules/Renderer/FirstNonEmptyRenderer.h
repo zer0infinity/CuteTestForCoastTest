@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- FirstNonEmptyRenderer ----------------------------------------------------------
 //! Renders the first non-empty slot of the configuration Anything onto the stream
 /*! @section FirstNonEmptyRendererDescription FirstNonEmptyRenderer Description
  * The main principle is to render the content of the first indexed configuration slot if its Renderer specification
@@ -36,14 +35,13 @@
 \endcode
  * In this example the second slot ["this slot is not empty"] will be output because the first one is empty.
 */
-class FirstNonEmptyRenderer : public Renderer
-{
+class FirstNonEmptyRenderer: public Renderer {
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
-	FirstNonEmptyRenderer(const char *name);
-	~FirstNonEmptyRenderer();
-
-	//! Renders first non empty configuration entry as output
+	FirstNonEmptyRenderer(const char *name) :
+		Renderer(name) {
+	}
+    //! Renders first non empty configuration entry as output
 	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };

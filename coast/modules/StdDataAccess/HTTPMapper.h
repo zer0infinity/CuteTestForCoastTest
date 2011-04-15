@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-// --------------------- HTTPHeaderParameterMapper -------------------------
 //! HTTP header parameter mapping
 /*!
  * This mapper will do a Context::Lookup() using the given key. It expects a list
@@ -67,10 +66,18 @@
 HOST: my.host.dom\r\nUSER-AGENT: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100629 Ubuntu/10.10 (maverick) Firefox/3.6.6 GTB7.0\r\n
  * \endcode
  */
-class HTTPHeaderParameterMapper : public ParameterMapper
-{
+class HTTPHeaderParameterMapper: public ParameterMapper {
+	HTTPHeaderParameterMapper();
+	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
+	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);
+	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
+	bool HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
+	bool DoInitialize();
+	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 public:
-	HTTPHeaderParameterMapper(const char *name) : ParameterMapper(name) { }
+	HTTPHeaderParameterMapper(const char *name) :
+		ParameterMapper(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -83,23 +90,17 @@ public:
 	 * \param ctx the context for this call
 	 * \param conf further mapper configuration script
 	 */
-	bool DoGetStream(const char *key, std::ostream &os, Context &ctx,  ROAnything conf);
-private:
-	bool DoInitialize();
-	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
-
-	HTTPHeaderParameterMapper();
-	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
-	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);
-	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
-	bool HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
+	bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything conf);
 };
 
-// ------------------------- HTTPBodyResultMapper -------------------------
-class HTTPBodyResultMapper : public ResultMapper
-{
+class HTTPBodyResultMapper: public ResultMapper {
+	HTTPBodyResultMapper();
+	HTTPBodyResultMapper(const HTTPBodyResultMapper &);
+	HTTPBodyResultMapper &operator=(const HTTPBodyResultMapper &);
 public:
-	HTTPBodyResultMapper(const char *name) : ResultMapper(name) { }
+	HTTPBodyResultMapper(const char *name) :
+		ResultMapper(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -110,18 +111,16 @@ public:
 
 protected:
 	virtual void ReadBody(String &body, std::istream &is, Context &ctx);
-
-private:
-	HTTPBodyResultMapper();
-	HTTPBodyResultMapper(const HTTPBodyResultMapper &);
-	HTTPBodyResultMapper &operator=(const HTTPBodyResultMapper &);
 };
 
-// ------------------------- HTTPBodyParameterMapper -------------------------
-class HTTPBodyParameterMapper : public ParameterMapper
-{
+class HTTPBodyParameterMapper: public ParameterMapper {
+	HTTPBodyParameterMapper();
+	HTTPBodyParameterMapper(const HTTPBodyParameterMapper &);
+	HTTPBodyParameterMapper &operator=(const HTTPBodyParameterMapper &);
 public:
-	HTTPBodyParameterMapper(const char *name) : ParameterMapper(name) { }
+	HTTPBodyParameterMapper(const char *name) :
+		ParameterMapper(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -129,11 +128,6 @@ public:
 	}
 
 	bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
-
-private:
-	HTTPBodyParameterMapper();
-	HTTPBodyParameterMapper(const HTTPBodyParameterMapper &);
-	HTTPBodyParameterMapper &operator=(const HTTPBodyParameterMapper &);
 };
 
 #endif

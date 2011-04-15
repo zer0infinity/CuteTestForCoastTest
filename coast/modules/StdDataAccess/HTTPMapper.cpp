@@ -104,11 +104,9 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 
 bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info) {
 	StartTrace1(HTTPHeaderParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
-
 	bool mapSuccess = true;
 	ROAnything headerfields(ctx.Lookup(key));
 	TraceAny(headerfields, "Headerfields available for key " << key);
-
 	if (!headerfields.IsNull()) {
 		String strFieldName;
 		ROAnything roaValue;
@@ -177,20 +175,16 @@ RegisterParameterMapper(HTTPBodyParameterMapper);
 RegisterParameterMapperAlias(HTTPBodyMapper, HTTPBodyParameterMapper);
 bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx) {
 	StartTrace1(HTTPBodyParameterMapper.DoFinalGetStream, NotNull(key));
-
-	ROAnything params(ctx.Lookup(key)); //!@FIXME ??: use Get(key,any,ctx) instead?
 	bool mapSuccess = true;
-
+	ROAnything params(ctx.Lookup(key)); //!@FIXME ??: use Get(key,any,ctx) instead?
 	if (!params.IsNull()) {
-		// map a configured set of params
 		long bPSz = params.GetSize();
+		String value;
 		for (long i = 0; i < bPSz; ++i) {
 			const char *lookupVal = params.SlotName(i);
 			if (!lookupVal) {
 				lookupVal = params[i].AsCharPtr("");
 			}
-
-			String value;
 			if (lookupVal && (mapSuccess = Get(lookupVal, value, ctx))) {
 				Trace("Param[" << lookupVal << "]=<" << value << ">");
 				os << lookupVal << "=" << value;
@@ -201,7 +195,7 @@ bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os
 				mapSuccess = true;
 				os << lookupVal;
 			}
-			value = "";
+			value.clear();
 		}
 	} else {
 		String bodyParams;

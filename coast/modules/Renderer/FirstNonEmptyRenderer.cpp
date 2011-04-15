@@ -5,19 +5,10 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "FirstNonEmptyRenderer.h"
-#include "Dbg.h"
-
-//---- FirstNonEmptyRenderer ---------------------------------------------------------------
 RegisterRenderer(FirstNonEmptyRenderer);
 
-FirstNonEmptyRenderer::FirstNonEmptyRenderer(const char *name) : Renderer(name) { }
-
-FirstNonEmptyRenderer::~FirstNonEmptyRenderer() { }
-
-void FirstNonEmptyRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void FirstNonEmptyRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(FirstNonEmptyRenderer.RenderAll);
 	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		String result;
