@@ -15,8 +15,13 @@
 
 namespace {
 	long getStringLength(String const &str) {
-		StartTrace1(StringLengthResultMapper.getStringLength, "str [" << str << "]");
-		long len = utf8::distance(str.begin(), str.end());
+		long len = 0L;
+		try {
+			len = utf8::distance(str.begin(), str.end());
+		} catch (utf8::invalid_utf8& e) {
+			len = str.Length();
+		}
+		StatTrace(StringLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
 		return len;
 	}
 }
@@ -24,9 +29,11 @@ RegisterResultMapper(StringLengthResultMapper);
 
 bool StringLengthResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
 	StartTrace1(StringLengthResultMapper.DoPutAny, "key [" << NotNull(key) << "]");
-	String sText = value.AsString();
-	value = getStringLength(sText);
-	Trace("length of value string: " << value.AsLong(-1L));
+	if (value.GetType() != AnyArrayType) {
+		String sText = value.AsString();
+		value = getStringLength(sText);
+		Trace("length of value string: " << value.AsLong(-1L));
+	}
 	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
 
