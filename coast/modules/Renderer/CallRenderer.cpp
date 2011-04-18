@@ -8,34 +8,44 @@
 #include "CallRenderer.h"
 RegisterRenderer(CallRenderer);
 
-void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
-	StartTrace(CallRenderer.RenderAll);
-	Anything params;
-	ROAnything callee;
-	if (config.IsDefined("Parameters") && config.IsDefined("Renderer")) {
-		params = DoGetParameters(ctx, config["Parameters"]);
-		callee = IntGetCallee(ctx, config["Renderer"]);
-	} else {
-		params = DoGetPositionalParameters(ctx, config);
-		callee = IntGetCallee(ctx, config[0L]);
+namespace {
+	char const *_CalleeSlotname = "Renderer";
+	char const *_ParametersSlotname = "Parameters";
+	long const _CalleeIndex = 0L;
+	long const _ParametersStartIndex = _CalleeIndex + 1L;
+
+	ROAnything IntGetCallee(Context &ctx, ROAnything callee, char const* className) {
+		StartTrace(CallRenderer.IntGetCallee);
+		if (callee.GetType() != AnyArrayType) {
+			const char *callname = callee.AsCharPtr(0);
+			if (!ctx.Lookup(callname, callee)) {
+				String msg;
+				msg << className << ": definition not found: " << callname;
+				SystemLog::Warning(msg);
+				Trace(msg);
+			}
+		}
+		TraceAny(callee, "rendering callee");
+		return callee;
 	}
-	Context::PushPopEntry<Anything> aEntry(ctx, "CallRenderer", params);
-	Renderer::Render(reply, ctx, callee);
 }
 
-ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee) {
-	StartTrace(CallRenderer.IntGetCallee);
-	if (callee.GetType() != AnyArrayType) {
-		const char *callname = callee.AsCharPtr(0);
-		if (!ctx.Lookup(callname, callee)) {
-			String msg;
-			msg << "CallRenderer: definition not found: " << callname;
-			SystemLog::Warning(msg);
-			Trace(msg);
-		}
+void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
+	StartTrace(CallRenderer.RenderAll);
+	ROAnything callee;
+	if (!config.LookupPath(callee, _CalleeSlotname, '\000')) {
+		callee = config[_CalleeIndex];
 	}
-	TraceAny(callee, "rendering callee");
-	return callee;
+	callee = IntGetCallee(ctx, callee, GetName());
+	ROAnything configparams;
+	Anything params;
+	if (config.LookupPath(configparams, _ParametersSlotname, '\000')) {
+		params = DoGetParameters(ctx, configparams);
+	} else {
+		params = DoGetPositionalParameters(ctx, config);
+	}
+	Context::PushPopEntry<Anything> aEntry(ctx, GetName(), params);
+	Renderer::Render(reply, ctx, callee);
 }
 
 Anything CallRenderer::DoGetParameters(Context &ctx, const ROAnything &config) {
@@ -45,7 +55,7 @@ Anything CallRenderer::DoGetParameters(Context &ctx, const ROAnything &config) {
 Anything CallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config) {
 	StartTrace(CallRenderer.DoGetPositionalParameters);
 	Anything result;
-	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
+	for (long i = _ParametersStartIndex, sz = config.GetSize(); i < sz; ++i) {
 		result[String("$") << i] = config[i].DeepClone();
 	}
 	return result;
@@ -63,7 +73,7 @@ Anything EagerCallRenderer::DoGetParameters(Context &ctx, const ROAnything &conf
 Anything EagerCallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything &config) {
 	StartTrace(PositionalCallRenderer.DoGetPositionalParameters);
 	Anything result;
-	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
+	for (long i = _ParametersStartIndex, sz = config.GetSize(); i < sz; ++i) {
 		result[String("$") << i] = Renderer::RenderToString(ctx, config[i]);
 	}
 	return result;

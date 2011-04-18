@@ -40,7 +40,6 @@ class CallRenderer: public Renderer {
 protected:
 	virtual Anything DoGetParameters(Context &ctx, const ROAnything &config);
 	virtual Anything DoGetPositionalParameters(Context &ctx, const ROAnything &config);
-	ROAnything IntGetCallee(Context &ctx, ROAnything callee);
 public:
 	CallRenderer(const char *name) :
 		Renderer(name) {
