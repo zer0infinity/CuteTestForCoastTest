@@ -782,20 +782,15 @@ namespace Coast {
 			TraceAny(query, "Query ");
 		}
 
-		String EncodeFormContent(Anything &kVPairs )
-		{
+		String EncodeFormContent(Anything &kVPairs) {
 			StartTrace(URLUtils.EncodeFormContent);
 			TraceAny( kVPairs, "input key value pairs" );
-
-			String localString = "";
-			int i, sz;
-			for (i = 0, sz = kVPairs.GetSize() - 1; i < sz; ++i ) {
-				Trace( "localString->" << localString );
-				localString << kVPairs.SlotName(i) << "=" << kVPairs[i].AsString("") << "&";
+			String localString;
+			for (int i = 0, sz = kVPairs.GetSize(); i < sz; ++i) {
+				if ( localString.Length() ) localString.Append('&');
+				localString.Append(kVPairs.SlotName(i)).Append('=').Append(kVPairs[i].AsString());
 			}
-			localString << kVPairs.SlotName(i) << "=" <<  kVPairs[i].AsString("");
-			Trace( "localStringEND->" << localString );
-
+			Trace( "kv-pairs [" << localString << "]");
 			return localString;
 		}
 
