@@ -5,25 +5,20 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTTPDAImpl.h"
 #include "StringStream.h"
 #include "Timers.h"
 #include "ConnectorParams.h"
 #include "SSLSocket.h"
-#include "Session.h"
 #ifdef RECORD
 #include "AnyUtils.h"
 #include "SystemLog.h"
 #endif
-
-//--- HTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl( HTTPDAImpl);
 
 String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 	ROAnything appPref(context.Lookup("URIPrefix2ServiceMap"));
 	Anything anyPrefix = appPref.SlotName(appPref.FindValue(fName));
-
 	String errorMsg(msg);
 	errorMsg << anyPrefix.AsString(fName) << "[";
 	errorMsg << "Server:" << context.Lookup("Backend.Server").AsString("no IP");
@@ -41,11 +36,10 @@ bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) 
 	if (cps.UseSSL()) {
 		TraceAny(context.Lookup("SSLModuleCfg"), "SSLModuleCfg");
 		ConnectorArgs ca(cps.IPAddress(), cps.Port(), cps.Timeout());
-		SSLSocketArgs sa(context.Lookup("VerifyCertifiedEntity").AsBool(0), context.Lookup("CertVerifyString").AsString(), context.Lookup(
-				"CertVerifyStringIsFilter").AsBool(0), context.Lookup("SessionResumption").AsBool(0));
+		SSLSocketArgs sa(context.Lookup("VerifyCertifiedEntity").AsBool(0), context.Lookup("CertVerifyString").AsString(),
+				context.Lookup("CertVerifyStringIsFilter").AsBool(0), context.Lookup("SessionResumption").AsBool(0));
 
 		Trace(sa.ShowState());
-
 		SSLConnector sslcsc(ca, sa, context.Lookup("SSLModuleCfg"), (SSL_CTX *) context.Lookup("SSLContext").AsIFAObject(0), NULL, 0L,
 				cps.UseThreadLocal());
 		return DoExec(&sslcsc, &cps, context, in, out);
@@ -58,15 +52,12 @@ bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) 
 
 bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.DoExec);
-
 #ifdef RECORD
 	return DoExecRecord( csc, cps, context, in, out);
 #endif
-
 	Trace("name: " << fName);
 	Socket *s = 0;
 	std::iostream *Ios = 0;
-
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, "Connecting <" << fName << ">", context);
 		s = csc->Use();
@@ -228,9 +219,25 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 }
 #endif
 
+#include "utf8.h"
+
+namespace {
+	long getStringLength(String const &str) {
+		long len = 0L;
+		try {
+			len = utf8::distance(str.begin(), str.end());
+		} catch (utf8::invalid_utf8& e) {
+			len = str.Length();
+		}
+		StatTrace(HTTPDAImpl.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
+		return len;
+	}
+}
+
 bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.SendInput);
 	//XXX: this section should probably be conditional
+	//FIXME: string length calculation is now aware of utf8 characters but this might be wrong for other content-types (like some sort of binary data)!
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
 	Trace("PostContentLengthToStream:" << uploadSize);
 	if (uploadSize == -1L) {
@@ -240,8 +247,8 @@ bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context 
 		oss.flush();
 		long lIdx = content.Contains("\r\n\r\n");
 		if (lIdx >= 0) {
-			lIdx += 4L; // subtract \r\n\r\n
-			uploadSize = content.Length() - lIdx;
+			content.TrimFront(lIdx+4L);
+			uploadSize = getStringLength(content);
 		} else {
 			uploadSize = 0L;
 		}
@@ -261,7 +268,6 @@ bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context 
 		Trace("Request:" << request);
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
-
 		if (Ios) {
 			if (s->IsReadyForWriting()) {
 				Trace("sending input");
@@ -284,7 +290,6 @@ bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context 
 
 bool HTTPDAImpl::DoSendInput(std::iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.DoSendInput);
-
 	if (Ios) {
 		if (s->IsReadyForWriting()) {
 			s->SetNoDelay();
