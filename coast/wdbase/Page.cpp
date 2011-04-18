@@ -179,7 +179,7 @@ void Page::RenderProtocolTail(std::ostream &reply, Context &ctx) {
 	//!@FIXME: this is a temporary workaround to only render Debug output onto html pages
 	OStringStream ostr;
 	RenderProtocolHeader(ostr, ctx);
-	if (ostr.str().Contains("text/html")) {
+	if (ostr.str().Contains("text/html") >= 0L) {
 		// we render optional debug output
 		ctx.HTMLDebugStores(reply);
 	}
