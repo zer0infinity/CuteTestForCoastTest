@@ -23,6 +23,10 @@
 		/MainSwitch	100
 		/EnableAll	100
 	}
+	/CallAction {
+		/MainSwitch	100
+		/EnableAll	100
+	}
 	/RemoveAction{
 		/MainSwitch	33
 		/EnableAll	33

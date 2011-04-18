@@ -1784,5 +1784,134 @@
 				}
 			}
 		}
+		/CallActionUseArgumentFromTmpStore {
+			/TmpStore {
+				/arg1 TmpStoreUsedHere
+				/ReUseAction {
+					/StoreAction {
+						/Value { /Lookup arg1 }
+						/Destination {
+							/Slot	ReUseOutput
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CallAction {
+					/Action ReUseAction
+					/Parameters {}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/ReUseOutput	TmpStoreUsedHere
+				}
+			}
+		}
+		/CallActionUseArgumentFromParams {
+			/TmpStore {
+				/arg1 TmpStoreNotUsedHere
+				/ReUseAction {
+					/StoreAction {
+						/Value { /Lookup arg1 }
+						/Destination {
+							/Slot	ReUseOutput
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CallAction {
+					/Action ReUseAction
+					/Parameters {
+						/arg1	UseTheParam
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/ReUseOutput	UseTheParam
+				}
+			}
+		}
+		/CallActionUseArgumentFromTmpStorePositional {
+			/TmpStore {
+				/"$1" TmpStoreUsedHere
+				/ReUseAction {
+					/StoreAction {
+						/Value { /Lookup "$1" }
+						/Destination {
+							/Slot	ReUseOutput
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CallAction {
+					/Action ReUseAction
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/ReUseOutput	TmpStoreUsedHere
+				}
+			}
+		}
+		/CallActionUseArgumentFromParamsPositional {
+			/TmpStore {
+				/"$1" TmpStoreNotUsedHere
+				/ReUseAction {
+					/StoreAction {
+						/Value { /Lookup "$1" }
+						/Destination {
+							/Slot	ReUseOutput
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CallAction {
+					/Action ReUseAction
+					UseTheParam
+					UnusedParam
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/ReUseOutput	UseTheParam
+				}
+			}
+		}
+		/CallActionUseArgumentFromParamsPositionalOmitActionsSlot {
+			/TmpStore {
+				/"$1" TmpStoreNotUsedHere
+				/"$2" SomeOutputSlot
+				/ReUseAction {
+					/StoreAction {
+						/Value { /Lookup "$1" }
+						/Destination {
+							/Slot	{ /Lookup "$2" }
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CallAction {
+					ReUseAction
+					UseTheParam
+					MyOutputSlot
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/MyOutputSlot	UseTheParam
+				}
+			}
+		}
 	}
 }
