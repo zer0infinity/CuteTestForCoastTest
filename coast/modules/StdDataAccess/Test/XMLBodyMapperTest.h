@@ -14,15 +14,13 @@
 
 class Anything;
 
-//---- XMLBodyMapperTest -----------------------------------------------------------
-class XMLBodyMapperTest : public TestFramework::TestCase
-{
+class XMLBodyMapperTest: public TestFramework::TestCase {
 public:
-	XMLBodyMapperTest(TString tstrName);
-	virtual ~XMLBodyMapperTest();
-
-	void setUp ();
-	static Test *suite ();
+	XMLBodyMapperTest(TString tstrName) :
+		TestCaseType(tstrName), fXMLBodyMapper("TestedMapper") {
+	}
+	void setUp();
+	static Test *suite();
 
 	// Produce an Anything out of an XML
 	void PutTest();

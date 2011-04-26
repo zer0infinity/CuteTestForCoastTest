@@ -8,25 +8,13 @@
 
 #include "MasterServerTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Server.h"
 #include "Socket.h"
 #include "AnyIterators.h"
 #define TESTHOST "localhost"
 
-//---- MasterServerTest ----------------------------------------------------------------
-MasterServerTest::MasterServerTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(MasterServerTest.MasterServerTest);
-}
-
-MasterServerTest::~MasterServerTest()
-{
-	StartTrace(MasterServerTest.Dtor);
-}
-
-void MasterServerTest::setUp ()
-{
+void MasterServerTest::setUp() {
 	StartTrace(MasterServerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 	Server *s;
@@ -37,14 +25,13 @@ void MasterServerTest::setUp ()
 	}
 }
 
-void MasterServerTest::InitRunTerminateTest()
-{
+void MasterServerTest::InitRunTerminateTest() {
 	StartTrace(MasterServerTest.InitRunTerminateTest);
 
 	TestCaseType::DoUnloadConfig();
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, String> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TestCaseType::DoLoadConfig("MasterServerTest", "InitRunTerminateTest");
 		String serverName;
 		aEntryIterator.SlotName(serverName);
@@ -53,16 +40,16 @@ void MasterServerTest::InitRunTerminateTest()
 		Server *server = SafeCast(Server::FindServer(serverName), MasterServer);
 		String msg;
 		msg << "expected " << serverName << "  to be there";
-		if ( t_assertm(server != NULL, (const char *)msg) ) {
+		if (t_assertm(server != NULL, (const char *)msg)) {
 			long numOfThreads = 0;
 			TraceAny(roaConfig, "Ports to check");
 			serverName << "_of_InitRunTerminateTest";
-			server = (Server *)server->ConfiguredClone("Server", serverName, true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+			server = (Server *) server->ConfiguredClone("Server", serverName, true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
 				numOfThreads = Thread::NumOfThreads();
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
@@ -85,13 +72,12 @@ void MasterServerTest::InitRunTerminateTest()
 	}
 }
 
-void MasterServerTest::InitRunResetRunTerminateTest ()
-{
+void MasterServerTest::InitRunResetRunTerminateTest() {
 	StartTrace(MasterServerTest.InitRunResetRunTerminateTest);
 
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, String> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		String serverName;
 		aEntryIterator.SlotName(serverName);
 		Trace("Checks with server <" << serverName << ">");
@@ -100,16 +86,16 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 		String msg;
 		msg << "expected " << serverName << "  to be there";
 
-		if ( t_assertm(server != NULL, (const char *)msg) ) {
+		if (t_assertm(server != NULL, (const char *)msg)) {
 			long numOfThreads = 0;
 			TraceAny(roaConfig, "Ports to check");
 			serverName << "_of_InitRunResetRunTerminateTest";
-			server = (Server *)server->ConfiguredClone("Server", serverName, true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+			server = (Server *) server->ConfiguredClone("Server", serverName, true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
 				numOfThreads = Thread::NumOfThreads();
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
@@ -133,8 +119,7 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 	}
 }
 
-void MasterServerTest::RunTestSequence(ROAnything roaConfig)
-{
+void MasterServerTest::RunTestSequence(ROAnything roaConfig) {
 	StartTrace(MasterServerTest.RunTestSequence);
 	Anything testMessage;
 	Anything replyMessage;
@@ -145,7 +130,7 @@ void MasterServerTest::RunTestSequence(ROAnything roaConfig)
 		Trace("Check ip port : " << port);
 
 		Connector con(TESTHOST, port);
-		if ( t_assert(con.GetStream() != NULL) ) {
+		if (t_assert(con.GetStream() != NULL)) {
 			testMessage.PrintOn((*con.GetStream()));
 			t_assert(!!(*con.GetStream()));
 
@@ -157,8 +142,7 @@ void MasterServerTest::RunTestSequence(ROAnything roaConfig)
 	}
 }
 
-Test *MasterServerTest::suite ()
-{
+Test *MasterServerTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, MasterServerTest, InitRunTerminateTest);
 	ADD_CASE(testSuite, MasterServerTest, InitRunResetRunTerminateTest);

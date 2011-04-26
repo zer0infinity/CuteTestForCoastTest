@@ -10,17 +10,12 @@
 #define _StrSpecialTest_h_
 
 #include "TestCase.h"//lint !e537
-
-//---- StrSpecialTest -----------------------------------------------------------
-//!some special tests for String
-class StrSpecialTest : public TestFramework::TestCase
-{
+class StrSpecialTest: public TestFramework::TestCase {
 public:
-	StrSpecialTest(TString tstrName);
-	virtual ~StrSpecialTest();
-
-	static Test *suite ();
-	void setUp ();
+	StrSpecialTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 	void simpleAppendTest();
 	void umlauteTest();
 };

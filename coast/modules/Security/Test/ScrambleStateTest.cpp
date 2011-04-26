@@ -8,38 +8,28 @@
 
 #include "ScrambleStateTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "SecurityModule.h"
 #include "SystemFile.h"
 #include "Dbg.h"
 
-//---- ScrambleStateTest ----------------------------------------------------------------
-Test *ScrambleStateTest::suite ()
-{
+Test *ScrambleStateTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, ScrambleStateTest, ScrambleUnscrambleTest);
 
 	return testSuite;
 }
-ScrambleStateTest::ScrambleStateTest(TString tstrName) : TestCaseType(tstrName)
-{
-}
 
-ScrambleStateTest::~ScrambleStateTest()
-{
-}
-
-void ScrambleStateTest::setUp ()
-{
+void ScrambleStateTest::setUp() {
 	std::iostream *Ios = Coast::System::OpenStream("ScrambleStateTest", "any");
-	if ( Ios ) {
+	if (Ios) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;
 	}
 }
 
-void ScrambleStateTest::ScrambleUnscrambleTest()
-{
+void ScrambleStateTest::ScrambleUnscrambleTest() {
 	Anything config;
 
 	for (long i = 1; i < fStdContextAny.GetSize(); i++) {
@@ -50,8 +40,7 @@ void ScrambleStateTest::ScrambleUnscrambleTest()
 	DoReferenceUncsramble(config);
 }
 
-void ScrambleStateTest::DoScrambleTest(const char *thename)
-{
+void ScrambleStateTest::DoScrambleTest(const char *thename) {
 	StartTrace(ScrambleStateTest.DoScrambleTest);
 	Trace("configuring module: " << thename);
 	SecurityModule secm(thename);
@@ -66,10 +55,9 @@ void ScrambleStateTest::DoScrambleTest(const char *thename)
 	t_assertm(SecurityModule::UnscrambleState(unscrambledState, scrambled), TString("expected unscrambling to be possible for config") << thename);
 
 	assertAnyEqual(state, unscrambledState );
-//        secm.ResetFinis(fStdContextAny);
+	//        secm.ResetFinis(fStdContextAny);
 }
-void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
-{
+void ScrambleStateTest::DoReferenceUncsramble(const Anything &config) {
 	WDModule *secm = WDModule::FindWDModule("SecurityModule");
 	Anything expectedClearText;
 	expectedClearText["role"] = "AdminLocalAdmin";
@@ -82,8 +70,8 @@ void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
 		{
 			String scrambled;
 			scrambled = "Base64:Qmxvd2Zpc2hTY3JhbWJsZXItD2tpkCGRNDHj8cOapE29gBvuvdeXIO-6ZezbTzjfw3niedqXjJKK31MJSA1oCM"
-						"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
-						"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
+				"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
+				"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
 			Anything unscrambledState;
 			secm->Init(config);
 			SecurityModule::UnscrambleState(unscrambledState, scrambled);
@@ -92,8 +80,8 @@ void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
 		{
 			String scrambled;
 			scrambled = "Base64-Qmxvd2Zpc2hTY3JhbWJsZXItD2tpkCGRNDHj8cOapE29gBvuvdeXIO-6ZezbTzjfw3niedqXjJKK31MJSA1oCM"
-						"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
-						"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
+				"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
+				"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
 			Anything unscrambledState;
 			secm->Init(config);
 			SecurityModule::UnscrambleState(unscrambledState, scrambled);

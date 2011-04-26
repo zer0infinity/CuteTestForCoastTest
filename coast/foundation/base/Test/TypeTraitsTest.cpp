@@ -9,26 +9,12 @@
 #include "TypeTraitsTest.h"
 #include "TestSuite.h"
 #include "ITOTypeTraits.h"
-#include "ITOString.h"
 #include "Dbg.h"
 #include <typeinfo>
 
 using namespace std;
 
-//---- TypeTraitsTest ----------------------------------------------------------------
-TypeTraitsTest::TypeTraitsTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(TypeTraitsTest.Ctor);
-}
-
-TypeTraitsTest::~TypeTraitsTest()
-{
-	StartTrace(TypeTraitsTest.Dtor);
-}
-
-void TypeTraitsTest::TraitsTest()
-{
+void TypeTraitsTest::TraitsTest() {
 	StartTrace(TypeTraitsTest.TraitsTest);
 	{
 		typedef String TestType;
@@ -67,7 +53,7 @@ void TypeTraitsTest::TraitsTest()
 		t_assertm(typeid(Coast::TypeTraits::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
 	}
 	{
-		typedef String *const TestType;
+		typedef String * const TestType;
 		t_assertm(Coast::TypeTraits::TypeTraits<TestType>::isConst == true, "expected const type");
 		t_assertm(typeid(Coast::TypeTraits::TypeTraits<TestType>::NonConstType) == typeid(String *), "expected String-ptr-type");
 		t_assertm( Coast::TypeTraits::TypeTraits< Coast::TypeTraits::TypeTraits<TestType>::NonConstType >::isPointer == true, "expected String-ptr-type");
@@ -93,66 +79,62 @@ void TypeTraitsTest::TraitsTest()
 	}
 }
 
-template
-<
-typename InnerType
->
-class ClassTraits
-{
+template<typename InnerType>
+class ClassTraits {
 public:
 	typedef typename Coast::TypeTraits::fooTypeTraits<InnerType>::ConstPlainTypeRef ConstPlainTypeRef;
 	typedef typename Coast::TypeTraits::fooTypeTraits<InnerType>::PlainTypePtr PlainTypePtr;
 
-	ClassTraits(ConstPlainTypeRef aParam)
-		: fField(aParam) {
+	ClassTraits(ConstPlainTypeRef aParam) :
+		fField(aParam) {
 		StartTrace1(ClassTraits.ClassTraits, "ConstPlainTypeRef");
 		SomeMethod(aParam);
 	}
-	ClassTraits(PlainTypePtr pParam)
-		: fField(pParam) {
+	ClassTraits(PlainTypePtr pParam) :
+		fField(pParam) {
 		StartTrace1(ClassTraits.ClassTraits, "PlainTypePtr");
 		SomeMethod(pParam);
 	}
 
 	void SomeMethod(ConstPlainTypeRef aParam) {
-		StartTrace1(ClassTraits.SomeMethod, "ConstPlainTypeRef");
+		StartTrace1(ClassTraits.SomeMethod, "ConstPlainTypeRef")
+		;
 	}
 
 	void SomeMethod(PlainTypePtr pParam) {
-		StartTrace1(ClassTraits.SomeMethod, "PlainTypePtr");
+		StartTrace1(ClassTraits.SomeMethod, "PlainTypePtr")
+		;
 	}
 
 	const type_info &GetTypeInfo() const {
 		return typeid(fField);
-	}
+			}
 
-private:
-	InnerType fField;
-};
+		private:
+			InnerType fField;
+		};
 
-void TypeTraitsTest::ClassTraitsTest()
-{
-	StartTrace(TypeTraitsTest.ClassTraitsTest);
-	{
-		typedef const String &TestType;
-		String aTestString;
-		ClassTraits<TestType> aClass(aTestString);
-		t_assert(aClass.GetTypeInfo() == typeid(TestType));
-	}
-	{
-		typedef String *TestType;
-		String aTestString;
-		ClassTraits<TestType> aClass(&aTestString);
-		t_assert(aClass.GetTypeInfo() == typeid(TestType));
-	}
-}
+		void TypeTraitsTest::ClassTraitsTest() {
+			StartTrace(TypeTraitsTest.ClassTraitsTest);
+			{
+				typedef const String &TestType;
+				String aTestString;
+				ClassTraits<TestType> aClass(aTestString);
+				t_assert(aClass.GetTypeInfo() == typeid(TestType));
+			}
+			{
+				typedef String *TestType;
+				String aTestString;
+				ClassTraits<TestType> aClass(&aTestString);
+				t_assert(aClass.GetTypeInfo() == typeid(TestType));
+			}
+		}
 
-// builds up a suite of testcases, add a line for each testmethod
-Test *TypeTraitsTest::suite ()
-{
-	StartTrace(TypeTraitsTest.suite);
-	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, TypeTraitsTest, TraitsTest);
-	ADD_CASE(testSuite, TypeTraitsTest, ClassTraitsTest);
-	return testSuite;
-}
+		// builds up a suite of testcases, add a line for each testmethod
+		Test *TypeTraitsTest::suite() {
+			StartTrace(TypeTraitsTest.suite);
+			TestSuite *testSuite = new TestSuite;
+			ADD_CASE(testSuite, TypeTraitsTest, TraitsTest);
+			ADD_CASE(testSuite, TypeTraitsTest, ClassTraitsTest);
+			return testSuite;
+		}

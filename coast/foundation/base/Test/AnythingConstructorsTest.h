@@ -12,10 +12,7 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-//---- AnythingConstructorsTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingConstructorsTest : public TestFramework::TestCase
-{
+class AnythingConstructorsTest: public TestFramework::TestCase {
 protected:
 	Anything fString;
 	Anything fLong;
@@ -26,26 +23,27 @@ protected:
 	Anything fNull;
 
 public:
-	AnythingConstructorsTest (TString tstrName);
-
-	virtual void	setUp ();
-	static Test	*suite ();
-	void		DefaultConstrTest();
-	void		IntConstrTest();
-	void		LongConstrTest();
-	void		FloatConstrTest();
-	void		DoubleConstr0Test();
-	void		DoubleConstr1Test();
-	void		CharStarConstrTest();
-	void		CharStarLongConstr0Test();
-	void		CharStarLongConstr1Test();
-	void		CharStarLongConstr2Test();
-	void		CharStarLongConstr3Test();
-	void		StringConstrTest();
-	void		VoidStarLenConstrTest();
-	void		EmptyVoidStarLenConstrTest();
-	void		IFAObjectStarConstrTest();
-	void		AnythingConstrTest();
+	AnythingConstructorsTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	virtual void setUp();
+	static Test *suite();
+	void DefaultConstrTest();
+	void IntConstrTest();
+	void LongConstrTest();
+	void FloatConstrTest();
+	void DoubleConstr0Test();
+	void DoubleConstr1Test();
+	void CharStarConstrTest();
+	void CharStarLongConstr0Test();
+	void CharStarLongConstr1Test();
+	void CharStarLongConstr2Test();
+	void CharStarLongConstr3Test();
+	void StringConstrTest();
+	void VoidStarLenConstrTest();
+	void EmptyVoidStarLenConstrTest();
+	void IFAObjectStarConstrTest();
+	void AnythingConstrTest();
 };
 
 #endif		//ifndef _AnythingConstructorsTest_H

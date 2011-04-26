@@ -8,26 +8,14 @@
 
 #include "TemplateParserTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "TemplateParser.h"
 #include "Renderer.h"
 #include "CacheHandler.h"
 #include "AnyUtils.h"
 #include "StringStream.h"
 
-//---- TemplateParserTest ----------------------------------------------------------------
-TemplateParserTest::TemplateParserTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(TemplateParserTest.TemplateParserTest);
-}
-
-TemplateParserTest::~TemplateParserTest()
-{
-	StartTrace(TemplateParserTest.Dtor);
-}
-
-void TemplateParserTest::BuildEmptyCache()
-{
+void TemplateParserTest::BuildEmptyCache() {
 	StartTrace(TemplateParserTest.BuildEmptyCache);
 	TemplateParser p;
 	String strIn;
@@ -37,8 +25,7 @@ void TemplateParserTest::BuildEmptyCache()
 	t_assert(cache.IsNull());
 }
 
-void TemplateParserTest::BuildLiteralCache()
-{
+void TemplateParserTest::BuildLiteralCache() {
 	StartTrace(TemplateParserTest.BuildLiteralCache);
 	TemplateParser p;
 	String strIn("hello world");
@@ -49,8 +36,7 @@ void TemplateParserTest::BuildLiteralCache()
 	assertEqual("hello world", cache[0L].AsCharPtr());
 }
 
-void TemplateParserTest::BuildSimpleFormCache()
-{
+void TemplateParserTest::BuildSimpleFormCache() {
 	StartTrace(TemplateParserTest.BuildSimpleFormCache);
 	TemplateParser p;
 
@@ -69,8 +55,7 @@ void TemplateParserTest::BuildSimpleFormCache()
 	assertEqual("hello world", cache[0L]["FormRenderer"]["Layout"][0L].AsCharPtr());
 }
 
-void TemplateParserTest::BuildSimpleFormNoCache()
-{
+void TemplateParserTest::BuildSimpleFormNoCache() {
 	StartTrace(TemplateParserTest.BuildSimpleFormCache);
 	TemplateParser p;
 
@@ -83,12 +68,11 @@ void TemplateParserTest::BuildSimpleFormNoCache()
 	assertEqual(_QUOTE_(<form method="GET" action="http:../cgi-bin/doit.cgi">hello world</form>), cache[0L].AsCharPtr());
 }
 
-void TemplateParserTest::BuildSimpleRendererSpec()
-{
+void TemplateParserTest::BuildSimpleRendererSpec() {
 	StartTrace(TemplateParserTest.BuildSimpleRendererSpec);
 	TemplateParser p;
 
-	String templ(_QUOTE_(start <? /ContextLookupRenderer { "name" } ?> end));
+	String templ(_QUOTE_(start <? /ContextLookupRenderer {"name"}?> end));
 	IStringStream is(templ);
 	Anything cache;
 	cache = p.Parse(is);
@@ -99,12 +83,12 @@ void TemplateParserTest::BuildSimpleRendererSpec()
 	Renderer::RenderOnString(result, ctx, cache);
 	assertEqual("start Peter end", result);
 }
-void TemplateParserTest::BuildNestedHTMLSpec()
-{
+void TemplateParserTest::BuildNestedHTMLSpec() {
 	StartTrace(TemplateParserTest.BuildNestedHTMLSpec);
 	TemplateParser p;
 
-	String templ(_QUOTE_(start <? /ConditionalRenderer { /ContextCondition "name" /Defined ?>Ist "Definiert"<? /Undefined ?>nicht def#<% } %> end));
+	String templ(_QUOTE_(start <? /ConditionalRenderer {/ContextCondition "name" /Defined ?>Ist "Definiert"<? /Undefined ?>nicht def#<% } %> end)
+	);
 	IStringStream is(templ);
 	Anything cache;
 	cache = p.Parse(is);
@@ -135,7 +119,9 @@ void TemplateParserTest::BuildFormWithInputFieldCache() {
 	TemplateParser p;
 
 	// determine Coast actions, PreprocessAction is always defined...
-	String form("<form method=GET action=PreprocessAction><textarea name=area></textarea><input name=\"foo\" /><input type=submit name=abutton><input type=image name=animage></form>");
+	String
+			form(
+					"<form method=GET action=PreprocessAction><textarea name=area></textarea><input name=\"foo\" /><input type=submit name=abutton><input type=image name=animage></form>");
 	IStringStream is(form);
 	Anything cache;
 	cache = p.Parse(is);
@@ -289,7 +275,7 @@ void TemplateParserTest::NoTagWithinJavascript() {
 void TemplateParserTest::BuildFormWithConfiguredTransitionTokens() {
 	StartTrace(TemplateParserTest.BuildFormWithConfiguredTransitionTokens);
 	CacheHandler *pCache = CacheHandler::Get();
-	if ( t_assert(pCache != NULL) ) {
+	if (t_assert(pCache != NULL)) {
 		ROAnything roaHTMLCache, roaCacheNameMap;
 		roaHTMLCache = pCache->GetGroup("HTML");
 		roaCacheNameMap = pCache->Get("HTMLMappings", "HTMLTemplNameMap");
@@ -297,10 +283,10 @@ void TemplateParserTest::BuildFormWithConfiguredTransitionTokens() {
 		TraceAny(roaCacheNameMap, "NameMap");
 		ROAnything roaTestPage = roaHTMLCache[roaCacheNameMap["TemplateParserExtendedTest"][0L].AsCharPtr()];
 		TraceAny(roaTestPage, "content of page");
-		if ( t_assertm(!roaTestPage.IsNull(), "expected to get a valid reference to the page") ) {
+		if (t_assertm(!roaTestPage.IsNull(), "expected to get a valid reference to the page")) {
 			String configFilename("TemplateParserExtendedTestMaster");
 			std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
-			if ( t_assert(ifp != NULL) ) {
+			if (t_assert(ifp != NULL)) {
 				Anything anyMaster;
 				anyMaster.Import(*ifp, configFilename);
 				delete ifp;
@@ -311,7 +297,7 @@ void TemplateParserTest::BuildFormWithConfiguredTransitionTokens() {
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test * TemplateParserTest::suite () {
+Test * TemplateParserTest::suite() {
 	StartTrace(TemplateParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

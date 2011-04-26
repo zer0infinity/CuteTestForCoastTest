@@ -13,19 +13,12 @@
 
 class TableCompressor;
 
-//---- TableCompressorTest ----------------------------------------------------------
-//!single line description of the class
-//! further explanation of the purpose of the class
-//! this may contain <B>HTML-Tags</B>
-//! ...
-class TableCompressorTest : public TestFramework::TestCase
-{
+class TableCompressorTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-	TableCompressorTest(TString tstrName);
-	~TableCompressorTest();
-
-	static Test *suite ();
+	TableCompressorTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	//!test working of configuration
 	void InitTest();

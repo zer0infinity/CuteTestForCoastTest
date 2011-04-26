@@ -32,12 +32,15 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	AccessManagerTest(TString tstrName);
-
-	//! destroys the test case
-	~AccessManagerTest();
-
-	//--- public api
+	AccessManagerTest(TString tstrName)
+    :TestCaseType(tstrName)
+    {
+}
+    //! destroys the test case
+	~AccessManagerTest()
+    {
+}
+    //--- public api
 
 	//! builds up a suite of testcases for this test
 	static Test *suite ();

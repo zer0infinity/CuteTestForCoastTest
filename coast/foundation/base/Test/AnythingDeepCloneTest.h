@@ -11,29 +11,25 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnythingDeepCloneTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingDeepCloneTest : public TestFramework::TestCase
-{
+class AnythingDeepCloneTest: public TestFramework::TestCase {
 public:
-	AnythingDeepCloneTest (TString tstrName);
+	AnythingDeepCloneTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 
-	virtual void	setUp ();
-	static Test	*suite ();
-
-	void		DeepClone0Test();
-	void		DeepClone1Test();
-	void		DeepClone2Test();
-	void		DeepClone3Test();
-	void		DeepClone4Test();
-	void		DeepClone5Test();
+	void DeepClone0Test();
+	void DeepClone1Test();
+	void DeepClone2Test();
+	void DeepClone3Test();
+	void DeepClone4Test();
+	void DeepClone5Test();
 	//-- new test check for ref integrity with deepclone
-	void		DeepCloneWithRef();
-	void		DeepCloneBug232Test();
+	void DeepCloneWithRef();
+	void DeepCloneBug232Test();
 protected:
-	Anything	init5DimArray(long);
-	bool		check5DimArray( Anything &, Anything &, long );
+	Anything init5DimArray(long);
+	bool check5DimArray(Anything &, Anything &, long);
 };
 
 #endif		//ifndef _AnythingDeepCloneTest_H

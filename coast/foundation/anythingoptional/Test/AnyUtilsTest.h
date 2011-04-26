@@ -11,16 +11,12 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnyUtilsTest -----------------------------------------------------------
-//!testcases for AnyUtils
-class AnyUtilsTest : public TestFramework::TestCase
-{
+class AnyUtilsTest: public TestFramework::TestCase {
 public:
-	AnyUtilsTest(TString tstrName);
-	virtual ~AnyUtilsTest();
-
-	static Test *suite ();
+	AnyUtilsTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void CompareTest();
 	void printEmptyXmlTest();
 	void printSimpleXmlTest();

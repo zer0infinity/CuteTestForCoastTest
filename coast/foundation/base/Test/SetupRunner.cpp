@@ -7,7 +7,6 @@
  */
 
 #include "TestRunner.h"
-#include "TestSuite.h"
 #include "AnythingConstructorsTest.h"
 #include "AnythingDeepCloneTest.h"
 #include "AnythingImportExportTest.h"
@@ -39,8 +38,7 @@
 #include "StringReverseIteratorTest.h"
 #include "StringSTLTest.h"
 
-void setupRunner(TestRunner &runner)
-{//lint !e14
+void setupRunner(TestRunner &runner) {//lint !e14
 	ADD_SUITE(runner, StringTokenizerTest);
 	ADD_SUITE(runner, StringTokenizer2Test);
 	ADD_SUITE(runner, StringTest);

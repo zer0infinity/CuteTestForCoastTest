@@ -9,21 +9,10 @@
 #include "ROAnyLookupAdapterTest.h"
 #include "Dbg.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "AnyLookupInterfaceAdapter.h"
 
-//---- ROAnyLookupAdapterTest ----------------------------------------------------------------
-ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ROAnyLookupAdapterTest.Ctor);
-}
-
-ROAnyLookupAdapterTest::~ROAnyLookupAdapterTest()
-{
-	StartTrace(ROAnyLookupAdapterTest.Dtor);
-}
-
-void ROAnyLookupAdapterTest::LookupTest()
-{
+void ROAnyLookupAdapterTest::LookupTest() {
 	StartTrace(ROAnyLookupAdapterTest.LookupTest);
 
 	{
@@ -57,8 +46,7 @@ void ROAnyLookupAdapterTest::LookupTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ROAnyLookupAdapterTest::suite ()
-{
+Test *ROAnyLookupAdapterTest::suite() {
 	StartTrace(ROAnyLookupAdapterTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ROAnyLookupAdapterTest, LookupTest);

@@ -11,29 +11,12 @@
 
 #include "TestCase.h"
 
-//---- ObjectListTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class ObjectListTest : public TestFramework::TestCase
-{
+class ObjectListTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	/*! \param name name of the test */
-	ObjectListTest(TString tstrName);
-
-	//! destroys the test case
-	~ObjectListTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//! describe this testcase
+	ObjectListTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void CtorTest();
 	void DtorTest();
 };

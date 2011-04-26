@@ -7,12 +7,10 @@
  */
 
 #include "TestRunner.h"
-#include "TestSuite.h"
 #include "DiffTimerTest.h"
 #include "TimeStampTest.h"
 
-void setupRunner(TestRunner &runner)
-{
+void setupRunner(TestRunner &runner) {
 	ADD_SUITE(runner, DiffTimerTest);
 	ADD_SUITE(runner, TimeStampTest);
 } // setupRunner

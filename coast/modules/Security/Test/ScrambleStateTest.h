@@ -12,19 +12,12 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-//---- ScrambleStateTest ----------------------------------------------------------
-//!single line description of the class
-//! further explanation of the purpose of the class
-//! this may contain <B>HTML-Tags</B>
-//! ...
-class ScrambleStateTest : public TestFramework::TestCase
-{
+class ScrambleStateTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-	ScrambleStateTest(TString tstrName);
-	~ScrambleStateTest();
-
-	static Test *suite ();
+	ScrambleStateTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	void setUp();
 

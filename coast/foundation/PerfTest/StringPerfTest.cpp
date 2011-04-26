@@ -9,23 +9,8 @@
 #include "TestSuite.h"
 #include "StringPerfTest.h"
 #include "PoolAllocator.h"
-#include "Dbg.h"//lint !e537
 
-
-//---- StringPerfTest ----------------------------------------------------------------
-StringPerfTest::StringPerfTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(StringPerfTest.Ctor);
-}
-
-StringPerfTest::~StringPerfTest()
-{
-	StartTrace(StringPerfTest.Dtor);
-}
-
-void StringPerfTest::RunLoop(const char *str, const long iterations)
-{
+void StringPerfTest::RunLoop(const char *str, const long iterations) {
 	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/default", this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
@@ -33,27 +18,24 @@ void StringPerfTest::RunLoop(const char *str, const long iterations)
 	}
 }
 
-void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
-{
+void StringPerfTest::RunPreallocLoop(const char *str, const long iterations) {
 	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/Prealloc", this);
-	String out(strlen(str)*iterations + 1);
+	String out(strlen(str) * iterations + 1);
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
 }
 
-void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations)
-{
+void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations) {
 	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/PoolAlloc", this);
-	PoolAllocator p(1, ((strlen(str) + 16)*iterations * 3 / 1024), 21);
-	String out( &p );
+	PoolAllocator p(1, ((strlen(str) + 16) * iterations * 3 / 1024), 21);
+	String out(&p);
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
 }
 
-void StringPerfTest::referenceTest()
-{
+void StringPerfTest::referenceTest() {
 	StartTrace(StringPerfTest.referenceTest);
 	const char *sample = "this is a "; //short samp"; // 20 bytes
 	const char *sample1 = "this is a short samp"; //this is a short samp"; // 40 bytes
@@ -74,8 +56,7 @@ void StringPerfTest::referenceTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *StringPerfTest::suite()
-{
+Test *StringPerfTest::suite() {
 	StartTrace(StringPerfTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

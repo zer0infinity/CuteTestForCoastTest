@@ -22,7 +22,6 @@ using std::greater;
 using std::greater_equal;
 
 class TestResult;
-class Anything;
 
 //template
 //<
@@ -135,10 +134,6 @@ protected:
 						 TString fileName,
 						 TString message);
 
-	bool assertAnyEquals	(Anything &expected, Anything &actual,
-							 long   lineNumber = IT_TESTFW_UNKNOWNLINENUMBER,
-							 TString fileName = IT_TESTFW_UNKNOWNFILENAME);
-
 	TString notEqualsMessage(long expected, long actual);
 	TString notEqualsMessage(double expected, double actual);
 	TString notEqualsMessage(const char *expected, const char *actual);
@@ -245,26 +240,7 @@ __LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
 (this->assertEquals ((expected),\
 		(actual),__LINE__,__FILE__,(" " #expected " == " #actual " ")))
 
-#define assertAnyEqual(expected,actual)\
-{    bool tluseReht = true;\
-     TString egasseMeht = (const char *)Anything::CompareForTestCases(expected,actual,tluseReht);\
-	assertImplementation (tluseReht, egasseMeht, __LINE__, __FILE__);\
-}
-
-#define assertAnyCompareEqual(master,actual,location, slotdelim, idxdelim)\
-{\
-	OStringStream s;\
-	String failingPath(location);\
-	if ( !AnyUtils::AnyCompareEqual(actual,master,failingPath,&s, slotdelim, idxdelim) )\
-	{\
-		String strfail(failingPath);\
-		strfail << "\n" << s.str();\
-		t_assertm(false, (const char*)strfail);\
-	}\
-}
-
 // the same macros with an additional message
-
 #define t_assertm(condition,message)\
 (this->assertImplementation ((bool)(condition),(#condition),\
 	__LINE__, __FILE__,message))
@@ -287,11 +263,5 @@ __LINE__,__FILE__,message))
 #define assertCharPtrEqualm(expected,actual,message)\
 (this->assertEquals ((expected),\
 		(actual),__LINE__,__FILE__,TString(" " #expected " == " #actual " ") << message))
-
-#define assertAnyEqualm(expected,actual,message)\
-{    bool tluseReht = true;\
-     TString egasseMeht = (const char *)Anything::CompareForTestCases(expected,actual,tluseReht);\
-	assertImplementation (tluseReht, egasseMeht, __LINE__, __FILE__,message);\
-}
 
 #endif

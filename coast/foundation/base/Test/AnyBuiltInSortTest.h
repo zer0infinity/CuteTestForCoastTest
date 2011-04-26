@@ -10,28 +10,13 @@
 #define _AnyBuiltInSortTest_H
 
 #include "TestCase.h"//lint !e537
-
-//---- AnyBuiltInSortTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class AnyBuiltInSortTest : public TestFramework::TestCase
-{
+#include "Anything.h"
+class AnyBuiltInSortTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	/*! \param name name of the test */
-	AnyBuiltInSortTest(TString tstrName);
-
-	//! destroys the test case
-	~AnyBuiltInSortTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	AnyBuiltInSortTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	//! empty any can be sorted
 	void SortEmpty();

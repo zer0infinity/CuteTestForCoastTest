@@ -11,41 +11,15 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- MultiThreadedTest ----------------------------------------------------------
-//! single line description of the class
-/*!
- further explanation of the purpose of the class
- this may contain <B>HTML-Tags</B>
- */
-class MultiThreadedTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class MultiThreadedTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//! ConfiguredTestCase constructor
-	//! \param name name of the test
-	MultiThreadedTest( TString tstrName );
-
-	//! destroys the test case
-	~MultiThreadedTest();
-
-	//--- public api
-
-	//! builds up a suite of tests
+	MultiThreadedTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	static Test *suite();
-
-	//! sets the environment for this test
-	void setUp();
-
-	//! deletes the environment for this test
-	void tearDown();
-
-	//! describe this Test
 	void DAImplTest();
-
-	void DoTest( ROAnything roaTestConfig, const char *goodDAName, const char *failDAName );
-	void Run( long id, const char *goodDAName, const char *failDAName, long lLoops, long lWait, ROAnything roaExpected );
-
+	void DoTest(ROAnything roaTestConfig, const char *goodDAName, const char *failDAName);
+	void Run(long id, const char *goodDAName, const char *failDAName, long lLoops, long lWait, ROAnything roaExpected);
 	bool fbWasInitialized;
 };
 

@@ -10,30 +10,12 @@
 #define _TypeTraitsTest_H
 
 #include "TestCase.h"//lint !e537
-
-//---- TypeTraitsTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class TypeTraitsTest : public TestFramework::TestCase
-{
+class TypeTraitsTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	/*! \param tstrName name of the test */
-	TypeTraitsTest(TString tstrName);
-
-	//! destroys the test case
-	~TypeTraitsTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//! describe this testcase
+	TypeTraitsTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+    static Test *suite();
 	void TraitsTest();
 	void ClassTraitsTest();
 };

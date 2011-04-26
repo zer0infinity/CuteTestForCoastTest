@@ -8,27 +8,9 @@
 
 #include "AnythingLookupTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
-#include "IFAObject.h"
-#include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
-#include <cstring>
+#include "FoundationTestTypes.h"
 
-//---- AnythingLookupTest ---------------------------------------------------------
-
-AnythingLookupTest::AnythingLookupTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingLookupTest::setUp()
-{
-	StartTrace(AnythingLookupTest.setUp);
-}
-
-Test *AnythingLookupTest::suite()
-{
+Test *AnythingLookupTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingLookupTest, LookUp0Test);
 	ADD_CASE(testSuite, AnythingLookupTest, LookUp1Test);
@@ -40,8 +22,7 @@ Test *AnythingLookupTest::suite()
 	return testSuite;
 }
 
-Anything AnythingLookupTest::init5DimArray(long anzElt)
-{
+Anything AnythingLookupTest::init5DimArray(long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	Anything anyInit;
@@ -59,8 +40,7 @@ Anything AnythingLookupTest::init5DimArray(long anzElt)
 	return (anyInit);
 }
 
-void AnythingLookupTest::LookUp0Test()
-{
+void AnythingLookupTest::LookUp0Test() {
 	Anything parent;
 	parent["Here"]["comes"]["some"] = "data";
 	Anything derived;
@@ -76,8 +56,7 @@ void AnythingLookupTest::LookUp0Test()
 	assertEqual("new data", parent["Here"]["comes"]["more"].AsString("x"));
 }
 
-void AnythingLookupTest::LookUp1Test()
-{
+void AnythingLookupTest::LookUp1Test() {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	String path;
@@ -111,8 +90,7 @@ void AnythingLookupTest::LookUp1Test()
 	}
 }
 
-void AnythingLookupTest::LookupPathByIndex()
-{
+void AnythingLookupTest::LookupPathByIndex() {
 	{
 		// Index at the end
 		Anything test;
@@ -340,8 +318,7 @@ void AnythingLookupTest::EmptyLookup()
 	t_assert(test["bar"] == 2L);
 } // EmptyLookup
 
-void AnythingLookupTest::invPathLookup()
-{
+void AnythingLookupTest::invPathLookup() {
 	String path("Invalid path");
 	Anything test;
 
@@ -376,8 +353,7 @@ void AnythingLookupTest::invPathLookup()
 
 } // invPathLookup
 
-void AnythingLookupTest::intLookupPathCheck(Anything &test, const char *path)
-{
+void AnythingLookupTest::intLookupPathCheck(Anything &test, const char *path) {
 	// do the test
 	Anything result;
 	bool retVal = test.LookupPath(result, path);
@@ -391,8 +367,7 @@ void AnythingLookupTest::intLookupPathCheck(Anything &test, const char *path)
 	t_assertm(roResult.IsNull(), NotNull(path));
 }
 
-void AnythingLookupTest::LookUpWithSpecialCharsTest()
-{
+void AnythingLookupTest::LookUpWithSpecialCharsTest() {
 	Anything parent;
 	parent["H�-r�"]["c�mes"]["$ome"] = "d�ta";
 	assertEqual("d�ta", parent["H�-r�"]["c�mes"]["$ome"].AsString("x"));
@@ -411,8 +386,7 @@ void AnythingLookupTest::LookUpWithSpecialCharsTest()
 
 }
 
-void AnythingLookupTest::LookupCaseSensitiveTest()
-{
+void AnythingLookupTest::LookupCaseSensitiveTest() {
 	Anything any;
 	Anything res;
 	any["ALL"] = "content";

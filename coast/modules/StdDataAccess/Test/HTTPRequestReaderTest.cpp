@@ -9,6 +9,7 @@
 #include "HTTPRequestReaderTest.h"
 #include "HTTPRequestReader.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Context.h"
 #include "MIMEHeader.h"
 #include "StringStreamSocket.h"

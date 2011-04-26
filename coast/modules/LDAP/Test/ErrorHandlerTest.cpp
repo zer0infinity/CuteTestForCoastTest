@@ -8,6 +8,7 @@
 
 #include "ErrorHandlerTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "PersistentLDAPConnection.h"
 #include "Context.h"
 

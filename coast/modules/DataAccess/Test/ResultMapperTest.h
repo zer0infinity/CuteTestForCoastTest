@@ -12,11 +12,13 @@
 #include "WDBaseTestPolicies.h"
 #include "Mapper.h"
 
-class PathTestMapper : public ResultMapper
-{
+class PathTestMapper: public ResultMapper {
 public:
-	PathTestMapper(const char *name): ResultMapper(name) {}
-	virtual ~PathTestMapper() {}
+	PathTestMapper(const char *name) :
+		ResultMapper(name) {
+	}
+	virtual ~PathTestMapper() {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) PathTestMapper(fName);
@@ -28,27 +30,17 @@ protected:
 	}
 };
 
-//---- ResultMapperTest ----------------------------------------------------------
 //! Tests functionality of ResultMapper and EagerResultMapper.
 /*!
-To understand the results of those tests, you should additionally
-consult "OutputMapperMeta.any"
-*/
-class ResultMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+ To understand the results of those tests, you should additionally
+ consult "OutputMapperMeta.any"
+ */
+class ResultMapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	/*! \param name name of the test */
-	ResultMapperTest(TString tstrName);
-
-	//! destroys the test case
-	~ResultMapperTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	ResultMapperTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	void DoSelectScriptTest();
 	void DoLoadConfigTest();

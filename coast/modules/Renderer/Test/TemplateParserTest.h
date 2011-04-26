@@ -11,28 +11,12 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- TemplateParserTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class TemplateParserTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class TemplateParserTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	TemplateParserTest(TString tstrName);
-
-	//! destroys the test case
-	~TemplateParserTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	TemplateParserTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	//! build empty cache
 	void BuildEmptyCache();

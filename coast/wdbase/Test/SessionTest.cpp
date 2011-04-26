@@ -9,25 +9,13 @@
 #include "SessionTest.h"
 #include "Session.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Role.h"
 #include "Registry.h"
 #include "PoolAllocator.h"
 #include "AnyIterators.h"
 
-//---- SessionTest ----------------------------------------------------------------
-SessionTest::SessionTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(SessionTest.SessionTest);
-}
-
-SessionTest::~SessionTest()
-{
-	StartTrace(SessionTest.Dtor);
-}
-
-void SessionTest::setUp ()
-{
+void SessionTest::setUp() {
 	StartTrace(SessionTest.setUp);
 	t_assert(GetConfig().IsDefined("Roles"));
 	ROAnything dummy;
@@ -36,13 +24,11 @@ void SessionTest::setUp ()
 	t_assert(GetConfig().IsDefined("Modules"));
 }
 
-static Role *GetDefaultRole(Context &ctx)
-{
+static Role *GetDefaultRole(Context &ctx) {
 	return Role::FindRoleWithDefault(Role::GetDefaultRoleName(ctx), ctx);
 }
 
-void SessionTest::SetGetRole ()
-{
+void SessionTest::SetGetRole() {
 	StartTrace(SessionTest.SetGetRole);
 	Role *cust = Role::FindRole("RTCustomer"); // from RoleTest
 
@@ -83,16 +69,14 @@ void SessionTest::SetGetRole ()
 	}
 }
 
-void MakeDummyArg(Anything &arg)
-{
+void MakeDummyArg(Anything &arg) {
 	arg["env"]["header"]["REMOTE_ADDR"] = "127.0.0.1";
 	arg["env"]["header"]["USER-AGENT"] = "Testframework";
 	arg["query"]["adr"] = "127.0.0.2";
 	arg["query"]["port"] = 2412;
 }
 
-void SessionTest::TestInit ()
-{
+void SessionTest::TestInit() {
 	StartTrace(SessionTest.TestInit);
 	Anything arg;
 	MakeDummyArg(arg);
@@ -100,7 +84,8 @@ void SessionTest::TestInit ()
 
 	Session s("dummysession");
 	{
-		Context ctx(arg);;
+		Context ctx(arg);
+		;
 		s.Init("sessionid", ctx);
 		t_assert(0 != s.GetRole(ctx));
 		assertEqual("sessionid", s.GetId());
@@ -112,8 +97,7 @@ void SessionTest::TestInit ()
 	}
 }
 
-void SessionTest::DoFindNextPageLogin ()
-{
+void SessionTest::DoFindNextPageLogin() {
 	StartTrace(SessionTest.DoFindNextPageLogin);
 
 	Anything arg;
@@ -179,8 +163,7 @@ void SessionTest::DoFindNextPageLogin ()
 	}
 }
 
-void SessionTest::RetrieveFromDelayed ()
-{
+void SessionTest::RetrieveFromDelayed() {
 	StartTrace(SessionTest.RetrieveFromDelayed);
 	Anything arg;
 	MakeDummyArg(arg);
@@ -212,16 +195,15 @@ void SessionTest::RetrieveFromDelayed ()
 	}
 }
 
-void SessionTest::CheckInstalled ()
-{
+void SessionTest::CheckInstalled() {
 	StartTrace(SessionTest.CheckInstalled);
 	Registry *reg = Registry::GetRegistry("Role");
 	t_assert(reg != 0);
 	RegistryIterator ri(reg);
 
-	while ( ri.HasMore() ) {
+	while (ri.HasMore()) {
 		String roleName("null");
-		Role *r = (Role *)ri.Next(roleName);
+		Role *r = (Role *) ri.Next(roleName);
 		Trace("role found <" << roleName << ">");
 		if (r) {
 			String sname("null");
@@ -239,8 +221,7 @@ void SessionTest::CheckInstalled ()
 	}
 }
 
-void SessionTest::UseSessionStoreTest()
-{
+void SessionTest::UseSessionStoreTest() {
 	StartTrace(SessionTest.UseSessionStoreTest);
 	PoolAllocator pa(1, 8 * 1024, 21);
 	TestStorageHooks tsh(&pa);
@@ -288,8 +269,7 @@ void SessionTest::UseSessionStoreTest()
 	}
 }
 
-void SessionTest::VerifyTest()
-{
+void SessionTest::VerifyTest() {
 	StartTrace(SessionTest.VerifyTest);
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
@@ -306,8 +286,7 @@ void SessionTest::VerifyTest()
 	}
 }
 
-void SessionTest::InfoTest()
-{
+void SessionTest::InfoTest() {
 	StartTrace(SessionTest.InfoTest);
 	{
 		// simple case no environment no session settings
@@ -333,8 +312,7 @@ void SessionTest::InfoTest()
 	}
 }
 
-void SessionTest::IsDeletableTest()
-{
+void SessionTest::IsDeletableTest() {
 	StartTrace(SessionTest.IsDeletableTestTest);
 	{
 		// simple case no environment no session settings
@@ -357,7 +335,6 @@ void SessionTest::IsDeletableTest()
 		}
 
 		// Now the context unreferenced the session in its destructor
-
 		t_assert(s.GetRefCount() == 0);
 
 		// The session is not removable because it is not timeout (but unreferenced)
@@ -366,13 +343,12 @@ void SessionTest::IsDeletableTest()
 		// and it is unreferenced
 		assertEqual(true, s.IsDeletable(notTimeout, theCtx, true));
 		// The session is now removable because it is  timeout (and unreferenced)
-		assertEqual(true,  s.IsDeletable(isTimeout, theCtx, false));
+		assertEqual(true, s.IsDeletable(isTimeout, theCtx, false));
 
 	}
 }
 
-void SessionTest::SetupContextTest()
-{
+void SessionTest::SetupContextTest() {
 	StartTrace(SessionTest.SetupContextTest);
 
 	Anything arg;
@@ -407,17 +383,18 @@ void SessionTest::SetupContextTest()
 		assertEqual("ErrorPage", p);
 	}
 }
-class STTestSession : public Session
-{
+class STTestSession: public Session {
 public:
-	STTestSession(const char *nm) : Session(nm) {}
+	STTestSession(const char *nm) :
+		Session(nm) {
+	}
 	Role *PublicCheckRoleExchange(const char *t, Context &ctx) {
 		return CheckRoleExchange(t, ctx);
 	}
 };
 
-void SessionTest::IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s, Context &theCtx, bool should_succeed = true)
-{
+void SessionTest::IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s,
+		Context &theCtx, bool should_succeed = true) {
 	Role *rs = Role::FindRole(source_role);
 	s.SetRole(rs, theCtx);
 
@@ -434,8 +411,7 @@ void SessionTest::IntCheckRoleExchange(const char *source_role, const char *targ
 	}
 }
 
-void SessionTest::CheckRoleExchangeTest()
-{
+void SessionTest::CheckRoleExchangeTest() {
 	StartTrace(SessionTest.CheckRoleExchangeTest);
 
 	Context theCtx;
@@ -451,8 +427,7 @@ void SessionTest::CheckRoleExchangeTest()
 	IntCheckRoleExchange("Role", "RTCustomer", "Logoff", s, theCtx, false);
 }
 
-Test *SessionTest::suite ()
-{
+Test *SessionTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, SessionTest, CheckInstalled);
 	ADD_CASE(testSuite, SessionTest, SetGetRole);

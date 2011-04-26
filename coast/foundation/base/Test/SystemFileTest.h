@@ -11,20 +11,13 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 #include "boost/function.hpp"
-
-//---- SystemFileTest ----------------------------------------------------------
-//!testcases for SystemFile
-class SystemFileTest : public TestFramework::TestCaseWithConfig
-{
+class SystemFileTest: public TestFramework::TestCaseWithConfig {
+	void testGetFilePath(boost::function<String()> func, const String& notFoundResult);
 public:
-	//!constructors
-	SystemFileTest(TString tstrName);
-	~SystemFileTest();
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!tests pathlist accessor
+	SystemFileTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 	void initPathTest();
 	void pathListTest();
 	void rooDirTest();
@@ -44,18 +37,12 @@ public:
 	void MkRmDirTest();
 	void MakeRemoveDirectoryTest();
 	void MakeDirectoryTest();
-#if !defined(WIN32)
 	void SymbolicLinkTest();
-#endif
 	void MakeDirectoryExtendTest();
 	void GetFileSizeTest();
 	void BlocksLeftOnFSTest();
-
 	void LoadConfigFileTest();
-
 	void TimeTest();
-private:
-	void testGetFilePath(boost::function<String ()> func, const String& notFoundResult);
 };
 
 #endif /* SYSTEMFILETEST_H_ */

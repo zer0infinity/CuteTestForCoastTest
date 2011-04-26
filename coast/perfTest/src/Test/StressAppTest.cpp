@@ -12,18 +12,8 @@
 #include "StringStream.h"
 #include "Stresser.h"
 #include "StressProcessor.h"
-#include "Dbg.h"
 
-//---- StressAppTest ----------------------------------------------------------------
-StressAppTest::StressAppTest(TString tstrName) : TestCaseType(tstrName) { }
-
-StressAppTest::~StressAppTest()
-{
-}
-
-void StressAppTest::AppRunTest()
-{
-
+void StressAppTest::AppRunTest() {
 	StressApp stressApp("TestedStressApp");
 	stressApp.Initialize("Application");
 	long ret = stressApp.GlobalRun();
@@ -38,8 +28,7 @@ void StressAppTest::AppRunTest()
 	CheckSum(result);
 }
 
-void StressAppTest::DataAccessStresserTest()
-{
+void StressAppTest::DataAccessStresserTest() {
 	StartTrace(StressAppTest.DataAccessStresserTest);
 	Anything result = Stresser::RunStresser("Connection1");
 	TraceAny(result, "Result");
@@ -47,8 +36,7 @@ void StressAppTest::DataAccessStresserTest()
 	assertEqual(10, result[0L]["Steps"].AsLong(0));
 }
 
-void StressAppTest::ThreadedStresserRunnerTest()
-{
+void StressAppTest::ThreadedStresserRunnerTest() {
 	// Uses ten DummyStressers
 	Anything result = Stresser::RunStresser("TStresserRunner");
 
@@ -61,8 +49,7 @@ void StressAppTest::ThreadedStresserRunnerTest()
 	CheckSum(result);
 }
 
-void StressAppTest::FlowControlDAStresserTest()
-{
+void StressAppTest::FlowControlDAStresserTest() {
 	StartTrace(StressAppTest.FlowControlDAStresserTest);
 	Anything result = Stresser::RunStresser("FlowControlled");
 	TraceAny(result, "Results");
@@ -78,8 +65,7 @@ void StressAppTest::FlowControlDAStresserTest()
 	assertEqual(2, result[0L]["Error"].AsLong(0));
 }
 
-void StressAppTest::StressProcessorTest()
-{
+void StressAppTest::StressProcessorTest() {
 	// Uses ten DummyStressers
 	StressProcessor stressProc("TestProcessor");
 	Context ctx;
@@ -101,8 +87,7 @@ void StressAppTest::StressProcessorTest()
 	CheckSum(result);
 }
 
-void StressAppTest::CheckSum(ROAnything result)
-{
+void StressAppTest::CheckSum(ROAnything result) {
 	StartTrace(StressAppTest.CheckSum);
 	long checkSum(0);
 	TraceAny(result, "results");
@@ -114,8 +99,7 @@ void StressAppTest::CheckSum(ROAnything result)
 	assertEqual(checkSum, result["Total"]["Sum"].AsLong(0));
 }
 
-Test *StressAppTest::suite ()
-{
+Test *StressAppTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, StressAppTest, AppRunTest);

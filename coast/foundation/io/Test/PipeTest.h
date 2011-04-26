@@ -11,30 +11,14 @@
 
 #include "TestCase.h"
 
-//---- PipeTest ----------------------------------------------------------
-//!TestCases description
-class PipeTest : public TestFramework::TestCase
-{
+class PipeTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	PipeTest(TString tstrName);
-
-	//!destroys the test case
-	~PipeTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!test the constructor Pipe(fdin,fdout,doclose,timeout)
+	PipeTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void simpleConstructorTest();
-	//!test the constructor Pipe(doclose,timeout)
 	void defaultConstructorTest();
-	//!test the blocking of a pipe itself by writing a lot of stuff.
 	void simpleBlockingTest();
 };
 

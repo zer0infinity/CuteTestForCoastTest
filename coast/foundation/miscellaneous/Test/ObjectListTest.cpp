@@ -9,21 +9,8 @@
 #include "ObjectListTest.h"
 #include "TestSuite.h"
 #include "ObjectList.h"
-#include "Dbg.h"//lint !e537
 
-//---- ObjectListTest ----------------------------------------------------------------
-ObjectListTest::ObjectListTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ObjectListTest.Ctor);
-}
-
-ObjectListTest::~ObjectListTest()
-{
-	StartTrace(ObjectListTest.Dtor);
-}
-
-void ObjectListTest::CtorTest()
-{
+void ObjectListTest::CtorTest() {
 	StartTrace(ObjectListTest.CtorTest);
 	StartTraceMem(ObjectListTest.CtorTest);
 	{
@@ -35,7 +22,7 @@ void ObjectListTest::CtorTest()
 		aStringList.InsertTail(pString);
 		assertEqual(1, aStringList.GetSize());
 		TraceMemDelta("before deallocation");
-		if ( t_assert(aStringList.RemoveHead(pString)) ) {
+		if (t_assert(aStringList.RemoveHead(pString))) {
 			delete pString;
 		}
 		assertEqual(0, aStringList.GetSize());
@@ -48,7 +35,7 @@ void ObjectListTest::CtorTest()
 		assertEqual(lCount, aStringList.GetSize());
 		TraceMemDelta("after reallocation of many strings");
 		for (long lIdx2 = 0; lIdx2 < lCount; lIdx2++) {
-			if ( aStringList.RemoveHead(pString) ) {
+			if (aStringList.RemoveHead(pString)) {
 				Trace("current value [" << *pString << "]");
 				assertCharPtrEqual(String("Iteration:").Append(lIdx2), *pString);
 				delete pString;
@@ -62,8 +49,7 @@ void ObjectListTest::CtorTest()
 	TraceMemDelta("before terminating");
 }
 
-void ObjectListTest::DtorTest()
-{
+void ObjectListTest::DtorTest() {
 	StartTrace(ObjectListTest.DtorTest);
 	StartTraceMem(ObjectListTest.DtorTest);
 	{
@@ -90,7 +76,7 @@ void ObjectListTest::DtorTest()
 		{
 			ObjectList<int> aIntList("IntList");
 			for (long lIdx = 0; lIdx < lCount; lIdx++) {
-				aIntList.InsertTail((int)lCount);
+				aIntList.InsertTail((int) lCount);
 			}
 			assertEqual(lCount, aIntList.GetSize());
 			TraceMemDelta("after allocation of many ints");
@@ -102,8 +88,7 @@ void ObjectListTest::DtorTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ObjectListTest::suite ()
-{
+Test *ObjectListTest::suite() {
 	StartTrace(ObjectListTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

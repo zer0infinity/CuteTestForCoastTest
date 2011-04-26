@@ -8,24 +8,12 @@
 
 #include "AnyBuiltInSortTest.h"
 #include "TestSuite.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 #include "Dbg.h"
 #include "DiffTimer.h"
 #include <iostream>
 
-//---- AnyBuiltInSortTest ----------------------------------------------------------------
-AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(AnyBuiltInSortTest.Ctor);
-}
-
-AnyBuiltInSortTest::~AnyBuiltInSortTest()
-{
-	StartTrace(AnyBuiltInSortTest.Dtor);
-}
-
-bool AnyBuiltInSortTest::checksorted(const Anything &a, bool shouldfail)
-{
+bool AnyBuiltInSortTest::checksorted(const Anything &a, bool shouldfail) {
 	for (long i = 0; i < a.GetSize() - 1; i++) {
 		const char *s = a.SlotName(i);
 		const char *t = a.SlotName(i + 1);
@@ -40,11 +28,10 @@ bool AnyBuiltInSortTest::checksorted(const Anything &a, bool shouldfail)
 	}
 	return !shouldfail;
 }
-bool AnyBuiltInSortTest::checksortedbyvalue(const Anything &a, bool shouldfail)
-{
+bool AnyBuiltInSortTest::checksortedbyvalue(const Anything &a, bool shouldfail) {
 	for (long i = 0; i < a.GetSize() - 1; i++) {
 		const char *s = a[i].AsCharPtr();
-		const char *t = a[i+1].AsCharPtr();
+		const char *t = a[i + 1].AsCharPtr();
 		if (strcmp(NotNull(s), NotNull(t)) > 0) {
 			if (!shouldfail) {
 				TString msg("slots unsorted ");
@@ -56,8 +43,7 @@ bool AnyBuiltInSortTest::checksortedbyvalue(const Anything &a, bool shouldfail)
 	}
 	return !shouldfail;
 }
-void AnyBuiltInSortTest::SortEmpty()
-{
+void AnyBuiltInSortTest::SortEmpty() {
 	StartTrace(AnyBuiltInSortTest.SortEmpty);
 	Anything a;
 	Anything b(a);
@@ -65,8 +51,7 @@ void AnyBuiltInSortTest::SortEmpty()
 	assertAnyEqual(a, b);
 }
 
-void AnyBuiltInSortTest::SortOne()
-{
+void AnyBuiltInSortTest::SortOne() {
 	StartTrace(AnyBuiltInSortTest.SortOne);
 	Anything a("foo");
 	Anything b(a);
@@ -74,8 +59,7 @@ void AnyBuiltInSortTest::SortOne()
 	assertAnyEqual(a, b);
 
 }
-void AnyBuiltInSortTest::SortTwo()
-{
+void AnyBuiltInSortTest::SortTwo() {
 	StartTrace(AnyBuiltInSortTest.SortTwo);
 	Anything b;
 	b["b"] = 1;
@@ -100,8 +84,7 @@ void AnyBuiltInSortTest::SortTwo()
 	assertEqual(1, b["b"].AsLong());
 }
 
-void AnyBuiltInSortTest::SortThree()
-{
+void AnyBuiltInSortTest::SortThree() {
 	StartTrace(AnyBuiltInSortTest.SortThree);
 	Anything b;
 	b["c"] = 1;
@@ -116,8 +99,7 @@ void AnyBuiltInSortTest::SortThree()
 	t_assert(checksorted(b));
 }
 
-void AnyBuiltInSortTest::SortMany()
-{
+void AnyBuiltInSortTest::SortMany() {
 	StartTrace(AnyBuiltInSortTest.SortMany);
 	Anything a;
 	Anything b;
@@ -157,8 +139,7 @@ void AnyBuiltInSortTest::SortMany()
 	assertAnyEqual(a, b);
 }
 
-void AnyBuiltInSortTest::SortManyStringValues()
-{
+void AnyBuiltInSortTest::SortManyStringValues() {
 	StartTrace(AnyBuiltInSortTest.SortManyStringValues);
 	Anything a;
 	Anything b;
@@ -171,7 +152,8 @@ void AnyBuiltInSortTest::SortManyStringValues()
 #endif
 		String sr;
 		sr << "bar" << r << "foo"; // needs i to make it unique
-		a.Append(sr);;
+		a.Append(sr);
+		;
 	}
 	assertEqual(size, a.GetSize());
 	t_assertm(checksortedbyvalue(a, true), "should be random");
@@ -182,8 +164,7 @@ void AnyBuiltInSortTest::SortManyStringValues()
 	assertEqual(size, a.GetSize());
 }
 
-void AnyBuiltInSortTest::SortIsStable()
-{
+void AnyBuiltInSortTest::SortIsStable() {
 	StartTrace(AnyBuiltInSortTest.SortIsStable);
 	Anything a;
 	a["d"] = 1;
@@ -203,8 +184,7 @@ void AnyBuiltInSortTest::SortIsStable()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *AnyBuiltInSortTest::suite ()
-{
+Test *AnyBuiltInSortTest::suite() {
 	StartTrace(AnyBuiltInSortTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortEmpty);

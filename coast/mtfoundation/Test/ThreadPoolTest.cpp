@@ -9,7 +9,7 @@
 #include "ThreadPoolTest.h"
 #include "TestThread.h"
 #include "TestSuite.h"
-
+#include "FoundationTestTypes.h"
 void ThreadPoolTest::JoinTest()
 {
 	StartTrace(ThreadPoolTest.JoinTest);

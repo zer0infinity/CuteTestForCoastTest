@@ -8,25 +8,13 @@
 
 #include "AnyUtilsTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "AnyUtils.h"
-#include "SystemFile.h"
 #include "SystemLog.h"
-#include "StringStream.h"
-#include "Dbg.h"
 
 using namespace Coast;
 
-AnyUtilsTest::AnyUtilsTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-AnyUtilsTest::~AnyUtilsTest()
-{
-}
-
-void AnyUtilsTest::CompareTest()
-{
+void AnyUtilsTest::CompareTest() {
 	Anything testConfig2;
 	const char *myFilename = "config/anyutilstest1";
 	std::iostream *ifp = System::OpenStream(myFilename, "any");
@@ -45,25 +33,21 @@ void AnyUtilsTest::CompareTest()
 	DoCheck(testConfig2["OkTests"], true, "OKTests");
 	DoCheck(testConfig2["NokTests"], false, "NotOkTests");
 }
-bool AnyUtilsTest::DoXMLTest(const char *expect, ROAnything foroutput)
-{
+bool AnyUtilsTest::DoXMLTest(const char *expect, ROAnything foroutput) {
 	StringStream ss;
 	AnyUtils::PrintSimpleXML(ss, foroutput);
 	return assertEqual(expect, ss.str());
 }
 
-void AnyUtilsTest::printEmptyXmlTest()
-{
+void AnyUtilsTest::printEmptyXmlTest() {
 	Anything empty;
 	t_assert(DoXMLTest("", empty));
 }
-void AnyUtilsTest::printSimpleXmlTest()
-{
+void AnyUtilsTest::printSimpleXmlTest() {
 	Anything simple("foo");
 	t_assert(DoXMLTest("<any:elt>foo</any:elt>", simple));
 }
-void AnyUtilsTest::printSequenceXmlTest()
-{
+void AnyUtilsTest::printSequenceXmlTest() {
 	Anything sequence;
 	sequence.Append("foo");
 	sequence.Append("bar");
@@ -71,15 +55,13 @@ void AnyUtilsTest::printSequenceXmlTest()
 	t_assert(DoXMLTest("<any:seq><any:elt>foo</any:elt><any:elt>bar</any:elt><any:elt>end</any:elt></any:seq>", sequence));
 }
 
-void AnyUtilsTest::printHashXmlTest()
-{
+void AnyUtilsTest::printHashXmlTest() {
 	Anything hash;
 	hash["foo"] = "bar";
 	hash["end"] = "finish";
 	t_assert(DoXMLTest("<any:seq><foo>bar</foo><end>finish</end></any:seq>", hash));
 }
-void AnyUtilsTest::printMixedXmlTest()
-{
+void AnyUtilsTest::printMixedXmlTest() {
 	Anything mixed;
 	mixed["foo"] = "bar";
 	mixed.Append("anonymous");
@@ -88,9 +70,7 @@ void AnyUtilsTest::printMixedXmlTest()
 	t_assert(DoXMLTest("<any:seq><foo>bar</foo><any:elt>anonymous</any:elt><number>5</number><end>finish</end></any:seq>", mixed));
 }
 
-void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult,
-						   String description)
-{
+void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult, String description) {
 	StartTrace(AnyUtilsTest.DoCheck);
 
 	long sz = testCases.GetSize();
@@ -101,16 +81,13 @@ void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult,
 		String msg = description;
 		msg << "." << testCases.SlotName(i) << "\n";
 		OStringStream resultStream;
-		bool res = AnyUtils::AnyCompareEqual(testee["In"], testee["Master"],
-											 testCases.SlotName(i), &resultStream,
-											 testee["Delim"].AsCharPtr(".")[0L],
-											 testee["IndexDelim"].AsCharPtr(":")[0L]);
+		bool res = AnyUtils::AnyCompareEqual(testee["In"], testee["Master"], testCases.SlotName(i), &resultStream,
+				testee["Delim"].AsCharPtr(".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
 		assertEqualm( expectedResult, res, (const char *)(msg << resultStream.str()) );
 	}
 }
 
-void AnyUtilsTest::MergeTest()
-{
+void AnyUtilsTest::MergeTest() {
 	StartTrace(AnyUtilsTest.MergeTest);
 	Anything testConfig;
 	const char *myFilename = "AnyMergeTest";
@@ -130,15 +107,14 @@ void AnyUtilsTest::MergeTest()
 		Trace("Executing " << testConfig.SlotName(i));
 		ROAnything testee = testConfig[i];
 		Anything anyMaster = testee["Master"].DeepClone();
-		AnyUtils::AnyMerge(anyMaster, testee["ToMerge"],
-						   testee["OverwriteSlots"].AsBool(0L), testee["Delim"].AsCharPtr(
-							   ".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
-		assertAnyCompareEqual(testee["Expected"], anyMaster, testConfig.SlotName(i), testee["Delim"].AsCharPtr(".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
+		AnyUtils::AnyMerge(anyMaster, testee["ToMerge"], testee["OverwriteSlots"].AsBool(0L), testee["Delim"].AsCharPtr(".")[0L],
+				testee["IndexDelim"].AsCharPtr(":")[0L]);
+		assertAnyCompareEqual(testee["Expected"], anyMaster, testConfig.SlotName(i), testee["Delim"].AsCharPtr(".")[0L],
+				testee["IndexDelim"].AsCharPtr(":")[0L]);
 	}
 }
 
-Test *AnyUtilsTest::suite()
-{
+Test *AnyUtilsTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnyUtilsTest, CompareTest);
 	ADD_CASE(testSuite, AnyUtilsTest, printEmptyXmlTest);

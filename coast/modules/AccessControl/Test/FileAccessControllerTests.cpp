@@ -9,8 +9,7 @@
 #include "FileAccessControllerTests.h"
 #include "SimpleAccessControllers.h"
 #include "TestSuite.h"
-#include "Dbg.h"
-#include "SystemFile.h"
+#include "FoundationTestTypes.h"
 #include "DataAccess.h"
 #include "Context.h"
 

@@ -9,7 +9,7 @@
 #include "WorkerPoolManagerTest.h"
 #include "TestThread.h"
 #include "TestSuite.h"
-
+#include "FoundationTestTypes.h"
 // builds up a suite of testcases, add a line for each testmethod
 Test *WorkerPoolManagerTest::suite() {
 	StartTrace(WorkerPoolManagerTest.suite);

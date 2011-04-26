@@ -7,7 +7,6 @@
  */
 
 #include "TestRunner.h"
-#include "TestSuite.h"
 #include "PipeTest.h"
 #include "PipeStreamTest.h"
 #include "PipeExecutorTest.h"
@@ -19,8 +18,7 @@
 #include "ConnectorArgsTest.h"
 #include "AcceptorTest.h"
 
-void setupRunner(TestRunner &runner)
-{//lint !e14
+void setupRunner(TestRunner &runner) {//lint !e14
 	ADD_SUITE(runner, PipeTest);
 	ADD_SUITE(runner, PipeStreamTest);
 	ADD_SUITE(runner, PipeExecutorTest);

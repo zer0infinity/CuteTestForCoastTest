@@ -11,27 +11,23 @@
 
 #include "Action.h"
 
-//---- FlowControllerPerformAnalyzeAction ----------------------------------------------------------
 //! comment action
 //!	Structure of config:
 //!<PRE>	{
 //!		/Slot1	....
 //!      ...
 //!	}</PRE>
-class FlowControllerPerformAnalyzeAction : public Action
-{
+class FlowControllerPerformAnalyzeAction: public Action {
 public:
-	//--- constructors
-	FlowControllerPerformAnalyzeAction(const char *name);
-	~FlowControllerPerformAnalyzeAction();
-
+	FlowControllerPerformAnalyzeAction(const char *name) :
+		Action(name) {
+	}
 	//!DoSomething method for configured Actions
 	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
 	//! \param ctx the context the action runs within.
 	//! \param config the configuration of the action.
 	//! \return true if the action run successfully, false if an error occurred.
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
-
 };
 
 #endif

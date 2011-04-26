@@ -6,16 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include <stdlib.h>
-#include "Anything.h"
-#include "Threads.h"
-#include "TestSuite.h"
-#include "TableCompressor.h"
 #include "TableCompressorTest.h"
+#include "TestSuite.h"
+#include "FoundationTestTypes.h"
+#include "TableCompressor.h"
 
 //---- TableCompressorTest ----------------------------------------------------------------
-Test *TableCompressorTest::suite ()
-{
+Test *TableCompressorTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, TableCompressorTest, CalcKeyTest);
@@ -32,16 +29,7 @@ Test *TableCompressorTest::suite ()
 	return testSuite;
 }
 
-TableCompressorTest::TableCompressorTest(TString tname) : TestCaseType(tname)
-{
-}
-
-TableCompressorTest::~TableCompressorTest()
-{
-}
-
-void TableCompressorTest::CalcAtTest()
-{
+void TableCompressorTest::CalcAtTest() {
 	TableCompressor tc("test");
 	t_assertm('a' == tc.KeyAt(-1), "expected 'a'");
 	t_assertm('a' == tc.KeyAt(0), "expected 'a'");
@@ -53,8 +41,7 @@ void TableCompressorTest::CalcAtTest()
 	t_assertm('E' == tc.KeyAt(30), "expected 'G'");
 }
 
-void TableCompressorTest::CalcKeyTest()
-{
+void TableCompressorTest::CalcKeyTest() {
 	TableCompressor tc("test");
 	String result;
 
@@ -86,8 +73,7 @@ void TableCompressorTest::CalcKeyTest()
 	assertEqual("bt", result);
 }
 
-void TableCompressorTest::MakeTestTable(TableCompressor *tc)
-{
+void TableCompressorTest::MakeTestTable(TableCompressor *tc) {
 	Anything state;
 	state.Append("foo");
 	state.Append("slosh");
@@ -96,8 +82,7 @@ void TableCompressorTest::MakeTestTable(TableCompressor *tc)
 	tc->MakeTable(state, "test", Anything());
 }
 
-void TableCompressorTest::MakeTableTest()
-{
+void TableCompressorTest::MakeTableTest() {
 	Anything result;
 	result["test"]["foo"] = "a";
 	result["test"]["slosh"] = "b";
@@ -110,8 +95,7 @@ void TableCompressorTest::MakeTableTest()
 
 }
 
-void TableCompressorTest::MakeRevTableTest()
-{
+void TableCompressorTest::MakeRevTableTest() {
 	Anything result;
 	result["test"]["foo"] = "a";
 	result["test"]["slosh"] = "b";
@@ -127,8 +111,7 @@ void TableCompressorTest::MakeRevTableTest()
 	assertAnyEqual(result, tc.fMap);
 }
 
-void TableCompressorTest::InitTest()
-{
+void TableCompressorTest::InitTest() {
 	Anything key2UriMap;
 	Anything val2UriMap;
 	Anything valMapTags;
@@ -174,8 +157,7 @@ void TableCompressorTest::InitTest()
 	assertAnyEqual(result, tc.fMap);
 }
 
-void TableCompressorTest::CompressExpandTest()
-{
+void TableCompressorTest::CompressExpandTest() {
 	Anything key2UriMap;
 	Anything val2UriMap;
 	Anything valMapTags;
@@ -219,8 +201,7 @@ void TableCompressorTest::CompressExpandTest()
 	assertAnyEqual(state, expanded);
 }
 
-void TableCompressorTest::CompressExpandWithEmptyConfigTest()
-{
+void TableCompressorTest::CompressExpandWithEmptyConfigTest() {
 	Anything config;
 	TableCompressor tc("test");
 	tc.Init(config);
@@ -242,8 +223,7 @@ void TableCompressorTest::CompressExpandWithEmptyConfigTest()
 	assertAnyEqual(state, expanded);
 }
 
-void TableCompressorTest::InstallConfigTest()
-{
+void TableCompressorTest::InstallConfigTest() {
 	Anything pages;
 	pages["Page"].Append("SomeVeryLongPage1");
 	pages["Page"]["ASubPage"].Append("SomeVeryLongPage2");
@@ -261,8 +241,7 @@ void TableCompressorTest::InstallConfigTest()
 	assertAnyEqual(result, state);
 }
 
-void TableCompressorTest::ExpandConfigTest()
-{
+void TableCompressorTest::ExpandConfigTest() {
 	Anything pages;
 	pages["Page"].Append("SomeVeryLongPage1");
 	pages["Page"]["ASubPage"].Append("SomeVeryLongPage2");
@@ -284,8 +263,7 @@ void TableCompressorTest::ExpandConfigTest()
 	assertAnyEqual(result, state);
 }
 
-void TableCompressorTest::InitWithExpansionTest()
-{
+void TableCompressorTest::InitWithExpansionTest() {
 	Anything key2UriMap;
 	Anything val2UriMap;
 	Anything valMapTags;

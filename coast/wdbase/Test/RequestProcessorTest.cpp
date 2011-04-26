@@ -8,24 +8,13 @@
 
 #include "RequestProcessorTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStreamSocket.h"
 #include "Server.h"
 #include "Dbg.h"
 #include "AnythingUtils.h"
 
-//---- RequestProcessorTest ----------------------------------------------------------------
-RequestProcessorTest::RequestProcessorTest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(RequestProcessorTest.Ctor);
-}
-
-RequestProcessorTest::~RequestProcessorTest()
-{
-	StartTrace(RequestProcessorTest.Dtor);
-}
-
-void RequestProcessorTest::InitTest()
-{
+void RequestProcessorTest::InitTest() {
 	StartTrace(RequestProcessorTest.InitTest);
 	RequestProcessor rp("test");
 
@@ -36,8 +25,7 @@ void RequestProcessorTest::InitTest()
 	t_assertm(!rp.GetServer(), "expected fServer to be null");
 }
 
-void RequestProcessorTest::ProcessRequestTest()
-{
+void RequestProcessorTest::ProcessRequestTest() {
 	StartTrace(RequestProcessorTest.ProcessRequestTest);
 	Anything empty;
 	Anything clientinfo;
@@ -73,7 +61,7 @@ void RequestProcessorTest::ProcessRequestTest()
 	{
 		LoopbackProcessor rp("test");
 		rp.Init(Server::FindServer("Server"));
-		Context ctx((Socket *)0);
+		Context ctx((Socket *) 0);
 
 		rp.ProcessRequest(ctx);
 		assertAnyEqualm(empty, ctx.Lookup("ClientInfo"), "expected ClientInfo to be empty");
@@ -83,8 +71,7 @@ void RequestProcessorTest::ProcessRequestTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *RequestProcessorTest::suite ()
-{
+Test *RequestProcessorTest::suite() {
 	StartTrace(RequestProcessorTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
@@ -93,18 +80,16 @@ Test *RequestProcessorTest::suite ()
 
 	return testSuite;
 }
-
 //--- LoopbackProcessor ----------------------------------------------
 RegisterRequestProcessor(LoopbackProcessor);
 
-LoopbackProcessor::LoopbackProcessor(const char *processorName)
-	: RequestProcessor(processorName)
-{
-	StartTrace(LoopbackProcessor.LoopbackProcessor);
+LoopbackProcessor::LoopbackProcessor(const char *processorName) :
+	RequestProcessor(processorName) {
+	StartTrace(LoopbackProcessor.LoopbackProcessor)
+	;
 }
 
-bool LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
-{
+bool LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 	StartTrace(LoopbackProcessor.DoReadInput);
 	Anything request;
 	request.Import(Ios);
@@ -112,11 +97,10 @@ bool LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	return true;
 }
 
-bool LoopbackProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
-{
+bool LoopbackProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(LoopbackProcessor.DoProcessRequest);
 	ROAnything request;
-	if ( ctx.Lookup("TestRequest", request) ) {
+	if (ctx.Lookup("TestRequest", request)) {
 		request.PrintOn(reply);
 		return true;
 	}

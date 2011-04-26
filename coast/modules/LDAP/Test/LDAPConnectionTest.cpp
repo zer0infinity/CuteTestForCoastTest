@@ -9,6 +9,7 @@
 #include "LDAPConnectionTest.h"
 #include "LDAPConnection.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "AnyIterators.h"
 #include "AnyUtils.h"
 #include "StringStream.h"

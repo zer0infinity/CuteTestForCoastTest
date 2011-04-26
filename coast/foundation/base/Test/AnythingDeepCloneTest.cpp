@@ -8,28 +8,10 @@
 
 #include "AnythingDeepCloneTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
-#include "IFAObject.h"
-#include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
+#include "FoundationTestTypes.h"
 #include "PoolAllocator.h"
-#include <cstring>
 
-//---- AnythingDeepCloneTest ---------------------------------------------------------
-
-AnythingDeepCloneTest::AnythingDeepCloneTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingDeepCloneTest::setUp()
-{
-	StartTrace(AnythingDeepCloneTest.setUp);
-}
-
-Test *AnythingDeepCloneTest::suite()
-{
+Test *AnythingDeepCloneTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepClone0Test);
 	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepClone1Test);
@@ -42,8 +24,7 @@ Test *AnythingDeepCloneTest::suite()
 	return testSuite;
 }
 
-Anything AnythingDeepCloneTest::init5DimArray(long anzElt)
-{
+Anything AnythingDeepCloneTest::init5DimArray(long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	Anything anyInit;
@@ -61,8 +42,7 @@ Anything AnythingDeepCloneTest::init5DimArray(long anzElt)
 	return (anyInit);
 }
 
-bool AnythingDeepCloneTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
-{
+bool AnythingDeepCloneTest::check5DimArray(Anything &any0, Anything &any1, long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	bool retVal = true;
@@ -70,14 +50,12 @@ bool AnythingDeepCloneTest::check5DimArray(Anything &any0, Anything &any1, long 
 
 	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
 		idx0[0L] = (char) i0;
-		if (any0[idx0].At("0").At("0").At("0").At("0")
-			!= any1[idx0].At("0").At("0").At("0").At("0")) {
+		if (any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0")) {
 			retVal = false;
 		}
 		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
 			idx1[0L] = (char) i1;
-			if (any0[idx0][idx1].At("0").At("0").At("0")
-				!= any1[idx0][idx1].At("0").At("0").At("0")) {
+			if (any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0")) {
 				retVal = false;
 			}
 		}
@@ -85,8 +63,7 @@ bool AnythingDeepCloneTest::check5DimArray(Anything &any0, Anything &any1, long 
 	return (retVal);
 }
 
-void AnythingDeepCloneTest::DeepClone0Test()
-{
+void AnythingDeepCloneTest::DeepClone0Test() {
 	Anything anyOriginal, anyClone;
 	Anything AnyLong(5L);
 	Anything AnyVoidBuff((void *) "Bytebuffer", 10);
@@ -258,8 +235,7 @@ void AnythingDeepCloneTest::DeepClone0Test()
 	t_assert( AnythingDeepCloneTest::check5DimArray( anyOriginal, anyClone, 5 ) == true );
 }
 
-void AnythingDeepCloneTest::DeepClone1Test()
-{
+void AnythingDeepCloneTest::DeepClone1Test() {
 	Anything anyOriginal;
 	Anything AnyLong(5L);
 	Anything AnyVoidBuff((void *) "Bytebuffer", 10);
@@ -394,8 +370,7 @@ void AnythingDeepCloneTest::DeepClone1Test()
 	t_assert( AnythingDeepCloneTest::check5DimArray( anyOriginal, anySave, 5 ) == true );
 }
 
-void AnythingDeepCloneTest::DeepClone2Test()
-{
+void AnythingDeepCloneTest::DeepClone2Test() {
 	Anything anyOriginal, any0;
 	long i, typeBefore, sizeBefore;
 
@@ -425,8 +400,7 @@ void AnythingDeepCloneTest::DeepClone2Test()
 	}
 }
 
-void AnythingDeepCloneTest::DeepClone3Test()
-{
+void AnythingDeepCloneTest::DeepClone3Test() {
 	Anything anyOriginal, any0;
 	long i, typeBefore, sizeBefore;
 
@@ -456,8 +430,7 @@ void AnythingDeepCloneTest::DeepClone3Test()
 	}
 }
 
-void AnythingDeepCloneTest::DeepClone4Test()
-{
+void AnythingDeepCloneTest::DeepClone4Test() {
 	Anything any0, any1;
 	long typeBefore, sizeBefore;
 
@@ -483,8 +456,7 @@ void AnythingDeepCloneTest::DeepClone4Test()
 	t_assert( any1.GetType() == AnyNullType );
 }
 
-void AnythingDeepCloneTest::DeepClone5Test()
-{
+void AnythingDeepCloneTest::DeepClone5Test() {
 	Anything any0, any1 = 1L;
 	t_assert( any0.GetType() == AnyNullType );
 	t_assert( any1.GetType() == AnyLongType );
@@ -493,8 +465,7 @@ void AnythingDeepCloneTest::DeepClone5Test()
 	t_assert( any1.GetType() == AnyNullType );
 } // testeDeepClone5
 
-void AnythingDeepCloneTest::DeepCloneWithRef()
-{
+void AnythingDeepCloneTest::DeepCloneWithRef() {
 	Anything a;
 	Anything b;
 	Anything c;
@@ -512,8 +483,8 @@ void AnythingDeepCloneTest::DeepCloneWithRef()
 	assertEqual("Peter", a["slot2"][1L].AsCharPtr("no"));
 	assertEqual("Sommerlad", a["slot1"][2L].AsCharPtr("no"));
 	assertEqual("Sommerlad", a["slot2"][3L].AsCharPtr("no"));
-//	assertEqual((long)(a["slot1"][2L].GetImpl()), (long)(a["slot2"][2L].GetImpl()));
-//	assertEqual((long)(a["slot1"][3L].GetImpl()), (long)(a["slot2"][3L].GetImpl()));
+	//	assertEqual((long)(a["slot1"][2L].GetImpl()), (long)(a["slot2"][2L].GetImpl()));
+	//	assertEqual((long)(a["slot1"][3L].GetImpl()), (long)(a["slot2"][3L].GetImpl()));
 	d = "Birrer";
 	assertEqual("Sommerlad", a["slot1"][2L].AsCharPtr("no"));
 	assertEqual("Sommerlad", a["slot2"][3L].AsCharPtr("no"));
@@ -526,14 +497,14 @@ void AnythingDeepCloneTest::DeepCloneWithRef()
 	assertEqual("tschau", a["slot1"][0L].AsCharPtr("no"));
 	assertEqual("tschau", a["slot2"][0L].AsCharPtr("no"));
 
-//	t_assert(((long)(a["slot1"].GetImpl()) != 0));
-//	assertEqual((long)(a["slot1"].GetImpl()), (long)(a["slot2"].GetImpl()));
-//	assertEqual((long)(a["slot1"][0L].GetImpl()), (long)(a["slot2"][0L].GetImpl()));
-//	assertEqual((long)(a["slot1"][1L].GetImpl()), (long)(a["slot2"][1L].GetImpl()));
+	//	t_assert(((long)(a["slot1"].GetImpl()) != 0));
+	//	assertEqual((long)(a["slot1"].GetImpl()), (long)(a["slot2"].GetImpl()));
+	//	assertEqual((long)(a["slot1"][0L].GetImpl()), (long)(a["slot2"][0L].GetImpl()));
+	//	assertEqual((long)(a["slot1"][1L].GetImpl()), (long)(a["slot2"][1L].GetImpl()));
 	c = a.DeepClone();
-//	assertEqual((long)(c["slot1"].GetImpl()), (long)(c["slot2"].GetImpl()));
-//	assertEqual((long)(c["slot1"][0L].GetImpl()), (long)(c["slot2"][0L].GetImpl()));
-//	assertEqual((long)(c["slot1"][1L].GetImpl()), (long)(c["slot2"][1L].GetImpl()));
+	//	assertEqual((long)(c["slot1"].GetImpl()), (long)(c["slot2"].GetImpl()));
+	//	assertEqual((long)(c["slot1"][0L].GetImpl()), (long)(c["slot2"][0L].GetImpl()));
+	//	assertEqual((long)(c["slot1"][1L].GetImpl()), (long)(c["slot2"][1L].GetImpl()));
 
 	c["slot1"][0L] = "hallo";
 	assertEqual("hallo", c["slot2"][0L].AsCharPtr("no"));
@@ -543,7 +514,9 @@ void AnythingDeepCloneTest::DeepCloneBug232Test() {
 	StartTrace(AnythingDeepCloneTest.DeepCloneBug232Test);
 	{
 		// test escaped reference
-		String str(_QUOTE_( { /level { /BackendShortName "avt" /BackendName { %level.BackendShortName /Lookup RenderSSODomain } /SSOBackendName { /Lookup RenderSSOPrefix "." %level.BackendName } /ServiceLink { /URL { { /Lookup RenderSSOProtocol } "://" %level.SSOBackendName { /Lookup RenderSSOPort } "/" } /Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20" } } }));
+		String
+				str(
+						_QUOTE_( {	/level {/BackendShortName "avt" /BackendName {%level.BackendShortName /Lookup RenderSSODomain}/SSOBackendName {/Lookup RenderSSOPrefix "." %level.BackendName}/ServiceLink {/URL { {/Lookup RenderSSOProtocol}"://" %level.SSOBackendName {/Lookup RenderSSOPort}"/"}/Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20"}}}));
 		Anything anyExpected(Coast::Storage::Global());
 		IStringStream is(str);
 		anyExpected.Import(is);
@@ -560,7 +533,9 @@ void AnythingDeepCloneTest::DeepCloneBug232Test() {
 	}
 	{
 		// test escaped reference
-		String str(_QUOTE_( { /level { /BackendShortName "avt" /BackendName { %level.BackendShortName /Lookup RenderSSODomain } /SSOBackendName { /Lookup RenderSSOPrefix "." %level.BackendName } /ServiceLink { /URL { { /Lookup RenderSSOProtocol } "://" %level.SSOBackendName { /Lookup RenderSSOPort } "/" } /Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20" } } }));
+		String
+				str(
+						_QUOTE_( {	/level {/BackendShortName "avt" /BackendName {%level.BackendShortName /Lookup RenderSSODomain}/SSOBackendName {/Lookup RenderSSOPrefix "." %level.BackendName}/ServiceLink {/URL { {/Lookup RenderSSOProtocol}"://" %level.SSOBackendName {/Lookup RenderSSOPort}"/"}/Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20"}}}));
 		Anything anyExpected(Coast::Storage::Global());
 		IStringStream is(str);
 		anyExpected.Import(is);

@@ -12,7 +12,7 @@
 #include "TestCase.h"
 
 class WPMStatHandler;
-
+class Anything;
 class WPMStatHandlerTest: public TestFramework::TestCase {
 public:
 	WPMStatHandlerTest(TString tname) :

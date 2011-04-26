@@ -1,6 +1,5 @@
 #include "StringIteratorTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
 
 void StringIteratorTest::testEmptyStringBegin() {
 	String a;

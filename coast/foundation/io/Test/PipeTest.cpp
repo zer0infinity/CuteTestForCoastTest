@@ -11,25 +11,12 @@
 #include "Pipe.h"
 #include "Socket.h"
 #include "Dbg.h"
-#include <fcntl.h>
+
 #if defined(WIN32)
 #include <io.h>
 #endif
 
-//---- PipeTest ----------------------------------------------------------------
-PipeTest::PipeTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(PipeTest.Ctor);
-}
-
-PipeTest::~PipeTest()
-{
-	StartTrace(PipeTest.Dtor);
-}
-
-void PipeTest::simpleBlockingTest()
-{
+void PipeTest::simpleBlockingTest() {
 	StartTrace(PipeTest.simpleBlockingTest);
 
 	int p[2];
@@ -57,17 +44,17 @@ void PipeTest::simpleBlockingTest()
 		t_assert(pipi.IsReadyForWriting(0));
 		long byteswritten = 0, lMaxCount = 2;
 		Trace("before while loop");
-		while ( pipi.IsReadyForWriting(10) && lMaxCount-- ) {
+		while (pipi.IsReadyForWriting(10) && lMaxCount--) {
 			// happens only once...
-			byteswritten += (long)Socket::write(pipi.GetWriteFd(), buf, 16);
+			byteswritten += (long) Socket::write(pipi.GetWriteFd(), buf, 16);
 			Trace("bytes written so far:" << byteswritten);
 		}
-//// foo: to be corrected in future
-////		assertEqualm(16, byteswritten, "expected exactly 16 bytes written");
-////		t_assert(!pipi.IsReadyForWriting(0)); // pipe blocked if not completely empty
+		//// foo: to be corrected in future
+		////		assertEqualm(16, byteswritten, "expected exactly 16 bytes written");
+		////		t_assert(!pipi.IsReadyForWriting(0)); // pipe blocked if not completely empty
 		t_assert(pipi.IsReadyForReading(0));
 		String str(17);
-		long bytesread = Socket::read(pipi.GetReadFd(), (char *)(const char *)str, 16);
+		long bytesread = Socket::read(pipi.GetReadFd(), (char *) (const char *) str, 16);
 		assertEqual(16, bytesread);
 		assertCharPtrEqual(buf, str);
 
@@ -79,8 +66,7 @@ void PipeTest::simpleBlockingTest()
 	}
 }
 
-void PipeTest::simpleConstructorTest()
-{
+void PipeTest::simpleConstructorTest() {
 	StartTrace(PipeTest.simpleConstructorTest);
 
 	int p[2];
@@ -129,8 +115,7 @@ void PipeTest::simpleConstructorTest()
 	}
 }
 
-void PipeTest::defaultConstructorTest()
-{
+void PipeTest::defaultConstructorTest() {
 	StartTrace(PipeTest.defaultConstructorTest);
 
 	Pipe pipi; // timeout 0.5 sec
@@ -167,8 +152,7 @@ void PipeTest::defaultConstructorTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *PipeTest::suite ()
-{
+Test *PipeTest::suite() {
 	StartTrace(PipeTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

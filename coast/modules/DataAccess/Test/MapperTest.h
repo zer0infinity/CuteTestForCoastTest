@@ -13,19 +13,12 @@
 
 class Context;
 
-//---- MapperTest ----------------------------------------------------------
-//!single line description of the class
-//! further explanation of the purpose of the class
-//! this may contain <B>HTML-Tags</B>
-//! ...
-class MapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class MapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-	MapperTest(TString tstrName);
-	~MapperTest();
-
-	static Test *suite ();
+	MapperTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	virtual TString getConfigFileName() {
 		return "StdContext";

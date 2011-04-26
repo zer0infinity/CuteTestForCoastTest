@@ -8,26 +8,12 @@
 
 #include "AnythingTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
+#include "FoundationTestTypes.h"
 #include "IFAObject.h"
-#include "SystemFile.h"
-#include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
 
 using namespace Coast;
 
-#include <cstring>
-
-//---- AnythingTest ---------------------------------------------------------
-
-AnythingTest::AnythingTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingTest::setUp()
-{
+void AnythingTest::setUp() {
 	StartTrace(AnythingTest.setUp);
 	if (!System::LoadConfigFile(fConfig, "AnythingTest", "any")) {
 		assertEqual( "'read AnythingTest.any'", "'could not read AnythingTest.any'" );
@@ -35,8 +21,7 @@ void AnythingTest::setUp()
 	fQuery = fConfig["Queries"][name()];
 }
 
-class DummyIFAObj: public IFAObject
-{
+class DummyIFAObj: public IFAObject {
 public:
 	DummyIFAObj(const char *) {
 	}
@@ -46,8 +31,7 @@ public:
 	}
 };
 
-Test *AnythingTest::suite()
-{
+Test *AnythingTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, AnythingTest, TypeTest);
@@ -73,8 +57,7 @@ Test *AnythingTest::suite()
 /*============================================================================================================*/
 /*  C L A S S M E T H O D S  (helpmethods)       Beginn                                                       */
 /*============================================================================================================*/
-Anything AnythingTest::init5DimArray(long anzElt)
-{
+Anything AnythingTest::init5DimArray(long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	Anything anyInit;
@@ -92,8 +75,7 @@ Anything AnythingTest::init5DimArray(long anzElt)
 	return (anyInit);
 }
 
-bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
-{
+bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	bool retVal = true;
@@ -101,14 +83,12 @@ bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
 
 	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
 		idx0[0L] = (char) i0;
-		if (any0[idx0].At("0").At("0").At("0").At("0")
-			!= any1[idx0].At("0").At("0").At("0").At("0")) {
+		if (any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0")) {
 			retVal = false;
 		}
 		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
 			idx1[0L] = (char) i1;
-			if (any0[idx0][idx1].At("0").At("0").At("0")
-				!= any1[idx0][idx1].At("0").At("0").At("0")) {
+			if (any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0")) {
 				retVal = false;
 			}
 		}
@@ -120,8 +100,7 @@ bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
 /*  C L A S S M E T H O D S  (helpmethods)       Ende                                                                   */
 /*======================================================================================================================*/
 
-void AnythingTest::TypeTest()
-{
+void AnythingTest::TypeTest() {
 	Anything TypeChange;
 	Anything ArrayTypeTest;
 	Anything KeyTypeTest;
@@ -390,15 +369,13 @@ void AnythingTest::SuccessiveAssignments()
 	t_assert( c.IsNull() );
 } // SuccessiveAssignments
 
-void AnythingTest::operatorAssignemnt()
-{
+void AnythingTest::operatorAssignemnt() {
 	boolOperatorAssign();
 	intOperatorAssign();
 	ifaObjectOperatorAssign();
 }
 
-void AnythingTest::appendTest()
-{
+void AnythingTest::appendTest() {
 	Anything sub;
 	sub["X"] = "x";
 	sub["Y"] = "y";
@@ -423,8 +400,7 @@ void AnythingTest::appendTest()
 	assertAnyEqual(expected, b);
 }
 
-void AnythingTest::boolOperatorAssign()
-{
+void AnythingTest::boolOperatorAssign() {
 	// test bool operator
 	bool b = true;
 
@@ -451,8 +427,7 @@ void AnythingTest::boolOperatorAssign()
 	assertEqual((long)(false), (long) boolAny.AsBool(false));
 }
 
-void AnythingTest::intOperatorAssign()
-{
+void AnythingTest::intOperatorAssign() {
 	int i = 10;
 
 	Anything intAny = i;
@@ -467,8 +442,7 @@ void AnythingTest::intOperatorAssign()
 	assertEqual(b.AsLong(0), 10L); // still 10
 }
 
-void AnythingTest::ifaObjectOperatorAssign()
-{
+void AnythingTest::ifaObjectOperatorAssign() {
 	DummyIFAObj o("test");
 	Anything objAny = &o;
 
@@ -479,15 +453,13 @@ void AnythingTest::ifaObjectOperatorAssign()
 	assertEqual((long)(false), (long) objAny.AsBool(false));
 }
 
-void AnythingTest::roConversion()
-{
+void AnythingTest::roConversion() {
 	boolROConversion();
 	intROConversion();
 	ifaObjectROConversion();
 }
 
-void AnythingTest::boolROConversion()
-{
+void AnythingTest::boolROConversion() {
 	// test bool operator
 	bool b = true;
 
@@ -520,8 +492,7 @@ void AnythingTest::boolROConversion()
 	assertEqual((long)(false), (long) roBoolAny.AsBool(false));
 }
 
-void AnythingTest::intROConversion()
-{
+void AnythingTest::intROConversion() {
 	int i = 10;
 
 	Anything intAny = i;
@@ -535,8 +506,7 @@ void AnythingTest::intROConversion()
 	assertEqual(i, roIntAny.AsLong(0));
 }
 
-void AnythingTest::ifaObjectROConversion()
-{
+void AnythingTest::ifaObjectROConversion() {
 	DummyIFAObj o("test");
 	Anything objAny = &o;
 	ROAnything roObjAny(objAny);
@@ -548,8 +518,7 @@ void AnythingTest::ifaObjectROConversion()
 	assertEqual((long)(false), (long) roObjAny.AsBool(false));
 }
 
-void AnythingTest::BinaryBufOutput()
-{
+void AnythingTest::BinaryBufOutput() {
 	Anything testAny;
 	testAny["T1"] = Anything((void *) "1234567890", 10);
 	String testString;
@@ -561,17 +530,15 @@ void AnythingTest::BinaryBufOutput()
 	assertEqual(25, testString.Length());
 }
 
-void AnythingTest::String2LongConversion()
-{
+void AnythingTest::String2LongConversion() {
 	Anything a("1212");
 	long l = a.AsLong(-1);
 	assertEqual(1212, l);
 }
 
-void AnythingTest::AsCharPtrBufLen()
-{
+void AnythingTest::AsCharPtrBufLen() {
 	//--- AnyArrayImpl
-	Anything anyArray=Anything(Anything::ArrayMarker());
+	Anything anyArray = Anything(Anything::ArrayMarker());
 
 	long arraylen;
 	anyArray.AsCharPtr("", arraylen);
@@ -611,8 +578,7 @@ void AnythingTest::AsCharPtrBufLen()
 	assertEqual(3, stringlen); // strlen("abc")
 }
 
-void AnythingTest::RefCount()
-{
+void AnythingTest::RefCount() {
 	Anything a;
 	Anything b;
 
@@ -642,8 +608,7 @@ void AnythingTest::RefCount()
 	assertCompare( b.RefCount(), equal_to, 0L );
 }
 
-void AnythingTest::SlotCopierTest()
-{
+void AnythingTest::SlotCopierTest() {
 	StartTrace(AnythingTest.SlotCopierTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {
@@ -652,17 +617,14 @@ void AnythingTest::SlotCopierTest()
 		Anything source = config["Source"].DeepClone();
 		Anything result;
 
-		SlotCopier::Operate(source, result, copyList,
-							config["Delim"].AsCharPtr(".")[0L],
-							config["IndexDelim"].AsCharPtr(":")[0L]);
+		SlotCopier::Operate(source, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 
 		ROAnything expectedStore(config["Result"]);
 		assertAnyEqualm(expectedStore, result, TString(name()) << "." << fQuery.SlotName(l));
 	}
 }
 
-void AnythingTest::SlotFinderTest()
-{
+void AnythingTest::SlotFinderTest() {
 	StartTrace(AnythingTest.SlotFinderTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {
@@ -675,8 +637,7 @@ void AnythingTest::SlotFinderTest()
 	}
 }
 
-void AnythingTest::SlotPutterTest()
-{
+void AnythingTest::SlotPutterTest() {
 	StartTrace(AnythingTest.SlotPutterTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {
@@ -693,8 +654,7 @@ void AnythingTest::SlotPutterTest()
 	}
 }
 
-void AnythingTest::SlotPutterAppendTest()
-{
+void AnythingTest::SlotPutterAppendTest() {
 	StartTrace(AnythingTest.SlotPutterAppendTest);
 	// Set up
 	Anything config = fQuery["Destination"];
@@ -716,8 +676,7 @@ void AnythingTest::SlotPutterAppendTest()
 	assertAnyEqual(expectedStore, rStore);
 }
 
-void AnythingTest::AnythingLeafIteratorTest()
-{
+void AnythingTest::AnythingLeafIteratorTest() {
 	StartTrace(AnythingTest.AnythingLeafIteratorTest);
 	ROAnything expectedStore(fConfig["Results"][name()]);
 	{
@@ -760,19 +719,15 @@ void AnythingTest::AnythingLeafIteratorTest()
 	}
 }
 
-void AnythingTest::SlotnameSorterTest()
-{
+void AnythingTest::SlotnameSorterTest() {
 	StartTrace(AnythingTest.SlotnameSorterTest);
 	ROAnything roaTestConfig;
 	if (t_assert(((ROAnything)fConfig).LookupPath(roaTestConfig, "SlotnameSorterTest"))) {
 		ROAnything cConfig(roaTestConfig[0L]);
-		for (long lIdx = 0; lIdx < roaTestConfig.GetSize(); lIdx++, cConfig
-			 = roaTestConfig[lIdx]) {
+		for (long lIdx = 0; lIdx < roaTestConfig.GetSize(); lIdx++, cConfig = roaTestConfig[lIdx]) {
 			TraceAny(cConfig, "the config");
 			Anything sorted;
-			SlotnameSorter::EMode mode(
-				cConfig["Mode"].AsString() == "asc" ? SlotnameSorter::asc
-				: SlotnameSorter::desc);
+			SlotnameSorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? SlotnameSorter::asc : SlotnameSorter::desc);
 			sorted = cConfig["TestArray"].DeepClone();
 			SlotnameSorter::Sort(sorted, mode);
 			assertAnyEqual( cConfig["ExpectedResult"], sorted);
@@ -780,8 +735,7 @@ void AnythingTest::SlotnameSorterTest()
 	}
 }
 
-void AnythingTest::SlotCleanerTest()
-{
+void AnythingTest::SlotCleanerTest() {
 	StartTrace(AnythingTest.SlotCleanerTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {

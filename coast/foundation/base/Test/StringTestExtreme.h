@@ -11,24 +11,17 @@
 
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
-
-
-//---- StringTestExtreme -----------------------------------------------------------
-//!testcases for String
-class StringTestExtreme : public TestFramework::TestCase
-{
+class StringTestExtreme: public TestFramework::TestCase {
 protected:
 	String extremelyLongString;
 	std::string trueString;
-
 public:
-	StringTestExtreme (TString tstrName);
-	virtual ~StringTestExtreme();
-
-	virtual void			setUp ();
-	static Test				*suite ();
-
-	void			extremeLength ();
+	StringTestExtreme(TString tname) :
+		TestCaseType(tname) {
+	}
+	virtual void setUp();
+	static Test *suite();
+	void extremeLength();
 };
 
 #endif

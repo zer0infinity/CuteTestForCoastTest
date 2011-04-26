@@ -7,33 +7,17 @@
  */
 
 #include "AccessManagerTest.h"
-#include "AccessManager.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
+#include "AccessManager.h"
 #include "AnyIterators.h"
 #include "FileAccessControllerTests.h"
-#if !defined (WIN32)
-#include <stdio.h>
-#endif
 
-//---- AccessManagerTest ----------------------------------------------------------------
-AccessManagerTest::AccessManagerTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(AccessManagerTest.AccessManagerTest);
-}
-
-TString AccessManagerTest::getConfigFileName()
-{
+TString AccessManagerTest::getConfigFileName() {
 	return "AccessManagerTestConfig";
 }
 
-AccessManagerTest::~AccessManagerTest()
-{
-	StartTrace(AccessManagerTest.Dtor);
-}
-
-void AccessManagerTest::setUp ()
-{
+void AccessManagerTest::setUp() {
 	StartTrace(AccessManagerTest.setUp);
 	// create test files
 	t_assertm( FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UserFile"]), "Creation of test file failed" );
@@ -41,16 +25,14 @@ void AccessManagerTest::setUp ()
 	t_assertm( FileCreator::CreateFile("WriteEntityData", GetConfig()["InitData"]["EntityFile"]), "Creation of test file failed" );
 }
 
-void AccessManagerTest::tearDown ()
-{
+void AccessManagerTest::tearDown() {
 	StartTrace(AccessManagerTest.tearDown);
 	Coast::System::IO::unlink("config/FileTestUserDB.any");
 	Coast::System::IO::unlink("config/FileTestActerDB.any");
 	Coast::System::IO::unlink("config/FileTestRightsDB.any");
 }
 
-void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am)
-{
+void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am) {
 	StartTrace(AccessManagerTest.doTestAccessManager);
 
 	bool res;
@@ -73,11 +55,7 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i2 = 0; i2 < subconf.GetSize(); i2++) {
 		Trace("test case name = " << subconf.SlotName(i2));
 		testconf = subconf[i2];
-		res = am->AuthenticateWeak(
-				  testconf["uid"].AsString(),
-				  testconf["pwd"].AsString(),
-				  newRole
-			  );
+		res = am->AuthenticateWeak(testconf["uid"].AsString(), testconf["pwd"].AsString(), newRole);
 		assertEqual(testconf["result"].AsBool(false), res);
 		assertEqual(testconf["resultRole"].AsString(""), newRole);
 	}
@@ -87,13 +65,8 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i3 = 0; i3 < subconf.GetSize(); i3++) {
 		Trace("test case name = " << subconf.SlotName(i3));
 		testconf = subconf[i3];
-		res = am->AuthenticateStrong(
-				  testconf["uid"].AsString(),
-				  testconf["pwd"].AsString(),
-				  testconf["otp"].AsString(),
-				  testconf["window"].AsLong(0),
-				  newRole
-			  );
+		res = am->AuthenticateStrong(testconf["uid"].AsString(), testconf["pwd"].AsString(), testconf["otp"].AsString(),
+				testconf["window"].AsLong(0), newRole);
 		assertEqual(testconf["result"].AsBool(false), res);
 		assertEqual(testconf["resultRole"].AsString(""), newRole);
 	}
@@ -103,20 +76,16 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i4 = 0; i4 < subconf.GetSize(); i4++) {
 		Trace("test case name = " << subconf.SlotName(i4));
 		testconf = subconf[i4];
-		res = am->ChangePassword(
-				  testconf["uid"].AsString(),
-				  testconf["newpwd"].AsString(),
-				  testconf["oldpwd"].AsString()
-			  );
+		res = am->ChangePassword(testconf["uid"].AsString(), testconf["newpwd"].AsString(), testconf["oldpwd"].AsString());
 		assertEqual(testconf["result"].AsBool(false), res);
 		// does login work after change?
 		if (res) {
 			String dummyRole;
 			t_assert( am->AuthenticateWeak(
-						  testconf["uid"].AsString(),
-						  testconf["newpwd"].AsString(),
-						  dummyRole
-					  ));
+							testconf["uid"].AsString(),
+							testconf["newpwd"].AsString(),
+							dummyRole
+					));
 		}
 	}
 
@@ -125,18 +94,16 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i5 = 0; i5 < subconf.GetSize(); i5++) {
 		Trace("test case name = " << subconf.SlotName(i5));
 		testconf = subconf[i5];
-		res = am->ResetPassword(
-				  testconf["uid"].AsString()
-			  );
+		res = am->ResetPassword(testconf["uid"].AsString());
 		assertEqual(testconf["result"].AsBool(false), res);
 		// does login work after reset?
 		if (res) {
 			String dummyRole;
 			t_assert( am->AuthenticateWeak(
-						  testconf["uid"].AsString(),
-						  testconf["uid"].AsString(),
-						  dummyRole
-					  ));
+							testconf["uid"].AsString(),
+							testconf["uid"].AsString(),
+							dummyRole
+					));
 		}
 	}
 
@@ -145,10 +112,7 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i6 = 0; i6 < subconf.GetSize(); i6++) {
 		Trace("test case name = " << subconf.SlotName(i6));
 		testconf = subconf[i6];
-		res = am->IsAllowed(
-				  testconf["uid"].AsString(),
-				  testconf["entity"].AsString()
-			  );
+		res = am->IsAllowed(testconf["uid"].AsString(), testconf["entity"].AsString());
 		assertEqual(testconf["result"].AsBool(false), res);
 	}
 
@@ -158,17 +122,13 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 		Trace("test case name = " << subconf.SlotName(i7));
 		testconf = subconf[i7];
 		allowedEntities = Anything();
-		res = am->GetAllowedEntitiesFor(
-				  testconf["uid"].AsString(),
-				  allowedEntities
-			  );
+		res = am->GetAllowedEntitiesFor(testconf["uid"].AsString(), allowedEntities);
 		assertEqual(testconf["result"].AsBool(false), res);
 		assertAnyEqual(testconf["resultAllowed"], allowedEntities);
 	}
 }
 
-void AccessManagerTest::RegularAccessManagersTest()
-{
+void AccessManagerTest::RegularAccessManagersTest() {
 	StartTrace(AccessManagerTest.RegularAccessManagersTest);
 
 	AccessManager *am = NULL;
@@ -176,11 +136,11 @@ void AccessManagerTest::RegularAccessManagersTest()
 	// run tests for registered/configured access managers (have names)
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(caseConfig) ) {
+	while (aEntryIterator.Next(caseConfig)) {
 		TString strName;
 		aEntryIterator.SlotName(strName);
 		Trace("Running tests for '" << strName << "' access manager ...");
-		if ( GetConfig()["RunOnly"].GetSize() == 0 || GetConfig()["RunOnly"].Contains(strName) ) {
+		if (GetConfig()["RunOnly"].GetSize() == 0 || GetConfig()["RunOnly"].Contains(strName)) {
 			am = AccessManagerModule::GetAccessManager(strName);
 			if (t_assertm(am, TString("expected AccessManager [") << strName << "] to be registered")) {
 				doTestAccessManager(caseConfig, am);
@@ -196,8 +156,7 @@ void AccessManagerTest::RegularAccessManagersTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *AccessManagerTest::suite ()
-{
+Test *AccessManagerTest::suite() {
 	StartTrace(AccessManagerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AccessManagerTest, RegularAccessManagersTest);

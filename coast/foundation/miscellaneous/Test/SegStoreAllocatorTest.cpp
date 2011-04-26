@@ -8,18 +8,11 @@
 
 #include "SegStoreAllocatorTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
 #include "Dbg.h"
 #include "Anything.h"
 #include "SegStoreAllocator.h"
 
-//---- SegStoreAllocatorTest --------------------------------------------------
-SegStoreAllocatorTest::SegStoreAllocatorTest(TString tname) : TestCaseType(tname)
-{
-}
-
-void SegStoreAllocatorTest::CreateSimpleAllocator()
-{
+void SegStoreAllocatorTest::CreateSimpleAllocator() {
 	StartTrace(SegStoreAllocatorTest.CreateSimpleAllocator);
 	SegStoreAllocator p(11223344L);
 	Anything a(&p);
@@ -28,8 +21,7 @@ void SegStoreAllocatorTest::CreateSimpleAllocator()
 	t_assertm(true, "dummy assertion to generate summary output");
 }
 
-Test *SegStoreAllocatorTest::suite ()
-{
+Test *SegStoreAllocatorTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, SegStoreAllocatorTest, CreateSimpleAllocator);
 

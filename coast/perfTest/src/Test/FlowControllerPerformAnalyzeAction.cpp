@@ -5,24 +5,11 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
-#include "Anything.h"
 #include "FlowController.h"
-#include "Context.h"
-#include "Dbg.h"
 #include "FlowControllerPerformAnalyzeAction.h"
-
-//---- FlowControllerPerformAnalyzeAction ---------------------------------------------------------------
-
 RegisterAction(FlowControllerPerformAnalyzeAction);
 
-FlowControllerPerformAnalyzeAction::FlowControllerPerformAnalyzeAction(const char *name) : Action(name) { }
-
-FlowControllerPerformAnalyzeAction::~FlowControllerPerformAnalyzeAction() { }
-
-bool FlowControllerPerformAnalyzeAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
-{
-
+bool FlowControllerPerformAnalyzeAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config) {
 	StartTrace(FlowControllerPerformAnalyzeAction.DoExecAction);
 
 	String controllerName = config[0L].AsString("Invalid");

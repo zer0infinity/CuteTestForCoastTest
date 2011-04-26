@@ -6,9 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "TestSuite.h"
-#include "AppBooter.h"
 #include "AppBooterTest.h"
+#include "TestSuite.h"
+#include "FoundationTestTypes.h"
+#include "AppBooter.h"
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "SimpleTestApp.h"
@@ -17,19 +18,7 @@
 
 using namespace Coast;
 
-//---- AppBooterTest ----------------------------------------------------------------
-AppBooterTest::AppBooterTest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(AppBooterTest.Ctor);
-}
-
-AppBooterTest::~AppBooterTest()
-{
-	StartTrace(AppBooterTest.Dtor);
-}
-
-void AppBooterTest::HandleNullArgsTest()
-{
+void AppBooterTest::HandleNullArgsTest() {
 	StartTrace(AppBooterTest.HandleNullArgsTest);
 	{
 		// no argument case
@@ -43,14 +32,13 @@ void AppBooterTest::HandleNullArgsTest()
 	}
 }
 
-void AppBooterTest::HandleUnstructuredArgsTest()
-{
+void AppBooterTest::HandleUnstructuredArgsTest() {
 	StartTrace(AppBooterTest.HandleUnstructuredArgsTest);
 	{
 		// unstructured argument
 		Anything result;
 		Anything expected;
-		const char *argv[] = { "foo", "bah"};
+		const char *argv[] = { "foo", "bah" };
 		const int argc = 2;
 		expected.Append("foo");
 		expected.Append("bah");
@@ -62,14 +50,13 @@ void AppBooterTest::HandleUnstructuredArgsTest()
 	}
 }
 
-void AppBooterTest::HandleStructuredArgsTest()
-{
+void AppBooterTest::HandleStructuredArgsTest() {
 	StartTrace(AppBooterTest.HandleStructuredArgsTest);
 	{
 		// structured argument
 		Anything result;
 		Anything expected;
-		const char *argv[] = { "test1=foo", "test2=bah"};
+		const char *argv[] = { "test1=foo", "test2=bah" };
 		const int argc = 2;
 		expected["test1"] = "foo";
 		expected["test2"] = "bah";
@@ -83,7 +70,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 		// structured argument
 		Anything result;
 		Anything expected;
-		const char *argv[] = { "test1=foo", "test2=bah", "test1=yum", "test2=grmbl"};
+		const char *argv[] = { "test1=foo", "test2=bah", "test1=yum", "test2=grmbl" };
 		const int argc = 4;
 		expected["test1"] = "foo";
 		expected["test2"] = "bah";
@@ -99,7 +86,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 		// structured argument
 		Anything result;
 		Anything expected;
-		const char *argv[] = { "test1={ /foo bah /yum grmbl }", "test2=bah"};
+		const char *argv[] = { "test1={ /foo bah /yum grmbl }", "test2=bah" };
 		const int argc = 2;
 		expected["test1"] = "{ /foo bah /yum grmbl }";
 		expected["test2"] = "bah";
@@ -111,8 +98,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 	}
 }
 
-void AppBooterTest::PrepareBootFileLoadingTest()
-{
+void AppBooterTest::PrepareBootFileLoadingTest() {
 	StartTrace(AppBooterTest.PrepareBootFileLoadingTest);
 
 	{
@@ -124,8 +110,8 @@ void AppBooterTest::PrepareBootFileLoadingTest()
 
 		// this tests succeeds only if COAST_PATH and COAST_ROOT are not set in the environment
 		// it is not testable in this way since every environment is different
-//		assertEqualm(".", System::GetRootDir(), "expected local directory");
-//		assertEqualm(".:config:src:", System::GetPathList(), "expected default path list");
+		//		assertEqualm(".", System::GetRootDir(), "expected local directory");
+		//		assertEqualm(".:config:src:", System::GetPathList(), "expected default path list");
 	}
 
 	{
@@ -151,8 +137,7 @@ void AppBooterTest::PrepareBootFileLoadingTest()
 	}
 }
 
-void AppBooterTest::MergeConfigWithArgsTest()
-{
+void AppBooterTest::MergeConfigWithArgsTest() {
 	StartTrace(AppBooterTest.MergeConfigWithArgsTest);
 	{
 		// empty argument list
@@ -183,7 +168,7 @@ void AppBooterTest::MergeConfigWithArgsTest()
 		expected["Arguments"]["args0"] = "argsValue0";
 		expected["Arguments"]["args1"] = "argsValue1";
 		//skip arg[0] at top level; it usually is the programname
-//		expected["args0"]= expected["Arguments"]["args0"];
+		//		expected["args0"]= expected["Arguments"]["args0"];
 		expected["args1"] = expected["Arguments"]["args1"];
 
 		AppBooter appBooter;
@@ -211,7 +196,7 @@ void AppBooterTest::MergeConfigWithArgsTest()
 		expected["Arguments"]["Application"] = "argsValue1";
 		expected["Arguments"].Append("argsValue2");
 		//skip arg[0] at top level; it usually is the programname
-//		expected["args0"]= expected["Arguments"]["args0"];
+		//		expected["args0"]= expected["Arguments"]["args0"];
 		expected["Application"] = expected["Arguments"]["Application"];
 		expected.Append(expected["Arguments"][2]);
 
@@ -222,14 +207,13 @@ void AppBooterTest::MergeConfigWithArgsTest()
 	}
 }
 
-void AppBooterTest::OpenLibsTest()
-{
+void AppBooterTest::OpenLibsTest() {
 	StartTrace(AppBooterTest.OpenLibsTest);
 
 	//write pid to file to make it usable by scripts
 	std::ostream *os = System::OpenOStream("config/wdbasetest", "pid");
 
-	if ( os ) {
+	if (os) {
 		Trace("PID File<config/wdbasetest> opened");
 		long pid = System::getpid();
 		(*os) << pid;
@@ -274,12 +258,11 @@ void AppBooterTest::OpenLibsTest()
 	}
 }
 
-void AppBooterTest::RunTest()
-{
+void AppBooterTest::RunTest() {
 	StartTrace(AppBooterTest.RunTest);
 	{
 		AppBooter booter;
-		SimpleTestApp *sta = (SimpleTestApp *)Application::FindApplication("SimpleTestApp");
+		SimpleTestApp *sta = (SimpleTestApp *) Application::FindApplication("SimpleTestApp");
 		if (t_assert(sta != NULL)) {
 			sta->SetTest(this);
 		}
@@ -322,14 +305,12 @@ void AppBooterTest::RunTest()
 	}
 }
 
-void AppBooterTest::Method(const String &str)
-{
+void AppBooterTest::Method(const String &str) {
 	StartTrace1(AppBooterTest.Method, "<" << str << ">");
 	assertEqual(fSequence[fStep++].AsCharPtr(""), str);
 }
 
-Test *AppBooterTest::suite ()
-{
+Test *AppBooterTest::suite() {
 	StartTrace(AppBooterTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

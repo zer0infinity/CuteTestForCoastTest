@@ -9,6 +9,7 @@
 #include "ContextTest.h"
 #include "Context.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStreamSocket.h"
 #include "Page.h"
 #include "Session.h"
@@ -17,19 +18,7 @@
 #include "Dbg.h"
 #include "Renderer.h"
 
-//---- ContextTest ----------------------------------------------------------------
-ContextTest::ContextTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(ContextTest.ContextTest);
-}
-
-ContextTest::~ContextTest()
-{
-}
-
-void ContextTest::setUp ()
-{
+void ContextTest::setUp() {
 	t_assert(GetConfig().IsDefined("Modules"));
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
@@ -38,8 +27,7 @@ void ContextTest::setUp ()
 	}
 }
 
-void ContextTest::RequestConstructorTest ()
-{
+void ContextTest::RequestConstructorTest() {
 	Anything args;
 	args["env"]["foo"] = "foo";
 	args["env"]["header"] = "test";
@@ -55,8 +43,7 @@ void ContextTest::RequestConstructorTest ()
 	assertEqual(ctx.Lookup("Field", "wrong"), ctx1.Lookup("Field", "wrong"));
 } // RequestConstructorTest
 
-void ContextTest::EmptyConstructorTest ()
-{
+void ContextTest::EmptyConstructorTest() {
 	// accessor tests
 	Anything empty;
 	Anything tmpStore = Anything(Anything::ArrayMarker());
@@ -66,7 +53,7 @@ void ContextTest::EmptyConstructorTest ()
 	Context ctx;
 
 	// request is not empty since Init calls LocalizationUtils::FindLanguageKey which useses env
-//	assertAnyEqual(empty, ctx.GetRequest());
+	//	assertAnyEqual(empty, ctx.GetRequest());
 
 	// some lookup tests
 	assertEqual("right", ctx.Lookup("foo", "right"));
@@ -89,8 +76,7 @@ void ContextTest::EmptyConstructorTest ()
 	assertAnyEqualm(tmpStore, result, "tmpStore should still be there");
 }
 
-void ContextTest::SocketCtorTests()
-{
+void ContextTest::SocketCtorTests() {
 	StartTrace(ContextTest.SocketCtorTests);
 	Anything empty;
 	Anything clientinfo;
@@ -124,7 +110,7 @@ void ContextTest::SocketCtorTests()
 
 	//--- null socket pointer case ---------
 	{
-		Context ctx((Socket *)0);
+		Context ctx((Socket *) 0);
 
 		Socket *s = ctx.GetSocket();
 		t_assert(!s);
@@ -132,8 +118,7 @@ void ContextTest::SocketCtorTests()
 	}
 }
 
-void ContextTest::VerySimplePush()
-{
+void ContextTest::VerySimplePush() {
 	Context ctx;
 	Role *r = Role::FindRole("Role");
 	t_assert(r);
@@ -141,8 +126,7 @@ void ContextTest::VerySimplePush()
 	assertEqual((long)r, (long)ctx.GetRole());
 }
 
-void ContextTest::SimplePushNoPop()
-{
+void ContextTest::SimplePushNoPop() {
 	Context ctx;
 
 	//empty context always returns default information
@@ -168,8 +152,7 @@ void ContextTest::SimplePushNoPop()
 
 }
 
-void ContextTest::SimpleNamedPushPop()
-{
+void ContextTest::SimpleNamedPushPop() {
 	Context ctx;
 
 	//empty context always returns default information
@@ -217,8 +200,7 @@ void ContextTest::SimpleNamedPushPop()
 
 }
 
-void ContextTest::FindReplace()
-{
+void ContextTest::FindReplace() {
 	Context ctx;
 
 	//empty context always returns default information
@@ -228,7 +210,7 @@ void ContextTest::FindReplace()
 
 	//push a lookup interface
 	Role *r = Role::FindRole("Role");
-	ctx.Push("Role", r );
+	ctx.Push("Role", r);
 
 	//lookups find everything in the first object
 	t_assert(r == ctx.GetRole());
@@ -317,8 +299,7 @@ void ContextTest::FindReplace()
 
 }
 
-void ContextTest::RemoveTest()
-{
+void ContextTest::RemoveTest() {
 	StartTrace(ContextTest.RemoveTest);
 	Context ctx;
 	assertEqual(0, ctx.fStackSz);
@@ -374,14 +355,12 @@ void ContextTest::RemoveTest()
 	assertEqual("not found", ctx.Lookup("InGuestOnly", "not found"));
 }
 
-void ContextTest::LookupTests ()
-{
+void ContextTest::LookupTests() {
 	SimplePushNoPop();
 	SimpleNamedPushPop();
 } // LookupTests
 
-void ContextTest::SimplePushPop()
-{
+void ContextTest::SimplePushPop() {
 	// create an empty context
 	Context ctx;
 	String popStoreKey;
@@ -414,8 +393,7 @@ void ContextTest::SimplePushPop()
 	assertEqual("yes", ctx.Lookup("body").AsCharPtr("yes"));
 }
 
-void ContextTest::SimplePushWithEmptyStore()
-{
+void ContextTest::SimplePushWithEmptyStore() {
 	// create an empty context
 	Context ctx;
 
@@ -459,8 +437,7 @@ void ContextTest::SimplePushWithEmptyStore()
 	assertEqual("yes", ctx.Lookup("body").AsCharPtr("yes"));
 }
 
-void ContextTest::MoreThanOnePush()
-{
+void ContextTest::MoreThanOnePush() {
 	// create an empty context
 	Context ctx;
 
@@ -517,8 +494,7 @@ void ContextTest::MoreThanOnePush()
 	assertEqual("yes", ctx.Lookup("body").AsCharPtr("yes"));
 }
 
-void ContextTest::MoreThanOnePushWithSameKey()
-{
+void ContextTest::MoreThanOnePushWithSameKey() {
 	// create an empty context
 	Context ctx;
 
@@ -595,8 +571,7 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	assertEqual("foo", ctx.Lookup(":0").AsCharPtr("yes"));
 }
 
-void ContextTest::MoreThanOnePushWithSameKeyPrefix()
-{
+void ContextTest::MoreThanOnePushWithSameKeyPrefix() {
 	// create an empty context
 	Context ctx;
 
@@ -607,8 +582,8 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	String popStoreKey;
 	ctx.Push("Store", request0);
 
-	request0["request"] =  "bah";
-	request0["bottomslot"] =  "yuppieh";
+	request0["request"] = "bah";
+	request0["bottomslot"] = "yuppieh";
 	assertEqual("bah", ctx.Lookup("request", "not found"));
 	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
 
@@ -638,8 +613,7 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	assertEqual("not found", ctx.Lookup("topslot", "not found"));
 }
 
-void ContextTest::StoreTests()
-{
+void ContextTest::StoreTests() {
 	SimplePushPop();
 	SimplePushWithEmptyStore();
 	MoreThanOnePush();
@@ -647,8 +621,7 @@ void ContextTest::StoreTests()
 	MoreThanOnePushWithSameKeyPrefix();
 }
 
-void ContextTest::RequestSettingTest()
-{
+void ContextTest::RequestSettingTest() {
 	Anything request;
 	request["header"]["HOST"] = "sentosa";
 	request["header"]["URI"] = "/";
@@ -671,8 +644,7 @@ void ContextTest::RequestSettingTest()
 	assertAnyEqual(request, ctx.GetRequest());
 }
 
-void ContextTest::SessionPushTest()
-{
+void ContextTest::SessionPushTest() {
 	// The brackets are used to achieve the following:
 	// On destruction of the context, the context decrements the refcount of
 	// the session it has on its "stack". Therefore, the context must go out of
@@ -821,8 +793,7 @@ void ContextTest::SessionPushTest()
 	}
 }
 
-void ContextTest::RefCountTest()
-{
+void ContextTest::RefCountTest() {
 	// The brackets are used to achieve the following:
 	// On destruction of the context, the context decrements the refcount of
 	// the session it has on its "stack". Therefore, the context must go out of
@@ -895,8 +866,7 @@ void ContextTest::RefCountTest()
 	}
 }
 
-void ContextTest::RoleStoreTest()
-{
+void ContextTest::RoleStoreTest() {
 	Context ctx1;
 	Session s(0);
 	{
@@ -945,8 +915,7 @@ void ContextTest::RoleStoreTest()
 	}
 }
 
-void ContextTest::SessionStoreTest()
-{
+void ContextTest::SessionStoreTest() {
 	Context ctx1;
 	Session s(0);
 	{
@@ -993,8 +962,7 @@ void ContextTest::SessionStoreTest()
 	}
 }
 
-void ContextTest::ObjectAccessTests()
-{
+void ContextTest::ObjectAccessTests() {
 	Context ctx;
 	assertEqual(0, ctx.fStackSz);
 
@@ -1021,7 +989,7 @@ void ContextTest::ObjectAccessTests()
 	// use with dynamic_cast to be on the safe side
 	Role *r = SafeCast(ctx.Find("Role"), Role);
 	t_assert(r != 0);
-	if ( r ) {
+	if (r) {
 		String transition("Home");
 		String page("BannerPage");
 		r->GetNewPageName(ctx, transition, page);
@@ -1049,8 +1017,7 @@ void ContextTest::ObjectAccessTests()
 	t_assertm(ctx.Pop(strKey) == false, "Empty stack");
 }
 
-void ContextTest::SetNGetPage()
-{
+void ContextTest::SetNGetPage() {
 	StartTrace(ContextTest.SetNGetPage);
 
 	Context ctx;
@@ -1075,8 +1042,7 @@ void ContextTest::SetNGetPage()
 	assertEqual((long)p, (long)ctx.GetPage());
 }
 
-void ContextTest::SetNGetRole()
-{
+void ContextTest::SetNGetRole() {
 	StartTrace(ContextTest.SetNGetRole);
 
 	Context ctx;
@@ -1101,12 +1067,14 @@ void ContextTest::SetNGetRole()
 	assertEqual((long)p, (long)ctx.GetRole());
 }
 
-class TestSessionLockRenderer : public Renderer
-{
+class TestSessionLockRenderer: public Renderer {
 public:
-	TestSessionLockRenderer(const char *name): Renderer(name) {}
+	TestSessionLockRenderer(const char *name) :
+		Renderer(name) {
+	}
 	//!destructor does nothing
-	~TestSessionLockRenderer() {}
+	~TestSessionLockRenderer() {
+	}
 
 	//!rendering hook; overwrite this method in subclasses
 	//!generates output on reply driven by config using the context given
@@ -1121,11 +1089,9 @@ public:
 		}
 	}
 };
-
 RegisterRenderer(TestSessionLockRenderer);
 
-void ContextTest::SessionUnlockingTest()
-{
+void ContextTest::SessionUnlockingTest() {
 	StartTrace(ContextTest.SessionUnlockingTest);
 	Context initsessioncontext;
 	Session s("SessionUnlockingTest");
@@ -1164,8 +1130,7 @@ void ContextTest::SessionUnlockingTest()
 	}
 }
 
-Test *ContextTest::suite ()
-{
+Test *ContextTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ContextTest, VerySimplePush);
 	ADD_CASE(testSuite, ContextTest, RequestConstructorTest);

@@ -24,9 +24,11 @@ public:
 
 	//!TestCases for the StressApp classes
 	//! \param name name of the test
-	RemoteStresserTest(TString tstrName);
-
-	//!destroys the test case
+	RemoteStresserTest(TString tstrName)
+    :StressAppTest(tstrName), fServerRunner(0), fStressServer(0)
+    {
+}
+    //!destroys the test case
 	~RemoteStresserTest();
 
 	//--- public api

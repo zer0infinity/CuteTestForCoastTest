@@ -11,28 +11,22 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnythingLookupTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingLookupTest : public TestFramework::TestCase
-{
+class AnythingLookupTest: public TestFramework::TestCase {
 public:
-	AnythingLookupTest (TString tstrName);
-
-	virtual void	setUp ();
-	static Test	*suite ();
-
-	void		LookUp0Test();
-	void		LookUp1Test();
-	void 		LookupPathByIndex ();
-	void		EmptyLookup ();
-	void		invPathLookup ();
-	void 		LookUpWithSpecialCharsTest();
-	void		LookupCaseSensitiveTest();
-
+	AnythingLookupTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
+	void LookUp0Test();
+	void LookUp1Test();
+	void LookupPathByIndex();
+	void EmptyLookup();
+	void invPathLookup();
+	void LookUpWithSpecialCharsTest();
+	void LookupCaseSensitiveTest();
 protected:
-	Anything	init5DimArray(long);
-	void 		intLookupPathCheck(Anything &test, const char *path);
+	Anything init5DimArray(long);
+	void intLookupPathCheck(Anything &test, const char *path);
 };
 
 #endif		//ifndef _AnythingLookupTest_H

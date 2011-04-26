@@ -12,24 +12,13 @@
 #include "WDBaseTestPolicies.h"
 class Context;
 
-//---- AppLogTest ----------------------------------------------------------
-//!TestCases description
-class AppLogTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
-{
+class AppLogTest: public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	AppLogTest(TString tstrName);
-
-	//!destroys the test case
-	~AppLogTest();
-
-	//--- public api
-
+	AppLogTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!log into two channels and checks the files afterwards
 	void LogOkTest();

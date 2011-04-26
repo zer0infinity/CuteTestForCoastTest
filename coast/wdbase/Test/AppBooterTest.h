@@ -12,24 +12,12 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-//---- AppBooterTest ----------------------------------------------------------
-//!TestCases description
-class AppBooterTest : public TestFramework::TestCase
-{
+class AppBooterTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	AppBooterTest(TString tstrName);
-
-	//!destroys the test case
-	~AppBooterTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	AppBooterTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	//!test HandleArgs method with empty arguments
 	void HandleNullArgsTest();

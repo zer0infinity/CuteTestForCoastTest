@@ -12,6 +12,7 @@
 #include "TestCase.h"
 
 struct condthreadparam;
+class Anything;
 class SystemAPITest: public TestFramework::TestCase {
 public:
 	SystemAPITest(TString tname) :

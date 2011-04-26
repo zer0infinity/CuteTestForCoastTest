@@ -8,22 +8,11 @@
 
 #include "ResultMapperTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStream.h"
 #include "Context.h"
 
-//---- ResultMapperTest ----------------------------------------------------------------
-ResultMapperTest::ResultMapperTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ResultMapperTest.Ctor);
-}
-
-ResultMapperTest::~ResultMapperTest()
-{
-	StartTrace(ResultMapperTest.Dtor);
-}
-
-void ResultMapperTest::DoSelectScriptTest()
-{
+void ResultMapperTest::DoSelectScriptTest() {
 	StartTrace(ResultMapperTest.DoSelectScriptTest);
 
 	Anything script, empty;
@@ -34,29 +23,26 @@ void ResultMapperTest::DoSelectScriptTest()
 	assertAnyEqual(rm.SelectScript("Nonex", script, ctx), empty);
 }
 
-void ResultMapperTest::DoLoadConfigTest()
-{
+void ResultMapperTest::DoLoadConfigTest() {
 	StartTrace(ResultMapperTest.DoLoadConfigTest);
 
 	ResultMapper rm("ResultMapperTest");
 	t_assertm(rm.Initialize("ResultMapper"), "Couldn't load config");
 
 	ResultMapper fm("ResultMapperFail");
-	if ( t_assertm(fm.Initialize("NonExistingMapper"), "initialization should succeed") ) {
+	if (t_assertm(fm.Initialize("NonExistingMapper"), "initialization should succeed")) {
 		t_assertm(fm.GetConfig().IsNull(), "Found a config, but shouldn't!");
 	}
 }
 
-void ResultMapperTest::DoGetConfigNameTest()
-{
+void ResultMapperTest::DoGetConfigNameTest() {
 	StartTrace(ResultMapperTest.DoGetConfigNameTest);
 	ResultMapper rm("GetConfigNameTest");
 	rm.Initialize(ResultMapper::gpcCategory);
 	assertCharPtrEqual("OutputMapperMeta", rm.GetConfigName());
 }
 
-void ResultMapperTest::DoFinalPutAnyTest()
-{
+void ResultMapperTest::DoFinalPutAnyTest() {
 	StartTrace(ResultMapperTest.DoFinalPutAnyTest);
 
 	ResultMapper rm("");
@@ -81,8 +67,7 @@ void ResultMapperTest::DoFinalPutAnyTest()
 	t_assert(res.Contains(b.AsString()));
 }
 
-void ResultMapperTest::DoFinalPutStreamTest()
-{
+void ResultMapperTest::DoFinalPutStreamTest() {
 	// uses DoFinalPutAny in the end, so just do a sanity check
 	String msg = "MessageToStore";
 	IStringStream is(msg);
@@ -96,8 +81,7 @@ void ResultMapperTest::DoFinalPutStreamTest()
 	assertEqual(msg, res.AsString());
 }
 
-void ResultMapperTest::DoPutAnyTest()
-{
+void ResultMapperTest::DoPutAnyTest() {
 	StartTrace(ResultMapperTest.DoPutAnyTest);
 	// --- 1. Mapper without script (i.e. script == empty)
 	{
@@ -143,8 +127,7 @@ void ResultMapperTest::DoPutAnyTest()
 	}
 }
 
-void ResultMapperTest::DoPutStreamTest()
-{
+void ResultMapperTest::DoPutStreamTest() {
 	StartTrace(ResultMapperTest.DoFinalPutStreamTest);
 	// --- 1. Mapper without script (i.e. script == empty)
 	{
@@ -182,8 +165,7 @@ void ResultMapperTest::DoPutStreamTest()
 	}
 }
 
-void ResultMapperTest::PutTest()
-{
+void ResultMapperTest::PutTest() {
 	StartTrace(ResultMapperTest.PutTest);
 
 	ResultMapper rm("ResultMapperTest");
@@ -253,8 +235,7 @@ void ResultMapperTest::PutTest()
 	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["lKey"]);
 }
 
-void ResultMapperTest::EagerDoSelectScriptTest()
-{
+void ResultMapperTest::EagerDoSelectScriptTest() {
 	StartTrace(ParameterMapperTest.EagerDoSelectScriptTest);
 
 	Anything script;
@@ -265,8 +246,7 @@ void ResultMapperTest::EagerDoSelectScriptTest()
 	assertAnyEqual(erm.SelectScript("Nonex", script, ctx), script);
 }
 
-void ResultMapperTest::EagerPutTest()
-{
+void ResultMapperTest::EagerPutTest() {
 	StartTrace(ResultMapperTest.EagerPutTest);
 
 	// eager mapper gets a script in any case, even if key is not found
@@ -289,8 +269,7 @@ void ResultMapperTest::EagerPutTest()
 	assertEqual(os2.str(), os.str());
 }
 
-void ResultMapperTest::DoSetDestinationSlotDynamicallyTest()
-{
+void ResultMapperTest::DoSetDestinationSlotDynamicallyTest() {
 	StartTrace(ResultMapperTest.SetDestinationSlotTest);
 
 	Context ctx;
@@ -308,8 +287,7 @@ void ResultMapperTest::DoSetDestinationSlotDynamicallyTest()
 	assertCharPtrEqual("Mapper.foo.bar", rm.GetDestinationSlot(ctx));
 }
 
-void ResultMapperTest::DoGetDestinationSlotWithPathTest()
-{
+void ResultMapperTest::DoGetDestinationSlotWithPathTest() {
 	StartTrace(ResultMapperTest.DoGetDestinationSlotWithPathTest);
 
 	Context ctx;
@@ -332,8 +310,7 @@ void ResultMapperTest::DoGetDestinationSlotWithPathTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ResultMapperTest::suite ()
-{
+Test *ResultMapperTest::suite() {
 	StartTrace(ResultMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

@@ -3,33 +3,31 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-class AnythingIteratorTest : public TestFramework::TestCase
-{
+class AnythingIteratorTest: public TestFramework::TestCase {
 protected:
-	Anything	fAny5; // anything with 5 elements set-up in setUp
+	Anything fAny5; // anything with 5 elements set-up in setUp
 public:
-	AnythingIteratorTest (TString name);
+	AnythingIteratorTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	virtual void setUp();
+	static Test *suite();
 
-	virtual void	setUp ();
-	static Test	*suite ();
-
-	void 		testEmptyAnythingBegin();
-	void 		testSimpleAnythingBegin();
-	void		testSimpleAnythingDeref();
-	void		testSimpleAnythingIncrement();
-	void		testSimpleAnythingDecrement();
-	void		testSimpleAnythingIncDec();
-	void		testSimpleAnythingAssignment();
-	void		testAnythingIteration();
-	void		testAnythingIndex();
-	void		testIteratorSubstract();
-	void		testIteratorIntAdd();
-	void		testIteratorIntSubstract();
-	void		testIteratorCompare();
-	//-- test Anything's support for iterators:
-	void		testAnythingSingleErase();
-	void		testAnythingRangeErase();
+	void testEmptyAnythingBegin();
+	void testSimpleAnythingBegin();
+	void testSimpleAnythingDeref();
+	void testSimpleAnythingIncrement();
+	void testSimpleAnythingDecrement();
+	void testSimpleAnythingIncDec();
+	void testSimpleAnythingAssignment();
+	void testAnythingIteration();
+	void testAnythingIndex();
+	void testIteratorSubstract();
+	void testIteratorIntAdd();
+	void testIteratorIntSubstract();
+	void testIteratorCompare();
+	void testAnythingSingleErase();
+	void testAnythingRangeErase();
 };
 
 #endif

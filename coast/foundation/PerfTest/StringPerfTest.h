@@ -10,27 +10,13 @@
 #define _StringPerfTest_H
 
 #include "FoundationTestTypes.h"//lint !e537
-
-//---- StringPerfTest ----------------------------------------------------------
-//!TestCases description
-class StringPerfTest : public TestFramework::TestCaseWithStatistics
-{
+class StringPerfTest: public TestFramework::TestCaseWithStatistics {
 public:
-	//!TestCase constructor
-	//! \param name name of the test
-	StringPerfTest(TString tstrName);
-
-	//!destroys the test case
-	~StringPerfTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!describe this testcase
+	StringPerfTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void referenceTest();
-
 protected:
 	void RunLoop(const char *str, const long iterations);
 	void RunPreallocLoop(const char *str, const long iterations);

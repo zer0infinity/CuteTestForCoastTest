@@ -11,22 +11,12 @@
 
 #include "TestCase.h"
 
-//---- LogTimerTest ----------------------------------------------------------
-//!TestCases description
-class LogTimerTest : public TestFramework::TestCase
-{
+class LogTimerTest: public TestFramework::TestCase {
 public:
-	//!TestCase constructor
-	//! \param name name of the test
-	LogTimerTest(TString tstrName);
-
-	//!destroys the test case
-	~LogTimerTest();
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!describe this testcase
+	LogTimerTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void MethodTimerTest();
 };
 

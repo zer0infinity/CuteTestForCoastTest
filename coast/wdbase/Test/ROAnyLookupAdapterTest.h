@@ -11,29 +11,12 @@
 
 #include "TestCase.h"
 
-//---- ROAnyLookupAdapterTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class ROAnyLookupAdapterTest : public TestFramework::TestCase
-{
+class ROAnyLookupAdapterTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//! TestCase constructor
-	//! \param name name of the test
-	ROAnyLookupAdapterTest(TString tstrName);
-
-	//! destroys the test case
-	~ROAnyLookupAdapterTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
+	ROAnyLookupAdapterTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void LookupTest();
 };
 

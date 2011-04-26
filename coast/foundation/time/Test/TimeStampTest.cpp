@@ -9,36 +9,21 @@
 #include "TimeStampTest.h"
 #include "TimeStamp.h"
 #include "TestSuite.h"
-#include "SystemLog.h"
-#include <limits.h>
 
-//---- TimeStampTest ----------------------------------------------------------------
-TimeStampTest::TimeStampTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(TimeStampTest.Ctor);
-}
-
-TimeStampTest::~TimeStampTest()
-{
-	StartTrace(TimeStampTest.Dtor);
-}
-
-void TimeStampTest::BasicOperatorsTest()
-{
+void TimeStampTest::BasicOperatorsTest() {
 	StartTrace(TimeStampTest.BasicOperatorsTest);
 
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
 		TraceAny(roaConfig, "current config");
 		long upper(roaConfig["NumberOfRuns"].AsLong(1));
-		for ( long l = 0; l < upper; ++l ) {
+		for (long l = 0; l < upper; ++l) {
 			TimeStamp ts1(roaConfig["Date"].AsString());
 			TimeStamp ts2(roaConfig["Date"].AsString());
 			TimeStamp tsAfter(roaConfig["DateAfter"].AsString());
@@ -88,27 +73,26 @@ void TimeStampTest::BasicOperatorsTest()
 			//combined expression
 			t_assertm( ( ts1 + roaConfig["LongToAdd"].AsLong() ) >= dateAddResult, TString("Expected combined expressiont test to pass at ") << strCase);
 			t_assertm( ( ts1 + roaConfig["LongToAdd"].AsLong() ) <= dateAddResult, TString("Expected combined expressiont test to pass at ") << strCase);
-			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) <  dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
-			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) >  dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
-			t_assertm(  ts1 == ts2, TString("Expected ts1 not to have changed at ") << strCase);
+			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) < dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) > dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm( ts1 == ts2, TString("Expected ts1 not to have changed at ") << strCase);
 		}
 	}
 }
 
-void TimeStampTest::ArithmeticOperatorsTest()
-{
+void TimeStampTest::ArithmeticOperatorsTest() {
 	StartTrace(TimeStampTest.ArithmeticOperatorsTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
 		TraceAny(roaConfig, "current config");
 		long upper(roaConfig["NumberOfRuns"].AsLong(1));
-		for ( long l = 0; l < upper; ++l ) {
+		for (long l = 0; l < upper; ++l) {
 			TimeStamp ts1(roaConfig["Date"].AsString());
 			TimeStamp result;
 			result = ts1 + roaConfig["AmountSec"].AsLong();
@@ -122,14 +106,13 @@ void TimeStampTest::ArithmeticOperatorsTest()
 	}
 }
 
-void TimeStampTest::ConstructorsTest()
-{
+void TimeStampTest::ConstructorsTest() {
 	StartTrace(TimeStampTest.ArithmeticOperatorsTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -149,14 +132,13 @@ void TimeStampTest::ConstructorsTest()
 	}
 }
 
-void TimeStampTest::EmptyStringConstructorTest()
-{
+void TimeStampTest::EmptyStringConstructorTest() {
 	StartTrace(TimeStampTest.EmptyStringConstructorTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -170,14 +152,13 @@ void TimeStampTest::EmptyStringConstructorTest()
 	}
 }
 
-void TimeStampTest::EmptyConstructorTest()
-{
+void TimeStampTest::EmptyConstructorTest() {
 	StartTrace(TimeStampTest.EmptyStringConstructorTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -187,20 +168,19 @@ void TimeStampTest::EmptyConstructorTest()
 		t_assertm(tsNow <= tsDefConstructor, TString("Expected empty constructor to generate timestamp with Now date. at ") << strCase);
 		Trace("tsNow: " << tsNow.AsString() << " tsDefConstructor: " << tsDefConstructor.AsString());
 		// Generates 19700101000000
-		TimeStamp ts2((time_t)0);
+		TimeStamp ts2((time_t) 0);
 		t_assertm(roaConfig["ExpectedResult"].AsString() == ts2.AsString(), TString("Expected set with empty string test to pass at ") << strCase);
 		Trace(ts2.AsString());
 	}
 }
 
-void TimeStampTest::RemoveNonNumericalCharsTest()
-{
+void TimeStampTest::RemoveNonNumericalCharsTest() {
 	StartTrace(TimeStampTest.RemoveNonNumericalCharsTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -216,14 +196,13 @@ void TimeStampTest::RemoveNonNumericalCharsTest()
 	}
 }
 
-void TimeStampTest::AssignmentOperatorTest()
-{
+void TimeStampTest::AssignmentOperatorTest() {
 	StartTrace(TimeStampTest.AssignmentOperatorTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -245,14 +224,13 @@ void TimeStampTest::AssignmentOperatorTest()
 	}
 }
 
-void TimeStampTest::AsStringTest()
-{
+void TimeStampTest::AsStringTest() {
 	StartTrace(TimeStampTest.AsStringTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -263,8 +241,7 @@ void TimeStampTest::AsStringTest()
 	}
 }
 
-void TimeStampTest::InvalidTest()
-{
+void TimeStampTest::InvalidTest() {
 	StartTrace(TimeStampTest.InvalidTest);
 	TimeStamp result(-1);
 	t_assertm(!result.IsValid(), "Expected invalid value");
@@ -284,8 +261,7 @@ void TimeStampTest::InvalidTest()
 	assertEqualm("", tsMin.AsString(), "Date must be invalid now");
 }
 
-void TimeStampTest::StaticMethodsTest()
-{
+void TimeStampTest::StaticMethodsTest() {
 	StartTrace(TimeStampTest.StaticMethodsTest);
 	{
 		t_assertm("20371231235959Z" == TimeStamp::Max().AsStringWithZ(), "Expected max test to pass");
@@ -297,10 +273,9 @@ void TimeStampTest::StaticMethodsTest()
 	}
 }
 
-void TimeStampTest::ModifiersTest()
-{
+void TimeStampTest::ModifiersTest() {
 	StartTrace(TimeStampTest.ModifiersTest);
-	TimeStamp aInitial((time_t)0), aSecond((time_t)0);
+	TimeStamp aInitial((time_t) 0), aSecond((time_t) 0);
 	t_assert(aInitial.IsValid());
 	t_assert(aSecond.IsValid());
 	assertEqual(0, aInitial.AsLong());
@@ -346,8 +321,7 @@ void TimeStampTest::ModifiersTest()
 	assertEqual(aSecond.AsString(), aFourth.AsString());
 }
 
-void TimeStampTest::CtorTest()
-{
+void TimeStampTest::CtorTest() {
 	StartTrace(TimeStampTest.CtorTest);
 	{
 		TimeStamp aStamp(19, 70, 1, 1, 0, 0, 1);
@@ -373,8 +347,7 @@ void TimeStampTest::CtorTest()
 	Trace("sizeof TimeStamp::intTimeRep:" << (long)sizeof(TimeStamp::intTimeRep));
 }
 
-void TimeStampTest::SetTimeTest()
-{
+void TimeStampTest::SetTimeTest() {
 	StartTrace(TimeStampTest.SetTimeTest);
 	{
 		TimeStamp aStamp(19, 70, 1, 1, 0, 0, 1);
@@ -393,14 +366,13 @@ void TimeStampTest::SetTimeTest()
 	}
 }
 
-void TimeStampTest::WeekdayTest()
-{
+void TimeStampTest::WeekdayTest() {
 	StartTrace(TimeStampTest.WeekDayTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -411,14 +383,13 @@ void TimeStampTest::WeekdayTest()
 	}
 }
 
-void TimeStampTest::DayOfYearTest()
-{
+void TimeStampTest::DayOfYearTest() {
 	StartTrace(TimeStampTest.DayOfYearTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -429,14 +400,13 @@ void TimeStampTest::DayOfYearTest()
 	}
 }
 
-void TimeStampTest::WeekOfYearTest()
-{
+void TimeStampTest::WeekOfYearTest() {
 	StartTrace(TimeStampTest.WeekOfYearTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
@@ -446,44 +416,41 @@ void TimeStampTest::WeekOfYearTest()
 	}
 }
 
-void TimeStampTest::MonthTest()
-{
+void TimeStampTest::MonthTest() {
 	StartTrace(TimeStampTest.MonthTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
 		TraceAny(roaConfig, "current config");
-		TimeStamp::AMonth::eMonthNumber aMonthNum( (TimeStamp::AMonth::eMonthNumber)roaConfig["Month"].AsLong() );
-		TimeStamp::AMonth aM( ( aMonthNum ) );
+		TimeStamp::AMonth::eMonthNumber aMonthNum((TimeStamp::AMonth::eMonthNumber) roaConfig["Month"].AsLong());
+		TimeStamp::AMonth aM((aMonthNum));
 		assertComparem( (TimeStamp::TSIntNumberType)roaConfig["ExpectedSeconds"].AsLong(-1L), equal_to, aM.AsSeconds( roaConfig["InYear"].AsLong(1970) ), TString("Expected same seconds for mnum:") << roaConfig["Month"].AsLong() << " inyear:" << roaConfig["InYear"].AsLong(1970) << " at " << strCase);
 	}
 }
 
-void TimeStampTest::YearTest()
-{
+void TimeStampTest::YearTest() {
 	StartTrace(TimeStampTest.YearTest);
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 
 		TraceAny(roaConfig, "current config");
-		TimeStamp::AYear aY( roaConfig["Year"].AsLong() );
+		TimeStamp::AYear aY(roaConfig["Year"].AsLong());
 		assertComparem( (TimeStamp::TSIntNumberType)roaConfig["ExpectedSeconds"].AsLong(-1L), equal_to, aY.AsSeconds(), TString("Expected same seconds at ") << strCase);
 	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *TimeStampTest::suite ()
-{
+Test *TimeStampTest::suite() {
 	StartTrace(TimeStampTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, TimeStampTest, BasicOperatorsTest);

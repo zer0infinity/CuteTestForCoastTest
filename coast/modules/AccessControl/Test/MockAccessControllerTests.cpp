@@ -9,44 +9,39 @@
 #include "MockAccessControllerTests.h"
 #include "SimpleAccessControllers.h"
 #include "TestSuite.h"
-#include "Dbg.h"
-#include "WDModule.h"
+#include "FoundationTestTypes.h"
 
-void MockAccessControllerTests::MockUDACTest()
-{
+void MockAccessControllerTests::MockUDACTest() {
 	StartTrace(MockAccessControllerTests.MockUDACTest);
 
-	MockUDAC *mudac = static_cast<MockUDAC *>(UserDataAccessController::FindUserDataAccessController("MockUserData"));
+	MockUDAC *mudac = static_cast<MockUDAC *> (UserDataAccessController::FindUserDataAccessController("MockUserData"));
 	doTestUDAC(mudac);
 
 	// check results
 	assertAnyEqual(GetConfig()["Results"]["MockUDACTest"], mudac->GetMockedState());
 }
 
-void MockAccessControllerTests::MockTDACTest()
-{
+void MockAccessControllerTests::MockTDACTest() {
 	StartTrace(MockAccessControllerTests.MockTDACTest);
 
-	MockTDAC *mtdac = static_cast<MockTDAC *>(TokenDataAccessController::FindTokenDataAccessController("MockTokenData"));
+	MockTDAC *mtdac = static_cast<MockTDAC *> (TokenDataAccessController::FindTokenDataAccessController("MockTokenData"));
 	doTestTDAC(mtdac);
 
 	// check results
 	assertAnyEqual(GetConfig()["Results"]["MockTDACTest"], mtdac->GetMockedState());
 }
 
-void MockAccessControllerTests::MockEDACTest()
-{
+void MockAccessControllerTests::MockEDACTest() {
 	StartTrace(MockAccessControllerTests.MockEDACTest);
 
-	MockEDAC *medac = static_cast<MockEDAC *>(EntityDataAccessController::FindEntityDataAccessController("MockEntityData"));
+	MockEDAC *medac = static_cast<MockEDAC *> (EntityDataAccessController::FindEntityDataAccessController("MockEntityData"));
 	doTestEDAC(medac);
 
 	// check results
 	assertAnyEqual(GetConfig()["Results"]["MockEDACTest"], medac->GetMockedState());
 }
 
-Test *MockAccessControllerTests::suite ()
-{
+Test *MockAccessControllerTests::suite() {
 	StartTrace(FileUDACTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, MockAccessControllerTests, MockUDACTest);

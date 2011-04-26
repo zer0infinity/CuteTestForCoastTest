@@ -6,22 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+#include "FlowControllerTest.h"
 #include "TestSuite.h"
 #include "FlowController.h"
-#include "FlowControllerTest.h"
-#include "SystemFile.h"
-#include "Dbg.h"
 #include <iostream>
 
-//---- FlowControllerTest ----------------------------------------------------------------
-FlowControllerTest::FlowControllerTest(TString tstrName) : StressAppTest(tstrName) { }
-
-FlowControllerTest::~FlowControllerTest()
-{
-}
-
-void FlowControllerTest::setUp ()
-{
+void FlowControllerTest::setUp() {
 	StressAppTest::setUp();
 
 	std::istream *ifp = Coast::System::OpenStream("FlowControllerTestConfig", "any");
@@ -36,62 +26,52 @@ void FlowControllerTest::setUp ()
 }
 
 //Test with Full configuration
-void FlowControllerTest::FullConfigurationTest()
-{
+void FlowControllerTest::FullConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration without NumberOfRuns ( default of one is taken )
-void FlowControllerTest::WithoutNumberOfRunsConfigurationTest()
-{
+void FlowControllerTest::WithoutNumberOfRunsConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration with NumberOfRuns=0 ( run is not executed )
-void FlowControllerTest::NumberOfRuns0ConfigurationTest()
-{
+void FlowControllerTest::NumberOfRuns0ConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration without PreRun (just Run executed )
-void FlowControllerTest::WithoutPreRunConfigurationTest()
-{
+void FlowControllerTest::WithoutPreRunConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration without Run ( just PreRun executed )
-void FlowControllerTest::WithoutRunConfigurationTest()
-{
+void FlowControllerTest::WithoutRunConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration with only PreRun
-void FlowControllerTest::PreRunOnlyConfigurationTest()
-{
+void FlowControllerTest::PreRunOnlyConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration with only Run
-void FlowControllerTest::RunOnlyConfigurationTest()
-{
+void FlowControllerTest::RunOnlyConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration with only Run and only one step
-void FlowControllerTest::RunOnlyOneStepConfigurationTest()
-{
+void FlowControllerTest::RunOnlyOneStepConfigurationTest() {
 	DoTest();
 }
 
 //Test with configuration that does not contain any of the necessary slots
-void FlowControllerTest::InvalidConfigurationTest()
-{
+void FlowControllerTest::InvalidConfigurationTest() {
 	DoTest();
 }
 
 // Checks if the tmpStore is prepared according the FlowController's configuration
-void FlowControllerTest::DoTest()
-{
+void FlowControllerTest::DoTest() {
 	StartTrace1(FlowControllerTest.DoTest, "<" << fName << ">");
 
 	String controllerName = fConfig[fName]["FlowController"].AsString("Invalid");
@@ -119,8 +99,7 @@ void FlowControllerTest::DoTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *FlowControllerTest::suite ()
-{
+Test *FlowControllerTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, FlowControllerTest, FullConfigurationTest);

@@ -9,6 +9,7 @@
 #include "HTTPProcessorWithChecksTest.h"
 #include "HTTPProcessorWithChecks.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Context.h"
 #include "HTTPProcessorWithChecks.h"
 #include "Dbg.h"

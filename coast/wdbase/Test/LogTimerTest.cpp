@@ -9,21 +9,9 @@
 #include "LogTimerTest.h"
 #include "Timers.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 
-//---- LogTimerTest ----------------------------------------------------------------
-LogTimerTest::LogTimerTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(LogTimerTest.LogTimerTest);
-}
-
-LogTimerTest::~LogTimerTest()
-{
-	StartTrace(LogTimerTest.Dtor);
-}
-
-void LogTimerTest::MethodTimerTest()
-{
+void LogTimerTest::MethodTimerTest() {
 	StartTrace(LogTimerTest.MethodTimerTest);
 	Context ctx;
 	TimeLoggingModule::fgDoTiming = true;
@@ -50,7 +38,8 @@ void LogTimerTest::MethodTimerTest()
 
 		{
 			// trigger the destructor by defining its own scope
-			MethodTimer(Test, msg, ctx);
+			MethodTimer(Test, msg, ctx)
+			;
 		}
 		assertAnyEqual(expected, ctx.GetTmpStore());
 		TraceAny(ctx.GetTmpStore(), "TmpStore");
@@ -75,11 +64,13 @@ void LogTimerTest::MethodTimerTest()
 		//call a method twice
 		{
 			// trigger the destructor by defining its own scope
-			MethodTimer(Test, msg, ctx);
+			MethodTimer(Test, msg, ctx)
+			;
 		}
 		{
 			// trigger the destructor by defining its own scope
-			MethodTimer(Test, msg, ctx);
+			MethodTimer(Test, msg, ctx)
+			;
 		}
 		TraceAny(ctx.GetTmpStore(), "TmpStore");
 		assertAnyEqual(expected, ctx.GetTmpStore());
@@ -100,7 +91,7 @@ void LogTimerTest::MethodTimerTest()
 		dataA[TimeLogger::eMsg] = "Test MethodTimer";
 		dataA[TimeLogger::eUnit] = "ms";
 		dataA[TimeLogger::eNestingLevel] = 0L;
-		Anything dataB( dataA.DeepClone() );
+		Anything dataB(dataA.DeepClone());
 		dataB[TimeLogger::eKey] = "Test.SubB";
 		expected["Log"]["Times"].Append(dataA.DeepClone());
 		expected["Log"]["Times"].Append(dataB.DeepClone());
@@ -108,11 +99,13 @@ void LogTimerTest::MethodTimerTest()
 		//call different methods of a class
 		{
 			// trigger the destructor by defining its own scope
-			MethodTimer(Test.SubA, msg, ctx);
+			MethodTimer(Test.SubA, msg, ctx)
+			;
 		}
 		{
 			// trigger the destructor by defining its own scope
-			MethodTimer(Test.SubB, msg, ctx);
+			MethodTimer(Test.SubB, msg, ctx)
+			;
 		}
 		TraceAny(ctx.GetTmpStore(), "TmpStore");
 		assertAnyEqual(expected, ctx.GetTmpStore());
@@ -120,8 +113,7 @@ void LogTimerTest::MethodTimerTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *LogTimerTest::suite ()
-{
+Test *LogTimerTest::suite() {
 	StartTrace(LogTimerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, LogTimerTest, MethodTimerTest);

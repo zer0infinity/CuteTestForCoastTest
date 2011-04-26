@@ -9,28 +9,14 @@
 #ifndef _HTMLParserTest_H
 #define _HTMLParserTest_H
 
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
-//---- HTMLParserTest ----------------------------------------------------------
-//!TestCases description
-class HTMLParserTest : public TestFramework::TestCase
-{
+class HTMLParserTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	HTMLParserTest(TString tstrName);
-
-	//!destroys the test case
-	~HTMLParserTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!describe this testcase
+	HTMLParserTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void ParseFileTest();
 };
 

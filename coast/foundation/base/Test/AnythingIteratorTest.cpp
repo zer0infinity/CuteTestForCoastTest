@@ -1,35 +1,26 @@
 #include "AnythingIteratorTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "FoundationTestTypes.h"
 
-AnythingIteratorTest::AnythingIteratorTest (TString tname)
-	: TestCaseType(tname)
-{
-}
-
-void AnythingIteratorTest::testEmptyAnythingBegin()
-{
+void AnythingIteratorTest::testEmptyAnythingBegin() {
 	Anything a;
 	t_assert(a.begin() == a.end());
 	const Anything &b = a;
 	t_assert(b.begin() == b.end());
 }
-void AnythingIteratorTest::testSimpleAnythingBegin()
-{
+void AnythingIteratorTest::testSimpleAnythingBegin() {
 	Anything a(1L);
 	t_assert(a.begin() != a.end());
 	const Anything &b = a;
 	t_assert(b.begin() != b.end());
 }
-void AnythingIteratorTest::testSimpleAnythingDeref()
-{
+void AnythingIteratorTest::testSimpleAnythingDeref() {
 	Anything a(1L);
 	t_assert(*a.begin() == a);
 	const Anything &b = a;
 	t_assert(*b.begin() == b);
 }
-void AnythingIteratorTest::testSimpleAnythingIncrement()
-{
+void AnythingIteratorTest::testSimpleAnythingIncrement() {
 	Anything a(1L);
 	Anything_iterator ai = a.begin();
 	t_assert(++ai == a.end());
@@ -39,8 +30,7 @@ void AnythingIteratorTest::testSimpleAnythingIncrement()
 	t_assert(++bi == b.end());
 	t_assert(bi != b.begin());
 }
-void AnythingIteratorTest::testSimpleAnythingDecrement()
-{
+void AnythingIteratorTest::testSimpleAnythingDecrement() {
 	Anything a(1L);
 	Anything_iterator ai = a.end();
 	t_assert(--ai == a.begin());
@@ -50,15 +40,13 @@ void AnythingIteratorTest::testSimpleAnythingDecrement()
 	t_assert(--bi == b.begin());
 	t_assert(bi != b.end());
 }
-void AnythingIteratorTest::testSimpleAnythingAssignment()
-{
+void AnythingIteratorTest::testSimpleAnythingAssignment() {
 	Anything a(1L);
 	*a.begin() = 5L;
 	t_assert(*a.begin() == Anything(5L));
 
 }
-void AnythingIteratorTest::testAnythingIteration()
-{
+void AnythingIteratorTest::testAnythingIteration() {
 	Anything a;
 	a.Append(1L);
 	a.Append(2L);
@@ -75,8 +63,7 @@ void AnythingIteratorTest::testAnythingIteration()
 	}
 	t_assert(bi == b.end());
 }
-void AnythingIteratorTest::testSimpleAnythingIncDec()
-{
+void AnythingIteratorTest::testSimpleAnythingIncDec() {
 	Anything a(1L);
 	Anything_iterator ai = a.begin();
 	Anything_iterator ai1 = ++ai;
@@ -94,8 +81,7 @@ void AnythingIteratorTest::testSimpleAnythingIncDec()
 	t_assert(bi1 != bi);
 	t_assert(--bi == bi);
 }
-void AnythingIteratorTest::testAnythingIndex()
-{
+void AnythingIteratorTest::testAnythingIndex() {
 	assertEqual(5, fAny5.GetSize());
 	Anything_iterator it = fAny5.begin();
 	assertAnyEqual(fAny5[0], it[0]);
@@ -118,8 +104,7 @@ void AnythingIteratorTest::testAnythingIndex()
 	assertAnyEqual(*fAny5.begin(), cit[-2]);
 	assertAnyEqual(fAny5.end()[-3], *cit);
 }
-void AnythingIteratorTest::testIteratorSubstract()
-{
+void AnythingIteratorTest::testIteratorSubstract() {
 	assertEqual(fAny5.GetSize(), fAny5.end() - fAny5.begin());
 	const Anything &a5 = fAny5;
 	assertEqual(a5.GetSize(), a5.end() - a5.begin());
@@ -142,8 +127,7 @@ void AnythingIteratorTest::testIteratorSubstract()
 	assertEqual(1, bi - b.begin());
 	assertEqual(-1, b.begin() - bi);
 }
-void AnythingIteratorTest::testIteratorIntAdd()
-{
+void AnythingIteratorTest::testIteratorIntAdd() {
 	Anything_iterator ai = fAny5.begin();
 	assertAnyEqual(*(ai + 4), fAny5[4]);
 	++ai;
@@ -155,8 +139,7 @@ void AnythingIteratorTest::testIteratorIntAdd()
 	t_assert(bi == (fAny5.begin() + 1));
 	t_assert(bi == (fAny5.end() + (-4)));
 }
-void AnythingIteratorTest::testIteratorIntSubstract()
-{
+void AnythingIteratorTest::testIteratorIntSubstract() {
 	Anything_iterator ai = fAny5.end();
 	assertAnyEqual(*(ai - 4), fAny5[1]);
 	--ai;
@@ -168,8 +151,7 @@ void AnythingIteratorTest::testIteratorIntSubstract()
 	t_assert(bi == (fAny5.end() - 1));
 	t_assert(bi == (fAny5.begin() - (-4)));
 }
-void AnythingIteratorTest::testIteratorCompare()
-{
+void AnythingIteratorTest::testIteratorCompare() {
 	Anything a;
 	t_assert(a.begin() <= a.end());
 	t_assert(a.end() >= a.begin());
@@ -207,8 +189,7 @@ void AnythingIteratorTest::testIteratorCompare()
 }
 // the following 2 tests should belong to AnythingSTLTest,
 // but for convenience of setUp with fAny5 it is here
-void AnythingIteratorTest::testAnythingSingleErase()
-{
+void AnythingIteratorTest::testAnythingSingleErase() {
 	Anything a = fAny5;
 	assertEqual(5, a.end() - a.begin());
 	t_assert(a.begin() == a.erase(a.begin()));
@@ -224,8 +205,7 @@ void AnythingIteratorTest::testAnythingSingleErase()
 	assertEqual(0, a.end() - a.begin());
 	t_assert(a.empty());
 }
-void AnythingIteratorTest::testAnythingRangeErase()
-{
+void AnythingIteratorTest::testAnythingRangeErase() {
 	Anything a = fAny5;
 	assertEqual(5, a.end() - a.begin());
 	t_assert(a.end() == a.erase(a.end(), a.end()));
@@ -237,15 +217,13 @@ void AnythingIteratorTest::testAnythingRangeErase()
 	assertEqual(4, a.end() - a.begin());
 
 }
-void AnythingIteratorTest::setUp ()
-{
+void AnythingIteratorTest::setUp() {
 	fAny5.clear();
 	for (long i = 1; i <= 5; ++i) {
 		fAny5.Append(i);
 	}
 }
-Test *AnythingIteratorTest::suite ()
-{
+Test *AnythingIteratorTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, AnythingIteratorTest, testEmptyAnythingBegin);

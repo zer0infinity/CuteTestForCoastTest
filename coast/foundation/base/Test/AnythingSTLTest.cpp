@@ -1,23 +1,15 @@
 #include "AnythingSTLTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 
-AnythingSTLTest::AnythingSTLTest(TString tname)
-	: TestCaseType(tname)
-{
-}
-
-void AnythingSTLTest::setUp() {}
-
-void AnythingSTLTest::testSimpleSwap()
-{
+void AnythingSTLTest::testSimpleSwap() {
 	Anything first(1L);
 	Anything second("two");
 	first.swap(second);
 	assertEqual(1L, second.AsLong());
 	assertEqual("two", first.AsCharPtr());
 }
-void AnythingSTLTest::testSwapWithDifferentAllocator()
-{
+void AnythingSTLTest::testSwapWithDifferentAllocator() {
 	GlobalAllocator ga;
 	Anything first(1L, &ga);
 	t_assert(&ga == first.GetAllocator());
@@ -30,8 +22,7 @@ void AnythingSTLTest::testSwapWithDifferentAllocator()
 	t_assert(&ga == second.GetAllocator());
 	t_assert(Coast::Storage::Current() == first.GetAllocator());
 }
-void AnythingSTLTest::testFrontBackPushPop()
-{
+void AnythingSTLTest::testFrontBackPushPop() {
 	Anything a;
 	a.push_back("two");
 	a.push_front(1L);
@@ -50,24 +41,21 @@ void AnythingSTLTest::testFrontBackPushPop()
 	a.pop_back();
 	t_assert(a.empty());
 }
-static const long rangeinput[] = {1, 2, 3, 4, 5};
+static const long rangeinput[] = { 1, 2, 3, 4, 5 };
 const int rangeSize = (sizeof(rangeinput) / sizeof(rangeinput[0]));
 
-void AnythingSTLTest::checkRange(const Anything &a, long n = 0, long lengthOfCopy = rangeSize)
-{
+void AnythingSTLTest::checkRange(const Anything &a, long n = 0, long lengthOfCopy = rangeSize) {
 	for (int i = 0; i < lengthOfCopy; ++i) {
 		assertEqual(rangeinput[i], a[i+n].AsLong());
 	}
 }
 
-void AnythingSTLTest::testRangeAssign()
-{
+void AnythingSTLTest::testRangeAssign() {
 	Anything a;
 	a.assign(rangeinput, rangeinput + rangeSize);
 	checkRange(a);
 }
-void AnythingSTLTest::testRangeCtor()
-{
+void AnythingSTLTest::testRangeCtor() {
 	Anything a(rangeinput, rangeinput + rangeSize);
 	checkRange(a);
 	Anything b(rangeinput, rangeinput + rangeSize, Coast::Storage::Current());
@@ -75,45 +63,38 @@ void AnythingSTLTest::testRangeCtor()
 }
 const Anything::size_type nOfCopies = 4;
 const char *valueToBeCopied = "a test";
-void AnythingSTLTest::checkFill(const Anything &a)
-{
+void AnythingSTLTest::checkFill(const Anything &a) {
 	assertEqual(nOfCopies, a.size());
 	for (int i = 0; i < nOfCopies; ++i) {
 		assertEqual(valueToBeCopied, a[i].AsCharPtr());
 	}
 }
-void AnythingSTLTest::checkFillSizeType(const Anything &a)
-{
+void AnythingSTLTest::checkFillSizeType(const Anything &a) {
 	for (long i = 0; i < nOfCopies; ++i) {
 		assertEqual(42L, a[i].AsLong());
 	}
 }
-void AnythingSTLTest::testFillAssign()
-{
+void AnythingSTLTest::testFillAssign() {
 	Anything a;
 	a.assign(nOfCopies, valueToBeCopied);
 	checkFill(a);
 }
-void AnythingSTLTest::testFillAssignWithSizeType()
-{
+void AnythingSTLTest::testFillAssignWithSizeType() {
 	Anything a;
 	a.assign(nOfCopies, Anything::size_type(42L));
 	checkFillSizeType(a);
 }
-void AnythingSTLTest::testFillCtor()
-{
+void AnythingSTLTest::testFillCtor() {
 	Anything a(nOfCopies, valueToBeCopied);
 	checkFill(a);
 }
-void AnythingSTLTest::testFillCtorWithSizeType()
-{
+void AnythingSTLTest::testFillCtorWithSizeType() {
 	Anything a(nOfCopies, Anything::size_type(42L));
 	checkFillSizeType(a);
 	Anything b(nOfCopies, Anything::size_type(42L), Coast::Storage::Current());
 	checkFillSizeType(b);
 }
-void AnythingSTLTest::testSimpleInsertToEmptyAny()
-{
+void AnythingSTLTest::testSimpleInsertToEmptyAny() {
 	Anything a;
 	a.insert(a.begin(), 42L);
 	assertEqual(42L, a[0L].AsLong());
@@ -122,27 +103,23 @@ void AnythingSTLTest::testSimpleInsertToEmptyAny()
 	a.insert(a.end(), "test");
 	assertEqual("test", a[0L].AsCharPtr());
 }
-void AnythingSTLTest::checkSimpleInsert(const Anything &a, const char *m)
-{
+void AnythingSTLTest::checkSimpleInsert(const Anything &a, const char *m) {
 	assertEqualm(42L, a[0].AsLong(), m);
 	assertEqualm("test", a[1].AsCharPtr(), m);
 	assertEqualm(2, a.size(), m);
 }
 
-void AnythingSTLTest::testSimpleInsertAtEnd()
-{
+void AnythingSTLTest::testSimpleInsertAtEnd() {
 	Anything a(42L);
 	a.insert(a.end(), "test");
 	checkSimpleInsert(a, "testSimpleInsertAtEnd");
 }
-void AnythingSTLTest::testSimpleInsertAtBegin()
-{
+void AnythingSTLTest::testSimpleInsertAtBegin() {
 	Anything a("test");
 	a.insert(a.begin(), 42L);
 	checkSimpleInsert(a, "testSimpleInsertAtBegin");
 }
-void AnythingSTLTest::checkInsertInArray(const Anything &a, long testpos, const char *msg, long n)
-{
+void AnythingSTLTest::checkInsertInArray(const Anything &a, long testpos, const char *msg, long n) {
 	TString m(msg);
 	m.Append(" pos: ");
 	m.Append(testpos);
@@ -157,16 +134,14 @@ void AnythingSTLTest::checkInsertInArray(const Anything &a, long testpos, const 
 		assertEqualm(rangeinput[i], a[i+n].AsLong(), m);
 	}
 }
-void AnythingSTLTest::testSimpleInsertInArray()
-{
+void AnythingSTLTest::testSimpleInsertInArray() {
 	for (long testpos = 0; testpos <= rangeSize; ++testpos) {
 		Anything a(rangeinput, rangeinput + rangeSize);
 		a.insert(a.begin() + testpos, 42L);
 		checkInsertInArray(a, testpos, "SimpleInsert");
 	}
 }
-Anything makeAnyWithKeys()
-{
+Anything makeAnyWithKeys() {
 	Anything a;
 	a["eins"] = 1L;
 	a["zwei"] = 2.0;
@@ -174,8 +149,7 @@ Anything makeAnyWithKeys()
 	a["vier"] = "vier";
 	return a;
 }
-void AnythingSTLTest::checkInsertWithKeys(const Anything &a, const long testpos, const char *m, const long n)
-{
+void AnythingSTLTest::checkInsertWithKeys(const Anything &a, const long testpos, const char *m, const long n) {
 	TString msg(m);
 	msg.Append(":run ");
 	msg.Append(testpos);
@@ -189,8 +163,7 @@ void AnythingSTLTest::checkInsertWithKeys(const Anything &a, const long testpos,
 	assertEqualm("vier", a[vierpos].AsCharPtr(), msg);
 	assertEqualm("vier", a.SlotName(vierpos), msg);
 }
-void AnythingSTLTest::testSimpleInsertWithKeys()
-{
+void AnythingSTLTest::testSimpleInsertWithKeys() {
 	for (long testpos = 0; testpos <= 4; ++testpos) {
 		Anything a(makeAnyWithKeys());
 		a.insert(a.begin() + testpos, 42L);
@@ -198,8 +171,7 @@ void AnythingSTLTest::testSimpleInsertWithKeys()
 		assertEqual(42L, a[testpos].AsLong());
 	}
 }
-void AnythingSTLTest::testFillInsertToEmptyAny()
-{
+void AnythingSTLTest::testFillInsertToEmptyAny() {
 	Anything a;
 	const Anything::size_type n = 4;
 	const char *content = "foo";
@@ -209,8 +181,7 @@ void AnythingSTLTest::testFillInsertToEmptyAny()
 		assertEqual(content, a[i].AsCharPtr());
 	}
 }
-void AnythingSTLTest::testFillInsertInArray()
-{
+void AnythingSTLTest::testFillInsertInArray() {
 	for (long testpos = 0; testpos <= rangeSize; ++testpos) {
 		Anything a(rangeinput, rangeinput + rangeSize);
 		const long n = 3;
@@ -218,8 +189,7 @@ void AnythingSTLTest::testFillInsertInArray()
 		checkInsertInArray(a, testpos, "FillInsert", n);
 	}
 }
-void AnythingSTLTest::testFillInsertWithKeys()
-{
+void AnythingSTLTest::testFillInsertWithKeys() {
 	for (long testpos = 0; testpos <= 4; ++testpos) {
 		const long n = 5;
 		Anything a(makeAnyWithKeys());
@@ -230,8 +200,7 @@ void AnythingSTLTest::testFillInsertWithKeys()
 		}
 	}
 }
-void AnythingSTLTest::testFillInsertZero()
-{
+void AnythingSTLTest::testFillInsertZero() {
 	Anything a;
 	a.insert(a.begin(), 0, 42L);
 	assertAnyEqual(Anything(), a);
@@ -245,14 +214,12 @@ void AnythingSTLTest::testFillInsertZero()
 	assertEqual("zwei", a[1L].AsCharPtr());
 }
 
-void AnythingSTLTest::testIterInsertToEmptyAny()
-{
+void AnythingSTLTest::testIterInsertToEmptyAny() {
 	Anything a;
 	a.insert(a.begin(), rangeinput, rangeinput + rangeSize);
 	checkRange(a);
 }
-void AnythingSTLTest::testIterInsertInArray()
-{
+void AnythingSTLTest::testIterInsertInArray() {
 	for (long testpos = 0; testpos <= rangeSize; ++testpos) {
 		Anything a(rangeinput, rangeinput + rangeSize);
 		const long lengthOfInsertion = rangeSize - 1;
@@ -272,8 +239,7 @@ void AnythingSTLTest::testIterInsertInArray()
 		}
 	}
 }
-void AnythingSTLTest::testIterInsertWithKeys()
-{
+void AnythingSTLTest::testIterInsertWithKeys() {
 	for (long testpos = 0; testpos <= 4; ++testpos) {
 		const long lengthOfInsertion = rangeSize - 1;
 		Anything a(makeAnyWithKeys());
@@ -282,8 +248,7 @@ void AnythingSTLTest::testIterInsertWithKeys()
 		checkRange(a, testpos, lengthOfInsertion);
 	}
 }
-void AnythingSTLTest::testIterInsertZero()
-{
+void AnythingSTLTest::testIterInsertZero() {
 	Anything a;
 	a.insert(a.begin(), rangeinput, rangeinput); // no op!
 	assertAnyEqual(Anything(), a);
@@ -296,8 +261,7 @@ void AnythingSTLTest::testIterInsertZero()
 	assertEqual(2, a.size());
 	assertEqual("zwei", a[1L].AsCharPtr());
 }
-Test *AnythingSTLTest::suite ()
-{
+Test *AnythingSTLTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, AnythingSTLTest, testSimpleSwap);

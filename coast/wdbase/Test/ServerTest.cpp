@@ -6,26 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "TestSuite.h"
-#include "Server.h"
 #include "ServerTest.h"
+#include "TestSuite.h"
+#include "FoundationTestTypes.h"
+#include "Server.h"
 #include "Socket.h"
 #define TESTHOST "localhost"
 
-//---- ServerTest ----------------------------------------------------------------
-ServerTest::ServerTest(TString tname)
-	: TestCaseType(tname)
-{
-	StartTrace(ServerTest.ServerTest);
-}
-
-ServerTest::~ServerTest()
-{
-	StartTrace(ServerTest.Dtor);
-}
-
-void ServerTest::setUp ()
-{
+void ServerTest::setUp() {
 	StartTrace(ServerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 	Server *s;
@@ -36,19 +24,18 @@ void ServerTest::setUp ()
 	}
 }
 
-void ServerTest::InitRunTerminateAcceptorTest()
-{
+void ServerTest::InitRunTerminateAcceptorTest() {
 	StartTrace(ServerTest.InitRunTerminateAcceptorTest);
 	TestCaseType::DoUnloadConfig();
 	for (long i = 0; i < 3; i++) {
 		TestCaseType::DoLoadConfig("ServerTest", "InitRunTerminateAcceptorTest");
 		Server *server = Server::FindServer("AcceptorWorkerServer");
-		if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
-			server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+		if (t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there")) {
+			server = (Server *) server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
@@ -70,19 +57,18 @@ void ServerTest::InitRunTerminateAcceptorTest()
 	}
 }
 
-void ServerTest::InitRunTerminateLeaderFollowerTest()
-{
+void ServerTest::InitRunTerminateLeaderFollowerTest() {
 	StartTrace(ServerTest.InitRunTerminateLeaderFollowerTest);
 	TestCaseType::DoUnloadConfig();
 	for (long i = 0; i < 3; i++) {
 		TestCaseType::DoLoadConfig("ServerTest", "InitRunTerminateLeaderFollowerTest");
 		Server *server = Server::FindServer("LeaderFollowerServer");
-		if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
-			server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+		if (t_assertm(server != NULL, "expected LeaderFollowerServer to be there")) {
+			server = (Server *) server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
@@ -104,25 +90,24 @@ void ServerTest::InitRunTerminateLeaderFollowerTest()
 	}
 }
 
-void ServerTest::InitRunResetRunTerminateAcceptorTest()
-{
+void ServerTest::InitRunResetRunTerminateAcceptorTest() {
 	StartTrace(ServerTest.InitRunResetRunTerminateAcceptorTest);
 	TestCaseType::DoUnloadConfig();
 	for (long i = 0; i < 3; i++) {
 		TestCaseType::DoLoadConfig("ServerTest", "InitRunResetRunTerminateAcceptorTest");
 		Server *server = Server::FindServer("AcceptorWorkerServer");
-		if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
-			server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+		if (t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there")) {
+			server = (Server *) server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
-							if ( t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok") ) {
+							if (t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok")) {
 								RunTestSequence();
 							}
 							mt.PrepareShutdown(0);
@@ -141,25 +126,24 @@ void ServerTest::InitRunResetRunTerminateAcceptorTest()
 	}
 }
 
-void ServerTest::InitRunResetRunTerminateLeaderFollowerTest()
-{
+void ServerTest::InitRunResetRunTerminateLeaderFollowerTest() {
 	StartTrace(ServerTest.InitRunResetRunTerminateLeaderFollowerTest);
 	TestCaseType::DoUnloadConfig();
 	for (long i = 0; i < 3; i++) {
 		TestCaseType::DoLoadConfig("ServerTest", "InitRunResetRunTerminateLeaderFollowerTest");
 		Server *server = Server::FindServer("LeaderFollowerServer");
-		if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
-			server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
-			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+		if (t_assertm(server != NULL, "expected LeaderFollowerServer to be there")) {
+			server = (Server *) server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
+			if (t_assertm(server != NULL, "expected server-clone to succeed")) {
 				ServerThread mt(server);
-				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
+				if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assertm(mt.serverIsInitialized(), "expected initialization to succeed")) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
-							if ( t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok") ) {
+							if (t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok")) {
 								RunTestSequence();
 							}
 							mt.PrepareShutdown(0);
@@ -178,8 +162,7 @@ void ServerTest::InitRunResetRunTerminateLeaderFollowerTest()
 	}
 }
 
-void ServerTest::RunTestSequence()
-{
+void ServerTest::RunTestSequence() {
 	StartTrace(ServerTest.RunTestSequence);
 	Anything testMessage1;
 	Anything testMessage2;
@@ -206,8 +189,7 @@ void ServerTest::RunTestSequence()
 	}
 }
 
-Test *ServerTest::suite ()
-{
+Test *ServerTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ServerTest, InitRunTerminateAcceptorTest);
 	ADD_CASE(testSuite, ServerTest, InitRunTerminateLeaderFollowerTest);

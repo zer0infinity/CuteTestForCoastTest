@@ -9,23 +9,12 @@
 #include "NameUsingOutputMapperTest.h"
 #include "NameUsingOutputMapper.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStream.h"
 #include "Context.h"
 
-//---- NameUsingOutputMapperTest ----------------------------------------------------------------
-NameUsingOutputMapperTest::NameUsingOutputMapperTest(TString tname) : TestCaseType(tname)
-{
-	StartTrace(NameUsingOutputMapperTest.Ctor);
-}
-
-NameUsingOutputMapperTest::~NameUsingOutputMapperTest()
-{
-	StartTrace(NameUsingOutputMapperTest.Dtor);
-}
-
 //:tests if the data is put into the tempstore under the name of the Mapper
-void NameUsingOutputMapperTest::NonConfiguredDestinationTest()
-{
+void NameUsingOutputMapperTest::NonConfiguredDestinationTest() {
 	StartTrace(NameUsingOutputMapperTest.NonConfiguredDestinationTest);
 
 	NameUsingOutputMapper mapper("TestMapper");
@@ -39,8 +28,7 @@ void NameUsingOutputMapperTest::NonConfiguredDestinationTest()
 }
 
 //:tests if the data is put into the configured Destination
-void NameUsingOutputMapperTest::ConfiguredDestinationTest()
-{
+void NameUsingOutputMapperTest::ConfiguredDestinationTest() {
 	StartTrace(NameUsingOutputMapperTest.ConfiguredDestinationTest);
 
 	NameUsingOutputMapper mapper("ConfiguredTestMapper");
@@ -52,8 +40,7 @@ void NameUsingOutputMapperTest::ConfiguredDestinationTest()
 	DoCheck(c.GetSessionStore());
 }
 
-void NameUsingOutputMapperTest::DoPut(ResultMapper &mapper, Context &c)
-{
+void NameUsingOutputMapperTest::DoPut(ResultMapper &mapper, Context &c) {
 	StartTrace(NameUsingOutputMapperTest.DoPut);
 
 	t_assert(mapper.Put("AKey", String("AValue"), c));
@@ -73,8 +60,7 @@ void NameUsingOutputMapperTest::DoPut(ResultMapper &mapper, Context &c)
 	t_assert(mapper.Put("AStream", theStream, c));
 }
 
-void NameUsingOutputMapperTest::DoCheck(const ROAnything &result)
-{
+void NameUsingOutputMapperTest::DoCheck(const ROAnything &result) {
 	StartTrace(NameUsingOutputMapperTest.DoCheck);
 
 	Anything expected;
@@ -90,8 +76,7 @@ void NameUsingOutputMapperTest::DoCheck(const ROAnything &result)
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *NameUsingOutputMapperTest::suite ()
-{
+Test *NameUsingOutputMapperTest::suite() {
 	StartTrace(NameUsingOutputMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

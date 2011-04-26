@@ -7,25 +7,11 @@
  */
 
 #include "PipeStreamTest.h"
-#include "PipeStream.h"
 #include "TestSuite.h"
 #include "Pipe.h"
 #include "Dbg.h"
 
-//---- PipeStreamTest ----------------------------------------------------------------
-PipeStreamTest::PipeStreamTest(TString className)
-	: TestCaseType(className)
-{
-	StartTrace(PipeStreamTest.Ctor);
-}
-
-PipeStreamTest::~PipeStreamTest()
-{
-	StartTrace(PipeStreamTest.Dtor);
-}
-
-void PipeStreamTest::SimpleWriteandRead()
-{
+void PipeStreamTest::SimpleWriteandRead() {
 	StartTrace(PipeStreamTest.SimpleWriteandRead);
 
 	Pipe pipi;
@@ -42,8 +28,7 @@ void PipeStreamTest::SimpleWriteandRead()
 	stream->clear();
 }
 
-void PipeStreamTest::MoreWriteandRead()
-{
+void PipeStreamTest::MoreWriteandRead() {
 	StartTrace(PipeStreamTest.MoreWriteandRead);
 
 	Pipe pipi(5000L);
@@ -66,8 +51,7 @@ void PipeStreamTest::MoreWriteandRead()
 	}
 }
 
-void PipeStreamTest::LoopWriteandRead()
-{
+void PipeStreamTest::LoopWriteandRead() {
 	StartTrace(PipeStreamTest.LoopWriteandRead);
 
 	Pipe pipi;
@@ -87,16 +71,15 @@ void PipeStreamTest::LoopWriteandRead()
 		t_assert(!pipi.IsReadyForWriting());
 		stream->clear();
 		String h(cBufSz);
-		String expected( "hallo2\n" );
-		while (stream->read((char *)(const char *)h, cBufSz)) {
+		String expected("hallo2\n");
+		while (stream->read((char *) (const char *) h, cBufSz)) {
 			assertEqual(expected, h);
 		}
 
 		// now flush again
-
 		t_assert(pipi.IsReadyForWriting());
 		(*stream) << std::flush;
-		while (stream->read((char *)(const char *)h, cBufSz)) {
+		while (stream->read((char *) (const char *) h, cBufSz)) {
 			assertEqual(expected, h);
 		}
 		pipi.ShutDownWriting();
@@ -106,14 +89,13 @@ void PipeStreamTest::LoopWriteandRead()
 	}
 }
 
-void PipeStreamTest::PipeAndFork()
-{
-	StartTrace(PipeStreamTest.PipeAndFork);
+void PipeStreamTest::PipeAndFork() {
+	StartTrace(PipeStreamTest.PipeAndFork)
+	;
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *PipeStreamTest::suite ()
-{
+Test *PipeStreamTest::suite() {
 	StartTrace(PipeStreamTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

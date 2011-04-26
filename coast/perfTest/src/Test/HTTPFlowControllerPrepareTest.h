@@ -10,34 +10,21 @@
 #define _HTTPFlowControllerPrepareTest_H
 
 #include "HTTPFlowControllerTest.h"
-//---- HTTPFlowControllerPrepareTest ----------------------------------------------------------
-//!TestCases description
-class HTTPFlowControllerPrepareTest : public HTTPFlowControllerTest
-{
+class HTTPFlowControllerPrepareTest: public HTTPFlowControllerTest {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
-	HTTPFlowControllerPrepareTest(TString tstrName);
-
+	HTTPFlowControllerPrepareTest(TString tstrName) :
+		HTTPFlowControllerTest(tstrName) {
+	}
 	//!TestCase constructor
 	//! \param name name of the test
 	//! \param configFileName name of the tests config file
 	HTTPFlowControllerPrepareTest(TString tstrName, TString configFileName);
 
-	//!destroys the test case
-	~HTTPFlowControllerPrepareTest();
-
-	//--- public api
 	void DoCommandTest();
-
-	//--- Test cookie handling
 	void ProcessSetCookieTest();
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
+	static Test *suite();
 	TString getConfigFileName();
 };
 

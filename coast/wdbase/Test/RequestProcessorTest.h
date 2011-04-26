@@ -12,24 +12,12 @@
 #include "TestCase.h"
 #include "RequestProcessor.h"
 
-//---- RequestProcessorTest ----------------------------------------------------------
-//!test cases for RequestProcessor
-class RequestProcessorTest : public TestFramework::TestCase
-{
+class RequestProcessorTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	RequestProcessorTest(TString tstrName);
-
-	//!destroys the test case
-	~RequestProcessorTest();
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!test initialization of request processor
+	RequestProcessorTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void InitTest();
 
 	//!test processing of request with stub objects
@@ -37,8 +25,7 @@ public:
 };
 
 //! policy object shared by all threads to handle a request message;
-class LoopbackProcessor : public RequestProcessor
-{
+class LoopbackProcessor: public RequestProcessor {
 public:
 	//!named object shared by all requests
 	LoopbackProcessor(const char *processorName);

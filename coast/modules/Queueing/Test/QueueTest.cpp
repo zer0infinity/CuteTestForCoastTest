@@ -8,58 +8,53 @@
 
 #include "QueueTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Queue.h"
 #include "PoolAllocator.h"
-#include "Dbg.h"
 #include "SystemBase.h"
 #include <typeinfo>
 
 using namespace Coast;
 
-class DCDStateMachine
-{
+class DCDStateMachine {
 public:
-
-	// constructors
 	DCDStateMachine();
 
 	// events
 	struct ev_ReloadMarketCodeFilter {
-		ev_ReloadMarketCodeFilter(Anything &anyElement)
-			: fanyElement(anyElement)
-			, froaElement(fanyElement)
-		{}
+		ev_ReloadMarketCodeFilter(Anything &anyElement) :
+			fanyElement(anyElement), froaElement(fanyElement) {
+		}
 		Anything fanyElement;
 		ROAnything froaElement;
 	};
 };
 
-template < class theDCDStateMachine >
-class dcd_event
-{
+template<class theDCDStateMachine>
+class dcd_event {
 	template<typename ValueType>
 	dcd_event &operator=(const ValueType &);
 	dcd_event &operator=(const dcd_event &);
 
-public: // structors
-
-	dcd_event(const dcd_event &other)
-		: content(other.content ? other.content->clone() : 0) {
+public:
+	dcd_event(const dcd_event &other) :
+		content(other.content ? other.content->clone() : 0) {
 	}
-	dcd_event()
-		: content(0) {
+	dcd_event() :
+		content(0) {
 	}
 
 	template<typename ValueType>
-	dcd_event(const ValueType &value)
-		: content(new holder<ValueType>(value)) {
+	dcd_event(const ValueType &value) :
+		content(new holder<ValueType> (value)) {
 	}
 
 	~dcd_event() {
 		delete content;
 	}
 
-public: // queries
+public:
+	// queries
 
 	bool empty() const {
 		return !content;
@@ -70,19 +65,21 @@ public: // queries
 	}
 
 #ifndef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
-private: // types
+private:
+	// types
 #else
 public: // types (public so any_cast can be non-friend)
 #endif
 
-	class placeholder
-	{
-	public: // structors
+	class placeholder {
+	public:
+		// structors
 
 		virtual ~placeholder() {
 		}
 
-	public: // queries
+	public:
+		// queries
 
 		virtual bool process(theDCDStateMachine &rStateMachine) = 0;
 
@@ -93,18 +90,19 @@ public: // types (public so any_cast can be non-friend)
 	};
 
 	template<typename ValueType>
-	class holder : public placeholder
-	{
-	public: // structors
+	class holder: public placeholder {
+	public:
+		// structors
 
-		holder(const ValueType &value)
-			: held(value) {
+		holder(const ValueType &value) :
+			held(value) {
 		}
 
-	public: // queries
+	public:
+		// queries
 		virtual bool process(theDCDStateMachine &rStateMachine) {
-//				rStateMachine.process_event(held);
-//				return rStateMachine.successfull_state_transition();
+			//				rStateMachine.process_event(held);
+			//				return rStateMachine.successfull_state_transition();
 			return false;
 		}
 
@@ -116,7 +114,8 @@ public: // types (public so any_cast can be non-friend)
 			return new holder(held);
 		}
 
-	public: // representation
+	public:
+		// representation
 
 		ValueType held;
 
@@ -125,17 +124,16 @@ public: // types (public so any_cast can be non-friend)
 	placeholder *content;
 };
 
-class TestConsumer : public Thread
-{
+class TestConsumer: public Thread {
 	friend class QueueTest;
 public:
 	typedef AnyQueueType &AnyQueueTypeRef;
 
-	TestConsumer(AnyQueueTypeRef aQueue, long lHowManyConsumes, long lWaitTimeMicroSec = 0L)
-		: Thread("TestConsumer"), fQueue(aQueue), fWaitTimeMicroSec(lWaitTimeMicroSec), fToConsume(lHowManyConsumes), fConsumed(0L)
-	{}
-	~TestConsumer()
-	{}
+	TestConsumer(AnyQueueTypeRef aQueue, long lHowManyConsumes, long lWaitTimeMicroSec = 0L) :
+		Thread("TestConsumer"), fQueue(aQueue), fWaitTimeMicroSec(lWaitTimeMicroSec), fToConsume(lHowManyConsumes), fConsumed(0L) {
+	}
+	~TestConsumer() {
+	}
 	bool DoStartRequestedHook(ROAnything roaWork) {
 		fWork = roaWork.DeepClone();
 		return true;
@@ -144,9 +142,9 @@ public:
 		StartTrace(TestConsumer.Run);
 		long lProductCount = 0L;
 		bool bTryLock = fWork["TryLock"].AsBool(false);
-		while ( lProductCount < fToConsume ) {
+		while (lProductCount < fToConsume) {
 			Anything anyProduct;
-			if ( fQueue.Get(anyProduct, bTryLock) == AnyQueueType::eSuccess ) {
+			if (fQueue.Get(anyProduct, bTryLock) == AnyQueueType::eSuccess) {
 				TraceAny(anyProduct, "consumed product");
 				fProducts[lProductCount] = anyProduct;
 				if (fWaitTimeMicroSec > 0L) {
@@ -163,16 +161,15 @@ private:
 	Anything fWork, fProducts;
 };
 
-class TestProducer : public Thread
-{
+class TestProducer: public Thread {
 public:
 	typedef AnyQueueType &AnyQueueTypeRef;
 
-	TestProducer(AnyQueueTypeRef aQueue, long lHowManyProduces, long lWaitTimeMicroSec = 0L)
-		: Thread("TestProducer"), fQueue(aQueue), fWaitTimeMicroSec(lWaitTimeMicroSec), fToProduce(lHowManyProduces), fProduced(0L)
-	{}
-	~TestProducer()
-	{}
+	TestProducer(AnyQueueTypeRef aQueue, long lHowManyProduces, long lWaitTimeMicroSec = 0L) :
+		Thread("TestProducer"), fQueue(aQueue), fWaitTimeMicroSec(lWaitTimeMicroSec), fToProduce(lHowManyProduces), fProduced(0L) {
+	}
+	~TestProducer() {
+	}
 	bool DoStartRequestedHook(ROAnything roaWork) {
 		fWork = roaWork.DeepClone();
 		return true;
@@ -181,11 +178,11 @@ public:
 		StartTrace(TestProducer.Run);
 		long lProductCount = 0L;
 		bool bTryLock = fWork["TryLock"].AsBool(false);
-		while ( lProductCount < fToProduce ) {
+		while (lProductCount < fToProduce) {
 			Anything anyProduct = fWork["Product"].DeepClone();
 			anyProduct["ThreadId"] = GetId();
 			anyProduct["ProductNumber"] = lProductCount;
-			if ( fQueue.Put(anyProduct, bTryLock) == AnyQueueType::eSuccess ) {
+			if (fQueue.Put(anyProduct, bTryLock) == AnyQueueType::eSuccess) {
 				TraceAny(anyProduct, "produced product");
 				if (fWaitTimeMicroSec) {
 					System::MicroSleep(fWaitTimeMicroSec);
@@ -201,26 +198,25 @@ private:
 	Anything fWork;
 };
 
-class ConsumerTerminationThread : public Thread
-{
+class ConsumerTerminationThread: public Thread {
 	friend class QueueTest;
 public:
 	typedef AnyQueueType &AnyQueueTypeRef;
 
-	ConsumerTerminationThread(AnyQueueTypeRef aQueue)
-		: Thread("ConsumerTerminationThread"), fQueue(aQueue), fConsumed(0L)
-	{}
-	~ConsumerTerminationThread()
-	{}
+	ConsumerTerminationThread(AnyQueueTypeRef aQueue) :
+		Thread("ConsumerTerminationThread"), fQueue(aQueue), fConsumed(0L) {
+	}
+	~ConsumerTerminationThread() {
+	}
 	void Run() {
 		StartTrace(ConsumerTerminationThread.Run);
 		// signal start using working state
 		Trace("before CheckRunningState(eWorking)");
-		while ( CheckState( eRunning, 0, 1 ) ) {
+		while (CheckState(eRunning, 0, 1)) {
 			CheckRunningState(eWorking);
 			Trace("now working");
 			Anything anyProduct;
-			if ( fQueue.Get(anyProduct, false) == AnyQueueType::eSuccess ) {
+			if (fQueue.Get(anyProduct, false) == AnyQueueType::eSuccess) {
 				TraceAny(anyProduct, "consumed product");
 				fConsumed++;
 			}
@@ -235,18 +231,18 @@ private:
 typedef AnyQueueType &AnyQueueTypeRef;
 
 //---- QueueTest ----------------------------------------------------------------
-QueueTest::QueueTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(QueueTest.Ctor);
+QueueTest::QueueTest(TString tstrName) :
+	TestCaseType(tstrName) {
+	StartTrace(QueueTest.Ctor)
+	;
 }
 
-QueueTest::~QueueTest()
-{
-	StartTrace(QueueTest.Dtor);
+QueueTest::~QueueTest() {
+	StartTrace(QueueTest.Dtor)
+	;
 }
 
-void QueueTest::BlockingSideTest()
-{
+void QueueTest::BlockingSideTest() {
 	StartTrace(QueueTest.BlockingSideTest);
 	AnyQueueType Q1("Q1", 1);
 	assertEqualm(AnyQueueType::eNone, Q1.feBlocked, "expected unblocked put and get side");
@@ -274,8 +270,7 @@ void QueueTest::BlockingSideTest()
 	t_assertm(Q1.IsBlocked(AnyQueueType::eGetSide), "expected get side to be blocked");
 }
 
-void QueueTest::PutGetStatusTest()
-{
+void QueueTest::PutGetStatusTest() {
 	StartTrace(QueueTest.PutGetStatusTest);
 	AnyQueueType Q1("Q1", 1);
 	t_assert(Q1.GetSize() == 0L);
@@ -291,8 +286,7 @@ void QueueTest::PutGetStatusTest()
 	assertEqualm((AnyQueueType::eEmpty | AnyQueueType::eError), Q1.DoGet(anyOut), "second get should fail because of empty queue");
 }
 
-void QueueTest::SimplePutGetTest()
-{
+void QueueTest::SimplePutGetTest() {
 	StartTrace(QueueTest.SimplePutGetTest);
 	AnyQueueType Q1("Q1", 1);
 	t_assert(Q1.GetSize() == 0L);
@@ -318,8 +312,7 @@ void QueueTest::SimplePutGetTest()
 	TraceAny(anyOut, "statistics");
 }
 
-void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
-{
+void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize) {
 	StartTrace1(QueueTest.DoMultiProducerSingleConsumerTest, "QueueSize:" << lQueueSize);
 	{
 		AnyQueueType aProductQueue("aProductQueue", lQueueSize);
@@ -367,16 +360,14 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
 	}
 }
 
-void QueueTest::MultiProducerSingleConsumerTest()
-{
+void QueueTest::MultiProducerSingleConsumerTest() {
 	StartTrace(QueueTest.MultiProducerSingleConsumerTest);
 	DoMultiProducerSingleConsumerTest(1L);
 	DoMultiProducerSingleConsumerTest(25L);
 	DoMultiProducerSingleConsumerTest(5L);
 }
 
-void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
-{
+void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize) {
 	StartTrace(QueueTest.DoSingleProducerMultiConsumerTest);
 	{
 		AnyQueueType aProductQueue("aProductQueue", lQueueSize);
@@ -432,16 +423,14 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
 	}
 }
 
-void QueueTest::SingleProducerMultiConsumerTest()
-{
+void QueueTest::SingleProducerMultiConsumerTest() {
 	StartTrace(QueueTest.SingleProducerMultiConsumerTest);
 	DoSingleProducerMultiConsumerTest(1L);
 	DoSingleProducerMultiConsumerTest(5L);
 	DoSingleProducerMultiConsumerTest(25L);
 }
 
-void QueueTest::ConsumerTerminationTest()
-{
+void QueueTest::ConsumerTerminationTest() {
 	StartTrace(QueueTest.ConsumerTerminationTest);
 	{
 		AnyQueueType *pProductQueue = new (Coast::Storage::Global()) AnyQueueType("pProductQueue", 2);
@@ -497,45 +486,43 @@ void QueueTest::ConsumerTerminationTest()
 }
 
 /*
-//TODO - future: change DoGet() method, so that it's not restricted only for Anything's (see Queue.h)
-*/
+ //TODO - future: change DoGet() method, so that it's not restricted only for Anything's (see Queue.h)
+ */
 typedef Queue<long, Anything> LongAnyQueueType;
-void QueueTest::SimpleTypeAnyStorageQueueTest()
-{
+void QueueTest::SimpleTypeAnyStorageQueueTest() {
 	StartTrace(QueueTest.SimpleTypeAnyStorageQueueTest);
 
 	LongAnyQueueType Q1("Q1");
 
-//	long lValue = 0;
-//	assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
-//	Q1.Put( ( lValue = 20L ) );
-//	assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
-//	Q1.Put( ( lValue = 50L ) );
-//	assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
-//	Q1.Get(lValue);
-//	assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
-//	Q1.Get(lValue);
-//	assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
+	//	long lValue = 0;
+	//	assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
+	//	Q1.Put( ( lValue = 20L ) );
+	//	assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
+	//	Q1.Put( ( lValue = 50L ) );
+	//	assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
+	//	Q1.Get(lValue);
+	//	assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
+	//	Q1.Get(lValue);
+	//	assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
 }
 
-typedef	dcd_event< DCDStateMachine > EventType;
-typedef	EventType *EventTypePtr;
+typedef dcd_event<DCDStateMachine> EventType;
+typedef EventType *EventTypePtr;
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-typedef STLStorage::fast_pool_allocator_global< EventTypePtr > EvtAllocType;
-typedef Queue< EventTypePtr, std::list<EventTypePtr, EvtAllocType > > EventQueueType;
+typedef STLStorage::fast_pool_allocator_global<EventTypePtr> EvtAllocType;
+typedef Queue<EventTypePtr, std::list<EventTypePtr, EvtAllocType> > EventQueueType;
 #else
 typedef Queue< EventTypePtr, std::list<EventTypePtr > > EventQueueType;
 #endif
-void QueueTest::SimpleTypeListStorageQueueTest()
-{
+void QueueTest::SimpleTypeListStorageQueueTest() {
 	StartTrace(QueueTest.SimpleTypeListStorageQueueTest);
 
 	Anything anyMsg, anyMsg2;
 	anyMsg["Content"] = "DummyContent1";
 	anyMsg2["Content"] = "DummyContent2";
 
-	EventTypePtr pEventWrapper = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg) );
-	EventTypePtr pEventWrapper2 = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2) );
+	EventTypePtr pEventWrapper = new EventType(DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg));
+	EventTypePtr pEventWrapper2 = new EventType(DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2));
 	EventTypePtr pEventWrapperOut2 = NULL;
 
 	EventQueueType Q1("Q1");
@@ -556,8 +543,7 @@ void QueueTest::SimpleTypeListStorageQueueTest()
 	pEventWrapperOut2 = NULL;
 }
 
-void QueueTest::QueueWithAllocatorTest()
-{
+void QueueTest::QueueWithAllocatorTest() {
 	StartTrace(QueueTest.QueueWithAllocatorTest);
 	{
 		PoolAllocator aPoolAlloc(1234, 1234, 18);
@@ -575,7 +561,7 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqual(AnyQueueType::eFull, Q1.Put(anyTest2, true));
 			t_assert(Q1.GetSize() == 1L);
 
-			if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
+			if (Coast::Storage::GetStatisticLevel() >= 1) {
 				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
 			}
 
@@ -592,7 +578,7 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqual(1L, anyOut["MaxLoad"].AsLong(0L));
 			TraceAny(anyOut, "statistics");
 		}
-		if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
+		if (Coast::Storage::GetStatisticLevel() >= 1) {
 			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}
@@ -602,8 +588,8 @@ void QueueTest::QueueWithAllocatorTest()
 		anyMsg["Content"] = "DummyContent1";
 		anyMsg2["Content"] = "DummyContent2";
 
-		EventTypePtr pEventWrapper = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg) );
-		EventTypePtr pEventWrapper2 = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2) );
+		EventTypePtr pEventWrapper = new EventType(DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg));
+		EventTypePtr pEventWrapper2 = new EventType(DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2));
 		EventTypePtr pEventWrapperOut2 = NULL;
 
 		l_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
@@ -616,7 +602,7 @@ void QueueTest::QueueWithAllocatorTest()
 			Q1.Put(pEventWrapper2);
 			assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
 
-			if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
+			if (Coast::Storage::GetStatisticLevel() >= 1) {
 				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
 			}
 
@@ -628,15 +614,14 @@ void QueueTest::QueueWithAllocatorTest()
 			assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
 			delete pEventWrapperOut2;
 		}
-		if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
+		if (Coast::Storage::GetStatisticLevel() >= 1) {
 			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
 		}
 	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *QueueTest::suite ()
-{
+Test *QueueTest::suite() {
 	StartTrace(QueueTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

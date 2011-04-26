@@ -11,51 +11,46 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnythingTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingTest : public TestFramework::TestCase
-{
+class AnythingTest: public TestFramework::TestCase {
 protected:
 	Anything fQuery;
 	Anything fConfig;
-
 public:
-	AnythingTest (TString tstrName);
+	AnythingTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	virtual void setUp();
+	static Test *suite();
+	void TypeTest();
+	void SuccessiveAssignments();
 
-	virtual void	setUp ();
-	static Test	*suite ();
+	void operatorAssignemnt();
+	void appendTest();
+	void boolOperatorAssign();
+	void intOperatorAssign();
+	void ifaObjectOperatorAssign();
 
-	void        TypeTest();
-	void		SuccessiveAssignments();
+	void roConversion();
+	void boolROConversion();
+	void intROConversion();
+	void ifaObjectROConversion();
+	void BinaryBufOutput();
+	void String2LongConversion();
 
-	void		operatorAssignemnt();
-	void		appendTest();
-	void		boolOperatorAssign();
-	void		intOperatorAssign();
-	void		ifaObjectOperatorAssign();
+	void AsCharPtrBufLen();
+	void RefCount();
 
-	void		roConversion();
-	void		boolROConversion();
-	void		intROConversion();
-	void		ifaObjectROConversion();
-	void		BinaryBufOutput();
-	void		String2LongConversion();
-
-	void		AsCharPtrBufLen();
-	void		RefCount();
-
-	void 		SlotFinderTest();
-	void 		SlotCopierTest();
-	void 		SlotPutterTest();
-	void 		SlotPutterAppendTest();
-	void 		AnythingLeafIteratorTest();
-	void 		SlotnameSorterTest();
-	void 		SlotCleanerTest();
+	void SlotFinderTest();
+	void SlotCopierTest();
+	void SlotPutterTest();
+	void SlotPutterAppendTest();
+	void AnythingLeafIteratorTest();
+	void SlotnameSorterTest();
+	void SlotCleanerTest();
 
 protected:
-	Anything	init5DimArray(long);
-	bool		check5DimArray( Anything &, Anything &, long );
+	Anything init5DimArray(long);
+	bool check5DimArray(Anything &, Anything &, long);
 };
 
 #endif		//ifndef _AnythingTest_H

@@ -6,33 +6,21 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
 #include "StringStream.h"
 #include "SystemFile.h"
-
-using namespace Coast;
-
 #include "TestSuite.h"
 #include "StrSpecialTest.h"
 
-StrSpecialTest::StrSpecialTest (TString tname) : TestCaseType(tname)
-{};
-StrSpecialTest::~StrSpecialTest() {};
+using namespace Coast;
 
-void StrSpecialTest::setUp ()
-{
-
-}
-void StrSpecialTest::simpleAppendTest()
-{
+void StrSpecialTest::simpleAppendTest() {
 	String s("Hallo");
 	OStringStream os(&s);
 	os << 5L << " = " << 2L << '+' << 3L;
 	os.flush();
 	assertEqual("Hallo5 = 2+3", s);
 }
-void StrSpecialTest::umlauteTest()
-{
+void StrSpecialTest::umlauteTest() {
 	// standard query case
 	Anything test;
 	std::istream *is = System::OpenStream("UmlautTest", "any");
@@ -47,8 +35,7 @@ void StrSpecialTest::umlauteTest()
 	}
 }
 
-Test *StrSpecialTest::suite ()
-{
+Test *StrSpecialTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, StrSpecialTest, simpleAppendTest);
 	ADD_CASE(testSuite, StrSpecialTest, umlauteTest);

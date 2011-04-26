@@ -9,7 +9,7 @@
 #include "WPMStatHandlerTest.h"
 #include "WPMStatHandler.h"
 #include "TestSuite.h"
-
+#include "FoundationTestTypes.h"
 bool WPMStatHandlerTest::AssertState(const WPMStatHandler &wpm, const Anything &state)
 {
 	return

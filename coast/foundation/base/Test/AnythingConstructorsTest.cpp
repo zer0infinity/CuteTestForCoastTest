@@ -8,22 +8,10 @@
 
 #include "AnythingConstructorsTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
 #include "IFAObject.h"
 #include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
-#include <cstring>
 
-//---- AnythingConstructorsTest ---------------------------------------------------------
-
-AnythingConstructorsTest::AnythingConstructorsTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingConstructorsTest::setUp()
-{
+void AnythingConstructorsTest::setUp() {
 	StartTrace(AnythingConstructorsTest.setUp);
 	fString = "A String";
 	fLong = 5L;
@@ -34,8 +22,7 @@ void AnythingConstructorsTest::setUp()
 	fNull = Anything();
 }
 
-Test *AnythingConstructorsTest::suite()
-{
+Test *AnythingConstructorsTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingConstructorsTest, DefaultConstrTest);
 	ADD_CASE(testSuite, AnythingConstructorsTest, IntConstrTest);
@@ -56,8 +43,7 @@ Test *AnythingConstructorsTest::suite()
 	return testSuite;
 }
 
-class DummyIFAObj: public IFAObject
-{
+class DummyIFAObj: public IFAObject {
 public:
 	DummyIFAObj(const char *) {
 	}
@@ -67,8 +53,7 @@ public:
 	}
 };
 
-void AnythingConstructorsTest::DefaultConstrTest()
-{
+void AnythingConstructorsTest::DefaultConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -122,8 +107,7 @@ void AnythingConstructorsTest::DefaultConstrTest()
 	t_assert( fNull[1L] == NULL );
 }
 
-void AnythingConstructorsTest::IntConstrTest()
-{
+void AnythingConstructorsTest::IntConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -165,8 +149,7 @@ void AnythingConstructorsTest::IntConstrTest()
 	t_assert( fBool[1L] == NULL );
 }
 
-void AnythingConstructorsTest::LongConstrTest()
-{
+void AnythingConstructorsTest::LongConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -224,8 +207,7 @@ void AnythingConstructorsTest::LongConstrTest()
 	t_assert( fLong[1L] == NULL );
 }
 
-void AnythingConstructorsTest::DoubleConstr0Test()
-{
+void AnythingConstructorsTest::DoubleConstr0Test() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 	// fDouble = 7.125;	there is an exact binary representation
@@ -280,8 +262,7 @@ void AnythingConstructorsTest::DoubleConstr0Test()
 	t_assert( fDouble[1L] == NULL );
 }
 
-void AnythingConstructorsTest::DoubleConstr1Test()
-{
+void AnythingConstructorsTest::DoubleConstr1Test() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 	// fDouble2 = 8.1;	there is no exact binary representation
@@ -328,7 +309,7 @@ void AnythingConstructorsTest::DoubleConstr1Test()
 	t_assert( fDouble2[1L] == NULL );
 }
 
-void AnythingConstructorsTest::FloatConstrTest()   // Test if the dafault constructor generates an anything-object with good reactions.
+void AnythingConstructorsTest::FloatConstrTest() // Test if the dafault constructor generates an anything-object with good reactions.
 {
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -386,8 +367,7 @@ void AnythingConstructorsTest::FloatConstrTest()   // Test if the dafault constr
 	t_assert( anyTest.AsLong() == -24L );
 }
 
-void AnythingConstructorsTest::CharStarConstrTest()
-{
+void AnythingConstructorsTest::CharStarConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -445,8 +425,7 @@ void AnythingConstructorsTest::CharStarConstrTest()
 	t_assert( anyCharStar[1L] == NULL );
 }
 
-void AnythingConstructorsTest::CharStarLongConstr0Test()
-{
+void AnythingConstructorsTest::CharStarLongConstr0Test() {
 	Anything anyStringLen("abcdefgh", 8L), anyHlp;
 
 	anyHlp = anyStringLen;
@@ -501,8 +480,7 @@ void AnythingConstructorsTest::CharStarLongConstr0Test()
 	t_assert( anyStringLen[1L] == NULL );
 }
 
-void AnythingConstructorsTest::CharStarLongConstr1Test()
-{
+void AnythingConstructorsTest::CharStarLongConstr1Test() {
 	Anything anyStringLen("abcdefgh", 4L), anyHlp;
 
 	anyHlp = anyStringLen;
@@ -559,8 +537,7 @@ void AnythingConstructorsTest::CharStarLongConstr1Test()
 	t_assert( anyStringLen[1L] == NULL );
 }
 
-void AnythingConstructorsTest::CharStarLongConstr2Test()
-{
+void AnythingConstructorsTest::CharStarLongConstr2Test() {
 	// Frage:  Ist der Inhalt gleich wegen Zufall oder wird festgestellt, dass strlen("abcdefgh") < 10 ist?
 #define TSTSTR "abcdefgh"
 	Anything anyStringLen(TSTSTR, 10L);
@@ -573,12 +550,10 @@ void AnythingConstructorsTest::CharStarLongConstr2Test()
 
 	// t_assert( (anyStringLen.AsString()).Length() == (long)strlen(anyStringLen.AsCharPtr(0)) );
 	// the above would be reasonable also
-
 	assertCharPtrEqual( anyStringLen.AsCharPtr(0), "abcdefgh");
 }
 
-void AnythingConstructorsTest::CharStarLongConstr3Test()
-{
+void AnythingConstructorsTest::CharStarLongConstr3Test() {
 	// negative Werte bedeuten "Ich kenne die Laenge nicht" --> Die Laenge wird die Laenge der Zeichenkette
 
 	Anything anyStringLen("abcdefgh", -3L);
@@ -590,8 +565,7 @@ void AnythingConstructorsTest::CharStarLongConstr3Test()
 	t_assert( (anyStringLen.AsString()).Length() <= (anyStringLen.AsString()).Capacity() );
 }
 
-void AnythingConstructorsTest::StringConstrTest()
-{
+void AnythingConstructorsTest::StringConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -658,8 +632,7 @@ void AnythingConstructorsTest::StringConstrTest()
 	assertEqual(voidstr.Length(), avoidstr.AsString().Length());
 }
 
-void AnythingConstructorsTest::EmptyVoidStarLenConstrTest()
-{
+void AnythingConstructorsTest::EmptyVoidStarLenConstrTest() {
 	char test[10];
 	memset(test, '\0', 10);
 	Anything anyTest((void *) 0, 10);
@@ -686,8 +659,7 @@ void AnythingConstructorsTest::EmptyVoidStarLenConstrTest()
 	assertCharPtrEqual( (const char *) test, anyTest2.AsCharPtr());
 }
 
-void AnythingConstructorsTest::VoidStarLenConstrTest()
-{
+void AnythingConstructorsTest::VoidStarLenConstrTest() {
 	long arrTest[5] = { 0, 1, 2, 3, 4 };
 	Anything anyTest((void *) arrTest, (long) sizeof(arrTest));
 	Anything anyHlp = anyTest;
@@ -753,8 +725,7 @@ void AnythingConstructorsTest::VoidStarLenConstrTest()
 	t_assert( anyTest[1L] == NULL );
 }
 
-void AnythingConstructorsTest::IFAObjectStarConstrTest()
-{
+void AnythingConstructorsTest::IFAObjectStarConstrTest() {
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
@@ -826,8 +797,7 @@ void AnythingConstructorsTest::IFAObjectStarConstrTest()
 	assertCompare( anyIFAObj[0L].GetType(), equal_to, AnyNullType );
 }
 
-void AnythingConstructorsTest::AnythingConstrTest()
-{
+void AnythingConstructorsTest::AnythingConstrTest() {
 	Anything any0;
 	Anything anyTest0(any0);
 	anyTest0.IsEqual(any0);

@@ -9,15 +9,14 @@
 #include "MapperTest.h"
 #include "Mapper.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "Session.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "Server.h"
 #include "Role.h"
 
-//---- MapperTest ----------------------------------------------------------------
-Test *MapperTest::suite ()
-{
+Test *MapperTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, MapperTest, GetTests);
@@ -37,21 +36,11 @@ Test *MapperTest::suite ()
 	return testSuite;
 }
 
-MapperTest::MapperTest(TString tname)
-	: TestCaseType(tname)
-{
-}
-
-MapperTest::~MapperTest()
-{
-}
-
-void MapperTest::HardConfiguredGet()
-{
+void MapperTest::HardConfiguredGet() {
 	StartTrace(MapperTest.HardConfiguredGet);
 
 	Anything dummy;
-	Context ctx(dummy, dummy, (Server *)0, (Session *)0, (Role *)0);
+	Context ctx(dummy, dummy, (Server *) 0, (Session *) 0, (Role *) 0);
 	EagerParameterMapper httpmapper("HTTPHardCodedMapperTest");
 	httpmapper.Initialize("ParameterMapper");
 
@@ -65,8 +54,7 @@ void MapperTest::HardConfiguredGet()
 	assertEqual("<GET /finVAL/XS.ISA?Action=Login HTTP/1.1\ntestcase: foobah\nContent-length: 0\n\n>", input);
 }
 
-void MapperTest::MixedConfiguredGet()
-{
+void MapperTest::MixedConfiguredGet() {
 	StartTrace(MapperTest.MixedConfiguredGet);
 
 	Anything inputData;
@@ -75,7 +63,7 @@ void MapperTest::MixedConfiguredGet()
 	inputData["trxinput"]["data"]["server"] = "strozzi";
 	inputData["trxinput"]["data"]["geb"] = "xxxx.xx.xx";
 	inputData["trxinput"]["data"]["cvks"] = "PATTERNs";
-	Context ctx(inputData, inputData, (Server *)0, (Session *)0, (Role *)0);
+	Context ctx(inputData, inputData, (Server *) 0, (Session *) 0, (Role *) 0);
 
 	EagerParameterMapper httpmapper("HostDAInputMapperTest");
 	httpmapper.Initialize("ParameterMapper");
@@ -90,10 +78,10 @@ void MapperTest::MixedConfiguredGet()
 	input << ">";
 	Trace("Input: " << input);
 	assertEqual("<A1B7L007GET-HOMEDIR*****PETER                "
-				"SOMMERLAD           :"
-				"strozzi             :"
-				"xxxx.xx.xx          :"
-				"PATTERNs>", input);
+			"SOMMERLAD           :"
+			"strozzi             :"
+			"xxxx.xx.xx          :"
+			"PATTERNs>", input);
 
 	t_assert(httpmapper.Get("FixedSize", ios1, ctx));
 	ios1 << std::flush;
@@ -102,8 +90,7 @@ void MapperTest::MixedConfiguredGet()
 	assertEqual("<strozzi             >", input1);
 }
 
-void MapperTest::GetTests()
-{
+void MapperTest::GetTests() {
 	StartTrace(MapperTest.GetTests);
 
 	ParameterMapper mapper("MapperTest");
@@ -236,8 +223,7 @@ void MapperTest::GetTests()
 	}
 }
 
-void MapperTest::StdGetTest()
-{
+void MapperTest::StdGetTest() {
 	StartTrace(MapperTest.StdGetTest);
 	Anything dummy, anyContext(GetConfig().DeepClone());
 	Context ctx(anyContext, dummy, 0, 0, 0, 0);
@@ -283,8 +269,7 @@ void MapperTest::StdGetTest()
 	assertEqual("foo baz", strTest);
 }
 
-void MapperTest::StdGetNoDataTest()
-{
+void MapperTest::StdGetNoDataTest() {
 	Context ctx;
 
 	ParameterMapper mapper("stdtestgetmapper");
@@ -316,8 +301,7 @@ void MapperTest::StdGetNoDataTest()
 	t_assert(!mapper.Get("noStdStreams", os, ctx));
 }
 
-void MapperTest::StdPutTest()
-{
+void MapperTest::StdPutTest() {
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0, 0);
 	Anything tmpStore(ctx.GetTmpStore());
@@ -365,8 +349,7 @@ void MapperTest::StdPutTest()
 	assertEqual("#--\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--", tmpStore[mappername]["StdStreams"].AsCharPtr());
 }
 
-void MapperTest::ExtendedPutTest()
-{
+void MapperTest::ExtendedPutTest() {
 	StartTrace(MapperTest.ExtendedPutTest);
 	Anything testRecord(GetConfig()["ArrayTestConfig"].DeepClone());
 	long tsrSz = testRecord.GetSize();
@@ -382,8 +365,8 @@ void MapperTest::ExtendedPutTest()
 	ResultMapper mapper(mappername);
 	mapper.Initialize("ResultMapper");
 
-	for ( i = 0; i < arrSz; i++) {
-		for ( j = 0; j < tsrSz; j++) {
+	for (i = 0; i < arrSz; i++) {
+		for (j = 0; j < tsrSz; j++) {
 			t_assert(mapper.Put(testRecord.SlotName(j), testRecord[j], ctx));
 		}
 	}
@@ -400,11 +383,11 @@ void MapperTest::ExtendedPutTest()
 				case 2:
 					assertEqual(123, tmpStore[mappername]["testLong"][i].AsLong());
 					break;
-				case 3:	{
+				case 3: {
 					// direct comparison would fail on WIN32 ....
-					float f1 = (float)tmpStore[mappername]["testFloat"][i].AsDouble();
+					float f1 = (float) tmpStore[mappername]["testFloat"][i].AsDouble();
 					// it seems that a float conversion needs either some time or a context switch or who knows...
-					if ( !t_assert((float)1.23F == f1) ) {
+					if (!t_assert((float)1.23F == f1)) {
 						Trace("returned value [" << f1 << "]");
 					}
 					break;
@@ -422,8 +405,7 @@ void MapperTest::ExtendedPutTest()
 	}
 }
 
-void MapperTest::GetConfigNameTest()
-{
+void MapperTest::GetConfigNameTest() {
 	String mapperName("testmapper");
 	ParameterMapper inputMapper(mapperName);
 	inputMapper.Initialize(ParameterMapper::gpcCategory);
@@ -433,8 +415,7 @@ void MapperTest::GetConfigNameTest()
 	assertCharPtrEqual("OutputMapperMeta", outputMapper.GetConfigName());
 }
 
-void MapperTest::DoLoadConfigTest()
-{
+void MapperTest::DoLoadConfigTest() {
 	String mapperName("testmapper");
 	String categoryName("ParameterMapper");
 	ParameterMapper inputMapper(mapperName);
@@ -451,8 +432,7 @@ void MapperTest::DoLoadConfigTest()
 	assertEqual("bah", outputMapper.Lookup("testitem2").AsCharPtr());
 }
 
-void MapperTest::LookupMapperGetTest()
-{
+void MapperTest::LookupMapperGetTest() {
 	ParameterMapper m("lookupMapperTest");
 	m.Initialize("ParameterMapper");
 	ParameterMapper m1("anotherMapper");
@@ -470,10 +450,9 @@ void MapperTest::LookupMapperGetTest()
 	m1.Unregister("anotherMapper", "ParameterMapper");
 }
 
-void MapperTest::RenameSlotWithConfigPutTest()
-{
+void MapperTest::RenameSlotWithConfigPutTest() {
 	/* config for RenameSlotWithConfigPutTest is
-	   { /Kaspar { /Peter * }}
+	 { /Kaspar { /Peter * }}
 	 */
 	ResultMapper m("RenameSlotWithConfigPutTest");
 	m.Initialize("ResultMapper");
@@ -482,11 +461,10 @@ void MapperTest::RenameSlotWithConfigPutTest()
 	assertEqual(42L, ctx.GetTmpStore()["Mapper"]["Peter"].AsLong(0));
 }
 
-void MapperTest::ScriptedPutTest()
-{
+void MapperTest::ScriptedPutTest() {
 	StartTrace(MapperTest.ScriptedPutTest);
 	/* config for ScriptedPutTest is
-	    { /Kaspar { /Mapper { /Peter * } { /Mapper { /Mike * }} } }
+	 { /Kaspar { /Mapper { /Peter * } { /Mapper { /Mike * }} } }
 	 */
 	EagerResultMapper m("ScriptedPutTest");
 	m.Initialize("ResultMapper");
@@ -497,19 +475,18 @@ void MapperTest::ScriptedPutTest()
 	assertEqual(42L, ctx.GetTmpStore()["Mapper"]["Mike"].AsLong(1));
 }
 
-void MapperTest::RenameSlotWithConfigGetTest()
-{
+void MapperTest::RenameSlotWithConfigGetTest() {
 	/* config for RenameSlotWithConfigGetTest
-	   { /Kaspar { /Peter * } }
+	 { /Kaspar { /Peter * } }
 	 */
 	ParameterMapper m("RenameSlotWithConfigGetTest");
 	m.Initialize("ParameterMapper");
 	Context ctx;
 	long value1, value2;
-	ctx.GetTmpStore()["Kaspar"] = 42L;		// will never be accessed
+	ctx.GetTmpStore()["Kaspar"] = 42L; // will never be accessed
 	ctx.GetTmpStore()["Peter"] = 43L;
-	t_assert(m.Get("Kaspar", value1, ctx));	// "redirected" get
-	t_assert(m.Get("Peter", value2, ctx));	// fallback case
+	t_assert(m.Get("Kaspar", value1, ctx)); // "redirected" get
+	t_assert(m.Get("Peter", value2, ctx)); // fallback case
 	assertEqual(43L, value1);
 	assertEqual(43L, value2);
 }

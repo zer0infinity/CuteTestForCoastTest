@@ -13,26 +13,12 @@
 
 class ROAnything;
 
-//---- StressAppTest ----------------------------------------------------------
-//!TestCases for the StressApp class
-class StressAppTest : public TestFramework::TestCase
-{
+class StressAppTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-
-	//!TestCases for the StressApp classes
-	//! \param name name of the test
-	StressAppTest(TString tstrName);
-
-	//!destroys the test case
-	~StressAppTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	// the testcases
+	StressAppTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	void AppRunTest();
 	void DataAccessStresserTest();
 	void ThreadedStresserRunnerTest();

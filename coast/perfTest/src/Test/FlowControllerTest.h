@@ -10,28 +10,15 @@
 #define _FlowControllerTest_H
 
 #include "StressAppTest.h"
+#include "FoundationTestTypes.h"
 
-//---- FlowControllerTest ----------------------------------------------------------
-//!TestCases description
-class FlowControllerTest : public StressAppTest
-{
+class FlowControllerTest: public StressAppTest {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	FlowControllerTest(TString tstrName);
-
-	//!destroys the test case
-	~FlowControllerTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
+	FlowControllerTest(TString tstrName) :
+		StressAppTest(tstrName) {
+	}
+    static Test *suite();
+	void setUp();
 
 	//!Test with Full configuration
 	void FullConfigurationTest();

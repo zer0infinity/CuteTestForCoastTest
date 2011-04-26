@@ -9,22 +9,10 @@
 #include "StringTestExtreme.h"
 #include "TestSuite.h"
 #include "SystemFile.h"
-#include "StringStream.h"
-#include <iostream>
 
 using namespace Coast;
 
-StringTestExtreme::StringTestExtreme (TString tname)
-	: TestCaseType(tname)
-{
-}
-
-StringTestExtreme::~StringTestExtreme()
-{
-}
-
-void StringTestExtreme::setUp ()
-{
+void StringTestExtreme::setUp() {
 	char s;
 	extremelyLongString = "";
 	trueString = "";
@@ -38,15 +26,13 @@ void StringTestExtreme::setUp ()
 	}
 }
 
-Test *StringTestExtreme::suite ()
-{
+Test *StringTestExtreme::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, StringTestExtreme, extremeLength);
 	return testSuite;
 }
 
-void StringTestExtreme::extremeLength ()
-{
+void StringTestExtreme::extremeLength() {
 	// Init a string without parameters
 	t_assert(extremelyLongString.Length()>0);
 	assertEqual(trueString.length(), extremelyLongString.Length());

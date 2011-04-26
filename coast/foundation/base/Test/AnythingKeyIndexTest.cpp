@@ -11,19 +11,8 @@
 #include "StringStream.h"
 #include "IFAObject.h"
 #include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
-#include <cstring>
 
-//---- AnythingKeyIndexTest ---------------------------------------------------------
-
-AnythingKeyIndexTest::AnythingKeyIndexTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingKeyIndexTest::setUp()
-{
+void AnythingKeyIndexTest::setUp() {
 	StartTrace(AnythingKeyIndexTest.setUp);
 	fArray["slot"] = "contents";
 	fArray["second"] = "more contents";
@@ -31,8 +20,7 @@ void AnythingKeyIndexTest::setUp()
 	fSequence.Append("Another String");
 }
 
-class DummyIFAObj: public IFAObject
-{
+class DummyIFAObj: public IFAObject {
 public:
 	DummyIFAObj(const char *) {
 	}
@@ -42,8 +30,7 @@ public:
 	}
 };
 
-Test *AnythingKeyIndexTest::suite()
-{
+Test *AnythingKeyIndexTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingKeyIndexTest, SimpleRemove);
 	ADD_CASE(testSuite, AnythingKeyIndexTest, RemoveInvKeys);
@@ -58,8 +45,7 @@ Test *AnythingKeyIndexTest::suite()
 	return testSuite;
 }
 
-Anything AnythingKeyIndexTest::init5DimArray(long anzElt)
-{
+Anything AnythingKeyIndexTest::init5DimArray(long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	Anything anyInit;
@@ -77,8 +63,7 @@ Anything AnythingKeyIndexTest::init5DimArray(long anzElt)
 	return (anyInit);
 }
 
-bool AnythingKeyIndexTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
-{
+bool AnythingKeyIndexTest::check5DimArray(Anything &any0, Anything &any1, long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	bool retVal = true;
@@ -86,14 +71,12 @@ bool AnythingKeyIndexTest::check5DimArray(Anything &any0, Anything &any1, long a
 
 	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
 		idx0[0L] = (char) i0;
-		if (any0[idx0].At("0").At("0").At("0").At("0")
-			!= any1[idx0].At("0").At("0").At("0").At("0")) {
+		if (any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0")) {
 			retVal = false;
 		}
 		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
 			idx1[0L] = (char) i1;
-			if (any0[idx0][idx1].At("0").At("0").At("0")
-				!= any1[idx0][idx1].At("0").At("0").At("0")) {
+			if (any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0")) {
 				retVal = false;
 			}
 		}
@@ -101,8 +84,7 @@ bool AnythingKeyIndexTest::check5DimArray(Anything &any0, Anything &any1, long a
 	return (retVal);
 }
 
-void AnythingKeyIndexTest::RemoveInvKeys()
-{
+void AnythingKeyIndexTest::RemoveInvKeys() {
 	long i0, i1, i2;
 	Anything any0;
 
@@ -144,8 +126,7 @@ void AnythingKeyIndexTest::RemoveInvKeys()
 	t_assert( AnythingKeyIndexTest::check5DimArray(any0, any0, 2) == true );
 }
 
-void AnythingKeyIndexTest::SimpleRemove()
-{
+void AnythingKeyIndexTest::SimpleRemove() {
 	Anything simple;
 	bool res;
 	String resString;
@@ -201,11 +182,9 @@ void AnythingKeyIndexTest::KeyAccess0()
 
 } // KeyAccess0()
 
-void AnythingKeyIndexTest::KeyAccess1()
-{
+void AnythingKeyIndexTest::KeyAccess1() {
 	long i0, i1, i2, i3, i4;
-	char idx0[3] = { 0 }, idx1[3] = { 0 }, idx2[3] = { 0 }, idx3[3] = { 0 },
-									idx4[3] = { 0 };
+	char idx0[3] = { 0 }, idx1[3] = { 0 }, idx2[3] = { 0 }, idx3[3] = { 0 }, idx4[3] = { 0 };
 	Anything any0;
 
 	t_assert ( any0.GetSize() == 0 );
@@ -256,8 +235,7 @@ void AnythingKeyIndexTest::KeyAccess1()
 						t_assert( any0[idx0][idx1][idx2][idx3].FindIndex(idx4) == -1 );
 						assertCompare( any0[idx0][idx1][idx2][idx3].IsDefined(l4), equal_to, false );
 						t_assert( any0[idx0][idx1][idx2][idx3].FindIndex(l4) == -1 );
-						any0[idx0][idx1][idx2][idx3][idx4] = l0 + l1 + l2 + l3
-															 + l4;
+						any0[idx0][idx1][idx2][idx3][idx4] = l0 + l1 + l2 + l3 + l4;
 					}
 				}
 			}
@@ -354,8 +332,7 @@ void AnythingKeyIndexTest::KeyAccess1()
 }
 // KeyAccess1
 
-void AnythingKeyIndexTest::KeyAccess2()
-{
+void AnythingKeyIndexTest::KeyAccess2() {
 	// Anything used as a list
 	Anything array;
 	long i;
@@ -390,8 +367,7 @@ void AnythingKeyIndexTest::KeyAccess2()
 }
 // KeyAccess2
 
-void AnythingKeyIndexTest::MixKeysAndArray()
-{
+void AnythingKeyIndexTest::MixKeysAndArray() {
 
 	Anything any0, any_save, any_i0, any_i1;
 
@@ -422,8 +398,7 @@ void AnythingKeyIndexTest::MixKeysAndArray()
 	t_assert( AnythingKeyIndexTest::check5DimArray( any0, any_save, 2 ) == true );
 }
 
-void AnythingKeyIndexTest::Recursive()
-{
+void AnythingKeyIndexTest::Recursive() {
 	Anything any0;
 
 	any0.Append((long) 12);

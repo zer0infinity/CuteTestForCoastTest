@@ -9,26 +9,13 @@
 #include "ConversionUtilsTest.h"
 #include "TestSuite.h"
 #include "ConversionUtils.h"
-#include "Dbg.h"//lint !e537
-
-//---- ConversionUtilsTest ----------------------------------------------------------------
-ConversionUtilsTest::ConversionUtilsTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(ConversionUtilsTest.Ctor);
-}
-
-ConversionUtilsTest::~ConversionUtilsTest()
-{
-	StartTrace(ConversionUtilsTest.Dtor);
-}
 
 #define TestSpecificValue(valType, value, from, order) \
 	{ valType myX = 0; \
 	ConversionUtils::GetValueFromBuffer(strBuf, myX, from, order); \
 	assertEqual((valType)value, myX); }
 
-void ConversionUtilsTest::GetValueFromBufferTest()
-{
+void ConversionUtilsTest::GetValueFromBufferTest() {
 	StartTrace(ConversionUtilsTest.GetValueFromBufferTest);
 	String strBuf("\x11\x22\x33\x44\x99\xaa\xbb\xcc");
 	// ordered LSB2MSB
@@ -56,8 +43,7 @@ void ConversionUtilsTest::GetValueFromBufferTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ConversionUtilsTest::suite ()
-{
+Test *ConversionUtilsTest::suite() {
 	StartTrace(ConversionUtilsTest.suite);
 	TestSuite *testSuite = new TestSuite;
 

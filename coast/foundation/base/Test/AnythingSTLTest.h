@@ -3,9 +3,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-class AnythingSTLTest : public TestFramework::TestCase
-{
+class AnythingSTLTest: public TestFramework::TestCase {
 	void checkRange(const Anything &, long n, long length);
 	void checkFill(const Anything &);
 	void checkFillSizeType(const Anything &);
@@ -14,10 +12,10 @@ class AnythingSTLTest : public TestFramework::TestCase
 	void checkInsertWithKeys(const Anything &a, const long testpos, const char *m, const long n = 1);
 
 public:
-	AnythingSTLTest (TString name);
-
-	void	setUp ();
-	static Test	*suite ();
+	AnythingSTLTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 
 	void testSimpleSwap();
 	void testSwapWithDifferentAllocator();

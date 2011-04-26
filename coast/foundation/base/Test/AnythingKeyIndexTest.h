@@ -11,36 +11,33 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnythingKeyIndexTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingKeyIndexTest : public TestFramework::TestCase
-{
+class AnythingKeyIndexTest: public TestFramework::TestCase {
 	Anything fArray;
 	Anything fSequence;
 public:
-	AnythingKeyIndexTest (TString tstrName);
+	AnythingKeyIndexTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	virtual void setUp();
+	static Test *suite();
 
-	virtual void	setUp ();
-	static Test	*suite ();
+	void SimpleRemove();
+	void RemoveInvKeys();
 
-	void 		SimpleRemove ();
-	void 		RemoveInvKeys ();
+	void IndexAccess();
 
-	void		IndexAccess ();
+	void KeyAccess0();
+	void KeyAccess1();
+	void KeyAccess2();
+	void MixKeysAndArray();
+	void Recursive();
 
-	void		KeyAccess0 ();
-	void		KeyAccess1 ();
-	void		KeyAccess2 ();
-	void		MixKeysAndArray ();
-	void		Recursive();
-
-	void		EmptyAccess0 ();
-	void		EmptyAccess1 ();
+	void EmptyAccess0();
+	void EmptyAccess1();
 
 protected:
-	Anything	init5DimArray(long);
-	bool		check5DimArray( Anything &, Anything &, long );
+	Anything init5DimArray(long);
+	bool check5DimArray(Anything &, Anything &, long);
 };
 
 #endif		//ifndef _AnythingKeyIndexTest_H

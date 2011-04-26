@@ -9,6 +9,7 @@
 #include "HTTPProcessorTest.h"
 #include "HTTPProcessor.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStream.h"
 #include "StringStreamSocket.h"
 #include "Context.h"

@@ -8,6 +8,7 @@
 
 #include "HTTPFileLoaderTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "HTTPFileLoader.h"
 #include "URI2FileNameMapper.h"
 #include "Context.h"

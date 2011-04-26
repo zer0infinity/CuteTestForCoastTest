@@ -6,31 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
-#include "Dbg.h"
+#include "HTMLComparerTest.h"
 #include "TestSuite.h"
 #include "HTMLComparer.h"
-#include "HTMLComparerTest.h"
 
-//---- HTMLComparerTest ----------------------------------------------------------------
-HTMLComparerTest::HTMLComparerTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(HTMLComparerTest.HTMLComparerTest);
-}
-
-TString HTMLComparerTest::getConfigFileName()
-{
+TString HTMLComparerTest::getConfigFileName() {
 	return "HTMLComparerTestConfig";
 }
 
-HTMLComparerTest::~HTMLComparerTest()
-{
-	StartTrace(HTMLComparerTest.Dtor);
-}
-
-void HTMLComparerTest::NoDifferenceComparison()
-{
+void HTMLComparerTest::NoDifferenceComparison() {
 	StartTrace(HTMLComparerTest.NoDifferenceComparison);
 
 	long sz = GetTestCaseConfig().GetSize();
@@ -49,8 +33,7 @@ void HTMLComparerTest::NoDifferenceComparison()
 
 }
 
-void HTMLComparerTest::DifferenceComparison()
-{
+void HTMLComparerTest::DifferenceComparison() {
 	StartTrace(HTMLComparerTest.DifferenceComparison);
 
 	long sz = GetTestCaseConfig().GetSize();
@@ -69,8 +52,7 @@ void HTMLComparerTest::DifferenceComparison()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *HTMLComparerTest::suite ()
-{
+Test *HTMLComparerTest::suite() {
 	StartTrace(HTMLComparerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, HTMLComparerTest, NoDifferenceComparison);

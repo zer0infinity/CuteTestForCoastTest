@@ -8,6 +8,7 @@
 
 #include "ConnectorDAImplTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "SocketStream.h"
 #include "DataAccess.h"
 #include "StringStream.h"

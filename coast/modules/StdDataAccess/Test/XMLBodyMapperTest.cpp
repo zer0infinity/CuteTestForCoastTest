@@ -8,23 +8,16 @@
 
 #include "XMLBodyMapperTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "Context.h"
 
-XMLBodyMapperTest::XMLBodyMapperTest(TString tname)
-	: TestCaseType(tname)
-	, fXMLBodyMapper("TestedMapper")
-{};
-
-XMLBodyMapperTest::~XMLBodyMapperTest() {};
-
-void XMLBodyMapperTest::setUp ()
-{
+void XMLBodyMapperTest::setUp() {
 	String configFilename("XMLBodyMapperTestConfig");
 	std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
 
-	if (ifp) {	// found
+	if (ifp) { // found
 		fConfig.Import(*ifp, configFilename);
 		delete ifp;
 	}
@@ -32,8 +25,7 @@ void XMLBodyMapperTest::setUp ()
 }
 
 // Produce an Anything out of an XML
-void XMLBodyMapperTest::PutTest()
-{
+void XMLBodyMapperTest::PutTest() {
 	Anything dummy;
 	Context c(dummy, fConfig, 0, 0, 0, 0);
 	String input = fConfig["TeamXML"].AsString("X");
@@ -42,8 +34,7 @@ void XMLBodyMapperTest::PutTest()
 	assertAnyEqual(fConfig["TeamAny"], c.Lookup("Mapper.Output"));
 }
 
-Test *XMLBodyMapperTest::suite ()
-{
+Test *XMLBodyMapperTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, XMLBodyMapperTest, PutTest);
 	return testSuite;

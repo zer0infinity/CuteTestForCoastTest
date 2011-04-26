@@ -11,27 +11,15 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- ServerTest ----------------------------------------------------------
-//!TestCases for the Registry class
-class ServerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class ServerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCases for the Registry classes
-	//! \param name name of the test
-	ServerTest(TString tstrName);
-
-	//!destroys the test case
-	~ServerTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	ServerTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 
 	//!sets the environment for this test
-	void setUp ();
+	void setUp();
 
 	//! test initialization - run - termination sequences
 	void InitRunTerminateAcceptorTest();

@@ -12,30 +12,13 @@
 #include "WDBaseTestPolicies.h"
 #include "Session.h"
 
-//---- SessionListManagerTest ----------------------------------------------------------
-//!TestCases description
-class SessionListManagerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class SessionListManagerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	SessionListManagerTest(TString tstrName);
-
-	//!destroys the test case
-	~SessionListManagerTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp();
-
-	//!deletes the environment for this test
-	void tearDown ();
+	SessionListManagerTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
+	void tearDown();
 
 	//!test initialization and termination
 	void InitFinisTest();

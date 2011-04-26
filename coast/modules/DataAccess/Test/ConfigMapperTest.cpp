@@ -9,6 +9,7 @@
 #include "ConfigMapperTest.h"
 #include "Mapper.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "AnyIterators.h"
 #include "Context.h"
 

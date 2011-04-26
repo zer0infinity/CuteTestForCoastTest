@@ -8,6 +8,7 @@
 
 #include "AuthenticationServiceTest.h"
 #include "TestSuite.h"
+#include "FoundationTestTypes.h"
 #include "AuthenticationService.h"
 #include "SecurityModule.h"
 #include "StringStream.h"

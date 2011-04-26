@@ -13,26 +13,13 @@
 
 class Registry;
 
-//---- ContextTest ----------------------------------------------------------
-//!TestCases for the Context class
-class ContextTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class ContextTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCases for the Context class
-	ContextTest(TString tstrName);
-
-	//!destroys the test case
-	~ContextTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
+	ContextTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
+	void setUp();
 
 	//!test constructor with an anything containing request infos
 	void RequestConstructorTest();

@@ -11,35 +11,31 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-
-//---- AnythingImportExportTest -----------------------------------------------------------
-//!testcases for Anything
-class AnythingImportExportTest : public TestFramework::TestCase
-{
+class AnythingImportExportTest: public TestFramework::TestCase {
 public:
-	AnythingImportExportTest (TString tstrName);
+	AnythingImportExportTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 
-	virtual void	setUp ();
-	static Test	*suite ();
+	void ImportTest();
 
-	void		ImportTest ();
+	void ReadFailsTest();
+	void WriteRead0Test();
+	void WriteRead1Test();
+	void WriteRead5Test();
+	void WriteRead7Test();
+	void WriteRead8Test();
+	void AnyIncludeTest();
 
-	void		ReadFailsTest();
-	void		WriteRead0Test();
-	void		WriteRead1Test();
-	void		WriteRead5Test();
-	void		WriteRead7Test();
-	void		WriteRead8Test();
-	void		AnyIncludeTest();
-
-	void        RefSlotTest ();
-	void        RefBug227Test();
-	void		RefBug231Test();
-	void        RefBug220Test();
+	void RefSlotTest();
+	void RefBug227Test();
+	void RefBug231Test();
+	void RefBug220Test();
 
 protected:
-	Anything	init5DimArray(long);
-	bool		check5DimArray( Anything &, Anything &, long );
+	Anything init5DimArray(long);
+	bool check5DimArray(Anything &, Anything &, long);
 };
 
 #endif		//ifndef _AnythingImportExportTest_H

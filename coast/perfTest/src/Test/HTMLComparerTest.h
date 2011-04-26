@@ -11,31 +11,14 @@
 
 #include "FoundationTestTypes.h"
 
-//---- HTMLComparerTest ----------------------------------------------------------
-//!TestCases description
-class HTMLComparerTest : public TestFramework::TestCaseWithConfig
-{
+class HTMLComparerTest: public TestFramework::TestCaseWithConfig {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	HTMLComparerTest(TString tstrName);
-
-	//!destroys the test case
-	~HTMLComparerTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
+	HTMLComparerTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
 	TString getConfigFileName();
-
-	//! compares two HTML Any tree that are considererd equal
 	void NoDifferenceComparison();
-
-	//! compares two HTML Any tree that are not considererd equal
 	void DifferenceComparison();
 };
 

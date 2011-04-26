@@ -9,21 +9,12 @@
 #define _SegStoreAllocatorTest_H
 
 #include "TestCase.h"//lint !e537
-
-//---- SegStoreAllocatorTest ----------------------------------------------------------
-//!TestCases for the SegStoreAllocatorTest class
-class SegStoreAllocatorTest : public TestFramework::TestCase
-{
+class SegStoreAllocatorTest: public TestFramework::TestCase {
 public:
-	//--- constructors
-	SegStoreAllocatorTest(TString tstrName);
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	// Testcases
+	SegStoreAllocatorTest(TString tname) :
+		TestCaseType(tname) {
+	}
+	static Test *suite();
 	void CreateSimpleAllocator();
 };
 

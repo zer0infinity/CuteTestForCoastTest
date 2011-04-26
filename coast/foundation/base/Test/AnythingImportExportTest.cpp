@@ -8,31 +8,11 @@
 
 #include "AnythingImportExportTest.h"
 #include "TestSuite.h"
-#include "StringStream.h"
-#include "IFAObject.h"
-#include "SystemFile.h"
-#include "Dbg.h"
-#include "AnyIterators.h"
-#include "SystemLog.h"
+#include "FoundationTestTypes.h"
 
 using namespace Coast;
 
-#include <cstring>
-
-//---- AnythingImportExportTest ---------------------------------------------------------
-
-AnythingImportExportTest::AnythingImportExportTest(TString tname) :
-	TestCaseType(tname)
-{
-}
-
-void AnythingImportExportTest::setUp()
-{
-	StartTrace(AnythingImportExportTest.setUp);
-}
-
-Test *AnythingImportExportTest::suite()
-{
+Test *AnythingImportExportTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingImportExportTest, ImportTest);
 	ADD_CASE(testSuite, AnythingImportExportTest, ReadFailsTest);
@@ -49,8 +29,7 @@ Test *AnythingImportExportTest::suite()
 	return testSuite;
 }
 
-Anything AnythingImportExportTest::init5DimArray(long anzElt)
-{
+Anything AnythingImportExportTest::init5DimArray(long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	Anything anyInit;
@@ -68,8 +47,7 @@ Anything AnythingImportExportTest::init5DimArray(long anzElt)
 	return (anyInit);
 }
 
-bool AnythingImportExportTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
-{
+bool AnythingImportExportTest::check5DimArray(Anything &any0, Anything &any1, long anzElt) {
 	long i0, i1;
 	char idx0[3] = { 0 }, idx1[3] = { 0 };
 	bool retVal = true;
@@ -77,14 +55,12 @@ bool AnythingImportExportTest::check5DimArray(Anything &any0, Anything &any1, lo
 
 	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
 		idx0[0L] = (char) i0;
-		if (any0[idx0].At("0").At("0").At("0").At("0")
-			!= any1[idx0].At("0").At("0").At("0").At("0")) {
+		if (any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0")) {
 			retVal = false;
 		}
 		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
 			idx1[0L] = (char) i1;
-			if (any0[idx0][idx1].At("0").At("0").At("0")
-				!= any1[idx0][idx1].At("0").At("0").At("0")) {
+			if (any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0")) {
 				retVal = false;
 			}
 		}
@@ -92,8 +68,7 @@ bool AnythingImportExportTest::check5DimArray(Anything &any0, Anything &any1, lo
 	return (retVal);
 }
 
-void AnythingImportExportTest::ImportTest()
-{
+void AnythingImportExportTest::ImportTest() {
 	std::istream *ifp = System::OpenStream("tmp/ImportTest", "any");
 	if (t_assertm(ifp != 0, "expected ImportTest file to be there")) {
 		Anything config;
@@ -107,8 +82,7 @@ void AnythingImportExportTest::ImportTest()
 	}
 }
 
-void AnythingImportExportTest::WriteRead0Test()
-{
+void AnythingImportExportTest::WriteRead0Test() {
 	Anything any0 = AnythingImportExportTest::init5DimArray(5);
 	String buffer;
 	{
@@ -122,8 +96,7 @@ void AnythingImportExportTest::WriteRead0Test()
 	t_assert( AnythingImportExportTest::check5DimArray( any0, any1, 5) == true );
 }
 
-void AnythingImportExportTest::WriteRead1Test()
-{
+void AnythingImportExportTest::WriteRead1Test() {
 	Anything any0 = AnythingImportExportTest::init5DimArray(5);
 
 	std::ostream *os = System::OpenOStream("tmp/anything0", "tst", std::ios::out);
@@ -146,8 +119,7 @@ void AnythingImportExportTest::WriteRead1Test()
 	t_assert( AnythingImportExportTest::check5DimArray( any0, any1, 5) == true );
 }
 
-void AnythingImportExportTest::WriteRead5Test()
-{
+void AnythingImportExportTest::WriteRead5Test() {
 	Anything any0("Anything: test");
 
 	std::ostream *os = System::OpenOStream("tmp/anything6", "tst", std::ios::out);
@@ -177,8 +149,7 @@ void AnythingImportExportTest::WriteRead5Test()
 	}
 }
 
-void AnythingImportExportTest::WriteRead7Test()
-{
+void AnythingImportExportTest::WriteRead7Test() {
 	Anything any0("Anything: test");
 
 	String buf;
@@ -200,8 +171,7 @@ void AnythingImportExportTest::WriteRead7Test()
 	t_assert( any0.IsEqual(any1) ); // equality works for simple Strings
 }
 
-void AnythingImportExportTest::WriteRead8Test()
-{
+void AnythingImportExportTest::WriteRead8Test() {
 	Anything any0, any1;
 
 	any0 = AnythingImportExportTest::init5DimArray(5);
@@ -225,8 +195,7 @@ void AnythingImportExportTest::WriteRead8Test()
 	t_assert( AnythingImportExportTest::check5DimArray(any0, any1, 5) == true );
 }
 
-void AnythingImportExportTest::RefSlotTest()
-{
+void AnythingImportExportTest::RefSlotTest() {
 	{
 		// Check Ref Export and Import of primitive types
 		Anything a;
@@ -238,10 +207,10 @@ void AnythingImportExportTest::RefSlotTest()
 		a["slot1"] = b;
 		a["slot2"] = b;
 
-//		t_assert(((long)(a["slot1"].GetImpl()) != 0));
-//		assertEqual((long)(a["slot1"].GetImpl()), (long)(a["slot2"].GetImpl()));
+		//		t_assert(((long)(a["slot1"].GetImpl()) != 0));
+		//		assertEqual((long)(a["slot1"].GetImpl()), (long)(a["slot2"].GetImpl()));
 		Anything c = a.DeepClone();
-//		assertEqual((long)(c["slot1"].GetImpl()), (long)(c["slot2"].GetImpl()));
+		//		assertEqual((long)(c["slot1"].GetImpl()), (long)(c["slot2"].GetImpl()));
 
 		String tempString;
 
@@ -258,7 +227,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a reference to a named anything
-		String str(_QUOTE_( { /200 { /a gugus /b gaga } /100 %200 }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga}/100 %200}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -274,7 +243,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test the inverse order of the reference definition
-		String str(_QUOTE_( { /1 %200 /200 { /a gugus /b gaga }}));
+		String str(_QUOTE_( {/1 %200 /200 {/a gugus /b gaga}}));
 		IStringStream is(str);
 		Anything anyResult, anyExpected;
 		anyExpected["1"]["a"] = "gugus";
@@ -285,7 +254,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a reference to a named slot
-		String str(_QUOTE_( { /200 { /a gugus /b gaga } /100 %200.a }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga}/100 %200.a}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -297,7 +266,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test unnamed references
-		String str(_QUOTE_( { /200 { /a gugus /b gaga /c { %200.a }} /100 { c %200.b } %200.a }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga /c {%200.a}}/100 {c %200.b}%200.a}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -311,7 +280,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a double linked reference
-		String str(_QUOTE_( { /200 { /a gugus /b gaga /c { %200.a }} /100 { c %200.b } %200.c }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga /c {%200.a}}/100 {c %200.b}%200.c}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -325,7 +294,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a reference to a unnamed slot
-		String str(_QUOTE_( { /200 { /a gugus /b gaga /c { 34 }} /100 { c %200.b /e %200.c:0 } %200.a }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga /c {34}}/100 {c %200.b /e %200.c:0}%200.a}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -340,7 +309,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a unnamed reference to a unnamed slot
-		String str(_QUOTE_( { /200 { /a gugus /b gaga /c { 34 }} /100 { c %200.b /e %200.c:0 } %200.c:0 }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga /c {34}}/100 {c %200.b /e %200.c:0}%200.c:0}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -355,7 +324,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a unnamed reference to a unnamed slot with a reference
-		String str(_QUOTE_( { /200 { /a gugus /b gaga /c { %200.a }} /100 { c %200.b /e %200.c:0 } %200.a }));
+		String str(_QUOTE_( {/200 {/a gugus /b gaga /c {%200.a}}/100 {c %200.b /e %200.c:0}%200.a}));
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
@@ -370,7 +339,7 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 	{
 		// test a unnamed reference to a unnamed slot with a reference
-		String str(_QUOTE_( { /100 { "a" { /200 "b" /300 %"100:1.200" }}}));
+		String str(_QUOTE_( {/100 {"a" {/200 "b" /300 %"100:1.200"}}}));
 		Anything anyResult, anyExpected, temp1, temp2;
 
 		temp1["200"] = "b";
@@ -387,32 +356,34 @@ void AnythingImportExportTest::RefSlotTest()
 		// test a unnamed and named reference where the last part of the key contains 'special characters'
 		// like indexDelimiter or pathDelimiter!!
 		/* here is the complete Anything, listed for better understanding
-		   especially have a look at the slotnames "23:21:36" and "23.22.28"
-		   until now this path had been resolved too and lead to unfindable slots... which is in fact a bug!
-		{
-		  /P {
-			/T {
-			  /T {
-				{ a }
-				{ b }
-				{ c }
-			  }
-			}
-		  }
-		  /T {
-			/"2002" {
-			  /"03" {
-				/"20" {
-				  %"P.T.T:0"
-				  /"23:21:36" %"P.T.T:1"
-				  /"23.22.28" %"P.T.T:2"
-				}
-			  }
-			}
-		  }
-		}
-		*/
-		String str(_QUOTE_( { /P { /T { /T {{ a }{ b }{ c }} }} /T { /"2002" { /"03" { /"20" { %"P.T.T:0" /"23:21:36" %"P.T.T:1" /"23.22.28" %"P.T.T:2"}}}}}));
+		 especially have a look at the slotnames "23:21:36" and "23.22.28"
+		 until now this path had been resolved too and lead to unfindable slots... which is in fact a bug!
+		 {
+		 /P {
+		 /T {
+		 /T {
+		 { a }
+		 { b }
+		 { c }
+		 }
+		 }
+		 }
+		 /T {
+		 /"2002" {
+		 /"03" {
+		 /"20" {
+		 %"P.T.T:0"
+		 /"23:21:36" %"P.T.T:1"
+		 /"23.22.28" %"P.T.T:2"
+		 }
+		 }
+		 }
+		 }
+		 }
+		 */
+		String
+				str(
+						_QUOTE_( {	/P {/T {/T { {	a} {b} {c}}}}/T {/"2002" {/"03" {/"20" {%"P.T.T:0" /"23:21:36" %"P.T.T:1" /"23.22.28" %"P.T.T:2"}}}}}));
 		Anything anyResult, anyExpected, temp1, temp2;
 
 		anyExpected["P"]["T"]["T"][0L][0L] = "a";
@@ -428,15 +399,14 @@ void AnythingImportExportTest::RefSlotTest()
 	}
 }
 
-void AnythingImportExportTest::AnyIncludeTest()
-{
+void AnythingImportExportTest::AnyIncludeTest() {
 	{
 		// Test an include in a unnamed slot with a relativ uri without localhost
 		Anything anyMain, anyIncl, anyRef;
 
-		String strMain(_QUOTE_( { /200 { /a gugus /b gaga } !"file:///include.any" }));
-		String strIncl(_QUOTE_( { /100 { /d foo /e frim } }));
-		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } { /100 { /d foo /e frim } } }));
+		String strMain(_QUOTE_( {/200 {/a gugus /b gaga}!"file:///include.any"}));
+		String strIncl(_QUOTE_( {/100 {/d foo /e frim}}));
+		String strRef(_QUOTE_( {/200 {/a gugus /b gaga} {/100 {/d foo /e frim}}}));
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
@@ -462,8 +432,8 @@ void AnythingImportExportTest::AnyIncludeTest()
 
 		String strMain;
 		strMain << "{ /200 { /a gugus /b gaga } !\"file:///" << System::GetFilePath("include", "any") << "\"}";
-		String strIncl(_QUOTE_( { /100 { /d foo /e frim } }));
-		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } { /100 { /d foo /e frim } } }));
+		String strIncl(_QUOTE_( {/100 {/d foo /e frim}}));
+		String strRef(_QUOTE_( {/200 {/a gugus /b gaga} {/100 {/d foo /e frim}}}));
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
@@ -543,9 +513,9 @@ void AnythingImportExportTest::AnyIncludeTest()
 		// Test an include with a query for a subtree in the include file
 		Anything anyMain, anyIncl, anyRef;
 
-		String strMain(_QUOTE_( { /200 { /a gugus /b gaga } !"file:///include.any?100.d:0" }));
-		String strIncl(_QUOTE_( { /100 { /d { foo } /e frim } }));
-		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } "foo" }));
+		String strMain(_QUOTE_( {/200 {/a gugus /b gaga}!"file:///include.any?100.d:0"}));
+		String strIncl(_QUOTE_( {/100 {/d {foo}/e frim}}));
+		String strRef(_QUOTE_( {/200 {/a gugus /b gaga}"foo"}));
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
@@ -569,9 +539,9 @@ void AnythingImportExportTest::AnyIncludeTest()
 		// Test an include with a query for a subtree with escaped path and index delims in the include file
 		Anything anyMain, anyIncl, anyRef;
 
-		String strMain(_QUOTE_( { /200 { /a gugus /b gaga } !"file:///include.any?a\.b\.c.d:0.\:bla" }));
-		String strIncl(_QUOTE_( { /"a.b.c" { /d { { /":bla" foo } } /e frim } }));
-		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } "foo" }));
+		String strMain(_QUOTE_( {/200 {/a gugus /b gaga}!"file:///include.any?a\.b\.c.d:0.\:bla"}));
+		String strIncl(_QUOTE_( {/"a.b.c" {/d { {/":bla" foo}}/e frim}}));
+		String strRef(_QUOTE_( {/200 {/a gugus /b gaga}"foo"}));
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
@@ -595,9 +565,9 @@ void AnythingImportExportTest::AnyIncludeTest()
 		// Test an include with a query for a subtree in the include file that does not exist
 		Anything anyMain, anyIncl, anyRef;
 
-		String strMain(_QUOTE_( { /200 { /a gugus /b gaga } !"file:///include.any?d:0" }));
-		String strIncl(_QUOTE_( { /100 { /d { foo } /e frim } }));
-		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } * }));
+		String strMain(_QUOTE_( {/200 {/a gugus /b gaga}!"file:///include.any?d:0"}));
+		String strIncl(_QUOTE_( {/100 {/d {foo}/e frim}}));
+		String strRef(_QUOTE_( {/200 {/a gugus /b gaga}*}));
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
@@ -619,8 +589,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 	}
 }
 
-void AnythingImportExportTest::ReadFailsTest()
-{
+void AnythingImportExportTest::ReadFailsTest() {
 	String incompleteAny("{ /Slot { /No \"Ending curly bracket\"");
 	IStringStream is(incompleteAny);
 	Anything any;
@@ -628,11 +597,10 @@ void AnythingImportExportTest::ReadFailsTest()
 	assertEqual("Ending curly bracket", any["Slot"]["No"].AsString("x"));
 }
 
-void AnythingImportExportTest::RefBug227Test()
-{
+void AnythingImportExportTest::RefBug227Test() {
 	{
 		// test an empty Anything at dotted slotname
-		String str(_QUOTE_( { /200 { /"a.b.c" * } /name blub }));
+		String str(_QUOTE_( {/200 {/"a.b.c" *}/name blub}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);
@@ -642,7 +610,7 @@ void AnythingImportExportTest::RefBug227Test()
 	}
 	{
 		// test an unnamed reference
-		String str(_QUOTE_( { /200 { /"a.b.c" * } /name blub /100 { %name /e 123 } /300 { %100 } }));
+		String str(_QUOTE_( {/200 {/"a.b.c" *}/name blub /100 {%name /e 123}/300 {%100}}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);
@@ -655,11 +623,12 @@ void AnythingImportExportTest::RefBug227Test()
 	}
 }
 
-void AnythingImportExportTest::RefBug231Test()
-{
+void AnythingImportExportTest::RefBug231Test() {
 	{
 		// test an unnamed reference
-		String str(_QUOTE_( { /BackendName blabla /Params { /Name "avt" /Server { /RendererMapper { %BackendName } } /Port 443 /Timeout 10 /UseSSL 1 } /a.b.c { 3 /NewRef %BackendName } }));
+		String
+				str(
+						_QUOTE_( {	/BackendName blabla /Params {/Name "avt" /Server {/RendererMapper {%BackendName}}/Port 443 /Timeout 10 /UseSSL 1}/a.b.c {3 /NewRef %BackendName}}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);
@@ -675,11 +644,10 @@ void AnythingImportExportTest::RefBug231Test()
 	}
 }
 
-void AnythingImportExportTest::RefBug220Test()
-{
+void AnythingImportExportTest::RefBug220Test() {
 	{
 		// test escaped reference
-		String str(_QUOTE_( { /"a.b.c" { 33 } /name blub /300 { %"a\.b\.c:0" } }));
+		String str(_QUOTE_( {/"a.b.c" {33}/name blub /300 {%"a\.b\.c:0"}}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);
@@ -690,7 +658,7 @@ void AnythingImportExportTest::RefBug220Test()
 	}
 	{
 		// test escaped reference
-		String str(_QUOTE_( { /"a.b.c" { /level1 { /level2 33 } } /name blub /300 { %"a\.b\.c.level1.level2" } }));
+		String str(_QUOTE_( {/"a.b.c" {/level1 {/level2 33}}/name blub /300 {%"a\.b\.c.level1.level2"}}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);
@@ -701,7 +669,7 @@ void AnythingImportExportTest::RefBug220Test()
 	}
 	{
 		// test escaped reference
-		String str(_QUOTE_( { /"a.b.c" { /":3" { /level2 33 } } /name blub /300 { %"a\.b\.c.\:3.level2" } }));
+		String str(_QUOTE_( {/"a.b.c" {/":3" {/level2 33}}/name blub /300 {%"a\.b\.c.\:3.level2"}}));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
 		anyResult.Import(is);

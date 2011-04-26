@@ -1,6 +1,5 @@
 #include "StringReverseIteratorTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
 
 void StringReverseIteratorTest::testEmptyStringBegin() {
 	String a;
@@ -55,13 +54,13 @@ void StringReverseIteratorTest::testStringIteration() {
 	a.Append(2L);
 	a.Append(3L);
 	String::reverse_iterator ai = a.rbegin();
-	for (long i = a.size()-1; i>=0; --i, ++ai) {
+	for (long i = a.size() - 1; i >= 0; --i, ++ai) {
 		t_assert(*ai == a[i]);
 	}
 	t_assert(ai == a.rend());
 	const String &b = a;
 	String::const_reverse_iterator bi = b.rbegin();
-	for (long i = b.size()-1; i>=0; --i, ++bi) {
+	for (long i = b.size() - 1; i >= 0; --i, ++bi) {
 		t_assert(*bi == b[i]);
 	}
 	t_assert(bi == b.rend());

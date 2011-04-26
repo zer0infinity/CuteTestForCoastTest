@@ -14,33 +14,18 @@
 
 class STTestSession;
 
-//---- SessionTest ----------------------------------------------------------
-//!TestCases for the Session class
-class SessionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class SessionTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCases for the Session class
-	//! \param name name of the test
-	SessionTest(TString tstrName);
-
-	//!destroys the test case
-	~SessionTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
+	SessionTest(TString tstrName) :
+		TestCaseType(tstrName) {
+	}
+	static Test *suite();
+	void setUp();
 	//!test usage of session store with context
 	void UseSessionStoreTest();
 
 	//!test Session::Verify method
-	void VerifyTest ();
+	void VerifyTest();
 
 	//!test the sessions info functionality
 	void InfoTest();
@@ -55,14 +40,15 @@ public:
 	void CheckRoleExchangeTest();
 
 protected:
-	void	CheckInstalled ();
-	void    TestInit();
-	void    RenderNextPageError();
-	void    RenderNextPageInsertAPage();
-	void    DoFindNextPageLogin();
-	void    SetGetRole();
-	void    RetrieveFromDelayed();
-	void    IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s, Context &theCtx, bool should_succeed);
+	void CheckInstalled();
+	void TestInit();
+	void RenderNextPageError();
+	void RenderNextPageInsertAPage();
+	void DoFindNextPageLogin();
+	void SetGetRole();
+	void RetrieveFromDelayed();
+	void IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s, Context &theCtx,
+			bool should_succeed);
 };
 
 #endif

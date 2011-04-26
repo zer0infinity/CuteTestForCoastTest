@@ -9,19 +9,9 @@
 #include "Stresser.h"
 #include "RemoteStresserTest.h"
 #include "Server.h"
-#include "Dbg.h"
 #include "TestSuite.h"
 
-//---- RemoteStresserTest ----------------------------------------------------------------
-RemoteStresserTest::RemoteStresserTest(TString tstrName)
-	: StressAppTest(tstrName)
-	, fServerRunner(0)
-	, fStressServer(0)
-{
-}
-
-RemoteStresserTest::~RemoteStresserTest()
-{
+RemoteStresserTest::~RemoteStresserTest() {
 	if (fServerRunner) {
 		fServerRunner->PrepareShutdown(0);
 		fServerRunner->CheckState(Thread::eTerminated, 10);
@@ -31,8 +21,7 @@ RemoteStresserTest::~RemoteStresserTest()
 	}
 }
 
-void RemoteStresserTest::setUp ()
-{
+void RemoteStresserTest::setUp() {
 	StressAppTest::setUp();
 	if (!fStressServer) {
 		fStressServer = new (Coast::Storage::Global()) Server("StressServer");
@@ -44,7 +33,7 @@ void RemoteStresserTest::setUp ()
 			bool bSuccess = fServerRunner->Start();
 			fServerRunner->CheckState(Thread::eStarted);
 			bSuccess = bSuccess && fServerRunner->serverIsInitialized();
-			if ( t_assertm(bSuccess, "StressServer init failed") ) {
+			if (t_assertm(bSuccess, "StressServer init failed")) {
 				fServerRunner->CheckState(Thread::eRunning, 10);
 				fServerRunner->SetWorking();
 			}
@@ -58,13 +47,11 @@ void RemoteStresserTest::setUp ()
 	}
 }
 
-void RemoteStresserTest::tearDown()
-{
+void RemoteStresserTest::tearDown() {
 	StressAppTest::tearDown();
 }
 
-void RemoteStresserTest::TestRemoteStresser()
-{
+void RemoteStresserTest::TestRemoteStresser() {
 	Anything result;
 	t_assert(fStressServer != NULL);
 	if (fStressServer) {
@@ -81,8 +68,7 @@ void RemoteStresserTest::TestRemoteStresser()
 	TestMultiRemoteStresser();
 }
 
-void RemoteStresserTest::TestMultiRemoteStresser()
-{
+void RemoteStresserTest::TestMultiRemoteStresser() {
 	StartTrace(RemoteStresserTest.TestMultiRemoteStresser);
 	Anything result;
 	t_assert(fStressServer != NULL);
@@ -110,8 +96,7 @@ void RemoteStresserTest::TestMultiRemoteStresser()
 	TraceAny(result, "Result");
 }
 
-Test *RemoteStresserTest::suite ()
-{
+Test *RemoteStresserTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, RemoteStresserTest, TestRemoteStresser);
 
