@@ -6,22 +6,10 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
-#include "Dbg.h"
 #include "HTMLComparer.h"
+#include "Dbg.h"
 
-//---- HTMLComparer ----------------------------------------------------------------
-HTMLComparer::HTMLComparer(Anything master, Anything slave)
-	: fMaster(master), fSlave(slave), fPathStack()
-{
-}
-
-HTMLComparer::~HTMLComparer()
-{
-}
-
-bool HTMLComparer::Compare(String &report)
-{
+bool HTMLComparer::Compare(String &report) {
 	StartTrace(HTMLComparer.Compare);
 
 	if (DoCompareAny(fMaster, fSlave)) {
@@ -42,8 +30,7 @@ bool HTMLComparer::Compare(String &report)
 
 }
 
-bool HTMLComparer::DoCompareAny(Anything &master, Anything &slave)
-{
+bool HTMLComparer::DoCompareAny(Anything &master, Anything &slave) {
 	StartTrace(HTMLComparer.DoCompareAny);
 
 	AnyImplType masterType = master.GetType();
@@ -60,7 +47,7 @@ bool HTMLComparer::DoCompareAny(Anything &master, Anything &slave)
 		Trace("Masterstring: " << masterString);
 
 		if (masterString != "ignore") {
-//	   return master.AsString("X")==slave.AsString("U");
+			//	   return master.AsString("X")==slave.AsString("U");
 
 			if (master.AsString("X") == slave.AsString("U")) {
 				return true;
@@ -78,8 +65,7 @@ bool HTMLComparer::DoCompareAny(Anything &master, Anything &slave)
 	}
 }
 
-bool HTMLComparer::DoCompareAnyArray(Anything &master, Anything &slave)
-{
+bool HTMLComparer::DoCompareAnyArray(Anything &master, Anything &slave) {
 	StartTrace(HTMLComparer.DoCompareAnyArray);
 
 	long sz = master.GetSize();
@@ -91,12 +77,12 @@ bool HTMLComparer::DoCompareAnyArray(Anything &master, Anything &slave)
 
 		if (masterSlotName != slaveSlotName) {
 			Trace("Slotnames different :" << masterSlotName
-				  << "/" << slaveSlotName);
+					<< "/" << slaveSlotName);
 			AddToPathStack(masterSlotName, i);
 			return false;
 		}
 
-		if (!DoCompareAny(masterSlot, slaveSlot )) {
+		if (!DoCompareAny(masterSlot, slaveSlot)) {
 			Trace("Anys different :");
 			TraceAny(masterSlot, "Master slot");
 			TraceAny(slaveSlot, "Slave slot");
@@ -108,8 +94,7 @@ bool HTMLComparer::DoCompareAnyArray(Anything &master, Anything &slave)
 	return true;
 }
 
-void HTMLComparer::AddToPathStack(String path, int index)
-{
+void HTMLComparer::AddToPathStack(String path, int index) {
 	StartTrace(HTMLComparer.AddToPathStack);
 
 	if (path != "") {

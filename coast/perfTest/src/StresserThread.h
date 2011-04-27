@@ -11,18 +11,16 @@
 
 #include "Threads.h"
 
-// --- forward declaration --------------------
 class Stresser;
-class Anything;
 
-//---- StresserThread -----------------------------------------------------------
 //! Wraps a Stresser in a thread.
-class StresserThread : public Thread
-{
+class StresserThread: public Thread {
+	StresserThread(const StresserThread &);
+	StresserThread &operator=(const StresserThread &);
 public:
-	StresserThread();
-	~StresserThread();
-
+	StresserThread() :
+		Thread("StresserThread"), fCond(0), fMutex(0), fMyId(-1), fResult(Coast::Storage::Global()) {
+	}
 	//! Initializing routine
 	//! Typical clients want to construct vast arrays of StresserThreads
 	//! so they have to use the default constructor. Then they should loop over
@@ -42,12 +40,6 @@ protected:
 	long *fPending;
 	long fMyId;
 	Anything fResult;
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	StresserThread(const StresserThread &);
-	StresserThread &operator=(const StresserThread &);
 };
 
 #endif

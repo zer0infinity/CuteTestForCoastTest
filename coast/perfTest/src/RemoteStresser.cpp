@@ -5,29 +5,13 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "RemoteStresser.h"
 #include "DataAccess.h"
 #include "DiffTimer.h"
 #include "Context.h"
-#include "Dbg.h"
-
-//---- RemoteStresser -----------------------------------------------------------
 RegisterStresser(RemoteStresser);
 
-RemoteStresser::RemoteStresser(const char *RemoteStresserName)
-	: Stresser(RemoteStresserName)
-{
-	StartTrace(RemoteStresser.Ctor);
-}
-
-RemoteStresser::~RemoteStresser()
-{
-	StartTrace(RemoteStresser.Destructor);
-}
-
-Anything RemoteStresser::Run(long id)
-{
+Anything RemoteStresser::Run(long id) {
 	StartTrace(RemoteStresser.Run);
 	TraceAny(fConfig, "Config");
 
@@ -39,7 +23,7 @@ Anything RemoteStresser::Run(long id)
 		Context ctx(fConfig.DeepClone(), Anything(), 0, 0, 0);
 		DataAccess da(daName);
 		DiffTimer timer;
-		if ( da.StdExec(ctx) ) {
+		if (da.StdExec(ctx)) {
 			Anything tmpStore = ctx.GetTmpStore();
 			TraceAny(tmpStore, "TmpStore");
 			results = tmpStore["Mapper"]["Output"];

@@ -9,25 +9,8 @@
 #include "StresserThread.h"
 #include "Stresser.h"
 #include "Timers.h"
-#include "Dbg.h"
 
-StresserThread::StresserThread()
-	: Thread("StresserThread")
-	, fCond(0)
-	, fMutex(0)
-	, fMyId(-1)
-	, fResult(Coast::Storage::Global())
-{
-	StartTrace(StresserThread.Ctor);
-}
-
-StresserThread::~StresserThread()
-{
-	StartTrace(StresserThread.Destructor);
-}
-
-void StresserThread::Init(const String &StresserName, long Id,  Condition *Cond, Mutex *Mtx, long *Counter)
-{
+void StresserThread::Init(const String &StresserName, long Id, Condition *Cond, Mutex *Mtx, long *Counter) {
 	StartTrace1(StresserThread.Init, "Stresser: " << StresserName << " / " << Id);
 
 	fMyId = Id;
@@ -37,8 +20,7 @@ void StresserThread::Init(const String &StresserName, long Id,  Condition *Cond,
 	fStresserName = StresserName;
 }
 
-void StresserThread::Run()
-{
+void StresserThread::Run() {
 	StartTrace1(StresserThread.Run, "running: " << fMyId << " with<" << fStresserName << ">");
 
 	DiffTimer dt;
@@ -46,8 +28,7 @@ void StresserThread::Run()
 	Trace ("Finished " << fMyId << " : " << (String)(dt.Diff() / 1000) );
 }
 
-void StresserThread::DoTerminatedHook()
-{
+void StresserThread::DoTerminatedHook() {
 	StartTrace(StresserThread.DoTerminatedHook);
 
 	// synchronize with main thread (StressApp)
@@ -58,8 +39,7 @@ void StresserThread::DoTerminatedHook()
 	fCond->Signal();
 }
 
-Anything StresserThread::GetResult()
-{
+Anything StresserThread::GetResult() {
 	StartTrace(StresserThread.GetResult);
 	TraceAny(fResult, "Result");
 	return fResult;

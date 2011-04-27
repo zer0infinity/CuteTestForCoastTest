@@ -11,7 +11,6 @@
 
 #include "Stresser.h"
 
-//---- RemoteStresser ----------------------------------------------------------
 //! connects to a StressServer and lets it stress
 //! The RemoteStresser's configuration look like this
 //! <PRE>
@@ -20,24 +19,19 @@
 //!		/Input 		"{ /StresserName TStresserRunner }"		# The input for the stress server
 //!	}</PRE>
 //! The configuration is search in the file StresserMeta.any
-class RemoteStresser : public Stresser
-{
+class RemoteStresser: public Stresser {
 public:
-	//--- constructors
-	RemoteStresser(const char *StresserName);
-	~RemoteStresser();
-
-	//--- public api
+	RemoteStresser(const char *StresserName) :
+		Stresser(StresserName) {
+	}
 	//! does the work (connect, send input, collect result)
 	//! \return an Anything containing collected data
 	virtual Anything Run(long id);
 
-//-- Cloning interface
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) RemoteStresser(fName);
 	}
-
 };
 
 #endif

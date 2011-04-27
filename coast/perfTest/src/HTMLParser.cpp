@@ -19,8 +19,6 @@
 
 class MethodInfoCollector {
 public:
-	MethodInfoCollector() {
-	}
 	~MethodInfoCollector();
 	Anything fResults;
 };

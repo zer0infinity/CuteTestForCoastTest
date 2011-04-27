@@ -5,30 +5,12 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "FlowControlDAStresser.h"
 #include "FlowController.h"
 #include "Application.h"
-#include "StringStream.h"
-#include "SystemLog.h"
-#include "Dbg.h"
-
-//---- FlowControlDAStresser -----------------------------------------------------------
 RegisterStresser(FlowControlDAStresser);
 
-FlowControlDAStresser::FlowControlDAStresser(const char *FlowControlDAStresserName)
-	: Stresser(FlowControlDAStresserName)
-{
-	StartTrace(FlowControlDAStresser.Ctor);
-}
-
-FlowControlDAStresser::~FlowControlDAStresser()
-{
-	StartTrace(FlowControlDAStresser.Destructor);
-}
-
-Anything FlowControlDAStresser::Run( long id)
-{
+Anything FlowControlDAStresser::Run(long id) {
 	StartTrace(FlowControlDAStresser.Run);
 	TraceAny(fConfig, "Config 1");
 	Anything result;
@@ -57,7 +39,7 @@ Anything FlowControlDAStresser::Run( long id)
 		} else {
 			// make unique instance name
 			flowCntrlName << "_of_DAStresser";
-			flowCntrl = (FlowController *)flowCntrl->ConfiguredClone("FlowController", flowCntrlName, true);
+			flowCntrl = (FlowController *) flowCntrl->ConfiguredClone("FlowController", flowCntrlName, true);
 		}
 		Anything env;
 		env["Id"] = id - 1;
@@ -78,13 +60,13 @@ Anything FlowControlDAStresser::Run( long id)
 		long End = 0;
 		long Range = 0;
 
-		if ( fConfig.IsDefined( "Range" ) ) {
+		if (fConfig.IsDefined("Range")) {
 			Range = fConfig["Range"].AsLong();
 			Start = (id - 1) * Range;
 			End = Start + Range - 1;
 		} else {
-			Start = fConfig["UserList"][id-1]["Start"].AsLong();
-			End = fConfig["UserList"][id-1]["End"].AsLong();
+			Start = fConfig["UserList"][id - 1]["Start"].AsLong();
+			End = fConfig["UserList"][id - 1]["End"].AsLong();
 		}
 
 		Trace("find application StressApp" );
@@ -93,7 +75,7 @@ Anything FlowControlDAStresser::Run( long id)
 		String appName;
 		Application *application = Application::GetGlobalApplication(appName);
 		long idAndCurrentOffset = 0;
-		if ( application ) {
+		if (application) {
 			currentOffset = application->Lookup("OFFSET", 0L);
 			idAndCurrentOffset = currentOffset + id - 1;
 			env["IdAndCurrentOffset"] = idAndCurrentOffset;
@@ -113,14 +95,14 @@ Anything FlowControlDAStresser::Run( long id)
 		}
 
 		Trace("id: [" << id << "] IdAndCurrentOffset: [" << idAndCurrentOffset << "] Range: [" <<
-			  Range << "] Start: [" << Start << "] End: [" << End << "] Diff: [" << Diff  << "]");
-		while ( true ) {
+				Range << "] Start: [" << Start << "] End: [" << End << "] Diff: [" << Diff << "]");
+		while (true) {
 			Trace("PrepareRequest" );
 			bool bPrepareRequestSucceeded;
 			noBreakCondition = flowCntrl->PrepareRequest(ctx, bPrepareRequestSucceeded);
 
 			// break condition check was here -----
-			if ( !noBreakCondition || !bPrepareRequestSucceeded) {
+			if (!noBreakCondition || !bPrepareRequestSucceeded) {
 				Trace("break condition-return" );
 				if (!bPrepareRequestSucceeded) {
 					nError++;
@@ -142,7 +124,7 @@ Anything FlowControlDAStresser::Run( long id)
 
 			TraceAny( ctx.GetQuery(), "state of query after PrepareRequest is" );
 			currentReqNr = tmpStore["FlowState"]["RunNr"].AsLong();
-			currentNumber = ( currentReqNr % Diff ) + Start;
+			currentNumber = (currentReqNr % Diff) + Start;
 			tmpStore["CurrentNumber"] = currentNumber;
 
 			// check if PrepareRequest succeeded, if it failed, set an Error and proceed with the next test
@@ -176,7 +158,7 @@ Anything FlowControlDAStresser::Run( long id)
 					}
 				} else {
 					Trace("AccessTime " << accessTime);
-					if ( !flowCntrl->AnalyseReply(ctx, result) ) {
+					if (!flowCntrl->AnalyseReply(ctx, result)) {
 						Trace("Analyse reply failed!");
 						// check if we wanted AnalyseReply to fail
 						ROAnything roa;
@@ -187,7 +169,7 @@ Anything FlowControlDAStresser::Run( long id)
 							Trace("Errorcount4:" << nError );
 						}
 					}
-					if ( tmpStore["result"].IsDefined("Bytes" ) ) {
+					if (tmpStore["result"].IsDefined("Bytes")) {
 						nrBytes += tmpStore["result"]["Bytes"].AsLong(0L);
 						Trace("Total no bytes is: " << nrBytes);
 						tmpStore["result"].Remove("Bytes");
@@ -217,13 +199,13 @@ Anything FlowControlDAStresser::Run( long id)
 			CheckCopyErrorMessage(result, ctx.GetTmpStore(), nrSteps, (lastErrors != nError));
 			lastErrors = nError;
 			tmpStore["result"]["ConfigStep"] = nrSteps + 1;
-			SystemLog::WriteToStderr(".", 1);	// progress indication
+			SystemLog::WriteToStderr(".", 1); // progress indication
 			// remove slots which should not stay persistent between requests
 			// enable FlowController to cleanup its own mess
 			flowCntrl->CleanupAfterStep(ctx);
 		}
 
-		if ( tmpStore["result"].IsDefined("InfoMessageCtr" ) ) { // info (trace) msgs
+		if (tmpStore["result"].IsDefined("InfoMessageCtr")) { // info (trace) msgs
 			result["InfoMessageCtr"] = tmpStore["result"]["InfoMessageCtr"];
 		}
 

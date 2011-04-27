@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- CookieToServerRenderer -----------------------------------------------------------
 /* CookieToServerRenderer:         Renders a given HTML-Tag with the end Tag
  *
  * Configuration :
@@ -27,16 +26,15 @@
  * /NoEndTag      If defined, suppresses the        optional
  *                renderering of the end tag
  */
-class CookieToServerRenderer : public Renderer
-{
+class CookieToServerRenderer: public Renderer {
 public:
-	CookieToServerRenderer(const char *name);
-	~CookieToServerRenderer();
-
+	CookieToServerRenderer(const char *name) :
+		Renderer(name) {
+	}
 	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 private:
-	void OutputCookies(const String &explicitDomainName, std::ostream &reply, Context &c );
+	void OutputCookies(const String &explicitDomainName, std::ostream &reply, Context &c);
 };
 
 #endif		//ifndef _CookieToServerRenderer_H

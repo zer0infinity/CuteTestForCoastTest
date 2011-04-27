@@ -11,7 +11,6 @@
 
 #include "Stresser.h"
 
-//---- DataAccessStresser -----------------------------------------------------------
 //! Simple Stresser which executes a DataAccess
 /*!
 \par Configuration
@@ -27,22 +26,18 @@
 \endcode
 
 */
-class DataAccessStresser : public Stresser
-{
+class DataAccessStresser: public Stresser {
 public:
-	/*! Ctor of this Stresser
-		\param DataAccessStresserName The name this object will be registered with */
-	DataAccessStresser(const char *DataAccessStresserName);
-	//! Dtor
-	~DataAccessStresser();
-
+	DataAccessStresser(const char *DataAccessStresserName) :
+		Stresser(DataAccessStresserName) {
+	}
 	/*! The method doing the DataAccess and summarize the results
-		\param id A number to identify this Stresser instance, used when more than one Stresser is used
-		\return The stressers summary Anything which will be analyzed from within StressApp::ShowResult() */
+	 \param id A number to identify this Stresser instance, used when more than one Stresser is used
+	 \return The stressers summary Anything which will be analyzed from within StressApp::ShowResult() */
 	virtual Anything Run(long id);
 
 	/*! Cloning interface
-		\return Instance of this class */
+	 \return Instance of this class */
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) DataAccessStresser(fName);

@@ -9,21 +9,20 @@
 #ifndef _HTMLComparer_H
 #define _HTMLComparer_H
 
-
-class Anything;
-class String;
+#include "Anything.h"
 
 //---- HTMLComparer ----------------------------------------------------------
 //!compares two HTML any trees
 //! to be defined
 //!
-class HTMLComparer
-{
+class HTMLComparer {
+	HTMLComparer();
+	HTMLComparer(const HTMLComparer &);
+	HTMLComparer &operator=(const HTMLComparer &);
 public:
-	//--- constructors
-	HTMLComparer(Anything master, Anything slave);
-	~HTMLComparer();
-
+	HTMLComparer(Anything master, Anything slave) :
+		fMaster(master), fSlave(slave), fPathStack() {
+	}
 	//--- public api
 	//!compares the two HTML trees
 	//! \param the comparison report is written on this string
@@ -38,20 +37,7 @@ protected:
 	bool DoCompareAnyArray(Anything &master, Anything &slave);
 	void AddToPathStack(String path, int index);
 
-	//--- member variables declaration
-	Anything fMaster;
-	Anything fSlave;
-	Anything fPathStack;
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-	// block the following default elements of this class
-	// because they're not allowed to be used
-	HTMLComparer();
-	HTMLComparer(const HTMLComparer &);
-	HTMLComparer &operator=(const HTMLComparer &);
-
-	//--- private member variables
+	Anything fMaster, fSlave, fPathStack;
 };
 
 #endif

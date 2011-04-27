@@ -11,15 +11,14 @@
 
 #include "Mapper.h"
 
-//---- HTMLTreeMapper -----------------------------------------------------------
-
-class HTMLTreeMapper : public ResultMapper
-{
+class HTMLTreeMapper: public ResultMapper {
+	HTMLTreeMapper();
+	HTMLTreeMapper(const HTMLTreeMapper &);
+	HTMLTreeMapper &operator=(const HTMLTreeMapper &);
 public:
-	HTMLTreeMapper(const char *name) : ResultMapper(name) {};
-	~HTMLTreeMapper() {};
-
-//-- Cloning interface
+	HTMLTreeMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) HTMLTreeMapper(fName);
@@ -33,22 +32,16 @@ public:
 	//! \param config - ignored
 	//! \return returns true if the mapping was successful otherwise false
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
-
-private:
-	HTMLTreeMapper();
-	HTMLTreeMapper(const HTMLTreeMapper &);
-	HTMLTreeMapper &operator=(const HTMLTreeMapper &);
-
 };
-//---- HTMLTreeAndSortedTagsMapper -----------------------------------------------------------
 
-class HTMLTreeAndSortedTagsMapper : public ResultMapper
-{
+class HTMLTreeAndSortedTagsMapper: public ResultMapper {
+	HTMLTreeAndSortedTagsMapper();
+	HTMLTreeAndSortedTagsMapper(const HTMLTreeAndSortedTagsMapper &);
+	HTMLTreeAndSortedTagsMapper &operator=(const HTMLTreeAndSortedTagsMapper &);
 public:
-	HTMLTreeAndSortedTagsMapper(const char *name) : ResultMapper(name) {};
-	~HTMLTreeAndSortedTagsMapper() {};
-
-//-- Cloning interface
+	HTMLTreeAndSortedTagsMapper(const char *name) :
+		ResultMapper(name) {
+	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) HTMLTreeAndSortedTagsMapper(fName);
@@ -63,11 +56,6 @@ public:
 	//! \param config - ignored
 	//! \return returns true if the mapping was successful otherwise false
 	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
-
-private:
-	HTMLTreeAndSortedTagsMapper();
-	HTMLTreeAndSortedTagsMapper(const HTMLTreeAndSortedTagsMapper &);
-	HTMLTreeAndSortedTagsMapper &operator=(const HTMLTreeAndSortedTagsMapper &);
 };
 
 #endif

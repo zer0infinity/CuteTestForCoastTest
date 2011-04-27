@@ -5,30 +5,13 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "DataAccessStresser.h"
 #include "Timers.h"
-#include "SystemLog.h"
 #include "StringStream.h"
 #include "DataAccess.h"
-#include "Dbg.h"
-
-//---- DataAccessStresser -----------------------------------------------------------
 RegisterStresser(DataAccessStresser);
 
-DataAccessStresser::DataAccessStresser(const char *DataAccessStresserName)
-	: Stresser(DataAccessStresserName)
-{
-	StartTrace(DataAccessStresser.Ctor);
-}
-
-DataAccessStresser::~DataAccessStresser()
-{
-	StartTrace(DataAccessStresser.Destructor);
-}
-
-Anything DataAccessStresser::Run(long id)
-{
+Anything DataAccessStresser::Run(long id) {
 	StartTrace(DataAccessStresser.Run);
 
 	long nError(0);
@@ -54,7 +37,7 @@ Anything DataAccessStresser::Run(long id)
 			String strStepNr;
 			strStepNr << i;
 			DiffTimer timer;
-			if ( !da.StdExec(ctx) ) {
+			if (!da.StdExec(ctx)) {
 				String strBuf;
 				OStringStream outstream(strBuf);
 				ctx.GetTmpStore()["Mapper"].PrintOn(outstream, true);
@@ -67,7 +50,7 @@ Anything DataAccessStresser::Run(long id)
 			Trace("AccessTime " << accessTime);
 			sum += accessTime;
 			ROAnything roaInfoMessage;
-			if ( Lookup("InfoMessage", roaInfoMessage) && roaInfoMessage.GetSize() ) {
+			if (Lookup("InfoMessage", roaInfoMessage) && roaInfoMessage.GetSize()) {
 				TraceAny(roaInfoMessage, "slots to Output");
 				Anything metaInfo = Anything(Anything::ArrayMarker());
 				results["InfoMessageCtr"][strStepNr] = metaInfo;

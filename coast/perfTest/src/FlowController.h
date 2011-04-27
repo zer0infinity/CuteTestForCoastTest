@@ -9,16 +9,15 @@
 #ifndef _FlowController_h_
 #define _FlowController_h_
 
-#include "Context.h"
 #include "WDModule.h"
+#include "Context.h"
+#include "Registry.h"
 
-//---- FlowControllersModule -----------------------------------------------------------
-class FlowControllersModule : public WDModule
-{
+class FlowControllersModule: public WDModule {
 public:
-	FlowControllersModule(const char *);
-	~FlowControllersModule();
-
+	FlowControllersModule(const char *name) :
+		WDModule(name) {
+	}
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
@@ -42,54 +41,38 @@ public:
  *	}
  * \endcode
  */
-class FlowController : public ConfNamedObject
-{
-public:
-	FlowController(const char *FlowControllerName);
-	~FlowController();
-
-	//!Input data for the DataAccess are placed into the context.
-	//! \param ctx Context of the stress run
-	//! \return true if a DataAccess is to be executed - false if the series is finished
-	virtual bool PrepareRequest(Context &ctx);
-
-	//!Input data for the DataAccess are placed into the context.
-	//! \param ctx Context of the stress run
-	//! \param bPrepareRequestSucceeded status of the request preparation
-	//! \return true if a DataAccess is to be executed - false if the series is finished
-	virtual bool PrepareRequest(Context &ctx, bool &bPrepareRequestSucceeded);
-
-	virtual bool ExecDataAccess(Context &ctx, long &execTime);
-
-	virtual bool AnalyseReply(Context &ctx);
-	virtual bool AnalyseReply(Context &ctx, Anything &result);
-
-	virtual void CleanupAfterStep(Context &ctx);
-
-	virtual void Init(Context &ctx);
-
-//---- registry interface
-	RegCacheDef(FlowController);	// FindFlowController()
-//-- Cloning interface
-	/*! @copydoc IFAObject::Clone(Allocator *) */
-	IFAObject *Clone(Allocator *a) const {
-		return new (a) FlowController(fName);
-	}
-
-protected:
-	virtual long GetRequestNr(Context &ctx);
-	virtual ROAnything GetStepConfig(Context &ctx);
-	virtual void DoCleanupAfterStep(Context &ctx, ROAnything roaStepConfig);
-
-private:
-	// block the following default elements of this class
-	// because they're not allowed to be used
+class FlowController: public ConfNamedObject {
 	FlowController();
 	FlowController(const FlowController &);
 	FlowController &operator=(const FlowController &);
 
 	//! Utility method that copies the slots from runConfig to dest
 	void DoPrepare(Anything &dest, const ROAnything &runConfig);
+public:
+	FlowController(const char *FlowControllerName);
+	//!Input data for the DataAccess are placed into the context.
+	//! \param ctx Context of the stress run
+	//! \return true if a DataAccess is to be executed - false if the series is finished
+	virtual bool PrepareRequest(Context & ctx);
+	//!Input data for the DataAccess are placed into the context.
+	//! \param ctx Context of the stress run
+	//! \param bPrepareRequestSucceeded status of the request preparation
+	//! \return true if a DataAccess is to be executed - false if the series is finished
+	virtual bool PrepareRequest(Context & ctx, bool & bPrepareRequestSucceeded);
+	virtual bool ExecDataAccess(Context & ctx, long & execTime);
+	virtual bool AnalyseReply(Context & ctx);
+	virtual bool AnalyseReply(Context & ctx, Anything & result);
+	virtual void CleanupAfterStep(Context & ctx);
+	virtual void Init(Context & ctx);
+	RegCacheImplInline(FlowController);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) FlowController(fName);
+	}
+protected:
+	virtual long GetRequestNr(Context &ctx);
+	virtual ROAnything GetStepConfig(Context &ctx);
+	virtual void DoCleanupAfterStep(Context &ctx, ROAnything roaStepConfig);
 };
 
 #define RegisterFlowController(name) RegisterObject(name, FlowController)

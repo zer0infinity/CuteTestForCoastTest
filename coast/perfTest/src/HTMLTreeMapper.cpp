@@ -5,24 +5,19 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 #include "HTMLTreeMapper.h"
 #include "MultiWriterParser.h"
 #include "HTMLTreeWriter.h"
-#include "StringStream.h"
 #include "Dbg.h"
-
-//---- HTMLTreeMapper -----------------------------------------------------------
 RegisterResultMapper(HTMLTreeMapper);
 
-bool HTMLTreeMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything)
-{
+bool HTMLTreeMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything) {
 	// ignore key and config
 	StartTrace(HTMLTreeMapper.DoPutStream);
 
 	AAT_HTMLReader mr(&is);
 	HTMLTreeWriter mw;
-	AAT_StdHTMLParser p( mr, mw );
+	AAT_StdHTMLParser p(mr, mw);
 
 	// now we may read the HTML-Tags
 	p.IntParse();
@@ -33,13 +28,9 @@ bool HTMLTreeMapper::DoPutStream(const char *, std::istream &is, Context &ctx, R
 	// store under Mapper.HTTPBody
 	return DoFinalPutAny("HTTPBody", fAllReq, ctx);
 }
-
-//---- HTMLTreeAndSortedTagsMapper -----------------------------------------------------------
 RegisterResultMapper(HTMLTreeAndSortedTagsMapper);
 
-bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything)
-{
-
+bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything) {
 	// ignore key and config
 	StartTrace(HTMLTreeAndSortedTagsMapper.DoPutStream);
 
@@ -47,7 +38,7 @@ bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, std::istream &is, Co
 	HTMLTreeWriter mw1;
 	Anything reqLinks;
 	MyHTMLWriter mw2(reqLinks);
-	MultiWriterParser p( mr, mw1, mw2 );
+	MultiWriterParser p(mr, mw1, mw2);
 
 	// now we may read the HTML-Tags
 	p.IntParse();

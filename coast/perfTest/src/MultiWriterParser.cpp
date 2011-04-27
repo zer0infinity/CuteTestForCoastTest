@@ -6,52 +6,39 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
-#include "Dbg.h"
 #include "MultiWriterParser.h"
 
-//---- MultiWriterParser ----------------------------------------------------------------
-MultiWriterParser::MultiWriterParser(AAT_HTMLReader &reader,
-									 AAT_HTMLWriter &writer1,
-									 AAT_HTMLWriter &writer2)
-	: AAT_StdHTMLParser(reader, writer1), fSecondWriter(writer2)
-{
+MultiWriterParser::MultiWriterParser(AAT_HTMLReader &reader, AAT_HTMLWriter &writer1, AAT_HTMLWriter &writer2) :
+	AAT_StdHTMLParser(reader, writer1), fSecondWriter(writer2) {
 }
 
-void MultiWriterParser::IntFlush()
-{
+void MultiWriterParser::IntFlush() {
 	fSecondWriter.Flush();
 	AAT_StdHTMLParser::IntFlush();
 }
 
-void MultiWriterParser::IntPushNode(Anything &node)
-{
+void MultiWriterParser::IntPushNode(Anything &node) {
 	fSecondWriter.PushNode(node);
 	AAT_StdHTMLParser::IntPushNode(node);
 }
 
-void MultiWriterParser::IntPut(Unicode c)
-{
+void MultiWriterParser::IntPut(Unicode c) {
 	fSecondWriter.Put(c);
 	AAT_StdHTMLParser::IntPut(c);
 }
-void MultiWriterParser::IntComment(const String &comment)
-{
+void MultiWriterParser::IntComment(const String &comment) {
 	fSecondWriter.Comment(comment);
 	AAT_StdHTMLParser::IntComment(comment);
 }
-void MultiWriterParser::IntTag(int type, const char *tag)
-{
+void MultiWriterParser::IntTag(int type, const char *tag) {
 	fSecondWriter.Tag(type, tag);
 	AAT_StdHTMLParser::IntTag(type, tag);
 }
-void MultiWriterParser::IntArgument(const String &key, const String &value)
-{
-	fSecondWriter.Argument(key, value );
-	AAT_StdHTMLParser::IntArgument(key, value );
+void MultiWriterParser::IntArgument(const String &key, const String &value) {
+	fSecondWriter.Argument(key, value);
+	AAT_StdHTMLParser::IntArgument(key, value);
 }
-void MultiWriterParser::IntError(long, const String &msg)
-{
+void MultiWriterParser::IntError(long, const String &msg) {
 	fSecondWriter.Error(fLine, msg);
 	AAT_StdHTMLParser::IntError(fLine, msg);
 }

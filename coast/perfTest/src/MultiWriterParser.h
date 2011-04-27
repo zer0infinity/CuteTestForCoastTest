@@ -11,16 +11,17 @@
 
 #include "HTMLParser.h"
 
-//---- MultiWriterParser ----------------------------------------------------------
 //!Parser that drives two writers
 class MultiWriterParser : public AAT_StdHTMLParser
 {
+	AAT_HTMLWriter &fSecondWriter;
+	MultiWriterParser();
+	MultiWriterParser(const MultiWriterParser &);
+	MultiWriterParser &operator=(const MultiWriterParser &);
 public:
-	//--- constructors
 	MultiWriterParser(AAT_HTMLReader &reader,
 					  AAT_HTMLWriter &writer1,
 					  AAT_HTMLWriter &writer2);
-	virtual ~MultiWriterParser() {};
 	void Flush() {
 		IntFlush();
 	};
@@ -33,12 +34,6 @@ protected:
 	void IntTag(int type, const char *tag );
 	void IntArgument(const String &key, const String &value);
 	void IntError(long line, const String &msg);
-
-private:
-	AAT_HTMLWriter &fSecondWriter;
-	MultiWriterParser();
-	MultiWriterParser(const MultiWriterParser &);
-	MultiWriterParser &operator=(const MultiWriterParser &);
 };
 
 #endif
