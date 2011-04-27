@@ -589,7 +589,7 @@ void AnythingParserSemanticTest::Semantic5Test() {
 void AnythingParserSemanticTest::Semantic6Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
-	any[_QUOTE_(a {b)] = _QUOTE_(2}8);
+	any[_QUOTE_(a{b)] = _QUOTE_(2}8);
 		//	Anything-Object filled with Stream =
 		//	{
 		//  	/"a{b" "2}8"
@@ -617,7 +617,7 @@ void AnythingParserSemanticTest::Semantic6Test() {
 	void AnythingParserSemanticTest::Semantic7Test() {
 		// Init an anything-object for testing
 		Anything any = emptyAny;
-		any[_QUOTE_(ab {)] = _QUOTE_(2}9);
+		any[_QUOTE_(ab{)] = _QUOTE_(2}9);
 			//	Anything-Object filled with Stream =
 			//	{
 			//  	/"ab{" "2}9"
