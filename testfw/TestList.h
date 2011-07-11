@@ -12,17 +12,15 @@
 class Test;
 
 //---- TestElt ------------------------------------------------------
-class TestElt
-{
+class TestElt {
+	TestElt();
 protected:
-	Test		*fValue;
-	TestElt		*fNext;
-
-	TestElt( Test *aValue ):  fNext(0) {
-		fValue = aValue;
-	};
+	Test *fValue;
+	TestElt *fNext;
+	TestElt(Test *aValue) :
+			fValue(aValue), fNext(0) {
+	}
 	~TestElt();
-
 	friend class TestList;
 };
 

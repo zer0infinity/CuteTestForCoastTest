@@ -36,14 +36,14 @@ TString::TString()
 TString::TString(long capacity)
 	: fCont(0), fCapacity(capacity), fLength(0)
 {
-	this->alloc(capacity);
+	alloc(capacity);
 }
 
 TString::TString(const char *s, long l)
 	: fCont(0), fCapacity(0), fLength(0)
 {
 	if (s) {
-		Set(0, s, l);
+		Set(0L, s, l);
 	}
 }
 
@@ -51,7 +51,7 @@ TString::TString(const TString &s)
 	: fCont(0), fCapacity(0), fLength(0)
 {
 	if ( s.fCont ) {
-		Set(0, s.fCont, s.Length());
+		Set(0L, s.fCont, s.Length());
 	}
 }
 
@@ -67,13 +67,13 @@ TString::~TString()
 // assignment operators ar asymmetric !!!
 TString &TString::operator= (const char *s)
 {
-	Set(0, s, -1);
+	Set(0L, s, -1);
 	return *this;
 }
 
 TString &TString::operator= (const TString &s)
 {
-	Set(0, s.fCont, s.Length());
+	Set(0L, s.fCont, s.Length());
 	return *this;
 }
 
@@ -109,7 +109,7 @@ void TString::Set(long start, const char *s, long len)
 		}
 
 		char *oldBuf = fCont;
-		this->alloc(newCapacity);
+		alloc(newCapacity);
 		if (fCont) {
 			if (oldBuf) {
 				memcpy(fCont, oldBuf, oldLength);
@@ -137,7 +137,7 @@ void TString::Set(long start, const char *s, long len)
 
 TString &TString::Append(char c)
 {
-	Set(fLength, 0, 1);
+	Set(fLength, 0, 1L);
 	fCont[fLength-1] = c;
 	return *this;
 }
@@ -158,48 +158,42 @@ TString &TString::Append(int number)
 {
 	char str[100] = {0};
 	snprintf(str, sizeof(str), "%d", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::Append(long number)
 {
 	char str[100] = {0};
 	snprintf(str, sizeof(str), "%ld", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::Append(unsigned long number)
 {
 	char str[100] = {0};
 	snprintf(str, sizeof(str), "%lu", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::Append(long long number)
 {
 	char str[100] = {0};
 	snprintf(str, sizeof(str), "%lld", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::Append(unsigned long long number)
 {
 	char str[100] = {0};
 	snprintf(str, sizeof(str), "%llu", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::Append(double number)
 {
 	char str[100] = {0};
 	snprintf( str, sizeof(str), "%.8f", number );
-	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
-	return *this;
+	return Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 }
 
 TString &TString::AppendAsHex(unsigned char cc)
@@ -239,9 +233,9 @@ void TString::DumpAsHex(TString &outbuf, long dumpwidth) const
 		TString hexcode("0123456789ABCDEF");
 		// set string width to TotalLen
 		TString tmpBuf;
-		tmpBuf.Set(0, 0, lTotalLen);
-		long x = 0L, l = 0L, sz = 0;
-		for (l = 0, sz = Length(); l < sz; ++l, ++x) {
+		tmpBuf.Set(0L, 0, lTotalLen);
+		long x = 0L;
+		for (long l = 0, sz = Length(); l < sz; ++l, ++x) {
 			if (l % dumpwidth == 0) {
 				x = 0L;
 				if (l > 0) {
@@ -283,7 +277,7 @@ long TString::DiffDumpAsHex(TString &outbuf, const TString &strRight) const
 		const TString hexcode("0123456789ABCDEF");
 		// set string width to TotalLen
 		TString tmpBuf;
-		tmpBuf.Set(0, 0, lTotalLen);
+		tmpBuf.Set(0L, 0, lTotalLen);
 		long x = 0L, l = 0L;
 		bool bEqual = true;
 		for (l = 0; l < maxLength; ++l, ++x) {
@@ -380,7 +374,7 @@ std::ostream &operator<<(std::ostream &os, const TString &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while (--padlen >= 0) {
+		while (--padlen > 0) {
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour

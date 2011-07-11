@@ -28,6 +28,8 @@ class TestList;
  */
 class TestSuite : public Test
 {
+	TestSuite(TestSuite const&);
+	TestSuite& operator=(TestSuite const&);
 public:
 	TestSuite       ();
 	~TestSuite		();

@@ -9,7 +9,7 @@
 #ifndef _AssertionTest_H
 #define _AssertionTest_H
 
-#include "TestCase.h"
+#include "TestCase.h"//lint !e537
 
 //---- AssertionTest ----------------------------------------------------------
 //! <B>really brief class description</B>

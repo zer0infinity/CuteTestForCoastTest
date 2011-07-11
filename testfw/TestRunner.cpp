@@ -16,24 +16,16 @@
 #include <io.h>
 #endif
 
-/*
-* Run all tests and collect their results.
-*/
-
-void TestRunner::usage(const char *progname)
-{
-	std::cout << "Usage: " << progname << " [Options] testNames ... " << std::endl
-		 << "testName must be the name of a registered TestSuite "
-		 << "(usually the name of a subclass of TestCase)." << std::endl
-		 << "Options:" << std::endl
-		 << "   -h         This help message" << std::endl
-		 << "   -list      List the tests available in this program " << std::endl
-		 << "   -log file  Write the successful tests to \"file\"" << std::endl
-		 << "   -wait      Wait for user input for each subsequent test" << std::endl
-		 << "   -all       Run all the available tests (plus the individually specified ones!)" << std::endl
-		 << "   -out file  write stdout to file instead of usual stdout" << std::endl
-		 << "   -err file  write stderr to file instead of usual stderr (aka /dev/null)" << std::endl;
-} // usage
+void TestRunner::usage(const char *progname) const {
+	std::cout << "Usage: " << progname << " [Options] testNames ... " << std::endl << "testName must be the name of a registered TestSuite "
+			<< "(usually the name of a subclass of TestCase)." << std::endl << "Options:" << std::endl << "   -h         This help message"
+			<< std::endl << "   -list      List the tests available in this program " << std::endl
+			<< "   -log file  Write the successful tests to \"file\"" << std::endl
+			<< "   -wait      Wait for user input for each subsequent test" << std::endl
+			<< "   -all       Run all the available tests (plus the individually specified ones!)" << std::endl
+			<< "   -out file  write stdout to file instead of usual stdout" << std::endl
+			<< "   -err file  write stderr to file instead of usual stderr (aka /dev/null)" << std::endl;
+}
 
 void TestRunner::listTests()
 /* what: list the available tests of the program

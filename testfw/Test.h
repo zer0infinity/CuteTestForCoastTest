@@ -134,13 +134,13 @@ protected:
 						 TString fileName,
 						 TString message);
 
-	TString notEqualsMessage(long expected, long actual);
-	TString notEqualsMessage(double expected, double actual);
-	TString notEqualsMessage(const char *expected, const char *actual);
+	TString notEqualsMessage(long expected, long actual) const;
+	TString notEqualsMessage(double expected, double actual) const;
+	TString notEqualsMessage(const char *expected, const char *actual) const;
 	TString notEqualsMessage (const char *expected,
 							  long lengthExpected,
 							  const char *actual,
-							  long lengthActual);
+							  long lengthActual) const;
 
 	bool 	assertEqualsIfNullPtr(const char *expected,
 								  const char *actual,
@@ -150,7 +150,10 @@ protected:
 
 	template < typename T > bool assert_equal_to(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
 		TString strExpression;
-		strExpression.Append((unsigned long long)left).Append(" equal_to ").Append((unsigned long long)right).Append(addexpr);
+		strExpression.Append((unsigned long long)left);
+		strExpression.Append(" equal_to ");
+		strExpression.Append((unsigned long long)right);
+		strExpression.Append(addexpr);
 		return assertImplementation(equal_to<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
 	template < typename T > bool assert_not_equal_to(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
@@ -208,60 +211,60 @@ inline TString Test::toString ()
 // Just goes to show that preprocessors do have some
 // redeeming qualities.
 #define t_assert(condition)\
-(this->assertImplementation ((bool)(condition),(#condition),\
-	__LINE__, __FILE__))
+(this->assertImplementation (static_cast<bool>(condition),(#condition),\
+	static_cast<long>(__LINE__), __FILE__))
 
 #define assertCompare(left, what, right)\
-(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", __LINE__, __FILE__, "" ) )
+(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", static_cast<long>(__LINE__), __FILE__, "" ) )
 
 #define assertComparem(left, what, right, message)\
-(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", __LINE__, __FILE__, message ) )
+(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", static_cast<long>(__LINE__), __FILE__, message ) )
 
 #define assertDoublesEqual(expected,actual,delta)\
 (this->assertEquals ((expected),\
-		(actual),(delta),__LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
+		(actual),(delta),static_cast<long>(__LINE__),__FILE__,TString(" " #expected " == " #actual " ")))
 
 #define assertLongsEqual(expected,actual)\
 (this->assertEquals ((expected),\
-		(actual),__LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
+		(actual),static_cast<long>(__LINE__),__FILE__,TString(" " #expected " == " #actual " ")))
 
 #define assertEqual(expected,actual)\
 (this->assertEquals ((expected),\
-		(actual),__LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
+		(actual),static_cast<long>(__LINE__),__FILE__,TString(" " #expected " == " #actual " ")))
 
 #define assertEqualRaw(expected,actual)\
 (this->assertEquals ((expected),\
 (expected.Length()),\
 (actual),\
 (actual.Length()),\
-__LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
+static_cast<long>(__LINE__),__FILE__,TString(" " #expected " == " #actual " ")))
 
 #define assertCharPtrEqual(expected,actual)\
 (this->assertEquals ((expected),\
-		(actual),__LINE__,__FILE__,(" " #expected " == " #actual " ")))
+		(actual),static_cast<long>(__LINE__),__FILE__,(" " #expected " == " #actual " ")))
 
 // the same macros with an additional message
 #define t_assertm(condition,message)\
 (this->assertImplementation ((bool)(condition),(#condition),\
-	__LINE__, __FILE__,message))
+	static_cast<long>(__LINE__), __FILE__,message))
 
 #define assertDoublesEqualm(expected,actual,delta,message)\
 (this->assertEquals ((expected),\
-		(actual),(delta),__LINE__,__FILE__,message))
+		(actual),(delta),static_cast<long>(__LINE__),__FILE__,message))
 
 #define assertEqualm(expected,actual,message)\
 (this->assertEquals ((expected),\
-		(actual),__LINE__,__FILE__,message))
+		(actual),static_cast<long>(__LINE__),__FILE__,message))
 
 #define assertEqualRawm(expected,actual,message)\
 (this->assertEquals ((expected),\
 (expected.Length()),\
 (actual),\
 (actual.Length()),\
-__LINE__,__FILE__,message))
+static_cast<long>(__LINE__),__FILE__,message))
 
 #define assertCharPtrEqualm(expected,actual,message)\
 (this->assertEquals ((expected),\
-		(actual),__LINE__,__FILE__,TString(" " #expected " == " #actual " ") << message))
+		(actual),static_cast<long>(__LINE__),__FILE__,TString(" " #expected " == " #actual " ") << message))
 
 #endif

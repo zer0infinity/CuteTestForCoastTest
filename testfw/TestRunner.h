@@ -32,32 +32,34 @@ class TestList;
  * Here is the synopsis:
  *
  * TestRunner [-wait] ExampleTestCase
-*/
-class TestRunner
-{
+ */
+class TestRunner {
+	TestRunner(TestRunner const&);
+	TestRunner& operator=(TestRunner const&);
 protected:
-	bool		fWait;
-	TestList	*fMappings;
-	std::ostream		*fLogStream;
-	long		fNumberOfSuccesses;
-	long		fNumberOfFailures;
-	TestTimer	fElapsedTime;
+	bool fWait;
+	TestList *fMappings;
+	std::ostream *fLogStream;
+	long fNumberOfSuccesses;
+	long fNumberOfFailures;
+	TestTimer fElapsedTime;
 
 public:
-	TestRunner ();
-	~TestRunner ();
+	TestRunner();
+	~TestRunner();
 
-	void		run (int ac, const char **av);
-	void		addTest (const char *name, Test *suite);
-	long		getNumberOfFailures();
-	long		getNumberOfSuccesses();
+	void run(int ac, const char **av);
+	void addTest(const char *name, Test *suite);
+	long getNumberOfFailures();
+	long getNumberOfSuccesses();
 
 protected:
-	void		run (Test *test);
-	void		usage(const char *progname);
-	void		listTests();
-	void		runAllTests();
-	void		setLogToFileNamed(const char *name);
+	void run(Test *test);
+	/*! Run all tests and collect their results. */
+	void usage(const char *progname) const;
+	void listTests();
+	void runAllTests();
+	void setLogToFileNamed(const char *name);
 };
 
 #endif

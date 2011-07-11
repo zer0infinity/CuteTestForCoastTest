@@ -81,17 +81,17 @@ bool Test::assertEqualsIfNullPtr(const char *expected,
 {
 	if (expected == 0) {
 		if (actual == 0) {	// assertion is true
-			return assertImplementation(1,
+			return assertImplementation(true,
 										notEqualsMessage("<Null pointer>", "<Null pointer>"),
 										lineNumber, fileName, message);
 		} else {			// assertion fails
-			return assertImplementation(0,
+			return assertImplementation(false,
 										notEqualsMessage("<Null pointer>", actual),
 										lineNumber, fileName, message);
 
 		} // if
 	} else if (actual == 0) {	// this is assertion certainly fails
-		return assertImplementation(0,
+		return assertImplementation(false,
 									notEqualsMessage(expected, "<Null pointer>"),
 									lineNumber, fileName, message);
 	}
@@ -110,8 +110,7 @@ bool Test::assertEquals (const char *expected,
 		return assertImplementation ((strcmp(expected, actual) == 0),
 									 notEqualsMessage(expected, actual),
 									 lineNumber, fileName, message);
-	} // if
-	return false;
+	}
 }
 
 bool Test::assertEquals (const char *expected, long lengthExpected,
@@ -123,15 +122,14 @@ bool Test::assertEquals (const char *expected, long lengthExpected,
 	if (expected == 0 || actual == 0) {
 		return assertEqualsIfNullPtr(expected, actual, lineNumber, fileName, message);
 	} else if (lengthExpected != lengthActual) { // this is assertion certainly fails
-		return assertImplementation(0,
+		return assertImplementation(false,
 									notEqualsMessage(expected, lengthExpected, actual, lengthActual),
 									lineNumber, fileName, message);
 	} else {				// both strings are not 0
-		return assertImplementation ((memcmp(expected, actual, lengthActual) == 0),
+		return assertImplementation ((memcmp(expected, actual, static_cast<size_t>(lengthActual)) == 0),
 									 notEqualsMessage(expected, lengthExpected, actual, lengthActual),
 									 lineNumber, fileName, message);
 	} // if
-	return false;
 }
 
 /* check for a failed equality assertion */
@@ -158,7 +156,7 @@ bool Test::assertEquals (double expected,
 
 /* build a message about a failed equality check */
 //!@FIXME make the message a parameter
-TString Test::notEqualsMessage (long expected, long actual)
+TString Test::notEqualsMessage (long expected, long actual) const
 {
 	TString message("expected: ");
 	message << expected << " but was: " << actual;
@@ -166,7 +164,7 @@ TString Test::notEqualsMessage (long expected, long actual)
 }
 
 /* build a message about a failed equality check */
-TString Test::notEqualsMessage (const char *expected, const char *actual)
+TString Test::notEqualsMessage (const char *expected, const char *actual) const
 {
 	TString message;
 	// evaluate difference and show it; useful for very long and complicated strings
@@ -184,7 +182,7 @@ TString Test::notEqualsMessage (const char *expected, const char *actual)
 TString Test::notEqualsMessage (const char *expected,
 								long lengthExpected,
 								const char *actual,
-								long lengthActual)
+								long lengthActual) const
 {
 	TString message;
 	// evaluate difference and show it; useful for very long and complicated strings
@@ -199,7 +197,7 @@ TString Test::notEqualsMessage (const char *expected,
 }
 
 /* build a message about a failed equality check */
-TString Test::notEqualsMessage (double expected, double actual)
+TString Test::notEqualsMessage (double expected, double actual) const
 {
 	TString message("expected: ");
 	message << expected << " but was: " << actual;
