@@ -11,54 +11,54 @@
 #include <limits>
 
 bool String_iterator::operator==(const String_iterator &r) const {
-	return *a == *(r.a) && position == r.position;
+	return *base() == *(r.base()) && pos() == r.pos();
 }
 
 bool String_iterator::operator<(const String_iterator &r) const {
-	if (*a == *(r.a)) {
-		return position < r.position;
+	if (*base() == *(r.base())) {
+		return pos() < r.pos();
 	}
 	return false;
 }
 
 String_iterator::reference String_iterator::operator*() const {
-	return a->operator[](position);
+	return a->operator[](pos());
 }
 
 String_iterator::reference String_iterator::operator[](difference_type index) const {
-	return a->operator[](position + index);
+	return a->operator[](pos() + index);
 }
 
 String_iterator::difference_type String_iterator::operator-(const String_iterator &r) const {
-	if (*a == *(r.a)) {
-		return position - r.position;
+	if (*base() == *(r.base())) {
+		return pos() - r.pos();
 	} else {
 		return std::numeric_limits<String_iterator::difference_type>::max();
 	}
 }
 
-String_const_iterator::reference String_const_iterator::operator *() const {
-	return a->operator[](position);
+String_const_iterator::reference String_const_iterator::operator*() const {
+	return a->operator[](pos());
 }
 
-String_const_iterator::reference String_const_iterator::operator [](difference_type index) const {
-	return a->operator[](position + index);
+String_const_iterator::reference String_const_iterator::operator[](difference_type index) const {
+	return a->operator[](pos() + index);
 }
 
 bool String_const_iterator::operator==(const String_const_iterator &r) const {
-	return *a == *(r.a) && position == r.position;
+	return *base() == *(r.base()) && pos() == r.pos();
 }
 
 bool String_const_iterator::operator<(const String_const_iterator &r) const {
-	if (*a == *(r.a)) {
-		return position < r.position;
+	if (*base() == *(r.base())) {
+		return pos() < r.pos();
 	}
 	return false;
 }
 
 String_const_iterator::difference_type String_const_iterator::operator-(const String_const_iterator &r) const {
-	if (*a == *(r.a)) {
-		return position - r.position;
+	if (*base() == *(r.base())) {
+		return pos() - r.pos();
 	} else {
 		return std::numeric_limits<String_const_iterator::difference_type>::max();
 	}
