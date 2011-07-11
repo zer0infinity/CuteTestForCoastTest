@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <cstddef>
 #if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define aimplStartTrace(trigger)					StartTrace(trigger)
@@ -36,13 +37,13 @@ static const Anything fgAnyEmpty(Coast::Storage::Global()); // avoid temporary
 //---- AnyImpl --------------------------------------------------------------
 
 String AnyImpl::ThisToHex(Allocator *a) const {
-	char buf[1+2*(sizeof(this)>4?sizeof(long long):4)];//lint !e506
-	static char const *const fmt = (sizeof(this)>4)?"%016.16llx":"%08.8lx"; // assume large pointers are 64bit = 8 Bytes large
-	int iSize = snprintf(buf, sizeof(buf), fmt, this);
+	char buf[1+2*sizeof(ptrdiff_t)];
+	static char const *const fmt = (sizeof(this)>4)?"%016tx":"%08tx"; // assume large pointers are 64bit = 8 Bytes large
+	int iSize = snprintf(buf, sizeof(buf), fmt, reinterpret_cast<ptrdiff_t>(this));
 	String hexStr(buf, iSize, a);
 	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Coast::Storage::Current());
 	return hexStr;
-	}
+}
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const {
 	aimplStartTrace1(AnyImpl.DeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a);
