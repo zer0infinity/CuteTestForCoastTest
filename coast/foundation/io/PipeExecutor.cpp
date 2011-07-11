@@ -89,7 +89,7 @@ bool PipeExecutor::Start()
 long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 {
 	StartTrace(PipeExecutor.TerminateChild);
-	Trace("terminating child pid =" << (long)fChildPid << " with signal = " << (long)termSignal << " trying " << (tryhard ? "hard" : "soft"));
+	Trace("terminating child pid =" << static_cast<long>(fChildPid) << " with signal = " << static_cast<long>(termSignal) << " trying " << (tryhard ? "hard" : "soft"));
 	if (fChildPid > 0) {
 		DWORD exitcode;
 		for (;;) {
@@ -114,20 +114,20 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 {
 	StartTrace(PipeExecutor.TerminateChild);
-	Trace("terminating child pid =" << (long)fChildPid << " with signal = " << (long)termSignal << " trying " << (tryhard ? "hard" : "soft"));
+	Trace("terminating child pid =" << static_cast<long>(fChildPid) << " with signal = " << static_cast<long>(termSignal) << " trying " << (tryhard ? "hard" : "soft"));
 	while ( fChildPid > 0 ) {
 		int wstat = 1;
 		int wres = waitpid(fChildPid, &wstat, (tryhard ? WNOHANG : 0) | WUNTRACED);
 		Trace("waitpid delivers : " << long(wres) << " and stat " << long(wstat));
 		if (wres < 0) {
-			Trace("errno after wait:" << (long)errno << " " << SystemLog::SysErrorMsg(errno));
+			Trace("errno after wait:" << static_cast<long>(errno) << " " << SystemLog::SysErrorMsg(errno));
 		}
 		if (wres == fChildPid) {
 			Trace("found child");
 			return WEXITSTATUS(wstat); // already dead!
 		} else if (wres <= 0 && tryhard) {
 			if ( kill(fChildPid, termSignal) < 0 ) {
-				Trace("kill failed, errno =" << (long)errno << " " << SystemLog::SysErrorMsg(errno));
+				Trace("kill failed, errno =" << static_cast<long>(errno) << " " << SystemLog::SysErrorMsg(errno));
 				if (errno == ESRCH) {
 					// already gone and removed?
 				} else if (errno == EPERM) {
@@ -329,7 +329,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 			} else {
 				// we failed to fork
 				String msg(strTime);
-				msg.Append(" fork failed for child pid ").Append( (long)fChildPid ).Append(" with sysmsg [").Append( SystemLog::LastSysError() ).Append(']');
+				msg.Append(" fork failed for child pid ").Append( static_cast<long>(fChildPid) ).Append(" with sysmsg [").Append( SystemLog::LastSysError() ).Append(']');
 				SystemLog::Error(msg);
 			}
 #else

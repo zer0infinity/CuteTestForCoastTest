@@ -9,7 +9,7 @@
 #include "AnyBuiltInSortTest.h"
 #include "TestSuite.h"
 #include "FoundationTestTypes.h"
-#include "Dbg.h"
+#include "Dbg.h"//lint !e537
 #include "DiffTimer.h"
 #include <iostream>
 

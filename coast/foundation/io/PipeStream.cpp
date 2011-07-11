@@ -96,7 +96,7 @@ PipeStreamBuf::~PipeStreamBuf()
 
 int PipeStreamBuf::overflow( int c )
 {
-	StartTrace1(PipeStreamBuf.overflow, "char [" << (char)c << "] val: " << (long)c);
+	StartTrace1(PipeStreamBuf.overflow, "char [" << (char)c << "] val: " << static_cast<long>(c));
 	if (!pptr()) {
 		setp(startw(), endw());	// reinitialize put area
 	} else {
@@ -154,14 +154,14 @@ int PipeStreamBuf::sync()
 
 PipeStreamBuf::pos_type PipeStreamBuf::seekpos(PipeStreamBuf::pos_type p, PipeStreamBuf::openmode mode)
 {
-	StartTrace1(PipeStreamBuf.seekpos, (long)p);
+	StartTrace1(PipeStreamBuf.seekpos, static_cast<long>(p));
 	sync();
 	return pos_type(0);
 }
 
 PipeStreamBuf::pos_type PipeStreamBuf::seekoff(PipeStreamBuf::off_type of, PipeStreamBuf::seekdir dir, PipeStreamBuf::openmode mode)
 {
-	StartTrace1(PipeStreamBuf.seekoff, (long)of);
+	StartTrace1(PipeStreamBuf.seekoff, static_cast<long>(of));
 	sync();
 	return pos_type(0);
 }
@@ -192,7 +192,7 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 				break;
 			}
 			String logMsg("write on pipe: ");
-			logMsg << (long)wfd << " failed <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
+			logMsg << static_cast<long>(wfd) << " failed <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
 			SystemLog::Error(logMsg);
 			Ios->clear(std::ios::badbit);
 		}
@@ -249,7 +249,7 @@ std::ostream  &operator<<(std::ostream &os, PipeStreamBuf *ssbuf)
 				Trace("read another " << bytesRead << " bytes");
 			} else if (bytesRead < 0) {
 				String logMsg("Pipe error on read: ");
-				logMsg << (long) errno;
+				logMsg << static_cast<long>(errno);
 				SystemLog::Error( logMsg );
 			} // if
 			else {

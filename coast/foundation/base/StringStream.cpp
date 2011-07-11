@@ -24,8 +24,8 @@ namespace NSStringStream {
 					streamSrc->read(buf, (int) lBytes2Copy);
 					szReadSize = streamSrc->gcount();
 					streamDest.write(buf, szReadSize);
-					copiedBytes += (long) szReadSize;
-					lBytes2Copy -= (long) szReadSize;
+					copiedBytes += static_cast<long>(szReadSize);
+					lBytes2Copy -= static_cast<long>(szReadSize);
 					Trace("Bytes copied so far: " << copiedBytes);
 				} else {
 					Trace("Destination stream is not good , aborting copy!");

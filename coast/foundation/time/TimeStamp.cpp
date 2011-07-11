@@ -51,7 +51,7 @@ TimeStamp::TimeStamp(const String &externalTimeRep)
 
 TimeStamp::TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec)
 {
-	StartTrace1(TimeStamp.TimeStamp, "components [" << (long)iCent << ':' << (long)iYear << ':' << (long)iMonth << ':' << (long)iDay << ':' << (long)iHour << ':' << (long)iMin << ':' << (long)iSec << "]");
+	StartTrace1(TimeStamp.TimeStamp, "components [" << static_cast<long>(iCent) << ':' << static_cast<long>(iYear) << ':' << static_cast<long>(iMonth) << ':' << static_cast<long>(iDay) << ':' << static_cast<long>(iHour) << ':' << static_cast<long>(iMin) << ':' << static_cast<long>(iSec) << "]");
 	IntSet(TimeStamp::intTimeRep(iCent, iYear, iMonth, iDay, iHour, iMin, iSec));
 }
 
@@ -323,7 +323,7 @@ bool TimeStamp::intTimeRep::IsValidDate() const
 String TimeStamp::intTimeRep::TraceIntValues() const
 {
 	String result;
-	result.Append("Century:").Append((long)cData[eCent]).Append(" Year:").Append((long)cData[eYear]).Append(" Month:").Append((long)cData[eMonth]).Append(" Day:").Append((long)cData[eDay]).Append(" Hour:").Append((long)cData[eHour]).Append(" Min:").Append((long)cData[eMin]).Append(" Sec:").Append((long)cData[eSec]).Append(" Pos:").Append((long)fStructPos);
+	result.Append("Century:").Append((long)cData[eCent]).Append(" Year:").Append((long)cData[eYear]).Append(" Month:").Append((long)cData[eMonth]).Append(" Day:").Append((long)cData[eDay]).Append(" Hour:").Append((long)cData[eHour]).Append(" Min:").Append((long)cData[eMin]).Append(" Sec:").Append((long)cData[eSec]).Append(" Pos:").Append(static_cast<long>(fStructPos));
 	return result;
 }
 
@@ -453,10 +453,10 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 	StartTrace(TimeStamp.WeekOfYear);
 	long lDayOfYearZ = DayOfYear() - 1L;
 	eWeekday aFirstOfYearDOW = (eWeekday)((((long)Weekday() + 7L) - (lDayOfYearZ % 7L)) % 7);
-	Trace("firstofyearweekday:" << (long)aFirstOfYearDOW);
+	Trace("firstofyearweekday:" << static_cast<long>(aFirstOfYearDOW));
 
 	// week starts on monday
-	long lDeltaDays = (((long)TimeStamp::eMonday + 7L) - (long)aFirstOfYearDOW) % 7;
+	long lDeltaDays = (((long)TimeStamp::eMonday + 7L) - static_cast<long>(aFirstOfYearDOW)) % 7;
 	long lWeek = 1L, lDaysToCalcWeek = lDayOfYearZ;
 	switch (aFirstOfYearDOW) {
 		case TimeStamp::eMonday:
@@ -481,8 +481,8 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 	lWeek += (lDaysToCalcWeek / 7);
 	Trace("unadjusted week number:" << lWeek);
 	if ( lWeek > 52 ) {
-		eWeekday aEndOfYearDOW = (IsLeap(cData[eYear]) ? (eWeekday)(((long)aFirstOfYearDOW + 1L) % 7) : aFirstOfYearDOW);
-		Trace("endofyearweekday:" << (long)aEndOfYearDOW);
+		eWeekday aEndOfYearDOW = (IsLeap(cData[eYear]) ? (eWeekday)((static_cast<long>(aFirstOfYearDOW) + 1L) % 7) : aFirstOfYearDOW);
+		Trace("endofyearweekday:" << static_cast<long>(aEndOfYearDOW));
 		switch (aEndOfYearDOW) {
 			case TimeStamp::eMonday:
 			case TimeStamp::eTuesday:

@@ -10,7 +10,7 @@
 #define _AnyBuiltInSortTest_H
 
 #include "TestCase.h"//lint !e537
-#include "Anything.h"
+#include "Anything.h"//lint !e537
 class AnyBuiltInSortTest: public TestFramework::TestCase {
 public:
 	AnyBuiltInSortTest(TString tstrName) :

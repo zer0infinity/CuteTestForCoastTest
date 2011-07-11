@@ -561,7 +561,7 @@ long String::Contains(const char *pattern) const
 long String::FirstCharOf(const String &charSet) const
 {
 	size_t firstchar = strcspn((const char *)(*this), (const char *)charSet);
-	if ((long)firstchar >= Length()) {
+	if (static_cast<long>(firstchar) >= Length()) {
 		// not found
 		return -1;
 	}

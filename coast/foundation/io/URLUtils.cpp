@@ -807,7 +807,7 @@ namespace Coast {
 					escapedString.Append((char) work);
 				} else {
 					escapedString.Append(escPrefix);
-					escapedString.Append((long)work);
+					escapedString.Append(static_cast<long>(work));
 					escapedString.Append(escPostfix);
 				}
 			}

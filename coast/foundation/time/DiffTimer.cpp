@@ -76,7 +76,7 @@ DiffTimer::tTimeType DiffTimer::Diff(tTimeType simulatedValue)
 		return simulatedValue;
 	} else {
 		tTimeType lDiff = Scale(RawDiff(), fResolution);
-		Trace("Diff is: " << (long)lDiff);
+		Trace("Diff is: " << static_cast<long>(lDiff));
 		return lDiff;
 	}
 }

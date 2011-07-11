@@ -49,14 +49,14 @@ namespace ConversionUtils
 	template<typename valueType>
 	inline void GetValueFromBuffer(const String &raBuffer, valueType &lValue, long lOffset = 0L, OrderType order = eLSB2MSB)
 	{
-		StartTrace1(ConversionUtils.GetValueFromBuffer, "Offset:" << lOffset << " order is:" << (long)order);
+		StartTrace1(ConversionUtils.GetValueFromBuffer, "Offset:" << lOffset << " order is:" << static_cast<long>(order));
 		// ensure the buffer is big enough to prevent a buffer overflow
 		const size_t lValSize = sizeof(valueType);
 		if ( static_cast<size_t>(raBuffer.Length()) >= ( lOffset + lValSize ) ) {
 			const char *pBuf = (const char *)raBuffer;
-			Trace("initial address:" << (long)pBuf);
+			Trace("initial address:" << reinterpret_cast<long>(pBuf));
 			pBuf += lOffset;
-			Trace("address with offset:" << (long)pBuf);
+			Trace("address with offset:" << reinterpret_cast<long>(pBuf));
 			GetValueFromBuffer((unsigned char *)pBuf, lValue, order);
 			Trace("value:" << (l_long)lValue);
 		}

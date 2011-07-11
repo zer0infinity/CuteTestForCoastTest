@@ -335,7 +335,7 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekpos(MmapStreamBuf::pos_type p, MmapSt
 	if (long(p) > long(fLength)) {
 		// we need to enlarge the file
 		// we can only if we write
-		if (! (mode & std::ios::out) || !reserve((long)p)) {
+		if (! (mode & std::ios::out) || !reserve(static_cast<long>(p))) {
 			// OOPS we got a problem
 			return pos_type(EOF);
 		}

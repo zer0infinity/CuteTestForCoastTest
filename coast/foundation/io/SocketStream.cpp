@@ -210,7 +210,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 		String logMsg("socket on send: ");
 		logMsg << fSocket->GetFd()//lint !e613
 			   << " failed - socket error number "
-			   << (long) SOCKET_ERROR
+			   << static_cast<long>(SOCKET_ERROR)
 			   << " <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;//lint !e613
 
 		SystemLog::Error(logMsg);
@@ -240,7 +240,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 
 			if ( bytesRead < 0 ) {
 				String msg("Socket Error: <");
-				msg << (long)errno << ">=" << SystemLog::SysErrorMsg(errno);
+				msg << static_cast<long>(errno) << ">=" << SystemLog::SysErrorMsg(errno);
 				SystemLog::Error(msg);
 				Ios->clear(std::ios::badbit);
 			} else if ( bytesRead == 0 ) {
@@ -281,7 +281,7 @@ std::ostream  &operator<<(std::ostream &os, SocketStreamBuf *ssbuf)
 				os.write(buf, bytesRead);
 			} else if (bytesRead < 0) {
 				String logMsg("Socket error on recv: ");
-				logMsg << (long) errno;
+				logMsg << static_cast<long>(errno);
 				SystemLog::Error( logMsg );
 			} // if
 			else {

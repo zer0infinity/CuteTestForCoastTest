@@ -27,7 +27,7 @@ Pipe::Pipe(int readfd, int writefd, bool doClose, long timeout)
 	, fTimeout(timeout)
 	, fHadTimeout(false)
 {
-	StartTrace1(Pipe.Pipe, "ReadFd:" << (long)readfd << " WriteFd:" << (long)writefd << (doClose ? "" : " non") <<  " closing");
+	StartTrace1(Pipe.Pipe, "ReadFd:" << static_cast<long>(readfd) << " WriteFd:" << static_cast<long>(writefd) << (doClose ? "" : " non") <<  " closing");
 }
 
 Pipe::Pipe(long timeout)

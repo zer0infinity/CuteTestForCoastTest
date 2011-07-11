@@ -891,7 +891,7 @@ namespace Coast {
 			bool bIsSymbolicLink;
 			if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 				ulFileSize = stbuf.st_size;
-				Trace("file size: " << (long)ulFileSize << " bytes");
+				Trace("file size: " << static_cast<long>(ulFileSize) << " bytes");
 				return true;
 			}
 			return false;
@@ -991,7 +991,7 @@ namespace Coast {
 			if ( GetDiskFreeSpaceEx(pFsPath, &ulBytesAvailable, NULL, NULL) != 0 ) {
 				lBlkSize = 1;
 				ulBlocks = ulBytesAvailable.QuadPart;
-				Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
+				Trace("blocksize: " << static_cast<long>(lBlkSize) << " bytes free blocks: " << static_cast<long>(ulBlocks));
 				return true;
 			} else
 		#else
@@ -999,7 +999,7 @@ namespace Coast {
 			if (0 == statvfs(pFsPath, &buf)) {
 				lBlkSize = (unsigned long)buf.f_frsize;
 				ulBlocks = (ul_long)buf.f_bavail;
-				Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
+				Trace("blocksize: " << static_cast<long>(lBlkSize) << " bytes free blocks: " << static_cast<long>(ulBlocks));
 				return true;
 			} else
 		#endif

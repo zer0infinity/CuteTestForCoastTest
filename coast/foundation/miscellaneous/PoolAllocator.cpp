@@ -262,7 +262,7 @@ PoolAllocator::PoolAllocator(long poolid, size_t poolSize, size_t maxPoolBuckets
 
 		// We might never see the following because we have no memory.
 		String msg("PoolAllocator: ");
-		msg << "allocation of PoolStorage: " << (long)poolSize << ", " << (long)maxPoolBuckets << " failed";
+		msg << "allocation of PoolStorage: " << static_cast<long>(poolSize) << ", " << static_cast<long>(maxPoolBuckets) << " failed";
 		SystemLog::Error(msg);
 		PoolAllocator::Unref(); // signal allocation failure
 		return;
@@ -273,7 +273,7 @@ PoolAllocator::PoolAllocator(long poolid, size_t poolSize, size_t maxPoolBuckets
 long PoolAllocator::SetId(long lId)
 {
 	StatTrace(PoolAllocator.SetId, "setting id from fAllocatorId:" << fAllocatorId << " to:" << lId, Coast::Storage::Current());
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker ) {
 			pTracker->SetId(lId);
@@ -296,7 +296,7 @@ void PoolAllocator::Initialize()
 	// initialize data structures used by the allocator
 	long sz = fgMinPayloadSize;
 	const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		fPoolBuckets[i].fSize = sz + alignedSize;
 		fPoolBuckets[i].fUsableSize = sz;
 		fPoolBuckets[i].fFirstFree = NULL;
@@ -324,7 +324,7 @@ PoolAllocator::~PoolAllocator()
 		lStatisticLevel = 2;
 	}
 
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker ) {
 			if ( pTracker->PeakAllocated() > 0 ) {
@@ -399,7 +399,7 @@ PoolAllocator::~PoolAllocator()
 		}
 	}
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Coast::Storage::Global());
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		delete (fPoolBuckets[i].fpBucketTracker);
 	}
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Coast::Storage::Global());
@@ -412,7 +412,7 @@ void PoolAllocator::DumpStillAllocated()
 	bool bWasInUse = false;
 	long i = 0;
 
-	for (i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker && pTracker->PeakAllocated() > 0 ) {
 			if ( pTracker->CurrentlyAllocated() > 0 ) {
@@ -423,7 +423,7 @@ void PoolAllocator::DumpStillAllocated()
 	}
 	if ( bWasInUse ) {
 		bool bFirst = true;
-		for (i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		for (i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 			MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 			if ( pTracker && ( pTracker->PeakAllocated() > 0 ) && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 				if ( bFirst ) {
@@ -675,7 +675,7 @@ void PoolAllocator::PrintStatistic(long lLevel)
 		lStatisticLevel = 2;
 	}
 
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker && pTracker->PeakAllocated() > 0 ) {
 			pTracker->PrintStatistic(lStatisticLevel);
@@ -714,7 +714,7 @@ void PoolAllocator::Refresh()
 	if ( TriggerEnabled(PoolAllocator.Refresh) ) {//lint !e506//lint !e774
 		PrintStatistic();
 	}
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker && pTracker->CurrentlyAllocated() > 0 ) {
 			char buf[256] = { 0 };

@@ -40,7 +40,7 @@ using namespace Coast;
 //--- Socket ----------------------
 int closeSocket(int sd)
 {
-	StartTrace1(Socket.closeSocket, "fd:" << (long)sd);
+	StartTrace1(Socket.closeSocket, "fd:" << static_cast<long>(sd));
 #if defined(WIN32)
 	return closesocket(sd);		// clean up socket structure
 #else
@@ -57,7 +57,7 @@ Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long time
 	, fHadTimeout(false)
 	, fAllocator((a) ? a : Coast::Storage::Global())
 {
-	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << (long)fAllocator << "]");
+	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << reinterpret_cast<long>(fAllocator) << "]");
 	TraceAny(fClientInfo, "clientInfo");
 }
 
@@ -274,7 +274,7 @@ bool Socket::GetSockOptInt(int socketFd, int optionName, int &lValue)
 		SYSWARNING("sockopt-error [" << SystemLog::LastSysError() << "]");
 		boRet = false;
 	}
-	Trace("returned value:" << (long)lValue);
+	Trace("returned value:" << static_cast<long>(lValue));
 	return boRet;
 }
 
@@ -464,7 +464,7 @@ unsigned long EndPoint::MakeInetAddr(String ipAddr, bool anyipaddr)
 
 bool EndPoint::PrepareSockAddrInet(struct sockaddr_in &socketaddr, unsigned long ipAddr, long port)
 {
-	StartTrace1(EndPoint.PrepareSockAddrInet, "ip:" << (long)ipAddr << " port:" << port);
+	StartTrace1(EndPoint.PrepareSockAddrInet, "ip:" << static_cast<long>(ipAddr) << " port:" << port);
 #if defined(WIN32)
 	// port can be 0, this means NT assigns a port
 	if (ipAddr != INADDR_NONE)
@@ -497,7 +497,7 @@ Socket *EndPoint::DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose)
 	clientInfo["HTTPS"] = false;
 	Allocator *a = GetSocketAllocator();
 
-	Trace("allocating with Coast::Storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << (long)a << "]");
+	Trace("allocating with Coast::Storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << reinterpret_cast<long>(a) << "]");
 	return new (a) Socket(socketfd, clientInfo, doClose, GetDefaultSocketTimeout(), a);
 }
 
@@ -840,7 +840,7 @@ Socket *Acceptor::DoAccept()
 		LogError("accept()");
 		// SOP: check for stopper and set fAlive to false
 	} else {
-		Trace("accept fd:" << (long)newsock);
+		Trace("accept fd:" << static_cast<long>(newsock));
 		if ( fAlive ) {
 			Anything clnInfo;
 			clnInfo["REMOTE_ADDR"] = inet_ntoa(clnt_addr.sin_addr);

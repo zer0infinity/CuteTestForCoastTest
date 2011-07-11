@@ -132,14 +132,14 @@ namespace STLStorage
 		size_type max_size () const throw() {
 			//XXX in case of PoolAllocators, we could determine the max number somewhow
 			size_type tSz = std::numeric_limits<std::size_t>::max() / sizeof(T);
-			_StatTrace(STLAllocator.max_size, "maximal size:" << (long)tSz, Coast::Storage::Current());
+			_StatTrace(STLAllocator.max_size, "maximal size:" << static_cast<long>(tSz), Coast::Storage::Current());
 			return tSz;
 		}
 
 		// allocate but don't initialize num elements of type T
 		pointer allocate (size_type num, const void* = 0) {
 			// print message and allocate memory with global new
-			_StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << sizeof(T) << " but no initialization");
+			_StartTrace1(STLAllocator.allocate, "num:" << static_cast<long>(num) << " of size:" << sizeof(T) << " but no initialization");
 			pointer ret = (pointer)fAllocator->Calloc(num, sizeof(T));
 			if ( ret == NULL ) {
 				static char pMsg[255] = { 0 };
@@ -211,13 +211,13 @@ namespace STLStorage
 			, fNextSz(nnext_size)
 			, fpPool(0)
 			, fOtherPools() {
-			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << sizeof(int_pool_type) << " @" << (long)this, Coast::Storage::Current());
+			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << sizeof(int_pool_type) << " @" << static_cast<long>(this), Coast::Storage::Current());
 			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
 			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
 		}
 
 		~pool_refcounted() {
-			_StartTrace1(pool_refcounted.~pool_refcounted, "refcnt:" << fRefcount << " fpPool:" << (long)fpPool << " @" << (long)this);
+			_StartTrace1(pool_refcounted.~pool_refcounted, "refcnt:" << fRefcount << " fpPool:" << static_cast<long>(fpPool) << " @" << static_cast<long>(this));
 			if ( fpPool != NULL && fRefcount <= 0) {
 				_Trace("calling release_memory");
 				fpPool->release_memory();
@@ -228,13 +228,13 @@ namespace STLStorage
 
 		template < class P >
 		P Clone() {
-			_StartTrace1(pool_refcounted.Clone, "Clone<P> for size:" << (long)fReqSz << " @" << (long)this);
+			_StartTrace1(pool_refcounted.Clone, "Clone<P> for size:" << static_cast<long>(fReqSz) << " @" << static_cast<long>(this));
 			AddRef();
 			return this;
 		}
 
 		pool_refcount_storer Clone(sz_type nrequested_size, sz_type nnext_size) {
-			_StartTrace1(pool_refcounted.Clone, "Clone for size:" << (long)nrequested_size << " @" << (long)this);
+			_StartTrace1(pool_refcounted.Clone, "Clone for size:" << static_cast<long>(nrequested_size) << " @" << static_cast<long>(this));
 			if ( nrequested_size == fReqSz ) {
 				_Trace("equal size, returning this");
 				return pool_refcount_storer(this);
@@ -252,14 +252,14 @@ namespace STLStorage
 					}
 				}
 				if ( bFound ) {
-					_Trace("found pool for size:"  << (long)nrequested_size << " @" << (long)fOtherPools[i].get());
+					_Trace("found pool for size:"  << static_cast<long>(nrequested_size) << " @" << (long)fOtherPools[i].get());
 					return fOtherPools[i];
 				} else {
-					_Trace("creating new pool for size:"  << (long)nrequested_size << " this->size:" << (long)fReqSz);
+					_Trace("creating new pool for size:"  << static_cast<long>(nrequested_size) << " this->size:" << static_cast<long>(fReqSz));
 					void *pMem = (void *)UserAllocator::malloc(sizeof(ThisType));
 					ThisType *pRet = new (pMem) ThisType(nrequested_size, nnext_size);
 					if ( iFree >= 0 && iFree < nOthers ) {
-						_Trace("storing new pool at idx:" << iFree << " @" << (long)pRet);
+						_Trace("storing new pool at idx:" << iFree << " @" << static_cast<long>(pRet));
 						fOtherPools[iFree] = pool_refcount_storer(pRet);
 						return fOtherPools[iFree];
 					}
@@ -277,12 +277,12 @@ namespace STLStorage
 
 		void AddRef() {
 			++fRefcount;
-			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Coast::Storage::Current());
+			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), Coast::Storage::Current());
 		}
 
 		bool Release() {
 			--fRefcount;
-			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Coast::Storage::Current());
+			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), Coast::Storage::Current());
 			return ( fRefcount <= 0 );
 		}
 

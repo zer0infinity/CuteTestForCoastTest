@@ -49,7 +49,7 @@ namespace Coast {
 
 		int DoSingleSelect(int fd, long timeout, bool bRead, bool bWrite)
 		{
-			StartTrace1(System.DoSingleSelect, "testing fd:" << (long)fd << "(" << (bRead ? "r" : "-") << (bWrite ? "w" : "-") << ") with timeout:" << timeout << "ms");
+			StartTrace1(System.DoSingleSelect, "testing fd:" << static_cast<long>(fd) << "(" << (bRead ? "r" : "-") << (bWrite ? "w" : "-") << ") with timeout:" << timeout << "ms");
 		//NB: solaris select is limited to 1024 file descriptors, poll doesn't carry this burden
 		// compile time settings might increase that up to 65536:
 		// see `man -s 3C select`
@@ -309,7 +309,7 @@ namespace Coast {
 			int iRet = ::uname(&name);
 			if ( iRet < 0 ) {
 				String strErr("uname returned:");
-				strErr << (long)iRet;
+				strErr << static_cast<long>(iRet);
 				SYSERROR(strErr);
 			} else {
 				anyInfo["sysname"] = name.sysname;
@@ -318,7 +318,7 @@ namespace Coast {
 				anyInfo["version"] = name.version;
 				anyInfo["machine"] = name.machine;
 			}
-			TraceAny(anyInfo, "uname retcode:" << (long)iRet);
+			TraceAny(anyInfo, "uname retcode:" << static_cast<long>(iRet));
 			return ( iRet >= 0);
 		}
 		#endif /* WIN32 */

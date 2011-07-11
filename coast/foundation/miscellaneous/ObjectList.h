@@ -43,7 +43,7 @@ private:
 
 		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Reftype> ) {};
 		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Pointertype> ) {
-			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << (long)newObjPtr, Coast::Storage::Current());
+			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << reinterpret_cast<long>(newObjPtr), Coast::Storage::Current());
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
@@ -64,7 +64,7 @@ public:
 		, fName(name, -1, fpAlloc)
 		, fShutdown(false)
 		, fDestructiveShutdown(false) {
-		StatTrace(ObjectList.ObjectList, "param ctor this:" << (long)this, Coast::Storage::Current());
+		StatTrace(ObjectList.ObjectList, "param ctor this:" << reinterpret_cast<long>(this), Coast::Storage::Current());
 	}
 
 	virtual ~ObjectList() {
@@ -148,7 +148,7 @@ protected:
 	}
 
 	virtual size_t DoGetSize() const {
-		StatTrace(ObjectList.DoGetSize, "this:" << (long)this, Coast::Storage::Current());
+		StatTrace(ObjectList.DoGetSize, "this:" << reinterpret_cast<long>(this), Coast::Storage::Current());
 		return IntGetSize();
 	}
 	virtual bool DoIsEmpty() const {

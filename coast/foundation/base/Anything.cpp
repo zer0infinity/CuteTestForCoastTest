@@ -622,13 +622,12 @@ namespace {
 	}
 }
 
-class AnyXrefHandler
-{
+class AnyXrefHandler {
 	Anything fParseLevel;
 protected:
 	Anything fXrefs;
 public:
-	Anything ParseLevel() {
+	Anything ParseLevel() const {
 		return fParseLevel.DeepClone();
 	}
 	String ParseLevelAsString() {
@@ -644,26 +643,26 @@ public:
 		fParseLevel.Append(lIdx);
 	}
 	void Pop() {
-		fParseLevel.Remove(fParseLevel.GetSize()-1);
+		fParseLevel.Remove(fParseLevel.GetSize() - 1);
 	}
 };
 
-class PrinterXrefHandler : public AnyXrefHandler
-{
-	String	ToId(long id) {
+class PrinterXrefHandler: public AnyXrefHandler {
+	String ToId(long id) const {
 		return String().Append(id);
 	}
 public:
-	bool	IsDefined(long id) {
+	bool IsDefined(long id) const {
 		return fXrefs.IsDefined(ToId(id));
 	}
-	void	DefineBackRef(long id) {
+	void DefineBackRef(long id) {
 		fXrefs[ToId(id)] = ParseLevel();
 	}
-	String	GetBackRef(long id) {
+	String GetBackRef(long id) {
 		return std::for_each(fXrefs[ToId(id)].begin(), fXrefs[ToId(id)].end(), appendAnyLevelToString()).fStr;
 	}
-};//lint !e1509
+};
+//lint !e1509
 
 class ParserXrefHandler : public AnyXrefHandler
 {

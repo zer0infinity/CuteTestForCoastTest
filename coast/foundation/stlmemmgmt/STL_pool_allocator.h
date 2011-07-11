@@ -51,7 +51,7 @@ namespace STLStorage
 		*/
 		pool_allocator()
 			: fpIntPool() {
-			_StartTrace1(pool_allocator.pool_allocator, "this:" << (long)this << " sizeof(T):" << sizeof(T));
+			_StartTrace1(pool_allocator.pool_allocator, "this:" << static_cast<long>(this) << " sizeof(T):" << sizeof(T));
 			void *pMem = (void *)UserAllocator::malloc(sizeof(pool_refcounted_type));
 			fpIntPool = int_pool_instance_type( new (pMem) pool_refcounted_type(sizeof(T), NextSize) );
 			_Trace("IntPool @" << (long)fpIntPool.get());
@@ -59,14 +59,14 @@ namespace STLStorage
 
 		pool_allocator(const ThisType &aAllocator)
 			: fpIntPool(aAllocator.fpIntPool) {
-			_StartTrace1(pool_allocator.pool_allocator, "copy this:" << (long)this << " sizeof(T):" << sizeof(T) << " other:" << (long)&aAllocator << " sizeof(other):" << sizeof(typename ThisType::value_type));
+			_StartTrace1(pool_allocator.pool_allocator, "copy this:" << static_cast<long>(this) << " sizeof(T):" << sizeof(T) << " other:" << (long)&aAllocator << " sizeof(other):" << sizeof(typename ThisType::value_type));
 			_Trace("IntPool @" << (long)fpIntPool.get());
 		}
 
 		template <typename U>
 		pool_allocator(const pool_allocator<U, UserAllocator, NextSize>& aAllocator)
 			: fpIntPool() {
-			_StartTrace1(pool_allocator.pool_allocator, "copy other type this:" << (long)this << " sizeof(T):" << sizeof(T) << " other:" << (long)&aAllocator << " sizeof(U):" << sizeof(typename pool_allocator<U, UserAllocator, NextSize>::value_type));
+			_StartTrace1(pool_allocator.pool_allocator, "copy other type this:" << static_cast<long>(this) << " sizeof(T):" << sizeof(T) << " other:" << (long)&aAllocator << " sizeof(U):" << sizeof(typename pool_allocator<U, UserAllocator, NextSize>::value_type));
 			if ( aAllocator.fpIntPool.get() ) {
 				fpIntPool = aAllocator.fpIntPool->Clone(sizeof(T), NextSize);
 			} else {
@@ -78,7 +78,7 @@ namespace STLStorage
 		}
 
 		~pool_allocator() {
-			_StatTrace(pool_allocator.~pool_allocator, "this:" << (long)this << " IntPool:" << (long)fpIntPool.get(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.~pool_allocator, "this:" << static_cast<long>(this) << " IntPool:" << (long)fpIntPool.get(), Coast::Storage::Current());
 		}
 
 		static pointer address(reference r) {
@@ -107,18 +107,18 @@ namespace STLStorage
 
 		pointer allocate(const size_type n) throw(std::bad_alloc) {
 			const pointer ptr = static_cast<pointer>( fpIntPool->ordered_malloc(n) );
-			_StatTrace(pool_allocator.allocate_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.allocate_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
 			if (ptr == 0) {
 				throw std::bad_alloc();
 			}
 			return ptr;
 		}
 		pointer allocate(const size_type n, const void *const) throw(std::bad_alloc) {
-			_StatTrace(pool_allocator.allocate_n_void, "this:" << (long)this << " size:" << (long)n << '*' << sizeof(T) << " void*", Coast::Storage::Current());
+			_StatTrace(pool_allocator.allocate_n_void, "this:" << static_cast<long>(this) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " void*", Coast::Storage::Current());
 			return allocate(n);
 		}
 		void deallocate(const pointer ptr, const size_type n) {
-			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
 			if (ptr == 0 || n == 0) {
 				return;
