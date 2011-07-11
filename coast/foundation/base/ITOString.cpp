@@ -1180,16 +1180,16 @@ String::size_type String::max_size() const {
 	return std::numeric_limits<size_type>::max()-1;
 }
 String::iterator String::begin() {
-	return String_iterator(*this, 0);
+	return String_iterator(this, 0);
 }
 String::iterator String::end() {
-	return String_iterator(*this, Length());
+	return String_iterator(this, Length());
 }
 String::const_iterator String::begin() const {
-	return String_const_iterator(*this, 0);
+	return String_const_iterator(this, 0);
 }
 String::const_iterator String::end() const {
-	return String_const_iterator(*this, Length());
+	return String_const_iterator(this, Length());
 }
 String::reverse_iterator String::rbegin() {
 	return reverse_iterator(end());
@@ -1198,10 +1198,10 @@ String::reverse_iterator String::rend() {
 	return reverse_iterator(begin());
 }
 String::const_reverse_iterator String::rbegin() const {
-	return const_reverse_iterator(end());
+	return String::const_reverse_iterator(end());
 }
 String::const_reverse_iterator String::rend() const {
-	return const_reverse_iterator(begin());
+	return String::const_reverse_iterator(begin());
 }
 void String::clear() {
 	Trim(0L);
@@ -1221,14 +1221,14 @@ String& String::erase(String::size_type pos, String::size_type n) {
 	throw std::out_of_range("pos is out of range");
 }
 String::iterator String::erase(String::iterator pos) {
-	if (&pos.a == this) {
+	if (pos.a == this) {
 		erase(pos.position, 1);
 		return pos;
 	}
 	return this->end(); // should throw, but stay robust
 }
 String::iterator String::erase(String::iterator from, String::iterator to) {
-	if (&from.a == this && &to.a == this) {
+	if (from.a == this && to.a == this) {
 		if (from.position >= 0 && from.position <= to.position && to.position <= Length()) {
 			erase(from.position, std::distance(from, to));
 			return from;

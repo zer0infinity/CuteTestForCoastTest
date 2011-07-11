@@ -421,7 +421,7 @@ public:
 		}
 	}
 	void insert(iterator it, size_type n, const value_type &v) {
-		if (&(it.a) != this) {
+		if (it.a != this) {
 			return;
 		}
 		if (it > end()) {
@@ -436,7 +436,7 @@ public:
 		}
 	}
 	iterator insert(iterator it, const value_type &v) {
-		if (&(it.a) != this || it > end()) {
+		if (it.a != this || it > end()) {
 			return end();
 		}
 		insert(it, 1L, v);
@@ -444,7 +444,7 @@ public:
 	}
 	template <typename InputIterator>
 	void insert(iterator it, InputIterator first, InputIterator last) {
-		if (&(it.a) != this) {
+		if (it.a != this) {
 			return;
 		}
 		if (it > end()) {

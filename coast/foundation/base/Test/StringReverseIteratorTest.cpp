@@ -15,9 +15,9 @@ void StringReverseIteratorTest::testSimpleStringBegin() {
 }
 void StringReverseIteratorTest::testSimpleStringDeref() {
 	String a("bla");
-	t_assert(*a.rbegin() == a[2L]);
+	assertCompare(*a.rbegin(), equal_to, a[2L]);
 	const String &b = a;
-	t_assert(*b.rbegin() == b[2L]);
+	assertCompare(*b.rbegin(), equal_to, b[2L]);
 }
 void StringReverseIteratorTest::testSimpleStringIncrement() {
 	String a("b");

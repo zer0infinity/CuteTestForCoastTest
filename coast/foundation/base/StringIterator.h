@@ -14,21 +14,20 @@
 class String;
 typedef std::iterator<std::random_access_iterator_tag, char> StringIteratorBase;
 
-class String_iterator : public StringIteratorBase
-{
+class String_iterator: public StringIteratorBase {
 	friend class String;
-	friend class String_const_iterator;
 protected:
-	String &a;
-	long	 position;
-	String_iterator(String &s, long pos = 0)
-		: a(s), position(pos) { }
+	String *a;
+	long position;
+	String_iterator(String *s, long p = 0) :
+		a(s), position(p) {
+	}
 public:
-	bool operator==(const String_iterator &r) const ;
+	bool operator==(const String_iterator &r) const;
 	bool operator!=(const String_iterator &r) const {
 		return !(this->operator==(r));
 	}
-	bool operator<(const String_iterator &r) const ;
+	bool operator<(const String_iterator &r) const;
 	bool operator>=(const String_iterator &r) const {
 		return !(this->operator<(r));
 	}
@@ -69,40 +68,51 @@ public:
 		position -= index;
 		return *this;
 	}
+	String const* base() const {
+		return a;
+	}
+	long pos() const {
+		return position;
+	}
 };
 
 // no direct support for const_iterators, need to spell out std::iterator template parameters
-typedef std::iterator<std::random_access_iterator_tag, char, ptrdiff_t, char const*, char const &> ConstStringIteratorBase;
+typedef std::iterator<std::random_access_iterator_tag, char const, ptrdiff_t, char const*, char const &> ConstStringIteratorBase;
 
-class String_const_iterator : public ConstStringIteratorBase
-{
+class String_const_iterator: public ConstStringIteratorBase {
 	friend class String;
 protected:
-	String const &a;
-	long	 position;
-	String_const_iterator(String const &s, long pos = 0)
-		: a(s), position(pos) { }
-
+	const String * a;
+	long position;
+	String_const_iterator(const String * s, long pos = 0) :
+		a(s), position(pos) {
+	}
 public:
-	String_const_iterator(String_iterator const &r)
-		: a(r.a), position(r.position) { }
-	String_const_iterator& operator=(String_const_iterator const &r);
-	bool operator==(const String_const_iterator &r) const ;
-	bool operator!=(const String_const_iterator &r) const {
-		return !(*this == r);
+	String_const_iterator(const String_iterator & r) :
+		a(r.base()), position(r.pos()) {
 	}
-	bool operator<(const String_const_iterator &r) const ;
-	bool operator>=(const String_const_iterator &r) const {
-		return !(*this < r);
+
+	bool operator ==(const String_const_iterator & r) const;
+	bool operator !=(const String_const_iterator & r) const {
+		return !(this->operator==(r));
 	}
-	bool operator>(const String_const_iterator &r) const {
-		return r < *this;
+
+	bool operator <(const String_const_iterator & r) const;
+	bool operator >=(const String_const_iterator & r) const {
+		return !(this->operator<(r));
 	}
-	bool operator<=(const String_const_iterator &r) const {
-		return !(r < *this);
+
+	bool operator >(const String_const_iterator & r) const {
+		return r.operator<(*this);
 	}
-	value_type operator*() const;
-	value_type operator[](difference_type index) const;
+
+	bool operator <=(const String_const_iterator & r) const {
+		return !(r.operator<(*this));
+	}
+
+	reference operator *() const;
+
+	reference operator [](difference_type index) const;
 	difference_type operator-(const String_const_iterator &r) const;
 	String_const_iterator operator+(difference_type index) const {
 		return String_const_iterator(a, position + index);
