@@ -386,7 +386,7 @@ void *Allocator::ExtMemStart(void *vp)
 {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //lint !e429 // fUsableSize does *not* include header
+		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //fUsableSize does *not* include header //lint !e429
 		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
@@ -424,6 +424,7 @@ GlobalAllocator::~GlobalAllocator()
 
 void GlobalAllocator::Free(void* p, size_t sz) {
 	Free(p);
+	(void)sz;
 }
 
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)

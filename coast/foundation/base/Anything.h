@@ -9,8 +9,8 @@
 #ifndef _ANYTHING_H
 #define _ANYTHING_H
 
-#include "ITOString.h"
-#include "AnyImplTypes.h"
+#include "ITOString.h"//lint !e537
+#include "AnyImplTypes.h"//lint !e537
 #include "AnythingIterator.h" // new version of STL compliant iterators
 
 class AnyImpl;
@@ -515,7 +515,7 @@ protected:
 	union {
 		AnyImpl *fAnyImp;
 		Allocator *fAlloc;
-		unsigned long bits;
+		unsigned int bits;
 	};
 	friend class AnythingTest;
 };

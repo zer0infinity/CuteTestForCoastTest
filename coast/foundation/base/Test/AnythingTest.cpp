@@ -54,48 +54,6 @@ Test *AnythingTest::suite() {
 	return testSuite;
 }
 
-/*============================================================================================================*/
-/*  C L A S S M E T H O D S  (helpmethods)       Beginn                                                       */
-/*============================================================================================================*/
-Anything AnythingTest::init5DimArray(long anzElt) {
-	long i0, i1;
-	char idx0[3] = { 0 }, idx1[3] = { 0 };
-	Anything anyInit;
-
-	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
-		long l0 = (long) (i0 - '0');
-		idx0[0L] = (char) i0;
-
-		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
-			long l1 = (long) (i1 - '0');
-			idx1[0L] = (char) i1;
-			anyInit[idx0][idx1] = (l0) + (l1);
-		}
-	}
-	return (anyInit);
-}
-
-bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt) {
-	long i0, i1;
-	char idx0[3] = { 0 }, idx1[3] = { 0 };
-	bool retVal = true;
-	Anything any;
-
-	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
-		idx0[0L] = (char) i0;
-		if (any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0")) {
-			retVal = false;
-		}
-		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
-			idx1[0L] = (char) i1;
-			if (any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0")) {
-				retVal = false;
-			}
-		}
-	}
-	return (retVal);
-}
-
 /*======================================================================================================================*/
 /*  C L A S S M E T H O D S  (helpmethods)       Ende                                                                   */
 /*======================================================================================================================*/

@@ -19,12 +19,17 @@ class AnyVisitor;
 
 //---- AnyImpl --------------------------------------------------------------
 class AnyImpl {
+	AnyImpl(AnyImpl const &);
+	AnyImpl& operator=(AnyImpl const &);
+	long fRefCount;
+	Allocator *fAllocator;
 public:
 	AnyImpl(Allocator *a) :
 		fRefCount(1), fAllocator((a) ? a : Coast::Storage::Current()) {
 	}
 	virtual ~AnyImpl() {
 		Assert(fRefCount <= 0);
+//		fAllocator = 0; //!@FIXME: do not set to 0 unless our SegStorAllocatorNewDelete::delete uses a different strategy to retrieve the AnyImpls current allocator - currently ptr->MyAllocator()
 	}
 
 	virtual AnyImplType GetType() const = 0;
@@ -76,12 +81,6 @@ protected:
 	virtual AnyImpl *DoDeepClone(AnyImpl *res, Allocator *a, Anything &xreftable) const {
 		return dynamic_cast<AnyImpl*> (res);
 	}
-
-private:
-	AnyImpl(AnyImpl const &);
-	AnyImpl& operator=(AnyImpl const &);
-	long fRefCount;
-	Allocator *fAllocator;
 };
 
 //---- AnyLongImpl -----------------------------------------------------------------

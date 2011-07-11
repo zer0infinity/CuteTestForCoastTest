@@ -26,17 +26,17 @@ protected:
 public:
 	bool operator==(const String_iterator &r) const ;
 	bool operator!=(const String_iterator &r) const {
-		return !(*this == r);
+		return !(this->operator==(r));
 	}
 	bool operator<(const String_iterator &r) const ;
 	bool operator>=(const String_iterator &r) const {
-		return !(*this < r);
+		return !(this->operator<(r));
 	}
 	bool operator>(const String_iterator &r) const {
-		return r < *this;
+		return r.operator<(*this);
 	}
 	bool operator<=(const String_iterator &r) const {
-		return !(r < *this);
+		return !(r.operator<(*this));
 	}
 	reference operator*() const;
 	reference operator[](difference_type index) const;

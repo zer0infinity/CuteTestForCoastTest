@@ -7,12 +7,11 @@
 class StringReverseIteratorTest: public TestFramework::TestCase {
 protected:
 	String fStr5; // string with 5 elements set-up in setUp
+	virtual void setUp();
 public:
 	StringReverseIteratorTest(TString tname) :
 		TestCaseType(tname) {
 	}
-
-	virtual void setUp();
 	static Test *suite();
 
 	void testEmptyStringBegin();

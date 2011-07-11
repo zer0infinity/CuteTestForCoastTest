@@ -42,7 +42,7 @@ void StringIteratorTest::testSimpleStringDecrement() {
 void StringIteratorTest::testSimpleStringAssignment() {
 	String a("bla");
 	*a.begin() = 'x';
-	String_const_iterator ai = a.begin();
+	String::const_iterator ai = a.begin();
 	t_assert(*ai == 'x');
 	t_assert(*++ai == 'l');
 	t_assert(*++ai == 'a');

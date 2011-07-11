@@ -213,6 +213,7 @@ public:
 
 	//!change of memtrackers to be e.g. MT-Safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
+		(void)t;
 		return NULL;
 	}
 

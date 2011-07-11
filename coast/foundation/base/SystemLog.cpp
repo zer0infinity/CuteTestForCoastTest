@@ -42,14 +42,14 @@ void SystemLog::Init(const char *appId)
 	}
 
 	String strValue = System::EnvGet("COAST_DOLOG");
-	int iValue = (int)strValue.AsLong(eNone);
+	int iValue = static_cast<int>(strValue.AsLong(eNone));
 	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
-		fgDoSystemLevelLog = (eLogLevel)iValue;
+		fgDoSystemLevelLog = static_cast<eLogLevel>(iValue);
 	}
 	strValue = System::EnvGet("COAST_LOGONCERR");
-	iValue = (int)strValue.AsLong(eNone);
+	iValue = static_cast<int>(strValue.AsLong(eNone));
 	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
-		fgDoLogOnCerr = (eLogLevel)iValue;
+		fgDoLogOnCerr = static_cast<eLogLevel>(iValue);
 	}
 
 	// initialize the syslog channel
@@ -166,7 +166,7 @@ String SystemLog::SysErrorMsg(long errnum)
 	if (errnum == ENFILE) {
 		theError = "[No more filehandles in System.] ";
 	}
-	theError.Append((long)errnum).Append(' ').Append(strerror(errnum));
+	theError.Append(static_cast<long>(errnum)).Append(' ').Append(strerror(errnum));
 	return theError;
 #endif
 }
@@ -179,7 +179,7 @@ String SystemLog::LastSysError()
 	if ( iError != 0 ) {
 		return SysErrorMsg( iError );
 	}
-	return String().Append((long)iError).Append(": no system-error");
+	return String().Append(static_cast<long>(iError)).Append(": no system-error");
 }
 
 //magic function to be used by Assert macro to avoid dependency to class SystemLog and SystemLog.h
@@ -200,7 +200,7 @@ int SystemLog::LogAssert(const char *file, long line, const char *assertion)
 
 void SystemLog::WriteToStderr(const String &msg)
 {
-	SystemLog::WriteToStderr((const char *)msg, msg.Length());
+	SystemLog::WriteToStderr(msg.cstr(), msg.Length());
 }
 
 void SystemLog::WriteToStderr(char *msg, long length)
@@ -226,7 +226,7 @@ void SystemLog::WriteToStderr(const char *msg, long length)
 
 void SystemLog::WriteToStdout(const String &msg)
 {
-	SystemLog::WriteToStdout((const char *)msg, msg.Length());
+	SystemLog::WriteToStdout(msg.cstr(), msg.Length());
 }
 
 void SystemLog::WriteToStdout(char *msg, long length)
@@ -366,7 +366,7 @@ void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 		default:
 			break;
 	};
-	::syslog(lLevel, "%s", (const char *)logMsg);
+	::syslog(lLevel, "%s", logMsg);
 }
 #endif
 

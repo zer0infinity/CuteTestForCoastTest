@@ -115,7 +115,7 @@ String::String(long capacity, Allocator *a)
 	: fStringImpl(0)
 	, fAllocator((a) ? a : Coast::Storage::Current())
 {
-	this->alloc(capacity);
+	alloc(capacity);
 }
 
 String::String(const char *s, long l, Allocator *a)
@@ -136,7 +136,7 @@ String::String(void const *s, long l, Allocator *a)
 		if (s) {
 			Set(0, (const char *)s, l);
 		} else {
-			this->alloc(l);    // just reserve the space as with String(long)
+			alloc(l);    // just reserve the space as with String(long)
 		}
 	}
 	// no op --> empty string for insane parameters
@@ -219,7 +219,7 @@ note: if start > fLength then the new buffer will contain undefined
 	// expand string if necessary
 	if ( (newLength > 0) && (newLength >= Capacity() ) ) {
 		oldImpl = GetImpl();
-		this->alloc(allocCapacity(newLength));
+		alloc(allocCapacity(newLength));
 		if (GetImpl()) {
 			if (oldImpl) {
 				// copy the part of the old string which is not overwritten afterwards

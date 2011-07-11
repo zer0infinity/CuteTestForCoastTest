@@ -15,11 +15,11 @@ class AnythingTest: public TestFramework::TestCase {
 protected:
 	Anything fQuery;
 	Anything fConfig;
+	virtual void setUp();
 public:
 	AnythingTest(TString tname) :
 		TestCaseType(tname) {
 	}
-	virtual void setUp();
 	static Test *suite();
 	void TypeTest();
 	void SuccessiveAssignments();
@@ -47,10 +47,6 @@ public:
 	void AnythingLeafIteratorTest();
 	void SlotnameSorterTest();
 	void SlotCleanerTest();
-
-protected:
-	Anything init5DimArray(long);
-	bool check5DimArray(Anything &, Anything &, long);
 };
 
 #endif		//ifndef _AnythingTest_H
