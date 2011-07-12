@@ -11,7 +11,7 @@
 #include "SSLSocket.h"
 #include "SSLObjectManager.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 //#define STREAM_TRACE
 
 #undef Free

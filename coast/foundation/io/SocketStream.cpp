@@ -9,7 +9,7 @@
 #include "SocketStream.h"
 #include "SystemLog.h"
 #include "SystemBase.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

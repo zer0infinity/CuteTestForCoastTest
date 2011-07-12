@@ -7,7 +7,7 @@
  */
 
 #include "GenericXMLParser.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "StringStream.h"
 #include "SystemLog.h"
 

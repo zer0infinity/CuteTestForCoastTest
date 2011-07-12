@@ -7,7 +7,7 @@
  */
 
 #include "NTLMCoder.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Base64.h"
 #include <openssl/des.h> // be careful to really use our 3rdparty openssl instead of an older one
 #include <openssl/md4.h>

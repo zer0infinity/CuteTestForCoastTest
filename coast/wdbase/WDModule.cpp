@@ -9,7 +9,7 @@
 #include "WDModule.h"
 #include "SystemLog.h"
 #include "Registry.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Policy.h"
 
 class WDModuleCaller;

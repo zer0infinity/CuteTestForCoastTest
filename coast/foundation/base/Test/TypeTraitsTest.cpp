@@ -9,7 +9,7 @@
 #include "TypeTraitsTest.h"
 #include "TestSuite.h"
 #include "ITOTypeTraits.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <typeinfo>
 
 using namespace std;

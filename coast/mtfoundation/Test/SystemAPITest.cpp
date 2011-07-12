@@ -12,7 +12,7 @@
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #if !defined(WIN32)
 #include <errno.h>
 #include <sys/time.h>

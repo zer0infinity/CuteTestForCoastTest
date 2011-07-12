@@ -10,7 +10,7 @@
 #include "TestSuite.h"
 #include "NTLMCoder.h"
 #include "NTLMAuthMessage.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- NTLMCryptTest ----------------------------------------------------------------
 NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCaseType(tstrName)

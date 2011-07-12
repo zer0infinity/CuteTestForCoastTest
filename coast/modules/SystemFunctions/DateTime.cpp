@@ -7,7 +7,7 @@
  */
 
 #include "DateTime.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemLog.h"
 #include <time.h>
 #if !defined(WIN32)

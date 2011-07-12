@@ -7,7 +7,7 @@
  */
 
 #include "ListRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyIterators.h"
 
 static String ENRTY_STORE_NAME_DEFAULT("EntryData", -1, Coast::Storage::Global());

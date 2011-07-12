@@ -6,7 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "LdapDataAccessTestAction.h"
-#include "Dbg.h"
+#include "Tracer.h"
 RegisterAction(LdapDataAccessTestAction);
 
 bool LdapDataAccessTestAction::DoExecAction(String &action, Context &ctx, const ROAnything &config) {

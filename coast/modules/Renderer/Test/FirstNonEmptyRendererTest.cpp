@@ -9,7 +9,7 @@
 #include "FirstNonEmptyRendererTest.h"
 #include "TestSuite.h"
 #include "FirstNonEmptyRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- FirstNonEmptyRendererTest ----------------------------------------------------------------
 FirstNonEmptyRendererTest::FirstNonEmptyRendererTest(TString tstrName) : RendererTest(tstrName)

@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 #include "Context.h"
 #include "HTTPProcessorWithChecks.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "StringStream.h"
 #include "StringStreamSocket.h"
 #include "AnyIterators.h"

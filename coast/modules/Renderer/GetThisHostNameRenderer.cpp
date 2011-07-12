@@ -8,7 +8,7 @@
 
 #include "GetThisHostNameRenderer.h"
 #include "SystemBase.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Resolver.h"
 
 //---- GetThisHostNameRenderer ---------------------------------------------------------------

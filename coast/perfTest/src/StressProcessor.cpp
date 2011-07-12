@@ -9,7 +9,7 @@
 #include "StressProcessor.h"
 #include "StringStream.h"
 #include "Stresser.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- StressProcessor ----------------------------------------------------------------
 RegisterRequestProcessor(StressProcessor);

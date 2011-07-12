@@ -7,7 +7,7 @@
  */
 
 #include "URLUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "URLEncoder.h"
 
 // ------------------- URLEncoder ---------------------------------------------

@@ -7,7 +7,7 @@
  */
 
 #include "OTPList.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Registry.h"
 #include "Policy.h"
 

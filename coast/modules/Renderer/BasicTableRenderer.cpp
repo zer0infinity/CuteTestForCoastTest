@@ -9,7 +9,7 @@
 #include "BasicTableRenderer.h"
 #include "SystemLog.h"
 #include "Timers.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AllocatorNewDelete.h"
 
 //---- RowAccessor -------------------------------------------------------------------

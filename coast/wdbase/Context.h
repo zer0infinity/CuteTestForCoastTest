@@ -216,10 +216,10 @@ public:
 	/*! Generate debug output onto reply;
 		\param msg the msg to mark this output
 		\param reply the stream to generate output to
-		\param printAny either dump all stores if true or rely on Context.HTMLWDDebug.[LookupStack|TmpStore|EnvStore] to be enabled in Dbg.any */
+		\param printAny either dump all stores if true or rely on Context.HTMLWDDebug.[LookupStack|TmpStore|EnvStore] to be enabled in Tracer.any */
 	void DebugStores(const char *msg, std::ostream &reply, bool printAny = false);
 
-	//!generates output into the reply stream as HTML if the flag in Dbg.any are set accordingly
+	//!generates output into the reply stream as HTML if the flag in Tracer.any are set accordingly
 	void HTMLDebugStores(std::ostream &reply);
 
 	static const String DebugStoreSeparator;

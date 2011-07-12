@@ -7,7 +7,7 @@
  */
 
 #include "ROAnyLookupAdapterTest.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "TestSuite.h"
 #include "FoundationTestTypes.h"
 #include "AnyLookupInterfaceAdapter.h"

@@ -10,7 +10,7 @@
 #include "OracleStatement.h"
 #include "TestSuite.h"
 #include "AnyIterators.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- StatementDescriptionTest --------------------------------------------------------
 StatementDescriptionTest::StatementDescriptionTest(TString tname)

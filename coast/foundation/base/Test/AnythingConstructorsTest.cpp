@@ -9,7 +9,7 @@
 #include "AnythingConstructorsTest.h"
 #include "TestSuite.h"
 #include "IFAObject.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 void AnythingConstructorsTest::setUp() {
 	StartTrace(AnythingConstructorsTest.setUp);

@@ -11,7 +11,7 @@
 #include "Context.h"
 #include "URLUtils.h"
 #include "Registry.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "MD5.h"
 
 // ------------------- MD5 ---------------------------------------------

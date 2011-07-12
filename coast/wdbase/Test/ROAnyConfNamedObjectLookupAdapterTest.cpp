@@ -9,7 +9,7 @@
 #include "ROAnyConfNamedObjectLookupAdapterTest.h"
 #include "AnyLookupInterfaceAdapter.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <iostream>
 
 RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()

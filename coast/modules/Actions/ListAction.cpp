@@ -8,7 +8,7 @@
 
 #include "ListAction.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyIterators.h"
 
 static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Coast::Storage::Global());

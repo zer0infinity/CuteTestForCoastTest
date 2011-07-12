@@ -11,7 +11,7 @@
 #include "SystemLog.h"
 #include "Resolver.h"
 #include "SocketStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

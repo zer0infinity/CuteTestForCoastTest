@@ -7,7 +7,7 @@
  */
 
 #include "MockAccessManager.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- MockAccessManager ----------------------------------------------------------------
 RegisterAccessManager(MockAccessManager);

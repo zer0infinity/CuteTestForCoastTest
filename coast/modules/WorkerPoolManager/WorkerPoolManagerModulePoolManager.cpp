@@ -8,7 +8,7 @@
 
 #include "WorkerPoolManagerModulePoolManager.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- WorkerPoolManagerModuleWorker -----------------------------------------------
 WorkerPoolManagerModuleWorker::WorkerPoolManagerModuleWorker(const char *name)

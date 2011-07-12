@@ -14,7 +14,7 @@
 #include "TraceLocks.h"
 #include "Threads.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Registry.h"
 #include "SSLModule.h"
 #include "SSLAPI.h"

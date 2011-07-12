@@ -7,7 +7,7 @@
  */
 
 #include "ListSizeRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- ListSizeRenderer ---------------------------------------------------------------
 RegisterRenderer(ListSizeRenderer);

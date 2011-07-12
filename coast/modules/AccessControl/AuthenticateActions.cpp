@@ -10,7 +10,7 @@
 #include "AccessManager.h"
 #include "Renderer.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- AuthenticateWeakAction -----------------------------------------------
 RegisterAction(AuthenticateWeakAction);

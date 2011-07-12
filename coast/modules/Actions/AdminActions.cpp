@@ -10,7 +10,7 @@
 #include "Threads.h"
 #include "Context.h"
 #include "Server.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AdminActions.h"
 
 //---- ServerManagement ---------------------------------------------------------------

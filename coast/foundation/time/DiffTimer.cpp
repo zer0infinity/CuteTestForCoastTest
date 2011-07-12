@@ -8,7 +8,7 @@
 
 #include "DiffTimer.h"
 #include "SystemBase.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #if !defined(WIN32)
 HRTIME  gettimes()
 {

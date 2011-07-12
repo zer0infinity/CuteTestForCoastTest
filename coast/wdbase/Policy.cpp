@@ -8,7 +8,7 @@
 
 #include "SystemLog.h"
 #include "Registry.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Policy.h"
 
 //---- InstallerPolicy ------------------------------------------------------

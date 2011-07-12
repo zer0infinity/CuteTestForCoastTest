@@ -10,7 +10,7 @@
 #define _STLStorage_H
 
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <cstring>
 #include <cstdio>
 #include <boost/limits.hpp>

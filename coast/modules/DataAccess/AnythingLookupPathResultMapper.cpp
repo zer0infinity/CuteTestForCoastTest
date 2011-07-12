@@ -7,7 +7,7 @@
  */
 
 #include "AnythingLookupPathResultMapper.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- AnythingLookupPathResultMapper ----------------------------------------------------------------
 RegisterResultMapper(AnythingLookupPathResultMapper);

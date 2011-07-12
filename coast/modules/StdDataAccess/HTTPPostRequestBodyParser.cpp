@@ -9,7 +9,7 @@
 #include "HTTPPostRequestBodyParser.h"
 #include "StringStream.h"
 #include "MIMEHeader.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.Parse);

@@ -11,7 +11,7 @@
 #include "MmapStream.h"
 #include "InitFinisManagerFoundation.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <errno.h>
 #include <cstring>
 #include <climits>

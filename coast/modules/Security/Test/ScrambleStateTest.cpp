@@ -11,7 +11,7 @@
 #include "FoundationTestTypes.h"
 #include "SecurityModule.h"
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 Test *ScrambleStateTest::suite() {
 	TestSuite *testSuite = new TestSuite;

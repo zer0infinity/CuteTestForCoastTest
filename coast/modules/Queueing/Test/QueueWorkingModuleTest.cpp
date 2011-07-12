@@ -10,7 +10,7 @@
 #include "QueueWorkingModule.h"
 #include "TestSuite.h"
 #include "Queue.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- QueueWorkingModuleTest ----------------------------------------------------------------
 QueueWorkingModuleTest::QueueWorkingModuleTest(TString tstrName)

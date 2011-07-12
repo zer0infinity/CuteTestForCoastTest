@@ -10,7 +10,7 @@
 #include "REBitSet.h"
 #include "REBitSetTest.h"
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <ctype.h>
 
 //---- REBitSetTest ----------------------------------------------------------------

@@ -7,7 +7,7 @@
  */
 
 #include "MD5Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "MD5.h"
 #include "Base64.h"
 

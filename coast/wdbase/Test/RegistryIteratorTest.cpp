@@ -7,7 +7,7 @@
  */
 
 #include "RegistryIteratorTest.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "TestSuite.h"
 #include "Registry.h"
 

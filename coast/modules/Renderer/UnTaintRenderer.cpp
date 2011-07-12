@@ -8,19 +8,12 @@
 
 #include "UnTaintRenderer.h"
 #include "URLUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
-//---- UnTaintRenderer ---------------------------------------------------------------
 RegisterRenderer(UnTaintRenderer);
 
-UnTaintRenderer::UnTaintRenderer(const char *name) : Renderer(name) { }
-
-UnTaintRenderer::~UnTaintRenderer() { }
-
-void UnTaintRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void UnTaintRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(UnTaintRenderer.RenderAll);
-
 	String toRender(RenderToString(ctx, config["ToClean"]));
 	Trace("toRender: " << toRender);
 	TraceAny(config, "The config");

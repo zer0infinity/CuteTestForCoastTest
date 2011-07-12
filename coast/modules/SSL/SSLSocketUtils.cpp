@@ -7,7 +7,7 @@
  */
 
 #include "SSLSocketUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- SSLSocketUtils ----------------------------------------------------------------
 SSLSocketUtils::SSLSocketUtils()

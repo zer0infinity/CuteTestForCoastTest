@@ -15,7 +15,7 @@
 #include "Session.h"
 #include "Role.h"
 #include "Server.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Renderer.h"
 
 void ContextTest::setUp() {

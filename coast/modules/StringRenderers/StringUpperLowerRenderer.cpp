@@ -7,7 +7,7 @@
  */
 
 #include "StringUpperLowerRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- StringUpperLowerRenderer ---------------------------------------------------------------
 RegisterRenderer(StringUpperLowerRenderer);

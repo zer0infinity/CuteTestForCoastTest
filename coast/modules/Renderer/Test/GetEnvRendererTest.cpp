@@ -8,7 +8,7 @@
 
 #include "GetEnvRendererTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemBase.h"
 #include "Context.h"
 #include "Renderer.h"

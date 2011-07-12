@@ -8,7 +8,7 @@
 
 #include "Base64.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemLog.h"
 #define CHAR64(c)  (index_64[(unsigned char)(c)])
 

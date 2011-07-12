@@ -11,7 +11,7 @@
 #include "HTMLComparer.h"
 #include "DataAccess.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //--- interface include --------------------------------------------------------
 #include "ATTFlowController.h"

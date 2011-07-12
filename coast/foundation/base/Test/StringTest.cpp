@@ -10,7 +10,7 @@
 #include "TestSuite.h"
 #include "SystemFile.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

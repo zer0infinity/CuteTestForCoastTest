@@ -9,7 +9,7 @@
 #include "TestSuite.h"
 #include "UniqueIdGenTest.h"
 #include "UniqueIdGen.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Anything.h"
 
 //---- UniqueIdGenTest ----------------------------------------------------------------

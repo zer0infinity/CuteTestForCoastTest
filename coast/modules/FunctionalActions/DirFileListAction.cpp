@@ -10,7 +10,7 @@
 #include "SystemFile.h"
 #include "Renderer.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Timers.h"
 
 using namespace Coast;

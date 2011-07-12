@@ -7,7 +7,7 @@
  */
 
 #include "HTMLEscapeRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "URLUtils.h"
 
 //---- HTMLEscapeRenderer ---------------------------------------------------------------

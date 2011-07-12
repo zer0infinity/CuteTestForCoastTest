@@ -8,7 +8,7 @@
 
 #include "SSLSocketArgsTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- SSLSocketArgsTest ----------------------------------------------------------------
 

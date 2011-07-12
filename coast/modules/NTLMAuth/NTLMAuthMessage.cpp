@@ -8,7 +8,7 @@
 
 #include "NTLMAuthMessage.h"
 #include "NTLMCoder.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- NTLMAuthMessage ----------------------------------------------------------------
 

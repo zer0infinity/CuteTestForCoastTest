@@ -7,7 +7,7 @@
  */
 
 #include "ComputeRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <stdlib.h>
 
 //---- ComputeRenderer ----------------------------------------------------------------

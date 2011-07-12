@@ -7,7 +7,7 @@
  */
 
 #include "EscapeRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- EscapeRenderer ---------------------------------------------------------------
 RegisterRenderer(EscapeRenderer);

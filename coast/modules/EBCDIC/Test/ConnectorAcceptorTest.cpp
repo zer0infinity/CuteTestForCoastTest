@@ -12,7 +12,7 @@
 #include "Socket.h"
 #include "Threads.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #if defined(WIN32)
 #include <io.h>
 #endif

@@ -8,7 +8,7 @@
 
 #include "LocalizedRenderers.h"
 #include "LocalizationUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- StringRenderer ----------------------------------------------------------------
 RegisterRenderer(StringRenderer);

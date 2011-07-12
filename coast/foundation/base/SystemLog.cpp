@@ -8,9 +8,6 @@
 
 #include "SystemLog.h"
 #include "SystemBase.h"
-
-using namespace Coast;
-
 #include <errno.h>
 #include <cstdio>
 #include <cstring>
@@ -21,39 +18,39 @@ using namespace Coast;
 #include <syslog.h>
 #endif
 
+using namespace Coast;
 //--- SystemLog ----------------------------------------------------------
 SystemLog *SystemLog::fgSysLog = 0;
 SystemLog::eLogLevel SystemLog::fgDoSystemLevelLog = SystemLog::eALERT;
 SystemLog::eLogLevel SystemLog::fgDoLogOnCerr = SystemLog::eERR;
 
 //--- module initialization/termination
-void SystemLog::Init(const char *appId)
-{
+void SystemLog::Init(const char *appId) {
 	// beware this is not thread safe
 	// the syslog channel is initialized
 	// by the main thread in the server constructor
 	// but since logging takes place before the
 	// server object exists we have to take care
 
-	if ( appId ) {
-		Terminate();    // close existing syslog channel with default Coast name
+	if (appId) {
+		Terminate(); // close existing syslog channel with default Coast name
 	} else {
 		appId = "Coast";
 	}
 
 	String strValue = System::EnvGet("COAST_DOLOG");
-	int iValue = static_cast<int>(strValue.AsLong(eNone));
-	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
+	int iValue = static_cast<int>(strValue.AsLong(eNone));if
+(	( eNone < iValue ) && ( iValue < eLast ) ) {
 		fgDoSystemLevelLog = static_cast<eLogLevel>(iValue);
 	}
 	strValue = System::EnvGet("COAST_LOGONCERR");
-	iValue = static_cast<int>(strValue.AsLong(eNone));
-	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
+	iValue = static_cast<int>(strValue.AsLong(eNone));if
+(	( eNone < iValue ) && ( iValue < eLast ) ) {
 		fgDoLogOnCerr = static_cast<eLogLevel>(iValue);
 	}
 
 	// initialize the syslog channel
-	if ( !fgSysLog ) {
+	if (!fgSysLog) {
 		// open the syslog channel for this application
 		// there is always only one syslog channel per application
 #if defined(WIN32)
@@ -64,9 +61,8 @@ void SystemLog::Init(const char *appId)
 	}
 }
 
-void SystemLog::Terminate()
-{
-	if ( fgSysLog ) {
+void SystemLog::Terminate() {
+	if (fgSysLog) {
 		delete fgSysLog;
 		fgSysLog = 0;
 	}
@@ -77,54 +73,47 @@ void SystemLog::Terminate()
 // severity eDEBUG for tracing server
 // activity during development and
 // deployment
-void SystemLog::Debug(const char *msg)
-{
+void SystemLog::Debug(const char *msg) {
 	Log(eDEBUG, msg);
 }
 
 // severity eINFO for general information
 // log general useful information about server
 // activity
-void SystemLog::Info(const char *msg)
-{
+void SystemLog::Info(const char *msg) {
 	Log(eINFO, msg);
 }
 
 // severity eWARNING	for information about
 // inconsistent state or potential dangerous
 // situation
-void SystemLog::Warning(const char *msg)
-{
+void SystemLog::Warning(const char *msg) {
 	Log(eWARNING, msg);
 }
 
 // severity eERR for outright errors
 // during operation of the server without
 // fatal results
-void SystemLog::Error(const char *msg)
-{
+void SystemLog::Error(const char *msg) {
 	Log(eERR, msg);
 }
 
 // severity eALERT for fatal errors
 // this call triggers also an alert on
 // the operator console
-void SystemLog::Alert(const char *msg)
-{
+void SystemLog::Alert(const char *msg) {
 	Log(eALERT, msg);
 }
 
 // bottleneck routine used by others
 // here you can use severity levels directly
-void SystemLog::Log(eLogLevel level, const char *msg)
-{
-	if ( InitOnce() ) {
+void SystemLog::Log(eLogLevel level, const char *msg) {
+	if (InitOnce()) {
 		fgSysLog->DoLog(level, msg);
 	}
 }
 
-bool SystemLog::InitOnce()
-{
+bool SystemLog::InitOnce() {
 	static bool once = false;
 	if (!once) {
 		once = true;
@@ -139,19 +128,18 @@ bool SystemLog::InitOnce()
 // to an error  message  string,  and returns a pointer to that string.
 // SysErrorMsg(long errnum) uses the same set of error messages as perror().
 // The returned string should not be overwritten.
-String SystemLog::SysErrorMsg(long errnum)
-{
+String SystemLog::SysErrorMsg(long errnum) {
 #if defined(WIN32)
 	LPTSTR lpMsgBuf = 0;
 
 	DWORD len = FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
-		errnum,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		(LPTSTR) &lpMsgBuf,
-		0,
-		NULL
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL,
+			errnum,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf,
+			0,
+			NULL
 	);
 
 	String msg(static_cast<const char *>(lpMsgBuf), len);
@@ -171,115 +159,84 @@ String SystemLog::SysErrorMsg(long errnum)
 #endif
 }
 
-// const char *LastSysError() returns the error message retrieved with errno
-// from SysErrorMsg(errno)
-String SystemLog::LastSysError()
-{
-	int iError( System::GetSystemError() );
-	if ( iError != 0 ) {
-		return SysErrorMsg( iError );
+String SystemLog::LastSysError() {
+	int iError(System::GetSystemError());
+	if (iError != 0) {
+		return SysErrorMsg(iError);
 	}
 	return String().Append(static_cast<long>(iError)).Append(": no system-error");
 }
 
 //magic function to be used by Assert macro to avoid dependency to class SystemLog and SystemLog.h
-int syslog_assert(const char *file, long line, const char *assertion)
-{
+int syslog_assert(const char *file, long line, const char *assertion) {
 	return SystemLog::LogAssert(file, line, assertion);
 }
 
-int SystemLog::LogAssert(const char *file, long line, const char *assertion)
-{
+int SystemLog::LogAssert(const char *file, long line, const char *assertion) {
 	// implement brain dead with C style things to avoid problems of recursion
 	char asrt_buf[2048];
 	int asrt_buf_used = sprintf(asrt_buf, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
-	\
 	SystemLog::WriteToStderr(asrt_buf, asrt_buf_used);
 	return 0;
 }
 
-void SystemLog::WriteToStderr(const String &msg)
-{
+void SystemLog::WriteToStderr(const String &msg) {
 	SystemLog::WriteToStderr(msg.cstr(), msg.Length());
 }
 
-void SystemLog::WriteToStderr(char *msg, long length)
-{
-	SystemLog::WriteToStderr((const char *)msg, length);
-}
-
-void SystemLog::WriteToStderr(const char *msg, long length)
-{
-	if ( msg ) {
+void SystemLog::WriteToStderr(const char *msg, long length) {
+	if (msg) {
 		long sLen = length;
-		if ( sLen < 0 ) {
+		if (sLen < 0) {
 			sLen = strlen(msg);
 		}
 #ifdef IOSTREAM_IS_THREADSAFE
 		std::cerr.write(msg, sLen).flush();
 #else
 		ssize_t written = ::write(2, msg, sLen);
-		(void)written;
+		(void) written;
 #endif
 	}
 }
 
-void SystemLog::WriteToStdout(const String &msg)
-{
+void SystemLog::WriteToStdout(const String &msg) {
 	SystemLog::WriteToStdout(msg.cstr(), msg.Length());
 }
 
-void SystemLog::WriteToStdout(char *msg, long length)
-{
-	SystemLog::WriteToStdout((const char *)msg, length);
-}
-
-void SystemLog::WriteToStdout(const char *msg, long length)
-{
-	if ( msg ) {
+void SystemLog::WriteToStdout(const char *msg, long length) {
+	if (msg) {
 		long sLen = length;
-		if ( sLen < 0 ) {
+		if (sLen < 0) {
 			sLen = strlen(msg);
 		}
 #ifdef IOSTREAM_IS_THREADSAFE
 		std::cout.write(msg, sLen).flush();
 #else
 		ssize_t written = write(1, msg, sLen);
-		(void)written;
+		(void) written;
 #endif
 	}
 }
 
-SystemLog::SystemLog()
-{
-}
-
-SystemLog::~SystemLog()
-{
-}
-
-void SystemLog::DoLog(eLogLevel level, const char *msg)
-{
+void SystemLog::DoLog(eLogLevel level, const char *msg) {
 	// override logging parameter if it is an alert message
-	if ( level >= fgDoSystemLevelLog ) {
+	if (level >= fgDoSystemLevelLog) {
 		DoSystemLevelLog(level, msg);
 	}
 	// override logging parameter if it is an error or alert message
-	if ( level >= fgDoLogOnCerr ) {
+	if (level >= fgDoLogOnCerr) {
 		DoLogTrace(level, msg);
 	}
 }
 
-void SystemLog::DoTraceLevel(const char *level, const char *msg)
-{
+void SystemLog::DoTraceLevel(const char *level, const char *msg) {
 	String finalMessage(level, strlen(level), Coast::Storage::Global());
 	finalMessage.Append(msg);
 	finalMessage.Append('\n');
 	SystemLog::WriteToStderr(finalMessage, finalMessage.Length());
 }
 
-void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg)
-{
+void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg) {
 	switch (level) {
 		case eDEBUG:
 			DoTraceLevel("DEBUG: ", logMsg);
@@ -304,18 +261,15 @@ void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg)
 
 //---- System specific logger ----------------------------------------------------------------
 #if defined(WIN32)
-Win32SysLog::Win32SysLog(const char *appId)
-{
+Win32SysLog::Win32SysLog(const char *appId) {
 	fLogHandle = ::RegisterEventSource(0, appId);
 }
 
-Win32SysLog::~Win32SysLog()
-{
+Win32SysLog::~Win32SysLog() {
 	::DeregisterEventSource( fLogHandle );
 }
 
-void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
-{
+void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg) {
 	WORD evtType = EVENTLOG_INFORMATION_TYPE;
 	LPCTSTR str[1];
 	str[0] = logMsg;
@@ -334,20 +288,17 @@ void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 	::ReportEvent(fLogHandle, evtType, 0, 0, 0, 2, 0, str, 0);
 }
 #else
-UnixSysLog::UnixSysLog(const char *appId)
-{
+UnixSysLog::UnixSysLog(const char *appId) {
 	// initialize the syslog channel
 	::openlog(appId, LOG_PID, LOG_USER);
 }
 
-UnixSysLog::~UnixSysLog()
-{
+UnixSysLog::~UnixSysLog() {
 	// close the syslog channel for this application
 	::closelog();
 }
 
-void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
-{
+void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg) {
 	// need to do a remapping of internal code to unix specific code now
 	long lLevel = LOG_DEBUG;
 	switch (level) {
@@ -369,4 +320,3 @@ void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 	::syslog(lLevel, "%s", logMsg);
 }
 #endif
-

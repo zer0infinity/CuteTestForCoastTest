@@ -8,7 +8,7 @@
 
 #include "GetEnvRenderer.h"
 #include "SystemBase.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- GetEnvRenderer ---------------------------------------------------------------
 RegisterRenderer(GetEnvRenderer);

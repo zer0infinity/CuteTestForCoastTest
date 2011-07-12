@@ -12,7 +12,7 @@
 #include "SystemLog.h"
 #include "Pipe.h"
 #include "TimeStamp.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <cstring>
 #if !defined(WIN32)
 #include <sys/wait.h>

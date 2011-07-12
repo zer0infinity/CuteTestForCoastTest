@@ -9,7 +9,7 @@
 #include "WorkerPoolManagerModule.h"
 #include "WorkerPoolManagerModulePoolManager.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- WorkerPoolManagerModule ---------------------------------------------------------------
 RegisterModule(WorkerPoolManagerModule);

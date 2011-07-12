@@ -7,7 +7,7 @@
  */
 
 #include "HierarchyInstallerWithConfig.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 void HierarchyInstallerWithConfig::DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf) {
 	StartTrace1(HierarchyInstallerWithConfig.DoInitializeLeaf, "current leaf [" << leafName << "]");

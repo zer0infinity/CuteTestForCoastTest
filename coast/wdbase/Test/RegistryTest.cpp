@@ -11,7 +11,7 @@
 #include "TestSuite.h"
 #include "Page.h"
 #include "Policy.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- RegistryTest ----------------------------------------------------------------
 RegistryTest::RegistryTest(TString tname)

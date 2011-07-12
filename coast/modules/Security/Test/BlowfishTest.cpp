@@ -10,7 +10,7 @@
 #include "BlowfishTest.h"
 #include "Blowfish.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Base64.h"
 #include "SystemFile.h"
 #include "StringStream.h"

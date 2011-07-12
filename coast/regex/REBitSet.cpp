@@ -8,7 +8,7 @@
 
 #include "REBitSet.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 REBitSet::REBitSet(bool setall)
 {

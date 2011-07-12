@@ -8,7 +8,7 @@
 
 #include "Timers.h"
 #include "AnythingUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TimeLoggingModule ---------------------------------------------------------------
 RegisterModule(TimeLoggingModule);

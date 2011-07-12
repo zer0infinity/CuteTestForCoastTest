@@ -7,7 +7,7 @@
  */
 
 #include "MIMEHeader.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "RE.h"
 #include "HTTPConstants.h"
 //#include "RECompiler.h"

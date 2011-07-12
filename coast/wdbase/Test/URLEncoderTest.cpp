@@ -9,7 +9,7 @@
 #include "URLEncoderTest.h"
 #include "URLEncoder.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <stdlib.h>
 
 //---- URLEncoderTest ----------------------------------------------------------------

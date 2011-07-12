@@ -7,7 +7,7 @@
  */
 
 #include "FormattedDateRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- FormattedDateRenderer ---------------------------------------------------------------
 RegisterRenderer(FormattedDateRenderer);

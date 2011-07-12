@@ -7,7 +7,7 @@
  */
 
 #include "FileDAImpl.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

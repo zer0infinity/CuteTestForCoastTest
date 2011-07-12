@@ -9,7 +9,7 @@
 #include "TestRunnerApplication.h"
 #include "TestRunner.h"
 #include "SetupRunner.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 RegisterApplication(TestRunnerApplication);
 

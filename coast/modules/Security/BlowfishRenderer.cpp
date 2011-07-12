@@ -7,7 +7,7 @@
  */
 
 #include "BlowfishRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SecurityModule.h"
 #include "Base64.h"
 #include "SystemLog.h"

@@ -10,7 +10,7 @@
 #include "Registry.h"
 #include "DiffTimer.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Policy.h"
 
 //---- Stresser -----------------------------------------------------------

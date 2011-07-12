@@ -7,7 +7,7 @@
  */
 
 #include "AnySorter.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //! shuffles anys where lookuppath is not defined towards the end, keeping their original sequence
 SpecialLookupComparer::SpecialLookupComparer(const char *lookuppath, const AnyComparer &theValueComparer)

@@ -9,7 +9,7 @@
 #include "URLRenderers.h"
 #include "SecurityModule.h"
 #include "URLUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- LinkRenderer ----------------------------------------------------------------
 

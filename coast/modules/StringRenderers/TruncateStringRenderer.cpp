@@ -8,7 +8,7 @@
 
 #include "TruncateStringRenderer.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TruncateStringRenderer ---------------------------------------------------------------
 RegisterRenderer(TruncateStringRenderer);

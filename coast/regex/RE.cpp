@@ -7,7 +7,7 @@
  */
 
 #include "RE.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "REBitSet.h"
 #include "RECompiler.h"
 #include <string.h>

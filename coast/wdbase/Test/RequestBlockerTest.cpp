@@ -7,7 +7,7 @@
  */
 
 #include "RequestBlockerTest.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "TestSuite.h"
 #include "RequestBlocker.h"
 #include "SystemBase.h"

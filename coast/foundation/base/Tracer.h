@@ -6,8 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _Dbg_H
-#define _Dbg_H
+#ifndef _Tracer_H
+#define _Tracer_H
 
 #include "ITOString.h"//lint !e537
 
@@ -27,7 +27,7 @@ program, set \em COAST_NO_TRACE environment variable prior to starting.
 
 \par Preprocessor Flags
 If the preprocessor flag \em COAST_TRACE is not set, the macros described here expand into nothing. To keep the trace output at acceptable levels we introduced a config
-file for debugging, \b Dbg.any. Therein you can switch the trace on and off at a global level but also at method level if needed.
+file for debugging, \b Tracer.any. Therein you can switch the trace on and off at a global level but also at method level if needed.
 
 \par Trace mechanics
 Trace statements are scoped unless the Static ones are used. In every scope of a C++-Program you can use a StartTrace() or StartTrace1() macro. They take as a first parameter
@@ -38,7 +38,7 @@ Server.Load --- entering ---
 Server.Load --- leaving ---
 \endcode
 on entering resp. leaving the scope. Within the scope you can place as many Trace() macros as you need. They are all enabled with the same switch.
-To enable them, you have to insert the following lines into \b Dbg.any:
+To enable them, you have to insert the following lines into \b Tracer.any:
 \code
 {
 	/LowerBound		10
@@ -53,7 +53,7 @@ To enable them, you have to insert the following lines into \b Dbg.any:
 }
 \endcode
 
-\par Structure of \b Dbg.any
+\par Structure of \b Tracer.any
 \code
 {
 	/LowerBound		10
@@ -82,18 +82,18 @@ The following macros help keep the coding expense for inserting trace statements
 */
 
 //! class and macros, that provide tracing support
-/*! Detailed description of how tracing works can be found in \b Dbg.h */
+/*! Detailed description of how tracing works can be found in \b Tracer.h */
 class Tracer
 {
 	Tracer(const Tracer &);
 	Tracer &operator=(const Tracer &);
 public:
 	//! Contructor getting trigger only argument
-	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not */
+	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Tracer.any file to check if trace output should be enabled or not */
 	Tracer(const char *trigger);
 
 	//! Contructor getting trigger and additional message as arguments
-	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Tracer.any file to check if trace output should be enabled or not
 		\param msg additional message to print out when constructing/destructing Tracer object */
 	Tracer(const char *trigger, const char *msg);
 
@@ -158,7 +158,7 @@ private:
 };
 
 /*! Macro to start a trace block using trigger string \em trigger
-	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Tracer.any file to check if trace output should be enabled or not
 \code
 	StartTrace(Server.Load);
 \endcode
@@ -172,7 +172,7 @@ Will print out following messages
 	Tracer recart(_QUOTE_(trigger)); recart.Use()
 
 /*! Macro to start a trace block using trigger string \em trigger and additional message msg
-	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Tracer.any file to check if trace output should be enabled or not
 	\param msg additional message to print out when entering and leaving
 \code
 	StartTrace1(Server.Load, "server in command [" << GetName() << "]");
@@ -303,4 +303,4 @@ Will print out following messages
 #define TriggerEnabled(trigger)		false
 #endif
 
-#endif		//not defined _Dbg_H
+#endif		//not defined _Tracer_H

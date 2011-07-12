@@ -7,7 +7,7 @@
  */
 
 #include "MultiDimNavigationRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- MultiDimNavigationRenderer ---------------------------------------------------------------
 RegisterRenderer(MultiDimNavigationRenderer);

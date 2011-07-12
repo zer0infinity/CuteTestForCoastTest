@@ -9,7 +9,7 @@
 #include "PoolAllocatorTest.h"
 #include "PoolAllocator.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "MemHeader.h"
 
 //---- PoolAllocatorTest ----------------------------------------------------------------

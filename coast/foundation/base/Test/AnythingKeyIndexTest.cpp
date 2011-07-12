@@ -10,7 +10,7 @@
 #include "TestSuite.h"
 #include "StringStream.h"
 #include "IFAObject.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 void AnythingKeyIndexTest::setUp() {
 	StartTrace(AnythingKeyIndexTest.setUp);

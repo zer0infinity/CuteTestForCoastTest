@@ -9,7 +9,7 @@
 #include "HTTPStreamStackTest.h"
 #include "TestSuite.h"
 #include "HTTPStreamStack.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "HTTPChunkedOStream.h"
 #include "ZipStream.h"
 

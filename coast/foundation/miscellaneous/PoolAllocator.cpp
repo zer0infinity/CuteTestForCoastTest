@@ -10,7 +10,7 @@
 #include "MemHeader.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AllocatorNewDelete.h"
 #include <algorithm>
 #include <cstring>

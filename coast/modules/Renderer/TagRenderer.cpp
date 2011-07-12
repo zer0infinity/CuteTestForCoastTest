@@ -8,7 +8,7 @@
 
 #include "TagRenderer.h"
 #include "OptionsPrinter.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TagRenderer ---------------------------------------------------------
 RegisterRenderer(TagRenderer);

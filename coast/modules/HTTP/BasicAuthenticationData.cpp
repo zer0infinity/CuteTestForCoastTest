@@ -7,7 +7,7 @@
  */
 
 #include "BasicAuthenticationData.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Base64.h"
 #include "StringStream.h"
 

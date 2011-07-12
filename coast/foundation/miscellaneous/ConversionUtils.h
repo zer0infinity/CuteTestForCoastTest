@@ -11,7 +11,7 @@
 
 #include "foundation.h"
 #include "ITOString.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <iostream>
 
 namespace ConversionUtils

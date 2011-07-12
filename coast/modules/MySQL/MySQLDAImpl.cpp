@@ -9,7 +9,7 @@
 #include "MySQLDAImpl.h"
 #include "StringStream.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //--- MySQLDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(MySQLDAImpl);

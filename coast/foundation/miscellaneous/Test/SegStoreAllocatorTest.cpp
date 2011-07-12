@@ -8,7 +8,7 @@
 
 #include "SegStoreAllocatorTest.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Anything.h"
 #include "SegStoreAllocator.h"
 

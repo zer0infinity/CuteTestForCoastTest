@@ -8,7 +8,7 @@
 
 #include "TestSession.h"
 #include "SessionListManagerTest.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TestSession ----------------------------------------------------------
 //:test the notify protocol of session

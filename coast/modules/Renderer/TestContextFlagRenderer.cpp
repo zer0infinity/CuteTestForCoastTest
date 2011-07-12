@@ -7,7 +7,7 @@
  */
 
 #include "TestContextFlagRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TestContextFlagRenderer ---------------------------------------------------------------
 RegisterRenderer(TestContextFlagRenderer);

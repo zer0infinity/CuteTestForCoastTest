@@ -7,7 +7,7 @@
  */
 
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 namespace NSStringStream {
 	bool PlainCopyStream2Stream(std::istream *streamSrc, std::ostream &streamDest, long &copiedBytes, long lBytes2Copy) {

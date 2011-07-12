@@ -9,7 +9,7 @@
 #include "DiffTimerTest.h"
 #include "TestSuite.h"
 #include "DiffTimer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemBase.h"
 
 using namespace Coast;

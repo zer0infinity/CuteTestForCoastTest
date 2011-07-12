@@ -10,7 +10,7 @@
 #include "TestSuite.h"
 #include "Pipe.h"
 #include "Socket.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 #if defined(WIN32)
 #include <io.h>

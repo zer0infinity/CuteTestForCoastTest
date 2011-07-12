@@ -7,7 +7,7 @@
  */
 
 #include "CompareValuesRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- CompareValuesRenderer ---------------------------------------------------------------
 RegisterRenderer(CompareValuesRenderer);

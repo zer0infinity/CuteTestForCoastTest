@@ -9,7 +9,7 @@
 #include "DataAccessImpl.h"
 #include "Registry.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Policy.h"
 
 //---- DataAccessImplsModule -----------------------------------------------------------

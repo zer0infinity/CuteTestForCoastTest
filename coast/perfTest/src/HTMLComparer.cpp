@@ -7,7 +7,7 @@
  */
 
 #include "HTMLComparer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 bool HTMLComparer::Compare(String &report) {
 	StartTrace(HTMLComparer.Compare);

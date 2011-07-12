@@ -7,7 +7,7 @@
  */
 
 #include "SlotNameRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- SlotNameRenderer ---------------------------------------------------------------
 RegisterRenderer(SlotNameRenderer);

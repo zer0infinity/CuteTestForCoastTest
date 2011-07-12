@@ -9,7 +9,7 @@
 #include "DateTimeTest.h"
 #include "DateTime.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <time.h>
 
 //---- DateTimeTest ----------------------------------------------------------------

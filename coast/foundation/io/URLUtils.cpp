@@ -9,7 +9,7 @@
 #include "URLUtils.h"
 #include "SystemFile.h"
 #include "Resolver.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <cstring>
 
 namespace Coast {

@@ -14,7 +14,7 @@
 #include "StringStream.h"
 #include "SystemLog.h"
 #include "DiffTimer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <cstring>
 
 class MethodInfoCollector {

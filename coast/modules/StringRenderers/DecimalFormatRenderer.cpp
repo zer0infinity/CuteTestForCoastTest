@@ -9,7 +9,7 @@
 #include "DecimalFormatRenderer.h"
 #include "AnythingUtils.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- DecimalFormatRenderer ---------------------------------------------------------------
 RegisterRenderer(DecimalFormatRenderer);

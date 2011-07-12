@@ -7,7 +7,7 @@
  */
 
 #include "AnythingContentRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- AnythingContentRenderer ---------------------------------------------------------
 RegisterRenderer(AnythingContentRenderer);

@@ -7,7 +7,7 @@
  */
 
 #include "ContainsStringRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- ContainsStringRenderer ---------------------------------------------------------------
 RegisterRenderer(ContainsStringRenderer);

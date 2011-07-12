@@ -7,7 +7,7 @@
  */
 
 #include "TimeStamp.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemBase.h"
 #include "SystemLog.h"
 

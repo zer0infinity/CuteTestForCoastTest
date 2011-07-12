@@ -112,7 +112,7 @@
 			/query							681
 		}
 	}
-	## do not delete, used for DbgTest
+	## do not delete, used for TracerTest
 	/Server {
 		/MainSwitch						550
 		/EnableAll						120

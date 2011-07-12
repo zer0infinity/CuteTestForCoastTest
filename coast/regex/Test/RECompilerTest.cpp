@@ -11,7 +11,7 @@
 #include "RECompilerTest.h"
 #include "Anything.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "RE.h"
 #include "REBitSet.h"
 

@@ -7,7 +7,7 @@
  */
 
 #include "FormattedStringRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- FormattedStringRenderer ---------------------------------------------------------------
 RegisterRenderer(FormattedStringRenderer);

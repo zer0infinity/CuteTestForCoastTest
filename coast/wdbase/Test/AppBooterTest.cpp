@@ -14,7 +14,7 @@
 #include "SystemFile.h"
 #include "SimpleTestApp.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

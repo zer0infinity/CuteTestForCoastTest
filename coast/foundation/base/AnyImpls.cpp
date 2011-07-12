@@ -10,7 +10,7 @@
 #include "StringStream.h"
 #include "AnyVisitor.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <algorithm>
 #include <iostream>
 #include <cstring>

@@ -10,7 +10,7 @@
 #define _AnythingConfigTestPolicy_H
 
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "TString.h"
 
 namespace Coast {

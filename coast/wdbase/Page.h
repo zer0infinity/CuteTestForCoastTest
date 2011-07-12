@@ -11,7 +11,7 @@
 
 #include "WDModule.h"
 #include "Registry.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 class Context;
 

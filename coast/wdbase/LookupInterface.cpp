@@ -8,7 +8,7 @@
 
 #include "LookupInterface.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 ROAnything LookupInterface::Lookup(const char *key, char delim, char indexdelim) const {
 	StartTrace1(LookupInterface.LookupRO, "key:<" << NotNull(key) << ">");

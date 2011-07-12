@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- UnTaintRenderer ----------------------------------------------------------
 //! Load a file, render content
 /*!
 \par Configuration
@@ -32,13 +31,12 @@ Escaped values > xFF are considered invalid (they might be potentially harmful u
 The characters given in /BadChars are removed from the unescaped string. Under any circumstances, \%\&\<\> are removed.
 This renderer may be used whenever input from a client (user) is rendered into a html page.
 */
-class UnTaintRenderer : public Renderer
-{
+class UnTaintRenderer: public Renderer {
 public:
-	//--- constructors
-	UnTaintRenderer(const char *name);
-	~UnTaintRenderer();
-
+	UnTaintRenderer(const char *name) :
+		Renderer(name) {
+	}
+protected:
 	//! URL unescapes a string an cleans it from dangerous characters.
 	//! \param reply out - the stream where the rendered output is written on.
 	//! \param ctx the context the renderer runs within.

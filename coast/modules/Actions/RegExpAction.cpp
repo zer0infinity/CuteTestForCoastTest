@@ -10,7 +10,7 @@
 #include "Context.h"
 #include "Renderer.h"
 #include "AnythingUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "RE.h"
 
 //---- RegExpAction ---------------------------------------------------------------

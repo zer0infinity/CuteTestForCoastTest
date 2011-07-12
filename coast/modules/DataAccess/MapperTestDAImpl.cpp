@@ -8,7 +8,7 @@
 
 #include "MapperTestDAImpl.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 RegisterDataAccessImpl(MapperTestDAImpl);
 

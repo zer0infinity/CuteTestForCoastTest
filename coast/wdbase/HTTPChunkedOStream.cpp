@@ -7,7 +7,7 @@
  */
 
 #include "HTTPChunkedOStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <ctype.h>
 
 //---- HTTPChunkedStreamBuf ----------------------------------------------------------------

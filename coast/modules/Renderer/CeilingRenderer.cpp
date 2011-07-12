@@ -7,7 +7,7 @@
  */
 
 #include "CeilingRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- CeilingRenderer ---------------------------------------------------------------
 RegisterRenderer(CeilingRenderer);

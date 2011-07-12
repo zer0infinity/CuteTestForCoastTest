@@ -8,7 +8,7 @@
 
 #include "SystemBase.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Anything.h"
 #include <errno.h>
 #include <cstring>

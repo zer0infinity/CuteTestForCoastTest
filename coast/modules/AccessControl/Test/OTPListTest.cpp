@@ -9,7 +9,7 @@
 #include "OTPListTest.h"
 #include "MockOTPList.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "WDModule.h"
 #include "AccessController.h"
 

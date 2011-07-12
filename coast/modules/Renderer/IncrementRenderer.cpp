@@ -7,7 +7,7 @@
  */
 
 #include "IncrementRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- IncrementRenderer --------------------------------------------------------------
 RegisterRenderer(IncrementRenderer);

@@ -7,7 +7,7 @@
  */
 
 #include "StringReplaceRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- StringReplaceRenderer ---------------------------------------------------------------
 RegisterRenderer(StringReplaceRenderer);

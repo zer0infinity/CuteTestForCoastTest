@@ -11,7 +11,7 @@
 #include "HTTPPostRequestBodyParser.h"
 #include "MIMEHeader.h"
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Renderer.h"
 #include "SystemLog.h"
 

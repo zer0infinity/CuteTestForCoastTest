@@ -16,7 +16,7 @@
 #include "Timers.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyIterators.h"
 #include <limits>
 #include <cstring>

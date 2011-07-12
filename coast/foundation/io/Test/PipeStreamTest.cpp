@@ -9,7 +9,7 @@
 #include "PipeStreamTest.h"
 #include "TestSuite.h"
 #include "Pipe.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 void PipeStreamTest::SimpleWriteandRead() {
 	StartTrace(PipeStreamTest.SimpleWriteandRead);

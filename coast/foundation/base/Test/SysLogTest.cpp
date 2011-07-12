@@ -9,40 +9,34 @@
 #include "SysLogTest.h"
 #include "SystemLog.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
-//---- SysLogTest ----------------------------------------------------------------
-SysLogTest::SysLogTest(TString tname) : TestCaseType(tname)
-{
+SysLogTest::SysLogTest(TString tname) :
+		TestCaseType(tname) {
 	StartTrace(SysLogTest.Ctor);
 }
 
-SysLogTest::~SysLogTest()
-{
+SysLogTest::~SysLogTest() {
 	StartTrace(SysLogTest.Dtor);
 }
 
-void SysLogTest::setUp ()
-{
+void SysLogTest::setUp() {
 	StartTrace(SysLogTest.setUp);
 	SystemLog::Init("SysLogTest");
 }
 
-void SysLogTest::tearDown ()
-{
+void SysLogTest::tearDown() {
 	StartTrace(SysLogTest.tearDown);
 	SystemLog::Terminate();
 }
 
-void SysLogTest::TestFlags ()
-{
+void SysLogTest::TestFlags() {
 	StartTrace(SysLogTest.TestFlags);
 	t_assertm(SystemLog::fgSysLog != NULL, " expected creation of fgSysLog");
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *SysLogTest::suite ()
-{
+Test *SysLogTest::suite() {
 	StartTrace(SysLogTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, SysLogTest, TestFlags);

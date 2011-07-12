@@ -9,7 +9,7 @@
 #include "SSLObjectManagerTest.h"
 #include "TestSuite.h"
 #include "SSLObjectManager.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SSLSocket.h"
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------

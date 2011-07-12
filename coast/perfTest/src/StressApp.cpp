@@ -11,7 +11,7 @@
 #include "SystemFile.h"
 #include "DiffTimer.h"
 #include "Stresser.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>

@@ -7,7 +7,7 @@
  */
 
 #include "ComparingRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- ComparingRenderer ---------------------------------------------------------------
 ComparingRenderer::ComparingRenderer(const char *name)

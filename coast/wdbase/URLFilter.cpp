@@ -11,7 +11,7 @@
 #include "SecurityModule.h"
 #include "Renderer.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyIterators.h"
 
 //--- URLFilter ----------------------------------------------------------

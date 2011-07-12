@@ -7,7 +7,7 @@
  */
 
 #include "XMLEscapeRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <cstring>
 
 static const char *entitity_map[] = {

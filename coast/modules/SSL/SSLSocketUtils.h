@@ -11,7 +11,7 @@
 
 //---- framework classes -------------------------------------------------
 #include "SSLAPI.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Anything.h"
 
 //---- SSLSocketUtils ----------------------------------------------------------

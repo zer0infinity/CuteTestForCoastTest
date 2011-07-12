@@ -7,7 +7,7 @@
  */
 
 #include "ConfiguredLookupAdapter.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 ConfiguredLookupAdapter::ConfiguredLookupAdapter(ROAnything config, ROAnything defaultConfig)
 	: fConfig(config), fDefaultConfig(defaultConfig)

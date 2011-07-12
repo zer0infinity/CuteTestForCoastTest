@@ -8,7 +8,7 @@
 
 #include "CompareAction.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Renderer.h"
 
 //---- CompareAction ---------------------------------------------------------------

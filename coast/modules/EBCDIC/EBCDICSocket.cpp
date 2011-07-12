@@ -9,7 +9,7 @@
 #include "EBCDICSocket.h"
 #include "EBCDICSocketStreamBuf.h"
 #include "EBCDICSocketStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- EBCDICSocket ----------------------------------------------------------
 EBCDICSocket::EBCDICSocket(int socket, const Anything &clientInfo, bool doClose, Allocator *a)

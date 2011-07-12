@@ -12,7 +12,7 @@
 #include "IFAObject.h"
 #include "SystemAPI.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 class Thread;
 

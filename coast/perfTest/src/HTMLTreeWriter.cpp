@@ -7,7 +7,7 @@
  */
 
 #include "HTMLTreeWriter.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemLog.h"
 
 //--- HTMLTreeWriter -----------------------------------------------------

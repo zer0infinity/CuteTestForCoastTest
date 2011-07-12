@@ -8,7 +8,7 @@
 
 #include "WriteFileDAImpl.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

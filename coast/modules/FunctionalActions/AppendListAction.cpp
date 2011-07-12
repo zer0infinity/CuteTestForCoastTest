@@ -9,7 +9,7 @@
 #include "AppendListAction.h"
 #include "AnythingUtils.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 class ContextSlotAppender
 {

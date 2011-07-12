@@ -8,7 +8,7 @@
 
 #include "FileLoadRenderer.h"
 #include "SystemFile.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- FileLoadRenderer ---------------------------------------------------------------
 RegisterRenderer(FileLoadRenderer);

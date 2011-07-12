@@ -14,7 +14,7 @@
 #include "SecurityModule.h"
 #include "Server.h"
 #include "TestSession.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 void SessionListManagerTest::tearDown() {
 	StartTrace(SessionListManagerTest.tearDown);

@@ -8,7 +8,7 @@
 
 #include "BasicAuthenticationRenderer.h"
 #include "Base64.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemLog.h"
 
 //---- BasicAuthenticationRenderer ---------------------------------------------------------------

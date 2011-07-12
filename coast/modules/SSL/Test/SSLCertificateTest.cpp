@@ -9,7 +9,7 @@
 #include "SSLCertificateTest.h"
 #include "SSLSocket.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- SSLCertificateTest ----------------------------------------------------------------
 SSLCertificateTest::SSLCertificateTest(TString tstrName)

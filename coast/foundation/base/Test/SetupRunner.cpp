@@ -21,7 +21,7 @@
 #include "AnythingParserTest.h"
 #include "StrSpecialTest.h"
 #include "SysLogTest.h"
-#include "DbgTest.h"
+#include "TracerTest.h"
 #include "SystemBaseTest.h"
 #include "SystemFileTest.h"
 #include "ROSimpleAnythingTest.h"
@@ -56,7 +56,7 @@ void setupRunner(TestRunner &runner) {//lint !e14
 	ADD_SUITE(runner, MmapTest);
 #endif
 	ADD_SUITE(runner, StringStreamTest);
-	ADD_SUITE(runner, DbgTest);
+	ADD_SUITE(runner, TracerTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, AnyBuiltInSortTest);

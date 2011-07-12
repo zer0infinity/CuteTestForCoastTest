@@ -31,8 +31,8 @@ The loggers behavior is to write ALERT messages into syslog and to log ERROR and
 
 The flag <tt>COAST_TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
 */
-class SystemLog
-{
+class SystemLog {
+	friend class SysLogTest;
 public:
 	//! module initialization
 	static void Init(const char *appId);
@@ -42,8 +42,6 @@ public:
 
 	//! module termination
 	static void Terminate();
-
-	/*--- logging API -------------------------------------*/
 
 	/*! define importancy levels in increasing order for easier */
 	enum eLogLevel {
@@ -92,22 +90,19 @@ public:
 
 	//!wrapper to write(2,...) on Unix systems to get things written to stderr
 	//!needed, because some iostream implementations aren't thread safe
-	static void WriteToStderr(char *msg, long length = -1);
 	static void WriteToStderr(const char *msg, long length = -1);
 	static void WriteToStderr(const String &msg);
 
 	//!wrapper to write(1,...) on Unix systems to get things written to stdout
 	//!needed, because some iostream implementations aren't thread safe
-	static void WriteToStdout(char *msg, long length = -1);
 	static void WriteToStdout(const char *msg, long length = -1);
 	static void WriteToStdout(const String &msg);
 
-	friend class SysLogTest;
-
 protected:
-	/*---- object api for different platforms ---*/
-	SystemLog();
-	virtual ~SystemLog();
+	SystemLog() {
+	}
+	virtual ~SystemLog() {
+	}
 
 	//!template method
 	virtual void DoLog(eLogLevel level, const char *msg);

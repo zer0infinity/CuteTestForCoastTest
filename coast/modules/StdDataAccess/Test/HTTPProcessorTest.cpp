@@ -14,7 +14,7 @@
 #include "StringStreamSocket.h"
 #include "Context.h"
 #include "URLUtils.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Server.h"
 #include "AnyLookupInterfaceAdapter.h"
 #include "AnyUtils.h"

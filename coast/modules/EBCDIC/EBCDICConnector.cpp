@@ -8,7 +8,7 @@
 
 #include "Anything.h"
 #include "EBCDICSocket.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "EBCDICConnector.h"
 
 //--- EBCDICConnector --------------------------------------------

@@ -10,7 +10,7 @@
 #define _ObjectList_H
 
 #include "ITOString.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "ITOTypeTraits.h"
 #include "STLStorage.h"
 #include <algorithm>

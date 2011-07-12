@@ -11,7 +11,7 @@
 #include "FoundationTestTypes.h"
 #include "StringStreamSocket.h"
 #include "Server.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnythingUtils.h"
 
 void RequestProcessorTest::InitTest() {

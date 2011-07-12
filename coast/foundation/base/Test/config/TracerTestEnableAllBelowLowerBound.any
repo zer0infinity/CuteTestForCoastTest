@@ -10,7 +10,7 @@
 	/UpperBound							10
 	/DumpAnythings  					1
 
-	/DbgTest {
+	/TracerTest {
 		/MainSwitch						5
 		/EnableAll						4
 

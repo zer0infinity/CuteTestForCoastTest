@@ -8,7 +8,7 @@
 
 #include "LDAPConnection.h"
 #include "LDAPMessageEntry.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #if defined(USE_OPENLDAP)
 static const long fgOptNetworkTimeout = LDAP_OPT_NETWORK_TIMEOUT;
 static const String fgstrOptNetworkTimeout = String("LDAP_OPT_NETWORK_TIMEOUT", -1, Coast::Storage::Global());

@@ -7,7 +7,7 @@
  */
 
 #include "OptionsPrinter.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 RegisterRenderer(OptionsPrinter);
 //---- OptionsPrinter ---------------------------------------------------------

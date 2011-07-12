@@ -10,9 +10,9 @@
 	/UpperBound							10
 	/DumpAnythings  					1
 
-	/DbgTest {
+	/TracerTest {
 		/MainSwitch						5
-		/EnableAll						0
+		/EnableAll						4
 
 		/FirstLevelEnabled				5
 		/FirstLevelDisabled				0

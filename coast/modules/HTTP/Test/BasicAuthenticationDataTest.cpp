@@ -9,7 +9,7 @@
 #include "BasicAuthenticationDataTest.h"
 #include "BasicAuthenticationData.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- BasicAuthenticationDataTest ----------------------------------------------------------------
 BasicAuthenticationDataTest::BasicAuthenticationDataTest(TString tstrName)

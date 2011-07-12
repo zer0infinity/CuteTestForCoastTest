@@ -10,7 +10,7 @@
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyVisitor.h"
 #include "AnyComparers.h"
 

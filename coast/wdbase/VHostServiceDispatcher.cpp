@@ -9,7 +9,7 @@
 #include "VHostServiceDispatcher.h"
 #include "ServiceHandler.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "AnyIterators.h"
 
 RegisterServiceDispatcher(VHostServiceDispatcher);

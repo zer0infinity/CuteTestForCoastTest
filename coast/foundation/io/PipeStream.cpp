@@ -10,7 +10,7 @@
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "Pipe.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Socket.h"
 
 using namespace Coast;

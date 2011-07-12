@@ -7,7 +7,7 @@
  */
 
 #include "CharReplaceRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- CharReplaceRenderer ---------------------------------------------------------------
 RegisterRenderer(CharReplaceRenderer);

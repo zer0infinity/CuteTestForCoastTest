@@ -11,36 +11,15 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- SysLogTest ----------------------------------------------------------
-//!testcases for the SystemLog class
-class SysLogTest : public TestFramework::TestCase
-{
-public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
-	SysLogTest(TString tstrName);
-
-	//!destroys the test case
-	~SysLogTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
-	//!test the environment
-	void TestFlags ();
-
+class SysLogTest: public TestFramework::TestCase {
 protected:
-
+	void setUp();
+public:
+	SysLogTest(TString tstrName);
+	~SysLogTest();
+	static Test *suite();
+	void tearDown();
+	void TestFlags();
 };
 
 #endif

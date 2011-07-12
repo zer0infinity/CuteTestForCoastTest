@@ -9,7 +9,7 @@
 #include "MemTrackerTest.h"
 #include "TestSuite.h"
 #include "ITOStorage.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "MemHeader.h"
 #include "AllocatorNewDelete.h"
 

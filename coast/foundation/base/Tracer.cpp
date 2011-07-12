@@ -6,7 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemBase.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
@@ -21,7 +21,7 @@ using namespace Coast;
 //---- Tracer -------------------------------------------------------------------------
 namespace {
 	char const fgPathDelim = '.';
-	char const *fgDbgAnyName = "Dbg";
+	char const *fgTracerAnyName = "Tracer";
 	char const *fgLowerBoundName = "LowerBound";
 	char const *fgUpperBoundName = "UpperBound";
 	char const *fgDumpAnythingsName = "DumpAnythings";
@@ -99,7 +99,7 @@ namespace {
 		return false;
 	}
 
-	void InitTracing(String const& strFilename = fgDbgAnyName) {
+	void InitTracing(String const& strFilename = fgTracerAnyName) {
 		std::istream *ifp = System::OpenStream(strFilename, "any");
 		if (ifp) {
 			Anything anyDebugContext;
@@ -199,7 +199,7 @@ namespace {
 
 void Tracer::ExchangeConfigFile(const char *filename) {
 	TerminateTracing();
-	InitTracing( ( filename == 0 ) ? fgDbgAnyName : filename );
+	InitTracing( ( filename == 0 ) ? fgTracerAnyName : filename );
 }
 
 bool Tracer::CheckWDDebug(const char *trigger)

@@ -14,7 +14,7 @@
 #include "StringStream.h"
 #include "PeriodicAction.h"
 #include "AnyIterators.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "MT_Storage.h"
 
 namespace Coast

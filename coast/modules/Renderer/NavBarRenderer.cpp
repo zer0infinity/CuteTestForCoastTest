@@ -7,7 +7,7 @@
  */
 
 #include "NavBarRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 static String ENRTY_STORE_NAME_DEFAULT("EntryData");
 //---- NavBarRenderer ---------------------------------------------------------

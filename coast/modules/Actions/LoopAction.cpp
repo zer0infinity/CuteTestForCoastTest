@@ -8,7 +8,7 @@
 
 #include "LoopAction.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- LoopAction ---------------------------------------------------------------
 RegisterAction(LoopAction);

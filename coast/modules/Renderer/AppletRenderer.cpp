@@ -7,7 +7,7 @@
  */
 
 #include "AppletRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- AppletRenderer --------------------------------------------------------------
 RegisterRenderer(AppletRenderer);

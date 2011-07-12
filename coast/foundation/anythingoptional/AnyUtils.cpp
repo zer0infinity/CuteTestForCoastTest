@@ -9,7 +9,7 @@
 #include "AnyUtils.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

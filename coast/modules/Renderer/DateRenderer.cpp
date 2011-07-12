@@ -8,7 +8,7 @@
 
 #include "DateRenderer.h"
 #include "SystemBase.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 

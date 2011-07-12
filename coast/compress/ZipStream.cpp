@@ -8,7 +8,7 @@
 
 #include "ZipStream.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "ConversionUtils.h"
 #include "SystemLog.h"
 #include <cstring>	// memset

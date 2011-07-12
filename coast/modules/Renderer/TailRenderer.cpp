@@ -7,7 +7,7 @@
  */
 
 #include "TailRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- TailRenderer ---------------------------------------------------------------
 

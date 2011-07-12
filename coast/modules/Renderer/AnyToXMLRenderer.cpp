@@ -8,7 +8,7 @@
 
 #include "AnyToXMLRenderer.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- AnyToXMLRenderer ---------------------------------------------------------
 RegisterRenderer(AnyToXMLRenderer);

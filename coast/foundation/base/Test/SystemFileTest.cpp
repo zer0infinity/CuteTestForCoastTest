@@ -71,12 +71,12 @@ void SystemFileTest::statTests() {
 	t_assertm(System::IsDirectory("."), "expected '.' to be a directory");
 	t_assertm(System::IsDirectory(".."), "expected '.' to be a directory");
 	t_assertm(!System::IsDirectory("config/Test.any"), "expected 'Test.any' to be a file");
-	t_assertm(!System::IsDirectory("config/Dbg.any"), "expected 'Dbg.any' to be a file");
+	t_assertm(!System::IsDirectory("config/Tracer.any"), "expected 'Tracer.any' to be a file");
 	t_assertm(!System::IsRegularFile("."), "expected '.' to be a directory");
 	t_assertm(System::IsRegularFile("config/SystemFileTest.any"), "expected 'SystemTest.any' to be a file");
 	t_assertm(!System::IsRegularFile(".."), "expected '.' to be a directory");
 	t_assertm(System::IsRegularFile("config/Test.any"), "expected 'Test.any' to be a file");
-	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
+	t_assertm(System::IsRegularFile("config/Tracer.any"), "expected 'Tracer.any' to be a file");
 	String strLinkToPrjRunTest("aLinkToTestAny");
 #if !defined(WIN32)
 	if (assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("config/Test.any", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" )) {
@@ -443,14 +443,14 @@ void SystemFileTest::ResolvePathTest() {
 }
 
 void SystemFileTest::OpenStreamTest() {
-	std::iostream *Ios = System::OpenStream("Dbg.any");
+	std::iostream *Ios = System::OpenStream("Tracer.any");
 	t_assert( Ios == NULL ); // should not be found!
 	if (Ios) {
 		delete Ios;
 	}
 
 	// open file with relative path
-	Ios = System::OpenStream("config/Dbg.any");
+	Ios = System::OpenStream("config/Tracer.any");
 	t_assert( Ios != NULL );
 	if (Ios) {
 		delete Ios;
@@ -459,14 +459,14 @@ void SystemFileTest::OpenStreamTest() {
 	// deprecated:
 
 	// search file with path
-	Ios = System::OpenStream("Dbg", "any");
+	Ios = System::OpenStream("Tracer", "any");
 	t_assert( Ios != NULL ); // should be found
 	if (Ios) {
 		delete Ios;
 	}
 
 	// open file with relative path
-	Ios = System::OpenStream("config/Dbg", "any");
+	Ios = System::OpenStream("config/Tracer", "any");
 	t_assert( Ios != NULL );
 	if (Ios) {
 		delete Ios;
@@ -483,14 +483,14 @@ void SystemFileTest::OpenStreamTest() {
 }
 
 void SystemFileTest::OpenStreamWithSearchTest() {
-	std::iostream *Ios = System::OpenStreamWithSearch("Dbg.any");
+	std::iostream *Ios = System::OpenStreamWithSearch("Tracer.any");
 	t_assert( Ios != NULL );
 	if (Ios) {
 		delete Ios;
 	}
 
 	// open file with relative path
-	Ios = System::OpenStreamWithSearch("config/Dbg.any");
+	Ios = System::OpenStreamWithSearch("config/Tracer.any");
 	t_assert( Ios != NULL );
 	if (Ios) {
 		delete Ios;
@@ -508,7 +508,7 @@ void SystemFileTest::OpenStreamWithSearchTest() {
 
 void SystemFileTest::OpenIStreamTest() {
 	// open file with relative path
-	std::iostream *Ios = System::OpenIStream("config/Dbg.any");
+	std::iostream *Ios = System::OpenIStream("config/Tracer.any");
 
 	t_assert( Ios != NULL );
 	if (Ios) {
@@ -522,7 +522,7 @@ void SystemFileTest::OpenIStreamTest() {
 	// deprecated:
 
 	// open file with relative path
-	Ios = System::OpenIStream("config/Dbg", "any");
+	Ios = System::OpenIStream("config/Tracer", "any");
 
 	t_assert( Ios != NULL );
 	if (Ios) {
@@ -560,7 +560,7 @@ void SystemFileTest::OpenOStreamTest() {
 
 void SystemFileTest::testGetFilePath(boost::function<String()> func, const String& notFoundResult) {
 	StartTrace(SystemFileTest.testGetFilePath);
-	String subPath("./config/Dbg.any");
+	String subPath("./config/Tracer.any");
 
 	System::Chmod(subPath, 0400); // set it read only
 
@@ -595,15 +595,15 @@ void SystemFileTest::testGetFilePath(boost::function<String()> func, const Strin
 #endif
 
 	path = func();
-	subPath = "./Dbg.any";
+	subPath = "./Tracer.any";
 	System::ResolvePath(subPath);
 	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
 }
 
 void SystemFileTest::GetFilePathTest() {
-	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Dbg", "any"), ""); // deprecated
-	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Dbg.any"), "");
-	testGetFilePath(boost::bind(&Coast::System::GetFilePathOrInput, "Dbg.any"), "Dbg.any");
+	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Tracer", "any"), ""); // deprecated
+	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Tracer.any"), "");
+	testGetFilePath(boost::bind(&Coast::System::GetFilePathOrInput, "Tracer.any"), "Tracer.any");
 }
 
 void SystemFileTest::dirFileListTest() {
@@ -1161,14 +1161,14 @@ void SystemFileTest::IOStreamTest() {
 
 void SystemFileTest::LoadConfigFileTest() {
 	Anything dbgany;
-	t_assert(System::LoadConfigFile(dbgany, "Dbg")); // any extension automatic
+	t_assert(System::LoadConfigFile(dbgany, "Tracer")); // any extension automatic
 	t_assert(!dbgany.IsNull());
 	t_assert(dbgany.IsDefined("LowerBound"));
 
 	Anything dbg2;
 	String realfilename;
-	t_assert(System::LoadConfigFile(dbg2, "Dbg", "any", realfilename));
-	assertEqual("Dbg.any", realfilename.SubString(realfilename.Length() - 7, 7));
+	t_assert(System::LoadConfigFile(dbg2, "Tracer", "any", realfilename));
+	assertEqual("Tracer.any", realfilename.SubString(realfilename.StrRChr(System::Sep())+1L));
 	assertAnyEqual(dbgany, dbg2);
 
 	Anything dbg3;

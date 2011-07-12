@@ -10,7 +10,7 @@
 #include "AppBooter.h"
 #include "Registry.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #if !defined(WIN32)
 // used for dynamic load of libraries
 #include <dlfcn.h>

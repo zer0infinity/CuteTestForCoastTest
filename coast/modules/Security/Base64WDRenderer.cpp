@@ -7,7 +7,7 @@
  */
 
 #include "Base64WDRenderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "Base64.h"
 
 //---- Base64WDRenderer ---------------------------------------------------------------

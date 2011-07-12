@@ -8,7 +8,7 @@
 #include "ExistsCheckAction.h"
 #include "Context.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 //---- ExistsCheckAction ---------------------------------------------------------------
 RegisterAction(ExistsCheckAction);
 

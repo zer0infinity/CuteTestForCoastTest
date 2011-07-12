@@ -9,7 +9,7 @@
 #include "ConnectorArgsTest.h"
 #include "TestSuite.h"
 #include "Socket.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- ConnectorArgsTest ----------------------------------------------------------------
 

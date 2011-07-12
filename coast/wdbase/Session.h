@@ -78,7 +78,7 @@ public:
 
 	/*! Generate debug output onto reply;
 		\param reply the stream to generate output to
-		\param printAny either dump fStore if true or rely on Session.HTMLSessionStore to be enabled in Dbg.any */
+		\param printAny either dump fStore if true or rely on Session.HTMLSessionStore to be enabled in Tracer.any */
 	void HTMLDebugStore(std::ostream &reply, bool printAny = false);
 
 	//! reply with a busy page

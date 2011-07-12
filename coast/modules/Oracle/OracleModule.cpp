@@ -8,7 +8,7 @@
 
 #include "OracleModule.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- OracleModule ---------------------------------------------------------------
 RegisterModule(OracleModule);

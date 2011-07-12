@@ -8,7 +8,7 @@
 
 #include "Base64Renderer.h"
 #include "Base64.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- Base64Renderer ---------------------------------------------------------------
 RegisterRenderer(Base64Renderer);

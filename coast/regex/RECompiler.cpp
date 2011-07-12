@@ -13,7 +13,7 @@
 //if something changes copy a new version from the Test subdir here
 #include "REPosixBitSets.h"
 #include "Anything.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include <ctype.h>
 #include <cstring>
 

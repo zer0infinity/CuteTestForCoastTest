@@ -9,7 +9,7 @@
 #include "TableCompressor.h"
 #include "Registry.h"
 #include "StringStream.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 // ------------------- TableCompressor ---------------------------------------------
 RegisterCompressor(TableCompressor);

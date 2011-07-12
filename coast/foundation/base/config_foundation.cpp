@@ -6,7 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Dbg.h"
+#include "Tracer.h"
 #include "SystemLog.h"
 #include "InitFinisManagerFoundation.h"
 

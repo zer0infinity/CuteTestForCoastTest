@@ -20,7 +20,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;

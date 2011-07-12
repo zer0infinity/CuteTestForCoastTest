@@ -6,13 +6,13 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-	/LowerBound							0
+	/LowerBound							5
 	/UpperBound							10
 	/DumpAnythings  					1
 
-	/DbgTest {
+	/TracerTest {
 		/MainSwitch						5
-		/EnableAll						0
+		/EnableAll						7
 
 		/FirstLevelEnabled				5
 		/FirstLevelDisabled				0

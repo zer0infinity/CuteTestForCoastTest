@@ -14,7 +14,7 @@
 #include "RECompiler.h"
 #include "PoolAllocator.h"
 #include "TestTimer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 using namespace Coast;
 
@@ -372,7 +372,7 @@ void RegexTest::GrepTest()
 {
 	StartTrace(RegexTest.GrepTest);
 
-	std::istream *is = System::OpenStream("Dbg", "any");
+	std::istream *is = System::OpenStream("Tracer", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -393,7 +393,7 @@ void RegexTest::GrepSlotNamesTest()
 {
 	StartTrace(RegexTest.GrepSlotNamesTest);
 
-	std::istream *is = System::OpenStream("Dbg", "any");
+	std::istream *is = System::OpenStream("Tracer", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;

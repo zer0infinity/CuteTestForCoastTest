@@ -9,7 +9,7 @@
 #include "AnyImplsTest.h"
 #include "TestSuite.h"
 #include "AnyImpls.h"
-#include "Dbg.h"
+#include "Tracer.h"
 #include "StringStream.h"
 #include <iomanip>
 #include <memory>

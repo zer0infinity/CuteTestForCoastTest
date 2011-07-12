@@ -7,7 +7,7 @@
  */
 
 #include "ImageRenderers.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- ImageLocationRenderer ----------------------------------------------------------------
 RegisterRenderer(ImageLocationRenderer);

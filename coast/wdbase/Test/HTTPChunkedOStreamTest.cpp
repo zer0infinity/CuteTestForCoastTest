@@ -9,7 +9,7 @@
 #include "HTTPChunkedOStreamTest.h"
 #include "HTTPChunkedOStream.h"
 #include "TestSuite.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------------
 HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCaseType(tstrName)

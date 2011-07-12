@@ -8,7 +8,7 @@
 #include "TransitionDispatchAction.h"
 #include "Context.h"
 #include "SystemLog.h"
-#include "Dbg.h"
+#include "Tracer.h"
 //---- TransitionDispatchAction ---------------------------------------------------------------
 RegisterAction(TransitionDispatchAction);
 

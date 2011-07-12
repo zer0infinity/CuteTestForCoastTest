@@ -9,7 +9,7 @@
 #include "RemoveAction.h"
 #include "AnythingUtils.h"
 #include "Renderer.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 //---- RemoveAction ---------------------------------------------------------------
 RegisterAction(RemoveAction);

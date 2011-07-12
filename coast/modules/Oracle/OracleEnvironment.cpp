@@ -10,7 +10,7 @@
 #include "OracleConnection.h"
 #include "SystemLog.h"
 #include "MT_Storage.h"
-#include "Dbg.h"
+#include "Tracer.h"
 
 // set to 1 to track OCI's memory usage using our MemTracker infrastructure
 #if (1)
