@@ -192,7 +192,7 @@ MemTracker *ExcessTrackerElt::operator[](size_t ulPayloadSize)
 	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
 	if ( pTracker == NULL ) {
 		char buf[80] = { 0 };
-		snprintf(buf, sizeof(buf), "PoolExcessTracker[%u]", ulWishSize);
+		snprintf(buf, sizeof(buf), "PoolExcessTracker[%zu]", ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
 		pTracker = Coast::Storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
@@ -623,7 +623,7 @@ void *PoolAllocator::Alloc(size_t allocSize)
 		return ExtMemStart(mh);//lint !e429
 	}
 	static char crashmsg[255] = { 0 };
-	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%ub failed. I will crash :-(\n", allocSize);
+	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%zub failed. I will crash :-(\n", allocSize);
 	SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 
 	return 0;
