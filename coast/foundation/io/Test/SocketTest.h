@@ -10,21 +10,14 @@
 #define _SocketTest_H
 
 #include "FoundationTestTypes.h"//lint !e537
-
-//---- SocketTest ----------------------------------------------------------
-//!TestCases for the Socket class
-class SocketTest : public TestFramework::TestCaseWithConfig
-{
+class SocketTest: public TestFramework::TestCaseWithConfig {
 public:
-	//!TestCases for the Socket classes
-	//! \param name name of the test
-	SocketTest(TString tstrName);
-
-	//!destroys the test case
-	~SocketTest();
+	SocketTest(TString tname) :
+		TestCaseType(tname) {
+	}
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!tests the Socket class with a fd from Connector
 	void simpleConstructorTest();

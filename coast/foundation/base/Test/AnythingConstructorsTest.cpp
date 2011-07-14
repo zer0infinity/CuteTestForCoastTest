@@ -660,8 +660,11 @@ void AnythingConstructorsTest::EmptyVoidStarLenConstrTest() {
 }
 
 void AnythingConstructorsTest::VoidStarLenConstrTest() {
-	long arrTest[5] = { 0, 1, 2, 3, 4 };
-	Anything anyTest((void *) arrTest, (long) sizeof(arrTest));
+	typedef long arrValueType;
+	arrValueType arrTest[5] = { 0, 1, 2, 3, 4 };
+	Anything anyTest((void *) arrTest, static_cast<long>(sizeof(arrTest)));
+	size_t _byteLengthOfArray = sizeof(arrTest);
+	long _elementsInArray = _byteLengthOfArray/sizeof(arrValueType);
 	Anything anyHlp = anyTest;
 
 	t_assert( anyTest.GetType() == AnyVoidBufType );
@@ -693,7 +696,7 @@ void AnythingConstructorsTest::VoidStarLenConstrTest() {
 	t_assert( anyTest.AsString("Default") == String( (void *)arrTest, (long)sizeof(arrTest) ) );
 
 	long i;
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < _elementsInArray; i++) {
 		t_assert ( ( (long *)((const char *)anyTest.AsString()) )[i] == i );
 		t_assert ( ( (long *)((const char *)anyTest.At(0L).AsString()) )[i] == i );
 		t_assert ( ( (long *)((const char *)anyTest[0L].AsString()) )[i] == i );
@@ -707,7 +710,7 @@ void AnythingConstructorsTest::VoidStarLenConstrTest() {
 	assertCompare( anyTest.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	assertEqual(20, anyTest[0L].AsString().Length());
+	assertEqual(_byteLengthOfArray, anyTest[0L].AsString().Length());
 	assertEqual("", anyTest[0L].AsString());
 	anyTest.Remove(-1L);
 	assertEqual(1, anyTest.GetSize());
