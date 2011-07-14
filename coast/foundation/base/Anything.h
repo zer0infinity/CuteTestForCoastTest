@@ -515,7 +515,7 @@ protected:
 	union {
 		AnyImpl *fAnyImp;
 		Allocator *fAlloc;
-		unsigned int bits;
+		ptrdiff_t bits;
 	};
 	friend class AnythingTest;
 };
