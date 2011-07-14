@@ -614,8 +614,8 @@ public:
 	bool Terminate(long timeout = 0, ROAnything args = ROAnything());
 
 	//!returns the id of this thread
-	int  GetId()	{
-		return (int)fThreadId;
+	long  GetId()	{
+		return static_cast<long>(fThreadId);
 	}
 
 	//! blocks the calling thread for delay secs and nanodelay nanosecs

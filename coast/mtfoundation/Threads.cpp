@@ -147,7 +147,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 	, fanyArgTmp( Coast::Storage::Global() )
 {
 
-	StartTrace1(Thread.Constructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
+	StartTrace1(Thread.Constructor, "IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
 	if (fAllocator) {
 		fAllocator->Ref();
 	}
@@ -156,7 +156,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 
 Thread::~Thread()
 {
-	StartTrace1(Thread.Destructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
+	StartTrace1(Thread.Destructor, "IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
 
 	// doesn't really solve the problem if a subclass would do sthg in the hook method
 	// but at least it will go to the state eTerminated
@@ -187,7 +187,7 @@ Thread::~Thread()
 		SystemLog::Error(String("Thread::~Thread<").Append(GetName()).Append(">: fStateMutex was still in use!"));
 	}
 	if ( IsAlive() ) {
-		SystemLog::Error(String("Thread::~Thread<").Append(GetName()).Append(">: ThreadId: ").Append( (long)GetId() ).Append(" did not terminate properly (state: ").Append((long)fState).Append("), still destructing it, you should check this!"));
+		SystemLog::Error(String("Thread::~Thread<").Append(GetName()).Append(">: ThreadId: ").Append( GetId() ).Append(" did not terminate properly (state: ").Append((long)fState).Append("), still destructing it, you should check this!"));
 	}
 }
 
@@ -210,11 +210,11 @@ int Thread::Init(ROAnything args)
 
 bool Thread::Start(Allocator *pAllocator, ROAnything args)
 {
-	StartTrace1(Thread.Start, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
+	StartTrace1(Thread.Start, "IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
 	// prec: Thread *MUST NOT* already run!
 	EThreadState aState( GetState( false, eStarted ) );
 	if ( ( aState > eCreated ) && ( aState < eTerminated ) ) {
-		SYSERROR("ThreadId: " << (long)GetId() << " is still alive, eg. did not detach from system thread yet, exiting!");
+		SYSERROR("ThreadId: " << GetId() << " is still alive, eg. did not detach from system thread yet, exiting!");
 	} else {
 		// reset alive signature to allow re-use of object
 		fSignature = 0x0f0055AA;
@@ -308,27 +308,27 @@ bool Thread::CheckState(EThreadState state, long timeout, long nanotimeout)
 bool Thread::IntCheckState(EThreadState state, long timeout, long nanotimeout)
 {
 	if ( fState == state ) {
-		StatTrace(Thread.IntCheckState, "State already reached! fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.IntCheckState, "State already reached! fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		return true;
 	}
 	if ( fState > state ) {
-		StatTrace(Thread.IntCheckState, "State passed! fState(" << (long)fState << ")>state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.IntCheckState, "State passed! fState(" << (long)fState << ")>state(" << (long)state << ") IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		return false;
 	}
 	if ( timeout || nanotimeout ) {
 		DiffTimer dt;
 		long militimeout = timeout * 1000L + nanotimeout / 1000000;
 		while ( ( fState < state ) && ( dt.Diff() < (militimeout) ) ) {
-			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << (long)GetId() << " CallId: " << MyId(), Coast::Storage::Current());
+			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << GetId() << " CallId: " << MyId(), Coast::Storage::Current());
 			fStateCond.TimedWait(fStateMutex, timeout, nanotimeout);
 		}
 	} else {
 		while ( fState < state ) {
-			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << (long)GetId() << " CallId: " << MyId(), Coast::Storage::Current());
+			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")==state(" << (long)state << ") IntId: " << GetId() << " CallId: " << MyId(), Coast::Storage::Current());
 			fStateCond.Wait(fStateMutex);
 		}
 	}
-	StatTrace(Thread.IntCheckState, "fState(" << (long)fState << ")==state(" << (long)state << ") is " << (( fState == state ) ? "true" : "false") << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.IntCheckState, "fState(" << (long)fState << ")==state(" << (long)state << ") is " << (( fState == state ) ? "true" : "false") << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 	return ( fState == state );
 }
 
@@ -346,24 +346,24 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 }
 bool Thread::IntCheckRunningState(ERunningState state, long timeout, long nanotimeout)
 {
-	StatTrace(Thread.IntCheckRunningState, "waiting on fRunningState(" << (long)fRunningState << ")>=state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.IntCheckRunningState, "waiting on fRunningState(" << (long)fRunningState << ")>=state(" << (long)state << ") IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 	if ( fState < eRunning ) {
-		StatTrace(Thread.CheckRunningState, "not running yet, waiting until it is running. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.CheckRunningState, "not running yet, waiting until it is running. IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bool ret = IntCheckState(eRunning, timeout, nanotimeout);
 		if (!ret) {
-			StatTrace(Thread.CheckRunningState, "timeout while waiting. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+			StatTrace(Thread.CheckRunningState, "timeout while waiting. IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 			return ret;
 		}
 	}
 
 	if ( fState > eRunning ) {
-		StatTrace(Thread.CheckRunningState, "not running anymore. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.CheckRunningState, "not running anymore. IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		return false;
 	}
 	Assert(fState == eRunning);
 
 	if ( fRunningState == state ) {
-		StatTrace(Thread.CheckRunningState, "State already reached! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.CheckRunningState, "State already reached! IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		return true;
 	}
 
@@ -407,15 +407,15 @@ Thread::EThreadState Thread::GetState(bool trylock, EThreadState dfltState)
 {
 	if (!trylock) {
 		LockUnlockEntry me(fStateMutex);
-		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		return fState;
 	}
 	if (fStateMutex.TryLock()) {
-		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		dfltState = fState;
 		fStateMutex.Unlock();
 	} else {
-		StatTrace(Thread.GetState, "Lock failed, returning default:" << (long)dfltState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.GetState, "Lock failed, returning default:" << (long)dfltState << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 	}
 	return dfltState;
 }
@@ -425,22 +425,22 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 	bool bRetCode( false );
 	LockUnlockEntry me(fStateMutex);
 	if (state == fState + 1) {
-		StatTrace(Thread.SetState, "state(" << (long)state << ")==fState(" << (long)fState << ")+1 " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.SetState, "state(" << (long)state << ")==fState(" << (long)fState << ")+1 " << (long)state << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bRetCode = IntSetState(state, args);
 	} else if ( ( state == eTerminationRequested ) && ( fState < eTerminationRequested ) ) {
-		StatTrace(Thread.SetState, "state(eTerminationRequested) && fState(" << (long)fState << ")<eTerminationRequested " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.SetState, "state(eTerminationRequested) && fState(" << (long)fState << ")<eTerminationRequested " << (long)state << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bRetCode = IntSetState( ( ( fState == eCreated ) || ( fState == eStartRequested ) ) ? eTerminated : state, args);
 	} else if ( ( fState == eTerminated ) && ( state == eCreated ) ) {
-		StatTrace(Thread.SetState, "fState(eTerminated) && state(eCreated) => re-use Thread " << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.SetState, "fState(eTerminated) && state(eCreated) => re-use Thread " << " IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bRetCode = IntSetState(state, args);
-	} else if ( ( state == eTerminatedRunMethod ) && ( MyId() == (long)GetId() ) ) {
-		StatTrace(Thread.SetState, "state==eTerminatedRunMethod && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+	} else if ( ( state == eTerminatedRunMethod ) && ( MyId() == GetId() ) ) {
+		StatTrace(Thread.SetState, "state==eTerminatedRunMethod && MyId==GetId IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bRetCode = IntSetState(state, args);
-	} else if ( ( state == eTerminated ) && ( MyId() == (long)GetId() ) ) {
-		StatTrace(Thread.SetState, "state==eTerminated && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+	} else if ( ( state == eTerminated ) && ( MyId() == GetId() ) ) {
+		StatTrace(Thread.SetState, "state==eTerminated && MyId==GetId IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 		bRetCode = IntSetState(state, args);
 	} else if ( state == eTerminated ) {
-		StatTrace(Thread.SetState, "state==eTerminated => no-op! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
+		StatTrace(Thread.SetState, "state==eTerminated => no-op! IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Coast::Storage::Current());
 	}
 	return bRetCode;
 }
@@ -452,7 +452,7 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 		Anything anyEvt;
 		anyEvt["this"] = static_cast<IFAObject*>(this);
 		anyEvt["ParentThreadId"] = (long)fParentThreadId;
-		anyEvt["ThreadId"] = (long)GetId();
+		anyEvt["ThreadId"] = GetId();
 		anyEvt["ThreadState"]["Old"] = (long)fState;
 		anyEvt["ThreadState"]["New"] = (long)state;
 		if ( !args.IsNull() ) {
@@ -528,7 +528,7 @@ bool Thread::SetRunningState(ERunningState state, ROAnything args)
 		{
 			// scoping to force compiler not to move around automatic variables which could make strange things happen
 			Anything anyEvt;
-			anyEvt["ThreadId"] = (long)GetId();
+			anyEvt["ThreadId"] = GetId();
 			anyEvt["RunningState"]["Old"] = (long)oldState;
 			anyEvt["RunningState"]["New"] = (long)state;
 			if ( !args.IsNull() ) {
@@ -569,9 +569,9 @@ bool Thread::IsReady( bool &bIsReady )
 			bIsReady = ( ( fState == eRunning ) && ( fRunningState == eReady ) );
 			fStateMutex.Unlock();
 			bCouldLock = true;
-			StatTrace(Thread.IsReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsReady ? " true" : " false"), Coast::Storage::Current());
+			StatTrace(Thread.IsReady, "ThrdId: " << GetId() << " CallId: " << MyId() << (bIsReady ? " true" : " false"), Coast::Storage::Current());
 		} else {
-			StatTrace(Thread.IsReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsReady ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
+			StatTrace(Thread.IsReady, "ThrdId: " << GetId() << " CallId: " << MyId() << (bIsReady ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
 		}
 	} else {
 		bIsReady = false;
@@ -588,9 +588,9 @@ bool Thread::IsWorking( bool &bIsWorking )
 			bIsWorking = ( ( fState == eRunning ) && ( fRunningState == eWorking ) );
 			fStateMutex.Unlock();
 			bCouldLock = true;
-			StatTrace(Thread.IsWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsWorking ? " true" : " false"), Coast::Storage::Current());
+			StatTrace(Thread.IsWorking, "ThrdId: " << GetId() << " CallId: " << MyId() << (bIsWorking ? " true" : " false"), Coast::Storage::Current());
 		} else {
-			StatTrace(Thread.IsWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsWorking ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
+			StatTrace(Thread.IsWorking, "ThrdId: " << GetId() << " CallId: " << MyId() << (bIsWorking ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
 		}
 	} else {
 		bIsWorking = false;
@@ -608,9 +608,9 @@ bool Thread::IsRunning( bool &bIsRunning )
 			bIsRunning = ( fState == eRunning );
 			fStateMutex.Unlock();
 			bCouldLock = true;
-			StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsRunning ? " true" : " false"), Coast::Storage::Current());
+			StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << GetId() << " CallId: " << MyId() << (bIsRunning ? " true" : " false"), Coast::Storage::Current());
 		} else {
-			StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << (long)GetId() << " CallId: " << MyId() << (bIsRunning ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
+			StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << GetId() << " CallId: " << MyId() << (bIsRunning ? " true" : " false") << " (StateMutex was not lockable)!", Coast::Storage::Current());
 		}
 	} else {
 		bIsRunning = false;
@@ -621,20 +621,20 @@ bool Thread::IsRunning( bool &bIsRunning )
 //:Try to set Ready state
 bool Thread::SetReady(ROAnything args)
 {
-	StatTrace(Thread.SetReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.SetReady, "ThrdId: " << GetId() << " CallId: " << MyId(), Coast::Storage::Current());
 	return SetRunningState(eReady, args);
 }
 
 //:Try to set Working state
 bool Thread::SetWorking(ROAnything args)
 {
-	StatTrace(Thread.SetWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.SetWorking, "ThrdId: " << GetId() << " CallId: " << MyId(), Coast::Storage::Current());
 	return SetRunningState(eWorking, args);
 }
 
 bool Thread::Terminate(long timeout, ROAnything args)
 {
-	StartTrace1(Thread.Terminate, "Timeout: " << timeout << " ThrdId: " << (long)GetId() << " CallId: " << MyId());
+	StartTrace1(Thread.Terminate, "Timeout: " << timeout << " ThrdId: " << GetId() << " CallId: " << MyId());
 	bool bRet = true;
 	SetState(eTerminationRequested, args);
 	bRet = CheckState(eTerminated, timeout);
@@ -644,7 +644,7 @@ bool Thread::Terminate(long timeout, ROAnything args)
 void Thread::IntRun()
 {
 	// IntId might be wrong since thread starts in parallel with the forking thread
-	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- entering", Coast::Storage::Global());
+	StatTrace(Thread.IntRun, "IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- entering", Coast::Storage::Global());
 #if defined(POOL_STARTEDHOOK)
 	if ( !CheckState(eStartInProgress) )
 #else
@@ -653,14 +653,14 @@ void Thread::IntRun()
 	{
 		// needs syslog messages
 		if ( !SetState(eTerminatedRunMethod) ) {
-			StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Coast::Storage::Global());
+			StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << GetId() << ")", Coast::Storage::Global());
 		}
 		return;
 	}
 #ifdef TRACE_LOCKS_IMPL
 	SystemLog::WriteToStderr(String("Thr[") << fName << "]<" << Thread::MyId() << ">" << "\n");
 #endif
-	StatTrace(Thread.IntRun, "Registering thread(fAllocator) MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Coast::Storage::Global());
+	StatTrace(Thread.IntRun, "Registering thread(fAllocator) MyId(" << MyId() << ") GetId( " << GetId() << ")", Coast::Storage::Global());
 	// adds allocator reference to thread local store
 	MT_Storage::RegisterThread(fAllocator);
 
@@ -686,13 +686,13 @@ void Thread::IntRun()
 				--fgNumOfThreads;
 			}
 		} else {
-			StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Coast::Storage::Global());
+			StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << GetId() << ")", Coast::Storage::Global());
 		}
 	}
 	if ( !SetState(eTerminatedRunMethod) ) {
-		StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Coast::Storage::Global());
+		StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << GetId() << ")", Coast::Storage::Global());
 	}
-	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- leaving", Coast::Storage::Global());
+	StatTrace(Thread.IntRun, "IntId: " << GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- leaving", Coast::Storage::Global());
 }
 
 void Thread::Wait(long secs, long nanodelay)
