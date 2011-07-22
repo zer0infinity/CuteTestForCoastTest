@@ -34,6 +34,23 @@ public:
 	Action(const char *name) :
 		NotCloned(name) {
 	}
+	//!Executes an Action defined by transitionToken
+	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
+	//! \param c the context the script runs within.
+	//! \return true if the script run successfully, false if an error occurred.
+	static bool ExecAction(String & transitionToken, Context & c);
+	//!Starts the Action script interpreter
+	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
+	//! \param c the context the script runs within.
+	//! \param config the action script
+	//! \return true if the script run successfully, false if an error occurred.
+	static bool ExecAction(String & transitionToken, Context & c, const ROAnything & config);
+	RegCacheImplInline(Action);
+
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
+
+protected:
 	//!abstract method; DoSomething method for unconfigured Action
 	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
 	//! \param ctx the context the action runs within.
@@ -53,23 +70,6 @@ public:
 		return DoAction(transitionToken, ctx);
 	}
 
-	//!Executes an Action defined by transitionToken
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param c the context the script runs within.
-	//! \return true if the script run successfully, false if an error occurred.
-	static bool ExecAction(String & transitionToken, Context & c);
-	//!Starts the Action script interpreter
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param c the context the script runs within.
-	//! \param config the action script
-	//! \return true if the script run successfully, false if an error occurred.
-	static bool ExecAction(String & transitionToken, Context & c, const ROAnything & config);
-	RegCacheImplInline(Action);
-
-	static const char* gpcCategory;
-	static const char* gpcConfigPath;
-
-protected:
 	//!Searches and executes an Action Component
 	//! \param actionName the Name of the Action to be called.
 	//! \param transitionToken (in/out) the event passed by the caller, can be modified by the action called

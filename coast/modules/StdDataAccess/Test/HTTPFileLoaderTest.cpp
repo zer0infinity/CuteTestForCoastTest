@@ -49,14 +49,6 @@ void HTTPFileLoaderTest::ReplyHeaderTest() {
 	assertAnyEqual(statusSpec, httpStatus);
 
 	Anything headerSpec;
-#if old /* PS: insert ENDL just at the beginning */
-	headerSpec[0L] = "Content-Type: ";
-	headerSpec[1L]["ContextLookupRenderer"] = "Mapper.content-type";
-	headerSpec[2L] = ENDL;
-	headerSpec[3L] = "Content-Length: ";
-	headerSpec[4L]["ContextLookupRenderer"] = "Mapper.content-length";
-	headerSpec[5L] = ENDL;
-#else
 	Anything contentLengthSpec;
 	contentLengthSpec[0L] = "Content-Length: ";
 	contentLengthSpec[1L]["ContextLookupRenderer"] = "Mapper.content-length";
@@ -70,7 +62,6 @@ void HTTPFileLoaderTest::ReplyHeaderTest() {
 	headerSpec[1L]["ContextLookupRenderer"] = "Mapper.content-type";
 	headerSpec[2L] = ENDL;
 	headerSpec[3L]["ConditionalRenderer"] = condSpec;
-#endif
 	SubTraceAny(HTTPHeader, headerSpec, "HTTPHeader:");
 	Anything httpHeader;
 	t_assertm(tmpStore.LookupPath(httpHeader, "Mapper.HTTPHeader"), "expected HTTPHeader field in tmpStore");

@@ -732,6 +732,7 @@ void RECompiler::GenerateQuestions(Anything prog, long terminalNode, long repeti
 	StartTrace(RECompiler.GenerateQuestions);
 	long terminalSize = prog.GetSize();
 	Assert(terminalSize > 0);
+	(void)terminalSize;
 	GenerateQuestion(terminalNode);
 	// now the original terminal starts at terminalNode + RE::nodesize
 	long newTerminal = terminalNode;

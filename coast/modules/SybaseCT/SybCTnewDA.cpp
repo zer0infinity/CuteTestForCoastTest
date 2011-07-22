@@ -872,7 +872,7 @@ CS_INT SybCTnewDA::DisplayDlen(CS_DATAFMT *column)
 			break;
 	}
 
-	return std::max(strlen(column->name) + 1, (unsigned)len);
+	return std::max(strlen(column->name) + 1, static_cast<size_t>(len));
 }
 
 bool SybCTnewDA::DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, bool bTitlesOnce )
