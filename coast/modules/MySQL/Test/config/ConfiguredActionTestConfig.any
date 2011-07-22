@@ -46,7 +46,8 @@
 	}
 
 ######## Test specific section ########
-
+	/RunOnly {
+	}
 	/TestCases {
 		/InsertTest {
 			/TmpStore {
@@ -178,7 +179,7 @@
 			/Result {
 				/TmpStore {
 					/WrongHostTest	{
-						/Error "Couldn't connect to mySQL engine! Unknown MySQL server host 'some.nonexistent.loc' (2)"
+						/Error ignore
 					}
 				}
 			}
