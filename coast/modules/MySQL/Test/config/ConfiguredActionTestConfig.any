@@ -178,7 +178,7 @@
 			/Result {
 				/TmpStore {
 					/WrongHostTest	{
-						/Error "Couldn't connect to mySQL engine! Unknown MySQL server host 'some.nonexistent.loc' (1)"
+						/Error "Couldn't connect to mySQL engine! Unknown MySQL server host 'some.nonexistent.loc' (2)"
 					}
 				}
 			}
