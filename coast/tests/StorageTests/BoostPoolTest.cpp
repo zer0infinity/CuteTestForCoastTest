@@ -307,7 +307,7 @@ void BoostPoolTest::GlobalStorageMemUsageTest()
 
 		// Should allocate from system
 		pool.free(pool.malloc());
-		assertComparem(32LL * sizeof(track_allocWD), less, aChecker.CheckDelta(), "expected no unfreed memory");
+		assertComparem(static_cast<l_long>(pool.get_next_size() * sizeof(track_allocWD)), less, aChecker.CheckDelta(), "expected no unfreed memory");
 		t_assertm(!track_allocWD::ok(), "Memory error");
 
 		// Ask pool to give up memory it's not using; this should succeed
@@ -388,7 +388,7 @@ void BoostPoolTest::TestFuncCurrent()
 
 		// Should allocate from system
 		pool.free(pool.malloc());
-		assertComparem(32LL * sizeof(track_allocWDCurr), less, aCChecker.CheckDelta(), "expected no unfreed memory");
+		assertComparem(static_cast<l_long>(pool.get_next_size() * sizeof(track_allocWDCurr)), less, aCChecker.CheckDelta(), "expected no unfreed memory");
 		t_assertm(!track_allocWDCurr::ok(), "Memory error");
 
 		// Ask pool to give up memory it's not using; this should succeed

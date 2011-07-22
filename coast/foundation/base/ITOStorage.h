@@ -62,12 +62,12 @@ public:
 	virtual void PrintStatistic(long lLevel);
 
 	//!returns currently allocated bytes
-	l_long CurrentlyAllocated() const {
+	ul_long CurrentlyAllocated() const {
 		return fAllocated;
 	}
 
 	//!returns peak allocated bytes
-	l_long PeakAllocated() const {
+	ul_long PeakAllocated() const {
 		return fMaxAllocated;
 	}
 
@@ -90,11 +90,11 @@ public:
 
 protected:
 	//!tracks the currently allocated size in bytes, and the peek allocated size
-	l_long  fAllocated, fMaxAllocated;
+	ul_long  fAllocated, fMaxAllocated;
 	//!tracks the number and maximum of allocated bytes
-	l_long  fNumAllocs, fSizeAllocated;
+	ul_long  fNumAllocs, fSizeAllocated;
 	//!tracks the number and maximum of freed bytes
-	l_long  fNumFrees, fSizeFreed;
+	ul_long  fNumFrees, fSizeFreed;
 
 private:
 	MemTracker();
@@ -209,7 +209,7 @@ public:
 	}
 
 	//!Memory debugging and tracking support; implementer should report currently allocated bytes
-	virtual l_long CurrentlyAllocated() = 0;
+	virtual ul_long CurrentlyAllocated() = 0;
 
 	//!change of memtrackers to be e.g. MT-Safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
@@ -277,7 +277,7 @@ public:
 	virtual void PrintStatistic(long lLevel = -1);
 
 	//!returns the currently allocated bytes
-	l_long CurrentlyAllocated();
+	ul_long CurrentlyAllocated();
 
 	//!replaces the memory tracker with sthg. different e.g. thread safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t);

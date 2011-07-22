@@ -30,7 +30,7 @@ public:
 	//!print allocation/deallocation statistics
 	virtual void PrintStatistic(long lLevel = -1);
 	//!returns currently allocated bytes
-	l_long  CurrentlyAllocated();
+	ul_long  CurrentlyAllocated();
 
 	static void *operator new(size_t size);
 	static void *operator new(size_t size, Allocator *);

@@ -31,7 +31,7 @@ public:
 	}
 
 	//!returns the currently allocated bytes
-	l_long CurrentlyAllocated() {
+	ul_long CurrentlyAllocated() {
 		return 0;
 	}
 

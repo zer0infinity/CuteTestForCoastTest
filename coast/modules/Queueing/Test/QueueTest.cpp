@@ -548,7 +548,7 @@ void QueueTest::QueueWithAllocatorTest() {
 	{
 		PoolAllocator aPoolAlloc(1234, 1234, 18);
 
-		l_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
+		ul_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
 		{
 			AnyQueueType Q1("Q1", 1, &aPoolAlloc);
 			t_assert(Q1.GetSize() == 0L);
@@ -592,7 +592,7 @@ void QueueTest::QueueWithAllocatorTest() {
 		EventTypePtr pEventWrapper2 = new EventType(DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2));
 		EventTypePtr pEventWrapperOut2 = NULL;
 
-		l_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
+		ul_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
 
 		{
 			EventQueueType Q1("Q1", 20, &aPoolAlloc);

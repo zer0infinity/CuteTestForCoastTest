@@ -46,7 +46,7 @@ public:
 
 	MemTracker *operator[](size_t ulPayloadSize);
 
-	l_long CurrentlyAllocated();
+	ul_long CurrentlyAllocated();
 
 	void Refresh();
 
@@ -87,7 +87,7 @@ public:
 
 	virtual void PrintStatistic(long lLevel = -1);
 
-	l_long  CurrentlyAllocated();
+	ul_long  CurrentlyAllocated();
 	//! apply this to an empty pool only, rebuilds bucket structure from
 	//! ground up, used for request threads after a request is handled
 	virtual void Refresh();

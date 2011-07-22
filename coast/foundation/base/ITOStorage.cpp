@@ -160,16 +160,16 @@ void MemTracker::PrintStatistic(long lLevel)
 				 "------------------------------------------\n"
 				 "Difference      %20I64d bytes\n",
 #else
-				 "Peek Allocated  %20lld bytes\n"
-				 "Total Allocated %20lld bytes in %15lld runs (%ld/run)\n"
-				 "Total Freed     %20lld bytes in %15lld runs (%ld/run)\n"
+				 "Peek Allocated  %20llu bytes\n"
+				 "Total Allocated %20llu bytes in %20llu runs (%llu/run)\n"
+				 "Total Freed     %20llu bytes in %20llu runs (%llu/run)\n"
 				 "------------------------------------------\n"
-				 "Difference      %20lld bytes\n",
+				 "Difference      %20llu bytes\n",
 #endif
 				 fId, fpName,
 				 fMaxAllocated,
-				 fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
-				 fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
+				 fSizeAllocated , fNumAllocs, (fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
+				 fSizeFreed, fNumFrees, (fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
 				 fAllocated
 				);
 		SystemLog::WriteToStderr(buf, strlen(buf));
@@ -434,7 +434,7 @@ MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 	return pOld;
 }
 
-l_long GlobalAllocator::CurrentlyAllocated()
+ul_long GlobalAllocator::CurrentlyAllocated()
 {
 	if ( fTracker ) {
 		return fTracker->CurrentlyAllocated();

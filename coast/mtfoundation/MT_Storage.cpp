@@ -144,9 +144,9 @@ void MT_MemTracker::TrackFree(MemoryHeader *mh)
 	}
 }
 
-l_long MT_MemTracker::CurrentlyAllocated()
+ul_long MT_MemTracker::CurrentlyAllocated()
 {
-	l_long l;
+	ul_long l;
 	int iRet = 0;
 	if ( !LOCKMUTEX(fMutex, iRet) ) {
 		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));

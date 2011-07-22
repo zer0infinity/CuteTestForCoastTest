@@ -200,9 +200,9 @@ MemTracker *ExcessTrackerElt::operator[](size_t ulPayloadSize)
 	return pTracker;
 }
 
-l_long ExcessTrackerElt::CurrentlyAllocated()
+ul_long ExcessTrackerElt::CurrentlyAllocated()
 {
-	l_long llTotal = 0LL;
+	ul_long llTotal = 0LL;
 	ExcessTrackerElt *pElt = this;
 	while ( pElt ) {
 		MemTracker *pTracker = pElt->fpTracker;
@@ -697,9 +697,9 @@ void PoolAllocator::PrintStatistic(long lLevel)
 	}
 }
 
-l_long PoolAllocator::CurrentlyAllocated()
+ul_long PoolAllocator::CurrentlyAllocated()
 {
-	l_long llTotal = 0LL;
+	ul_long llTotal = 0LL;
 	if ( fTracker ) {
 		llTotal += fTracker->CurrentlyAllocated();
 	}

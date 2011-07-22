@@ -176,10 +176,10 @@ void PoolAllocatorTest::StillUsedBlocksTest()
 		// this alloc should allocate a block of size 16 + Coast::Memory::AlignedSize<MemoryHeader>::value
 		void *p16 = pa.Calloc(1, 16);
 		// CurrentlyAllocated() counts only usable size, usable should be 16bytes
-		assertCompare(pa.CurrentlyAllocated(), equal_to, 16LL);
+		assertCompare(static_cast<ul_long>(16), equal_to, pa.CurrentlyAllocated());
 		void *p32 = pa.Calloc(1, 32);
 		// CurrentlyAllocated() counts only usable size, usable should be 32bytes
-		assertCompare(pa.CurrentlyAllocated(), equal_to, 48LL);
+		assertCompare(static_cast<ul_long>(48), equal_to, pa.CurrentlyAllocated());
 		pa.DumpStillAllocated();
 		pa.Free(p32);
 		pa.Free(p16);

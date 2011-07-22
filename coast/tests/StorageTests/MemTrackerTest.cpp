@@ -51,55 +51,55 @@ void MemTrackerTest::TrackAllocFreeTest()
 	// use placement new operator to allocate MemoryHeader from
 	MemoryHeader *pMH16 = new(vp32) MemoryHeader(16, MemoryHeader::eUsed), *pMH32 = new(vp48) MemoryHeader(32, MemoryHeader::eUsed);
 
-	assertCompare(aTracker.fAllocated, equal_to, 0LL);
-	assertCompare(aTracker.fMaxAllocated, equal_to, 0LL);
-	assertCompare(aTracker.fNumAllocs, equal_to, 0LL);
-	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
-	assertCompare(aTracker.fSizeAllocated, equal_to, 0LL);
-	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fAllocated);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fMaxAllocated);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fNumAllocs);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fNumFrees);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fSizeAllocated);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fSizeFreed);
 	if ( aTracker.fpUsedList ) {
-		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)0);
+		assertCompare(static_cast<size_t>(0), equal_to, aTracker.fpUsedList->size());
 	}
 	aTracker.TrackAlloc(pMH16);
-	assertCompare(aTracker.fAllocated, equal_to, 16LL);
-	assertCompare(aTracker.fMaxAllocated, equal_to, 16LL);
-	assertCompare(aTracker.fNumAllocs, equal_to, 1LL);
-	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
-	assertCompare(aTracker.fSizeAllocated, equal_to, 16LL);
-	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
+	assertCompare(static_cast<ul_long>(16), equal_to, aTracker.fAllocated);
+	assertCompare(static_cast<ul_long>(16), equal_to, aTracker.fMaxAllocated);
+	assertCompare(static_cast<ul_long>(1), equal_to, aTracker.fNumAllocs);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fNumFrees);
+	assertCompare(static_cast<ul_long>(16), equal_to, aTracker.fSizeAllocated);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fSizeFreed);
 	if ( aTracker.fpUsedList ) {
-		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)1);
+		assertCompare(static_cast<size_t>(1), equal_to, aTracker.fpUsedList->size());
 	}
 	aTracker.TrackAlloc(pMH32);
-	assertCompare(aTracker.fAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fMaxAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fNumAllocs, equal_to, 2LL);
-	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
-	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fAllocated);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fMaxAllocated);
+	assertCompare(static_cast<ul_long>(2), equal_to, aTracker.fNumAllocs);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fNumFrees);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fSizeAllocated);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fSizeFreed);
 	if ( aTracker.fpUsedList ) {
-		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)2);
+		assertCompare(static_cast<size_t>(2), equal_to, aTracker.fpUsedList->size());
 	}
 	aTracker.TrackFree(pMH16);
-	assertCompare(aTracker.fAllocated, equal_to, 32LL);
-	assertCompare(aTracker.fMaxAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fNumAllocs, equal_to, 2LL);
-	assertCompare(aTracker.fNumFrees, equal_to, 1LL);
-	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fSizeFreed, equal_to, 16LL);
+	assertCompare(static_cast<ul_long>(32), equal_to, aTracker.fAllocated);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fMaxAllocated);
+	assertCompare(static_cast<ul_long>(2), equal_to, aTracker.fNumAllocs);
+	assertCompare(static_cast<ul_long>(1), equal_to, aTracker.fNumFrees);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fSizeAllocated);
+	assertCompare(static_cast<ul_long>(16), equal_to, aTracker.fSizeFreed);
 	if ( aTracker.fpUsedList ) {
-		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)1);
+		assertCompare(static_cast<size_t>(1), equal_to, aTracker.fpUsedList->size());
 	}
 
 	aTracker.TrackFree(pMH32);
-	assertCompare(aTracker.fAllocated, equal_to, 0LL);
-	assertCompare(aTracker.fMaxAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fNumAllocs, equal_to, 2LL);
-	assertCompare(aTracker.fNumFrees, equal_to, 2LL);
-	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
-	assertCompare(aTracker.fSizeFreed, equal_to, 48LL);
+	assertCompare(static_cast<ul_long>(0), equal_to, aTracker.fAllocated);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fMaxAllocated);
+	assertCompare(static_cast<ul_long>(2), equal_to, aTracker.fNumAllocs);
+	assertCompare(static_cast<ul_long>(2), equal_to, aTracker.fNumFrees);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fSizeAllocated);
+	assertCompare(static_cast<ul_long>(48), equal_to, aTracker.fSizeFreed);
 	if ( aTracker.fpUsedList ) {
-		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)0);
+		assertCompare(static_cast<size_t>(0), equal_to, aTracker.fpUsedList->size());
 	}
 }
 
