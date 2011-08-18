@@ -142,12 +142,12 @@ def addLdapEntries(l, configdir):
 def transformLdapSearchResults(results):
     res = []
 
-    if type(results) == tuple and len(results) == 2 :
+    if isinstance(results,tuple) and len(results) == 2 :
         (code, arr) = results
-    elif type(results) == list:
+    elif isinstance(results,list):
         arr = results
 
-    if len(results) == 0:
+    if not results:
         return res
 
     for item in arr:
