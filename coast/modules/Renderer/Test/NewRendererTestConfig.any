@@ -440,6 +440,21 @@
 			}
 			/Expected	"def:mno:pqr:stu:vwx"
 		}
+		/StringTokenizeRendererTokenRangeUpToElementBeforeLastTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1--2"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def:ghi:jkl:mno:pqr:stu"
+		}
 		/StringTokenizeRendererOverlappingRangeTest {
 			/Env {
 				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"

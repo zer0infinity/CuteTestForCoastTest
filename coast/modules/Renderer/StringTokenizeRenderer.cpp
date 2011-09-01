@@ -56,17 +56,24 @@ void StringTokenizeRenderer::BuildTokenList(Context &ctx, const ROAnything &conf
 		if ( stream.good() ) {
 			if ( stream.get(c) && c == '-' ) {
 				stream >> lEnd;
-				if ( lEnd == 0L || ( lEnd > lMaxTokens ) ) {
+				if ( lEnd == 0L ) {
 					lEnd = (lStart >= 0L) ? lMaxTokens : -lMaxTokens;
 					Trace("setting second number from tokensize: " << lEnd);
+				} else if ( lEnd > lMaxTokens ) {
+					lEnd = lMaxTokens;
+					Trace("setting second number from tokensize: " << lEnd);
+				} else if ( lEnd < -lMaxTokens ) {
+					lEnd = -lMaxTokens;
+					Trace("setting second number from tokensize: " << lEnd);
 				}
+				lStart = (lStart < 0 ? (lMaxTokens+lStart+1) : lStart);
+				lEnd = (lEnd < 0 ? (lMaxTokens+lEnd+1) : lEnd);
 				lDiff = abs(lEnd - lStart);
 			}
 			Trace("char:" << c);
 		}
-		Trace("start: " << lStart << " end: " << lEnd << " diff: " << lDiff);
-
 		long lIncr = ( ( lStart <= lEnd ) ? 1L : -1L );
+		Trace("start: " << lStart << " end: " << lEnd << " diff: " << lDiff);
 		Trace("incr: " << lIncr);
 		while ( lDiff >= 0L ) {
 			anyOutputTokenList.Append(lStart);
