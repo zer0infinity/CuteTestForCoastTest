@@ -15,8 +15,8 @@ void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, co
 	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
 
 	os << slotname << ": ";
-	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
 	long elSz = rvalue.GetSize();
+	TraceAny(rvalue, "Header[" << slotname << "]");
 	for (long j = 0; j < elSz; ++j) {
 		if (slotname == "COOKIE") {
 			os << NotNull(rvalue.SlotName(j)) << '=';
@@ -32,7 +32,7 @@ void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, co
 bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
 	StartTrace(HTTPHeaderParameterMapper.HandleMoreLinesForHeaderField);
 
-	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
+	TraceAny(rvalue, "Header[" << slotname << "]");
 	long elSz = rvalue.GetSize();
 	bool handled = false;
 	for (long j = 0; j < elSz; ++j) {

@@ -12,7 +12,7 @@
 #include "Renderer.h"
 
 //---- ContainsRenderer ----------------------------------------------------------
-//! Conditional Renderering if a given value is contained in a List ( ListName.Contains(ValueToCheck) )
+//! Conditional Rendering if a given value is contained in a List ( ListName.Contains(ValueToCheck) )
 /*!
 \par Configuration
 \code
@@ -25,17 +25,15 @@
 \endcode
 
 */
-class ContainsRenderer : public Renderer
-{
+class ContainsRenderer: public Renderer {
 public:
-	//--- constructors
 	ContainsRenderer(const char *name);
 	~ContainsRenderer();
 
 	/*! Renders conditionally if ValueToCheck is contained in the List
-		\param reply out - the stream where the rendered output is written on.
-		\param c the context the renderer runs within.
-		\param config the configuration of the renderer. */
+	 \param reply out - the stream where the rendered output is written on.
+	 \param c the context the renderer runs within.
+	 \param config the configuration of the renderer. */
 	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
