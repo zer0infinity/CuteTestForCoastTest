@@ -30,8 +30,13 @@ namespace {
 		return anyEntry;
 	}
 	long getStringLength(String const &str) {
-		StartTrace1(MSAjaxFixFieldLengthResultMapper.getStringLength, "str [" << str << "]");
-		long len = utf8::distance(str.begin(), str.end());
+		long len = 0L;
+		try {
+			len = utf8::distance(str.cstr(), str.cstr()+str.Length());
+		} catch (utf8::invalid_utf8& e) {
+			len = str.Length();
+		}
+		StatTrace(MSAjaxFixFieldLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
 		return len;
 	}
 	void adjustLengthField(Anything &anyEntry, ROAnything roaFieldList) {

@@ -17,7 +17,7 @@ namespace {
 	long getStringLength(String const &str) {
 		long len = 0L;
 		try {
-			len = utf8::distance(str.begin(), str.end());
+			len = utf8::distance(str.cstr(), str.cstr()+str.Length());
 		} catch (utf8::invalid_utf8& e) {
 			len = str.Length();
 		}
@@ -31,6 +31,7 @@ bool StringLengthResultMapper::DoPutAny(const char *key, Anything &value, Contex
 	StartTrace1(StringLengthResultMapper.DoPutAny, "key [" << NotNull(key) << "]");
 	if (value.GetType() != AnyArrayType) {
 		String sText = value.AsString();
+		Trace("native length of string: " << sText.Length());
 		value = getStringLength(sText);
 		Trace("length of value string: " << value.AsLong(-1L));
 	}
