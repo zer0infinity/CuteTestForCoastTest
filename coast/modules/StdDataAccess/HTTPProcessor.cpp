@@ -89,8 +89,6 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 		TraceAny(request["REQUEST_BODY"], "Body");
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
 		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
-	} else {
-		request["header"]["CONTENT-LENGTH"] = 0L;
 	}
 }
 
