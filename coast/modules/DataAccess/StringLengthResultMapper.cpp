@@ -11,7 +11,7 @@
 #include "StringLengthResultMapper.h"
 #include "StringStream.h"
 #include "utf8.h"
-#include "Tracer.h"
+#include "Context.h"
 
 namespace {
 	long getStringLength(String const &str) {
