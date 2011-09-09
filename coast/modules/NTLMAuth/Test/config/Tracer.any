@@ -5,14 +5,27 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
-	/LowerBound		0 #10
-	/UpperBound		0 #10
+	/LowerBound		0
+	/UpperBound		10
 	/DumpAnythings	1
-
 	/NTLMCoder {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/NTLMAuthMessage {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/NTLMCryptTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/NTLMAuthAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/Base64 {
 		/MainSwitch	10
 		/EnableAll	10
 	}

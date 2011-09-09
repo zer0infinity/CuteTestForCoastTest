@@ -12,17 +12,6 @@
 #include "NTLMAuthMessage.h"
 #include "Tracer.h"
 
-//---- NTLMCryptTest ----------------------------------------------------------------
-NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCaseType(tstrName)
-{
-	StartTrace(NTLMCryptTest.Ctor);
-}
-
-NTLMCryptTest::~NTLMCryptTest()
-{
-	StartTrace(NTLMCryptTest.Dtor);
-}
-
 void NTLMCryptTest::DecodeClientMsg()
 {
 	StartTrace(NTLMCryptTest.DecodeClientMsg);
@@ -168,6 +157,7 @@ void NTLMCryptTest::MakeUtf16()
 }
 void NTLMCryptTest::ClientMsgFactory()
 {
+	StartTrace(NTLMCryptTest.ClientMsgFactory);
 	String buffer;
 	t_assert(NTLMCoder::DecodeBase64(buffer, "TlRMTVNTUAABAAAAA7IAAAoACgApAAAACQAJACAAAABMSUdIVENJVFlVUlNBLU1JTk9S"));
 	NTLMAuthMessage *m = NTLMAuthMessage::MakeMessage(buffer);

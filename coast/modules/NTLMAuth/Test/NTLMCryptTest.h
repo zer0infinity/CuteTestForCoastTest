@@ -11,30 +11,14 @@
 
 #include "TestCase.h"
 
-//---- NTLMCryptTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class NTLMCryptTest : public TestFramework::TestCase
-{
+class NTLMCryptTest: public TestFramework::TestCase {
 public:
-	//--- constructors
+	NTLMCryptTest(TString tstrName) :
+			TestCaseType(tstrName) {
+	}
 
-	//! TestCase constructor
-	//! \param name name of the test
-	NTLMCryptTest(TString tstrName);
+	static Test *suite();
 
-	//! destroys the test case
-	~NTLMCryptTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//! describe this testcase
 	void DecodeClientMsg();
 	void EncodeClientMsg();
 	void EncodeServerNonce();

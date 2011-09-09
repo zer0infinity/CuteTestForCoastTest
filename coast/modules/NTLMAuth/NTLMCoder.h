@@ -11,16 +11,18 @@
 
 #include "ITOString.h"
 
-//---- NTLMCoder ----------------------------------------------------------
 //! encode and decode NTLM HTTP Authenticate messages
 /*!
-basic mechanics for implementing WWW-Authenticate: NTLM
-*/
-class NTLMCoder
-{
+ basic mechanics for implementing WWW-Authenticate: NTLM
+ */
+class NTLMCoder {
+	NTLMCoder() {
+	}
+	NTLMCoder(const NTLMCoder &) {
+	}
+	~NTLMCoder() {
+	}
 public:
-
-	//--- public api
 	//! Decode "Type1" message from a client to server
 	//! assume messages String is base64 encoded as in
 	//! Authorization: NTLM base64encodedresponsetype1containingdomainandhost
@@ -35,12 +37,10 @@ public:
 	static String EncodeClientMsg(String domain, String host);
 	static String EncodeServerNonce(String nonce, long flags = 0x8201);
 	static bool DecodeServerNonce(const String &base64msg, String &nonce);
-	static bool DecodeResponse(const String &base64msg, const String &nonce,
-							   const String &lmhash, const String &nthash,
-							   String &domain, String &host, String &user);
-	static String EncodeResponse(const String &nonce,
-								 const String &lmhash, const String &nthash,
-								 const String &domain, const String &host, const String &user);
+	static bool DecodeResponse(const String &base64msg, const String &nonce, const String &lmhash, const String &nthash, String &domain,
+			String &host, String &user);
+	static String EncodeResponse(const String &nonce, const String &lmhash, const String &nthash, const String &domain, const String &host,
+			const String &user);
 
 	static String EncodeLMPassword(String password);
 	static String EncodeNTPassword(String password);
@@ -49,15 +49,8 @@ public:
 	static String CalculateNonceHash(const String &keys, const String &plaintext);
 
 	static String MakeBase64(const String &buffer);
-	static bool DecodeBase64(String &result, const String &input );
+	static bool DecodeBase64(String &result, const String &input);
 	static String MakeUtf16Upper(const String &in);
-protected:
-
-private:
-	//--- constructors -- only a static API
-	NTLMCoder() {}
-	NTLMCoder(const NTLMCoder &) {}
-	~NTLMCoder() {}
 };
 
 #endif
