@@ -109,6 +109,7 @@ void Page::Render(std::ostream &reply, Context &ctx) {
 		replyInt << ENDL;
 		RenderProtocolBody(replyInt, ctx);
 		RenderProtocolTail(replyInt, ctx);
+		replyInt << std::flush;
 		SystemLog::WriteToStderr(
 				String("Page::Render\n") << "------------ start -----------\n" << dbg << "------------  end ------------\n");
 	}
