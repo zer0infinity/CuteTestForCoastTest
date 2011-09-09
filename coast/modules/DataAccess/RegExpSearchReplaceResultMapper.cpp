@@ -28,7 +28,7 @@ namespace {
 	}
 	void searchReplaceExpressions(Context &ctx, String &sText, ROAnything roaExpressions) {
 		StartTrace(RegExpSearchReplaceResultMapper.searchReplaceExpressions);
-		TraceAny(roaExpressions, "list of expressions");
+		SubTraceAny(TraceExpressionList, roaExpressions, "list of expressions");
 		// check if we have multiple replacements by testing if first entry in Expressions is an AnyArrayType or not
 		bool singleExpression = not (roaExpressions[0L].GetType() == AnyArrayType);
 		AnyExtensions::Iterator<ROAnything> expressionIterator(singleExpression ? ROAnything() : roaExpressions);
@@ -50,7 +50,7 @@ namespace {
 			}
 			String sReplacement = getSimpleOrRenderedString(ctx, roaEntry[_Replacement]);
 			RE aRE(sPattern, static_cast<RE::eMatchFlags> (roaEntry[_MatchFlags].AsLong(0L)));
-			SubTrace(traceText, "String [" << sText << "]");
+			SubTrace(traceText, "original text [" << sText << "]");
 			Trace("applying pattern [" << sPattern << "]");
 			sText = aRE.Subst(sText, sReplacement, roaEntry[_ReplaceAll].AsBool(true));
 		} while (expressionIterator.Next(roaEntry));

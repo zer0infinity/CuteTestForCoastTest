@@ -8,17 +8,14 @@
 
 #include "GetThisHostNameRenderer.h"
 #include "SystemBase.h"
-#include "Tracer.h"
 #include "Resolver.h"
 
-//---- GetThisHostNameRenderer ---------------------------------------------------------------
 RegisterRenderer(GetThisHostNameRenderer);
 
-void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(GetThisHostNameRenderer.RenderAll);
 	String thisHostName;
-	if ( Coast::System::HostName(thisHostName) ) {
+	if (Coast::System::HostName(thisHostName)) {
 		String thisHostIp(Resolver::DNS2IPAddress(thisHostName));
 		String thisHostDns(Resolver::IPAddress2DNS(thisHostIp));
 		Trace("hostname [" << thisHostName << "] ip [" << thisHostIp << "] dns [" << thisHostDns << "]");
@@ -26,14 +23,13 @@ void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const
 		String hostName, domain;
 		if (tokens.NextToken(hostName)) {
 			domain = tokens.GetRemainder(false);
-		}
-		Trace("host [" << hostName << "] domain [" << domain << "]");
+		}Trace("host [" << hostName << "] domain [" << domain << "]");
 		String what(config["Representation"].AsString("Full"));
-		if ( what == "Full" ) {
+		if (what == "Full") {
 			reply << thisHostDns;
-		} else if ( what == "HostOnly" ) {
+		} else if (what == "HostOnly") {
 			reply << hostName;
-		} else if ( what == "DomainOnly" ) {
+		} else if (what == "DomainOnly") {
 			reply << domain;
 		}
 	}

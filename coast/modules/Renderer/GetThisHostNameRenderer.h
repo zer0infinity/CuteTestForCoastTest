@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- GetThisHostNameRenderer ----------------------------------------------------------
 //! Get DNS name of the host this program is running
 /*! \par Configuration
 \code
@@ -25,7 +24,7 @@ public:
 	GetThisHostNameRenderer(const char *name) :
 		Renderer(name) {
 	}
-
+protected:
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 

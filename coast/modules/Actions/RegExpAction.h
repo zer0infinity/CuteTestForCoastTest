@@ -11,7 +11,6 @@
 
 #include "Action.h"
 
-//---- RegExpAction ----------------------------------------------------------
 //! Search for regular expression in a string
 /*!
  * Searches a regular expression pattern in a string and stores the matched string or groups (if any) into the defined Destination.
@@ -46,6 +45,7 @@ public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RegExpAction(const char *name) : Action(name) {}
 
+protected:
 	/*! Search regular expression in string
 	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
 	 * @return The result of the executed Actionscript if the renderer produces a String that is found in the Context

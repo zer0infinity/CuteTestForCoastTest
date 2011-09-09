@@ -7,13 +7,10 @@
  */
 
 #include "RegExpAction.h"
-#include "Context.h"
 #include "Renderer.h"
 #include "AnythingUtils.h"
-#include "Tracer.h"
 #include "RE.h"
 
-//---- RegExpAction ---------------------------------------------------------------
 RegisterAction(RegExpAction);
 bool RegExpAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {
