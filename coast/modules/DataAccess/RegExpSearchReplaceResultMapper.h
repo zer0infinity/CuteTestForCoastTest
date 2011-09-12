@@ -48,7 +48,7 @@
  * @par \c Replacement
  * Mandatory\n
  * Simple String or Renderer specification resulting in a string to be used as replacement for the matching regular expression.\n
- * \note Group specific replacement strings like \\1 are not supported.
+ * \note Group specific replacement strings like \\1 are not supported yet.
  *
  * @par \c ReplaceAll
  * Optional, default 1 (true)\n

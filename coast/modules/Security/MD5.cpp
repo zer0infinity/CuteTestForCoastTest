@@ -6,12 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "Anything.h"
-#include "Threads.h"
-#include "Context.h"
-#include "URLUtils.h"
-#include "Registry.h"
-#include "Tracer.h"
 #include "MD5.h"
 
 // ------------------- MD5 ---------------------------------------------
@@ -39,25 +33,21 @@ typedef unsigned int uint32;
 typedef unsigned long uint32;
 #endif
 
-class MD5Context
-{
+class MD5Context {
+	MD5Context(const MD5Context &);
+	MD5Context &operator=(const MD5Context &);
 public:
 	MD5Context();
-	~MD5Context();
 
 	void Init();
-	void Update(unsigned char const *buf, unsigned len);
+	void Update(const unsigned char *buf, unsigned len);
 	void Final(unsigned char digest[16]);
-	void Transform(uint32 buf[4], uint32 const in[16]);
+	void Transform(uint32 buf[4], const uint32 in[16]);
 
 protected:
 	uint32 fBuf[4];
 	uint32 fBits[2];
 	unsigned char fIn[64];
-
-private:
-	MD5Context(const MD5Context &);
-	MD5Context &operator=(const MD5Context &);
 };
 
 //!@FIXME there is no way to determine processor byte order
@@ -81,29 +71,22 @@ void byteReverse(unsigned char *buf, unsigned longs)
 	uint32 t;
 	do {
 		t = (uint32) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
-			((unsigned) buf[1] << 8 | buf[0]);
+		((unsigned) buf[1] << 8 | buf[0]);
 		*(uint32 *) buf = t;
 		buf += 4;
-	} while (--longs);
+	}while (--longs);
 }
 #endif
 #endif
-MD5Context::MD5Context()
-{
+MD5Context::MD5Context() {
 	Init();
-}
-
-MD5Context::~MD5Context()
-{
-
 }
 
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void MD5Context::Init()
-{
+void MD5Context::Init() {
 	fBuf[0] = 0x67452301;
 	fBuf[1] = 0xefcdab89;
 	fBuf[2] = 0x98badcfe;
@@ -117,19 +100,18 @@ void MD5Context::Init()
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void MD5Context::Update(unsigned char const *buf, unsigned len)
-{
+void MD5Context::Update(unsigned char const *buf, unsigned len) {
 	uint32 t;
 
 	/* Update bitcount */
 
 	t = fBits[0];
 	if ((fBits[0] = t + ((uint32) len << 3)) < t) {
-		++fBits[1];		/* Carry from low to high */
+		++fBits[1]; /* Carry from low to high */
 	}
 	fBits[1] += len >> 29;
 
-	t = (t >> 3) & 0x3f;	/* Bytes already in shsInfo->data */
+	t = (t >> 3) & 0x3f; /* Bytes already in shsInfo->data */
 
 	/* Handle any leading odd-sized chunks */
 
@@ -166,8 +148,7 @@ void MD5Context::Update(unsigned char const *buf, unsigned len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void MD5Context::Final(unsigned char digest[16])
-{
+void MD5Context::Final(unsigned char digest[16]) {
 	unsigned count;
 	unsigned char *p;
 
@@ -175,7 +156,7 @@ void MD5Context::Final(unsigned char digest[16])
 	count = (fBits[0] >> 3) & 0x3F;
 
 	/* Set the first char of padding to 0x80.  This is safe since there is
-	   always at least one byte free */
+	 always at least one byte free */
 	p = fIn + count;
 	*p++ = 0x80;
 
@@ -194,8 +175,7 @@ void MD5Context::Final(unsigned char digest[16])
 	} else {
 		/* Pad block to 56 bytes */
 		memset(p, 0, count - 8);
-	}
-	byteReverse(fIn, 14);
+	}byteReverse(fIn, 14);
 
 	/* Append length in bits and transform */
 	((uint32 *) fIn)[14] = fBits[0];
@@ -230,8 +210,7 @@ void MD5Context::Final(unsigned char digest[16])
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-void MD5Context::Transform(uint32 buf[4], uint32 const in[16])
-{
+void MD5Context::Transform(uint32 buf[4], uint32 const in[16]) {
 	register uint32 a, b, c, d;
 
 	a = buf[0];
@@ -388,35 +367,29 @@ void MD5Context::Transform(uint32 buf[4], uint32 const in[16])
 RegisterSigner(MD5Signer);
 RegisterAliasSecurityItem(md5, MD5Signer);
 
-MD5Signer::MD5Signer(const char *name) : Signer(name)
-{
+MD5Signer::MD5Signer(const char *name) :
+		Signer(name) {
 	InitKey(fgcLegacyMasterKey);
 }
 
-void MD5Signer::InitKey(const String &key)
-{
+void MD5Signer::InitKey(const String &key) {
 	StartTrace1(MD5Signer.InitKey, fName);
 	Trace("Configured name: " << fName << " using key:" << key);
 	fKey = key;
 }
 
-MD5Signer::~MD5Signer()
-{
-}
-
-void MD5Signer::DoHash(const String &cleartext, String &hashvalue)
-{
+void MD5Signer::DoHash(const String &cleartext, String &hashvalue) {
 	StartTrace(MD5Signer.DoHash);
 	Trace("Cleartext: <" << cleartext << ">");
 
 	MD5Context md5ctx;
 	unsigned char digest[16];
 
-	md5ctx.Update((const unsigned char *)(const char *)cleartext, cleartext.Length());
+	md5ctx.Update((const unsigned char *) (const char *) cleartext, cleartext.Length());
 	md5ctx.Final(digest);
 
 	hashvalue = "";
-	hashvalue.Append((void *)digest, 16);
+	hashvalue.Append((void *) digest, 16);
 //	MD5 md5ctx;
 //
 //	md5ctx.Update((const unsigned char *)(const char *)cleartext, cleartext.Length());
@@ -424,17 +397,14 @@ void MD5Signer::DoHash(const String &cleartext, String &hashvalue)
 
 	Trace("Hashvalue: <" << String().AppendAsHex((const unsigned char *)(const char *)hashvalue, hashvalue.Length(), ' ') << ">");
 }
-void MD5Signer::DoEncode(String &scrambledText, const String &cleartext) const
-{
+void MD5Signer::DoEncode(String &scrambledText, const String &cleartext) const {
 	DoSign(fKey, scrambledText, cleartext);
 }
-bool MD5Signer::DoDecode(String &cleartext, const String &scrambledText) const
-{
+bool MD5Signer::DoDecode(String &cleartext, const String &scrambledText) const {
 	return DoCheck(fKey, cleartext, scrambledText);
 }
 
-void MD5Signer::DoSign(const String &strkey, String &scrambledText, const String &cleartext)
-{
+void MD5Signer::DoSign(const String &strkey, String &scrambledText, const String &cleartext) {
 	StartTrace(MD5Signer.DoSign);
 	Trace("key: <" << strkey << ">");
 	Trace("Cleartext: <" << cleartext << ">");
@@ -444,32 +414,30 @@ void MD5Signer::DoSign(const String &strkey, String &scrambledText, const String
 	const char *msg = cleartext;
 	const char *key = strkey;
 
-	md5ctx.Update((const unsigned char *)msg, cleartext.Length());
-	md5ctx.Update((const unsigned char *)key, strkey.Length());
+	md5ctx.Update((const unsigned char *) msg, cleartext.Length());
+	md5ctx.Update((const unsigned char *) key, strkey.Length());
 	md5ctx.Final(digest);
 
-	String strDigest((void *)digest, 16);
+	String strDigest((void *) digest, 16);
 
 	scrambledText << strDigest << cleartext << '$'; // end marker
 
 }
 
-bool MD5Signer::DoCheck(const String &strkey, String &cleartext, const String &scrambledText)
-{
+bool MD5Signer::DoCheck(const String &strkey, String &cleartext, const String &scrambledText) {
 	StartTrace(MD5Signer.DoCheck);
 	Trace("key: <" << strkey << ">");
-	Trace("Scrambled: <" << String().AppendAsHex((const unsigned char *)(const char *)scrambledText, scrambledText.Length(), ' ')  << ">");
+	Trace("Scrambled: <" << String().AppendAsHex((const unsigned char *)(const char *)scrambledText, scrambledText.Length(), ' ') << ">");
 
 	long effLength = scrambledText.StrRChr('$');
 	Trace("EffLength: " << effLength);
 
-	if ( effLength == -1 ) {
+	if (effLength == -1) {
 		effLength = scrambledText.Length();
 	}
 	if (effLength <= 16) {
 		return false;
-	}
-	Trace("EffLength: " << effLength);
+	}Trace("EffLength: " << effLength);
 	MD5Context md5ctx;
 	unsigned char digest[16];
 	const char *msg = scrambledText;
@@ -478,18 +446,17 @@ bool MD5Signer::DoCheck(const String &strkey, String &cleartext, const String &s
 	const char *key = strkey;
 
 	Trace("Msg: <" << msg << ">");
-	md5ctx.Update(((const unsigned char *)msg), (effLength - 16));
-	md5ctx.Update((const unsigned char *)key, strkey.Length());
+	md5ctx.Update(((const unsigned char *) msg), (effLength - 16));
+	md5ctx.Update((const unsigned char *) key, strkey.Length());
 	md5ctx.Final(digest);
 	Trace("Msg: <" << msg << ">");
 
-	if (::memcmp(digest, (const char *)scrambledText, 16) == 0 ) {
+	if (::memcmp(digest, (const char *) scrambledText, 16) == 0) {
 		cleartext = scrambledText.SubString(16, effLength - 16);
 		Trace("Cleartext: <" << cleartext << ">");
 		Trace("returning true");
 		return true;
-	}
-	Trace("returning false");
+	}Trace("returning false");
 
 	return false;
 }

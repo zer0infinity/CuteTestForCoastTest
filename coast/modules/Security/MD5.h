@@ -11,12 +11,12 @@
 
 #include "SecurityModule.h"
 
-//---- MD5Signer -----------------------------------------------------------
-class MD5Signer :  public Signer
-{
+class MD5Signer: public Signer {
+	MD5Signer();
+	MD5Signer(const MD5Signer &);
+	MD5Signer &operator=(const MD5Signer &);
 public:
 	MD5Signer(const char *name);
-	~MD5Signer();
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) MD5Signer(fName);
@@ -34,10 +34,6 @@ public:
 	static bool DoCheck(const String &strkey, String &cleartext, const String &scrambledText);
 protected:
 	String fKey;
-private:
-	MD5Signer();
-	MD5Signer(const MD5Signer &);
-	MD5Signer &operator=(const MD5Signer &);
 };
 
 #endif
