@@ -81,14 +81,10 @@ public:
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) HTTPHeaderParameterMapper(fName);
 	}
-
-	/*! Render http header fields, look'd up in the Context using the given key and render not suppressed headers onto os
-	 * \param key expected HTTPHeader (indicates where to find the headerfield info)
-	 * \param os the stream we write the http header fields to
-	 * \param ctx the context for this call
-	 * \param conf further mapper configuration script
-	 */
-	bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything conf);
+protected:
+	//! Render http header fields, look'd up in the Context using the given key and render onto os
+	/*! @copydoc ParameterMapper::DoGetStream(const char *, std::ostream &, Context &, ROAnything) */
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything conf);
 };
 
 class HTTPBodyResultMapper: public ResultMapper {

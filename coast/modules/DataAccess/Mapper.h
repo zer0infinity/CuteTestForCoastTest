@@ -208,7 +208,7 @@ protected:
 	 */
 	virtual bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
 
-	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". Iif category is "ParameterMapper" we use "ParameterMapper" instead, to keep compatibility.
+	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". If category is "ParameterMapper" we use "InputMapper" instead, to keep compatibility.
 	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName) const;
 
 	//! Load an anything and make it available by storing a reference in fConfig. The default implementation uses the cache handler. If you provide your own implementation be careful about the lifetime of the loaded anything otherwise fConfig points to invalid data.
