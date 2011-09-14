@@ -145,7 +145,6 @@
 			}
 			/CompareValuesMapper {}
 			/RootMapper {
-				RegExpFilterFieldsResultMapperDA
 			}
 			/SlotnameOutputMapper {
 				SlotnameOutputMapperListings

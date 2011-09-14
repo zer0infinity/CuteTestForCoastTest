@@ -14,17 +14,16 @@ RegisterRenderer(HTTPHeaderRenderer);
 
 namespace {
     const char *_HeaderSlot = "HeaderSlot";
-	char const _headerNamedDelimiter = ':';
+	char const _headerNameDelimiter = ':';
 	char const _headerArgumentsDelimiter = ',';
 	char const _whiteSpace = ' ';
-	char const _newlineDelim = '\0';
 	char const *_newLine = ENDL;
 
 	void putValuesOnSameLine(std::ostream &reply, Context &ctx, String const& strKey, ROAnything &values) {
 		AnyExtensions::Iterator<ROAnything> entryIter(values);
 		ROAnything entry;
 		bool first = true;
-		reply << strKey << _headerNamedDelimiter << _whiteSpace;
+		reply << strKey << _headerNameDelimiter << _whiteSpace;
 		while (entryIter.Next(entry)) {
 			if ( not first ) reply << _headerArgumentsDelimiter << _whiteSpace;
 			Renderer::Render(reply, ctx, entry);
@@ -36,7 +35,7 @@ namespace {
 		AnyExtensions::Iterator<ROAnything> entryIter(values);
 		ROAnything entry;
 		while (entryIter.Next(entry)) {
-			reply << strKey << _headerNamedDelimiter << _whiteSpace;
+			reply << strKey << _headerNameDelimiter << _whiteSpace;
 			Renderer::Render(reply, ctx, entry);
 			reply << _newLine;
 		}

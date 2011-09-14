@@ -9,43 +9,16 @@
 #include "Timers.h"
 #include "CacheHandler.h"
 #include "AnyIterators.h"
+
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
-void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
-	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
-
-	os << slotname << ": ";
-	long elSz = rvalue.GetSize();
-	TraceAny(rvalue, "Header[" << slotname << "]");
-	for (long j = 0; j < elSz; ++j) {
-		if (slotname == "COOKIE") {
-			os << NotNull(rvalue.SlotName(j)) << '=';
-		}
-		os << rvalue[j].AsCharPtr("");
-		if (j < (elSz - 1)) {
-			os << ((slotname == "COOKIE") ? "; " : ", ");
-		}
-	}
-	os << ENDL;
-}
-
-bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
-	StartTrace(HTTPHeaderParameterMapper.HandleMoreLinesForHeaderField);
-
-	TraceAny(rvalue, "Header[" << slotname << "]");
-	long elSz = rvalue.GetSize();
-	bool handled = false;
-	for (long j = 0; j < elSz; ++j) {
-		if (slotname == "SET-COOKIE") {
-			handled = true;
-			os << slotname << ": " << rvalue[j].AsCharPtr("") << ENDL;
-		}
-	}
-	return handled;
-}
-
 namespace {
-	static void SuppressListToUpper(ROAnything suppressList, Anything &suppressListToUpper) {
+    const char *_COOKIE = "COOKIE";
+    const char *_SET_COOKIE = "SET-COOKIE";
+	const char *gsGroupName = "HeaderMapperCache";
+	const char *gsSuppressName = "Suppress";
+
+	void SuppressListToUpper(ROAnything suppressList, Anything &suppressListToUpper) {
 		const long size = suppressList.GetSize();
 		for (long i = 0; i < size; ++i) {
 			if (suppressList[i].GetType() == AnyArrayType) {
@@ -55,11 +28,31 @@ namespace {
 			}
 		}
 	}
-}
+	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
+		StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
+		os << slotname << ": ";
+		long elSz = rvalue.GetSize();
+		TraceAny(rvalue, "Header[" << slotname << "]");
+		for (long j = 0; j < elSz; ++j) {
+			if (slotname == _COOKIE) {
+				os << NotNull(rvalue.SlotName(j)) << '=';
+			}
+			os << rvalue[j].AsCharPtr("");
+			if (j < (elSz - 1)) {
+				os << ((slotname == _COOKIE) ? "; " : ", ");
+			}
+		}
+		os << ENDL;
+	}
 
-namespace {
-	static const char *gsGroupName = "HeaderMapperCache";
-	static const char *gsSuppressName = "Suppress";
+	void PutValuesOnSeparateLines(std::ostream &os, const String &slotname, ROAnything rvalue) {
+		StartTrace(HTTPHeaderParameterMapper.PutValuesOnSeparateLines);
+		TraceAny(rvalue, "Header[" << slotname << "]");
+		long elSz = rvalue.GetSize();
+		for (long j = 0; j < elSz; ++j) {
+			os << slotname << ": " << rvalue[j].AsCharPtr("") << ENDL;
+		}
+	}
 }
 
 bool HTTPHeaderParameterMapper::DoInitialize() {
@@ -127,7 +120,9 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 					} else {
 						rvalue = value;
 					}
-					if (!HandleMoreLinesForHeaderField(os, strFieldName, rvalue)) {
+					if ( strFieldName.IsEqual(_SET_COOKIE) ) {
+						PutValuesOnSeparateLines(os, strFieldName, rvalue);
+					} else {
 						HandleOneLineForHeaderField(os, strFieldName, rvalue);
 					}
 				}

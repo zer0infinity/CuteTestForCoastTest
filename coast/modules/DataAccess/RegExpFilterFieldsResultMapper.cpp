@@ -9,8 +9,8 @@
 #include "RegExpFilterFieldsResultMapper.h"
 #include "RE.h"
 #include "AnyIterators.h"
+#include "Context.h"
 
-//---- RegExpFilterFieldsResultMapper ----------------------------------------------------------------
 RegisterResultMapper(RegExpFilterFieldsResultMapper);
 
 bool RegExpFilterFieldsResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {

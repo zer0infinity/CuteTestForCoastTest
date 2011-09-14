@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- RegExpFilterFieldsResultMapper ----------------------------------------------------------
 //! Calls ResultMapper::DoPutAny() on named value entries matched by regular expressions. Positive and negative filtering can be applied.
 /*! Lookup values in the given Anything and map them again using the given configuration.
  * Provide a MapperScript which extracts and stores either parts of the converted Anything or the whole Anything.

@@ -70,8 +70,6 @@ class HTTPHeaderParameterMapper: public ParameterMapper {
 	HTTPHeaderParameterMapper();
 	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
 	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);
-	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
-	bool HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
 	bool DoInitialize();
 	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 public:
