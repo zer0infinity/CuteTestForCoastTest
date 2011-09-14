@@ -61,12 +61,11 @@ RegisterParameterMapper(RendererMapper);
 
 bool RendererMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info) {
 	StartTrace1(RendererMapper.DoGetStream, NotNull(key));
-	bool bInfoIsNull(true);
-	if (!(bInfoIsNull = info.IsNull())) {
+	if ( not info.IsNull() ) {
 		Renderer::Render(os, ctx, info);
+		return true;
 	}
-	TraceAny(info, "Renderer spec content, returning " << (bInfoIsNull?"false":"true"));
-	return !bInfoIsNull;
+	return false;
 }
 
 bool RendererMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything info) {
@@ -76,9 +75,10 @@ bool RendererMapper::DoGetAny(const char *key, Anything &value, Context &ctx, RO
 	OStringStream stream(strBuf);
 	if ((bGetSuccess = DoGetStream(key, stream, ctx, info))) {
 		stream.flush();
-		value = strBuf;
+		Anything collectedValue = strBuf;
+		PlaceIntoAnyOrAppendIfNotEmpty(value, collectedValue);
 	}
-	Trace("returnging " << (bGetSuccess?"true":"false"));
+	Trace("returning " << (bGetSuccess?"true":"false"));
 	return bGetSuccess;
 }
 

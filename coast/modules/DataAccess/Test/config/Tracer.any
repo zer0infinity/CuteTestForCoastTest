@@ -151,26 +151,28 @@
 		/CheckStore	100
 	}
 	/ParameterMapper {
-		/MainSwitch 1100
-		/EnableAll 1100
+		/MainSwitch 11
+		/EnableAll 11
 		/DoGetAny 1100
 		/DoGetStream 1100
+		/DoFinalGetAny 11
+		/DoFinalGetStream 11
 	}
 	/ParameterMapperTest {
 		/MainSwitch 1100
 		/EnableAll 1100
 	}
 	/ResultMapper {
-		/MainSwitch		11
-		/EnableAll		11
+		/MainSwitch		110
+		/EnableAll		110
 		/DoLoadConfig	-11
 		/DoGetConfigName -11
 		/GetDestinationSlot -11
 		/DoGetDestinationSlot -11
 	}
 	/EagerResultMapper {
-		/MainSwitch 1100
-		/EnableAll 1100
+		/MainSwitch 110
+		/EnableAll 110
 	}
 	/RootMapper {
 		/MainSwitch 1100
@@ -181,8 +183,8 @@
 		/EnableAll 1100
 	}
 	/RendererMapper {
-		/MainSwitch 1100
-		/EnableAll 1100
+		/MainSwitch 11
+		/EnableAll 11
 	}
 	/NameUsingOutputMapper {
 		/MainSwitch		1100
@@ -213,8 +215,8 @@
 		/EnableAll 11
 	}
 	/EagerParameterMapper {
-		/MainSwitch 11
-		/EnableAll 11
+		/MainSwitch 110
+		/EnableAll 110
 	}
 	/SlotnameOutputMapper {
 		/MainSwitch			10
@@ -226,6 +228,14 @@
 			/PerRow			-10
 			/Final			10
 		}
+	}
+	/RegExpFilterFieldsParameterMapper {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/RegExpFilterFieldsParameterMapperTest {
+		/MainSwitch 11
+		/EnableAll 11
 	}
 	/RegExpFilterFieldsResultMapper {
 		/MainSwitch 11

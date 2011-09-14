@@ -14,36 +14,10 @@ RegisterRenderer(HTTPHeaderRenderer);
 
 namespace {
     const char *_HeaderSlot = "HeaderSlot";
-	char const _headerNameDelimiter = ':';
-	char const _headerArgumentsDelimiter = ',';
-	char const _whiteSpace = ' ';
-	char const *_newLine = ENDL;
 
-	void putValuesOnSameLine(std::ostream &reply, Context &ctx, String const& strKey, ROAnything &values) {
-		AnyExtensions::Iterator<ROAnything> entryIter(values);
-		ROAnything entry;
-		bool first = true;
-		reply << strKey << _headerNameDelimiter << _whiteSpace;
-		while (entryIter.Next(entry)) {
-			if ( not first ) reply << _headerArgumentsDelimiter << _whiteSpace;
-			Renderer::Render(reply, ctx, entry);
-			first = false;
-		}
-		reply << _newLine;
-	}
-	void putValuesOnMultipleLines(std::ostream &reply, Context &ctx, String const& strKey, ROAnything &values) {
-		AnyExtensions::Iterator<ROAnything> entryIter(values);
-		ROAnything entry;
-		while (entryIter.Next(entry)) {
-			reply << strKey << _headerNameDelimiter << _whiteSpace;
-			Renderer::Render(reply, ctx, entry);
-			reply << _newLine;
-		}
-	}
 	void RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config) {
 		StartTrace(HTTPHeaderRenderer.RenderHeader);
 		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
-		RE multivalueRE(Coast::HTTP::_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
 		AnyExtensions::Iterator<ROAnything> headerStructureIter(config);
 		ROAnything fieldValues;
 		String strSlotname;
@@ -51,13 +25,9 @@ namespace {
 			if ( not headerStructureIter.SlotName(strSlotname) ) {
 				//! prepared "header: value" entry or a Renderer specification
 				Renderer::Render(reply, ctx, fieldValues);
-				reply << _newLine;
+				reply << Coast::HTTP::_newLine;
 			} else {
-				if ( multivalueRE.ContainedIn(strSlotname) ) {
-					putValuesOnSameLine(reply, ctx, strSlotname, fieldValues);
-				} else {
-					putValuesOnMultipleLines(reply, ctx, strSlotname, fieldValues);
-				}
+				Coast::HTTP::putHeaderFieldToStream(reply, ctx, strSlotname, fieldValues);
 			}
 		}
 	}

@@ -9,12 +9,11 @@
 #include "Timers.h"
 #include "CacheHandler.h"
 #include "AnyIterators.h"
+#include "HTTPConstants.h"
 
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
 namespace {
-    const char *_COOKIE = "COOKIE";
-    const char *_SET_COOKIE = "SET-COOKIE";
 	const char *gsGroupName = "HeaderMapperCache";
 	const char *gsSuppressName = "Suppress";
 
@@ -26,31 +25,6 @@ namespace {
 			} else {
 				suppressListToUpper[suppressList[i].AsString().ToUpper()] = 1L;
 			}
-		}
-	}
-	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue) {
-		StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
-		os << slotname << ": ";
-		long elSz = rvalue.GetSize();
-		TraceAny(rvalue, "Header[" << slotname << "]");
-		for (long j = 0; j < elSz; ++j) {
-			if (slotname == _COOKIE) {
-				os << NotNull(rvalue.SlotName(j)) << '=';
-			}
-			os << rvalue[j].AsCharPtr("");
-			if (j < (elSz - 1)) {
-				os << ((slotname == _COOKIE) ? "; " : ", ");
-			}
-		}
-		os << ENDL;
-	}
-
-	void PutValuesOnSeparateLines(std::ostream &os, const String &slotname, ROAnything rvalue) {
-		StartTrace(HTTPHeaderParameterMapper.PutValuesOnSeparateLines);
-		TraceAny(rvalue, "Header[" << slotname << "]");
-		long elSz = rvalue.GetSize();
-		for (long j = 0; j < elSz; ++j) {
-			os << slotname << ": " << rvalue[j].AsCharPtr("") << ENDL;
 		}
 	}
 }
@@ -120,11 +94,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 					} else {
 						rvalue = value;
 					}
-					if ( strFieldName.IsEqual(_SET_COOKIE) ) {
-						PutValuesOnSeparateLines(os, strFieldName, rvalue);
-					} else {
-						HandleOneLineForHeaderField(os, strFieldName, rvalue);
-					}
+					Coast::HTTP::putHeaderFieldToStream(os, ctx, strFieldName, rvalue);
 				}
 			}
 		}

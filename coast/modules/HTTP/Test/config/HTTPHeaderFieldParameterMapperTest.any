@@ -1,0 +1,168 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/DLL {
+		CoastRenderers
+	}
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+	}
+	/Mappers {
+		/Input {}
+		/Output {}
+	}
+	/DataAccessImpls {}
+	/header {
+	  /HOST "bli.bla.blu"
+	  /CONNECTION {
+		"keep-alive"
+	  }
+	  /ACCEPT {
+		"*/*"
+	  }
+	  /USER-AGENT "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Ubuntu/11.04 Chromium/15.0.865.0 Chrome/15.0.865.0 Safari/535.2"
+	  /ACCEPT-ENCODING {
+		"gzip"
+		"deflate"
+		"sdch"
+	  }
+	  /ACCEPT-LANGUAGE {
+		"de-CH"
+		"en-US;q=0.8"
+		"en;q=0.6"
+		"de;q=0.4"
+	  }
+	  /ACCEPT-CHARSET {
+		"ISO-8859-1"
+		"utf-8;q=0.7"
+		"*;q=0.3"
+	  }
+	  /COOKIE "CGState=DingleDongle"
+	  /REMOTE_ADDR "127.0.0.1"
+	  /REMOTE_PORT 55773
+	  /HTTPS 1
+	  /SSL {
+		/Peer {
+		  /SSLCertVerifyStatus {
+			/SSL {
+			  /Ok 1
+			  /ErrorDesc *
+			  /SSLRetcode 0
+			}
+		  }
+		  /AppLevelCertVerifyStatus 0
+		}
+		/SessionId "546BBADA3AAFDB2A64D15FA72D52906C96C56981A6718C6921F6AAE01DD2A104"
+		/Cipher "DHE-RSA-CAMELLIA256-SHA"
+		/SessionIsResumed 1
+	  }
+	}
+
+	/ConfiguredTests {
+		/MapCombinedKeyFieldWithoutSpecificSpec {
+			/Getkey "header.USER-AGENT"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+				}
+			}
+			/TmpStore {
+				/header %header
+			}
+			/Stream "USER-AGENT: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Ubuntu/11.04 Chromium/15.0.865.0 Chrome/15.0.865.0 Safari/535.2\r\n"
+		}
+		/MapCombinedKeyField {
+			/Getkey "header.USER-AGENT"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+					/header {
+						/"USER-AGENT" *
+					}
+				}
+			}
+			/TmpStore {
+				/header %header
+			}
+			/Stream "USER-AGENT: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Ubuntu/11.04 Chromium/15.0.865.0 Chrome/15.0.865.0 Safari/535.2\r\n"
+		}
+		/MapSimpleKeyField {
+			/Getkey "USER-AGENT"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+					/header {
+						/"USER-AGENT" *
+					}
+				}
+			}
+			/TmpStore {
+				/"USER-AGENT" %header.USER-AGENT
+			}
+			/Stream "USER-AGENT: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Ubuntu/11.04 Chromium/15.0.865.0 Chrome/15.0.865.0 Safari/535.2\r\n"
+		}
+		/MapCombinedKeyFieldWithoutSpecificConfig {
+			/Getkey "header.COOKIE"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+					/header {
+						/"USER-AGENT" *
+					}
+				}
+			}
+			/TmpStore {
+				/header %header
+			}
+			/Stream "COOKIE: CGState=DingleDongle\r\n"
+		}
+		/MapCombinedKeyFieldWithModificationOnStream {
+			/Getkey "header.USER-AGENT"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+					/header {
+						/"USER-AGENT" {
+							/RendererMapper {
+								/StringTokenizeRenderer {
+									/String { /ContextLookupRenderer header.USER-AGENT }
+									/Token	" "
+									/RenderToken 1
+								}
+							}
+						}
+					}
+				}
+			}
+			/TmpStore {
+				/header %header
+			}
+			/Stream "USER-AGENT: Mozilla/5.0\r\n"
+		}
+		/MapCombinedKeyFieldWithModificationAsAnything {
+			/Getkey "header.USER-AGENT"
+			/MapperConfig {
+				/HTTPHeaderFieldParameterMapper {
+					/header {
+						/"USER-AGENT" {
+							/RendererMapper {
+								/StringTokenizeRenderer {
+									/String { /ContextLookupRenderer header.USER-AGENT }
+									/Token	" "
+									/RenderToken 1
+								}
+							}
+						}
+					}
+				}
+			}
+			/TmpStore {
+				/header %header
+			}
+			/Value {
+				"USER-AGENT: Mozilla/5.0\r\n"
+			}
+		}
+	}
+}

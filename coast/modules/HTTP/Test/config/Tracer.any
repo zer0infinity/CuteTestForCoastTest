@@ -5,15 +5,25 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-	/LowerBound		0 #110 		# debugging on or off
-	/UpperBound		11 #0 		# override switch: turns everything on
+	/LowerBound		0	 		# debugging on or off
+	/UpperBound		11	 		# override switch: turns everything on
 	/DumpAnythings 	1 			# print full Anythings
 
-	/HTTPHeaderRenderer
-	{
-		/MainSwitch					10
-		/EnableAll					11
+	/HTTPHeaderRenderer {
+		/MainSwitch			10
+		/EnableAll			11
+	}
+	/HTTPHeaderFieldParameterMapper {
+		/MainSwitch			11
+		/EnableAll			11
+	}
+	/RendererMapper {
+		/MainSwitch			11
+		/EnableAll			11
+	}
+	/StringTokenizeRenderer {
+		/MainSwitch			20
+		/EnableAll			20
 	}
 }

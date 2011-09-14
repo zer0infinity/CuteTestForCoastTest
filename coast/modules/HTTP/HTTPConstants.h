@@ -10,6 +10,11 @@
 
 #ifndef HTTPCONSTANTS_H_
 #define HTTPCONSTANTS_H_
+#include <iosfwd>
+#include "foundation.h"
+class ROAnything;
+class String;
+class Context;
 
 namespace Coast {
 	namespace HTTP {
@@ -17,6 +22,18 @@ namespace Coast {
 		static const char *_httpProtocolVersionSlotname = "HTTPVersion";
 		static const char *_httpProtocolCodeSlotname = "ResponseCode";
 		static const char *_httpProtocolMsgSlotname = "ResponseMsg";
+		static const char *_COOKIE = "COOKIE";
+		static const char *_SET_COOKIE = "SET-COOKIE";
+		static char const *_newLine = ENDL;
+		static char const _headerNameDelimiter = ':';
+		static char const _headerArgumentsDelimiter = ',';
+		static char const _headerCookieArgumentsDelimiter = ';';
+		static char const _headerCookieValueDelimiter = '=';
+		static char const _whiteSpace = ' ';
+
+		void putValuesOnSameLine(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);
+		void putValuesOnMultipleLines(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);
+		void putHeaderFieldToStream(std::ostream &os, Context &ctx, String const &slotname, ROAnything const &values);
 	}
 }
 

@@ -175,10 +175,19 @@ protected:
 	//! Major hook method for subclasses, default does script interpretation
 	/*! @param key the name defines kind of value to get or the slot in the script to use
 		@param value collects data within script
-		@param ctx the thread context of the invocation
+		@param ctx the context of the invocation
 		@param script to be interpreted if any, for subclasses this is the config to use
 		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
+
+	//! Almost the same as DoGetAny but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not ParameterMappers.
+	/*! @param key the key usually defines the associated kind of input-value
+		@param value collects data within script
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool DoGetAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything script, const char *slotname);
 
 	//! Major hook method for subclasses, default does script interpretation
 	/*! @param key the name defines kind of values to get or the slot in the script to use
@@ -187,6 +196,15 @@ protected:
 		@param script to be interpreted if any, for subclasses this is the config to use
 		@return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything script);
+
+	//! Almost the same as DoGetStream but it uses the given slotname as new key for further processing. This allows key redefinition based on slotnames which are not ParameterMappers.
+	/*! @param key the key usually defines the associated kind of input-value
+		@param os The stream to map values onto
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool DoGetStreamWithSlotname(const char *key, std::ostream &os, Context &ctx, ROAnything script, const char *slotname);
 
 	//! Hook for recursion stopper in Mapper script interpretation returning an Anything value.
 	/*! Looks for value in context using the key and assigns or appends to value depending if value was Null before.
@@ -208,6 +226,49 @@ protected:
 	 */
 	virtual bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
 
+	//! Simple forwarder; might be useful when used with template value argument
+	/*! @copydoc ParameterMapper::DoGetAny(const char *, Anything &, Context &, ROAnything) */
+	virtual bool doGetValue(const char *key, Anything & value, Context & ctx, ROAnything script) {
+		return DoGetAny(key, value, ctx, script);
+	}
+	//! Simple forwarder; might be useful when used with template value argument
+	/*! @copydoc ParameterMapper::DoGetStream(const char *, std::ostream &, Context &, ROAnything) */
+	virtual bool doGetValue(const char *key, std::ostream & os, Context & ctx, ROAnything script) {
+		return DoGetStream(key, os, ctx, script);
+	}
+	//! Simple forwarder; might be useful when used with template value argument
+	/*! @copydoc ParameterMapper::DoGetAnyWithSlotname(const char *, Anything &, Context &, ROAnything, const char *) */
+	virtual bool doGetValueWithSlotname(const char *key, Anything & value, Context & ctx, ROAnything script, const char *slotname) {
+		return DoGetAnyWithSlotname(key, value, ctx, script, slotname);
+	}
+	//! Simple forwarder; might be useful when used with template value argument
+	/*! @copydoc ParameterMapper::DoGetStreamWithSlotname(const char *, std::ostream &, Context &, ROAnything, const char *) */
+	virtual bool doGetValueWithSlotname(const char *key, std::ostream & os, Context & ctx, ROAnything script, const char *slotname) {
+		return DoGetStreamWithSlotname(key, os, ctx, script, slotname);
+	}
+	//! Default logic implementor to eagerly process named slot entries in script
+	/*! @copydoc ParameterMapper::DoGetAny(const char *, Anything &, Context &, ROAnything) */
+	virtual bool interpretMapperScript(const char *key, Anything &value, Context &ctx, ROAnything script);
+	//! Default logic implementor to eagerly process named slot entries in script
+	/*! @copydoc ParameterMapper::DoGetStream(const char *, std::ostream &, Context &, ROAnything) */
+	virtual bool interpretMapperScript(const char *key, std::ostream &os, Context &ctx, ROAnything script);
+	//! Implements default logic to decide mapping based on slotname given
+	/*! @param key the key usually defines the associated kind of input-value
+		@param value collects data within script
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool interpretMapperScriptEntry(const char *key, Anything & value, Context & ctx, ROAnything script, String const & slotname);
+	//! Implements default logic to decide mapping based on slotname given
+	/*! @param key the key usually defines the associated kind of input-value
+		@param os The stream to map values onto
+		@param ctx the context of the invocation
+		@param script current mapper configuration as ROAnything
+		@param slotname new key to use for further processing
+		@return returns true if the mapping was successful otherwise false */
+	virtual bool interpretMapperScriptEntry(const char *key, std::ostream &os, Context & ctx, ROAnything script, String const & slotname);
+
 	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". If category is "ParameterMapper" we use "InputMapper" instead, to keep compatibility.
 	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName) const;
 
@@ -218,6 +279,8 @@ protected:
 	/*! @copydetails SelectScript()
 	 */
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
+
+	virtual ROAnything selectNewScript(const char *key, Context & ctx, ROAnything & script);
 
 	//! Subclass hook to be overridden for special behavior
 	/*! @copydetails GetSourceSlot()

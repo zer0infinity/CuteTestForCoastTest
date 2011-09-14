@@ -240,96 +240,121 @@ void ParameterMapper::PlaceIntoAnyOrAppendIfNotEmpty(Anything &var, ROAnything t
 	}
 }
 
-bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script)
-{
-	StartTrace1(ParameterMapper.DoGetAny, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx, ROAnything script)");
+ROAnything ParameterMapper::selectNewScript(const char *key, Context & ctx, ROAnything & script) {
+	StartTrace(ParameterMapper.selectNewScript);
+	ROAnything newConfig;
+    if (script.IsNull()) {
+		Trace("Selecting new script for key [" << key << "] from " << GetName() << "'s full config...");
+		newConfig = SelectScript(key, GetConfig(), ctx);
+	} else {
+		newConfig = SelectScript(key, script, ctx);
+	}
+    TraceAny(newConfig, "selected script to use");
+    return newConfig;
+}
 
+bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
+	StartTrace1(ParameterMapper.DoGetAny, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx, ROAnything script)");
 	if (script.IsNull() || script.GetSize() == 0) {
-		// no more script to run
 		Trace("Script is empty or null...");
 		return DoFinalGetAny(key, value, ctx);
 	}
-
 	if (script.GetType() != AnyArrayType) {
 		// we found a simple value, append it, Append because of scripting
 		Trace("Script is a simple value:" << script.AsString());
 		PlaceIntoAnyOrAppendIfNotEmpty(value, script);
 		return true;
 	}
-
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
+	return interpretMapperScript(key, value, ctx, script);
+}
+
+bool ParameterMapper::interpretMapperScriptEntry(const char *key, Anything & value, Context & ctx,
+		ROAnything script, String const & slotname) {
+	StartTrace1(ParameterMapper.interpretMapperScriptEntry,
+			"( \"" << NotNull(key) << "\" , ValueType &value, Context &ctx, ROAnything script)");
+	ParameterMapper *m;
+	if (slotname.Length() <= 0) {
+		Trace("Anonymous slot, call myself again with script");
+		return doGetValue(key, value, ctx, script);
+	}
+	if ((m = ParameterMapper::FindParameterMapper(slotname))) {
+		Trace("Slotname equals mapper: " << slotname);
+		ROAnything newConfig = m->selectNewScript(key, ctx, script);
+		TraceAny(newConfig, "Calling " << slotname << " with script");
+		return m->doGetValue(key, value, ctx, newConfig);
+	}
+	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+	return doGetValueWithSlotname(key, value, ctx, script, slotname);
+}
+
+bool ParameterMapper::interpretMapperScript(const char *key, Anything &value, Context &ctx, ROAnything script) {
+	StartTrace1(ParameterMapper.interpretMapperScript, "( \"" << NotNull(key) << "\" , ValueType &value, Context &ctx, ROAnything script)");
 	// now for the scripting case, similar to Renderers
 	// interpret as long as you get return values. stop if you don't
 	bool retval = true;
 	for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
-		String slotname(script.SlotName(i));
-		ParameterMapper *m;
-		if (slotname.Length() <= 0) {
-			Trace("Anonymous slot, call myself again with script[" << i << "]");
-			retval = DoGetAny(key, value, ctx, script[i]);
-		} else if ((m = ParameterMapper::FindParameterMapper(slotname))) {
-			Trace("Slotname equals mapper: " << slotname);
-			if (script[i].IsNull()) {
-				// no more config in script, use original mappers config
-				// fallback to orignal mapping with m's config
-				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetAny(key, value, ctx, m->SelectScript(key, m->fConfig, ctx));
-			} else {
-				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetAny(key, value, ctx, m->SelectScript(key, script[i], ctx));
-			}
-		} else {
-			Trace("Slotname " << slotname << " is not a mapper (not found).");
-			Trace("Using slot as new key and call myself again with script[" << i << "]");
-			retval = DoGetAny(slotname, value, ctx, script[i]);
-		}
+		retval = interpretMapperScriptEntry(key, value, ctx, script[i], script.SlotName(i));
 	}
 	return retval;
 }
+
+bool ParameterMapper::DoGetAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname) {
+	StartTrace1(ParameterMapper.DoGetAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	return DoGetAny(slotname, value, ctx, roaScript);
+}
+
 bool ParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything script)
 {
 	StartTrace1(ParameterMapper.DoGetStream, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx, ROAnything script)");
-
 	if (script.IsNull() || script.GetSize() == 0) {
-		// no more script to run
 		Trace("Script is empty or null...");
 		return DoFinalGetStream(key, os, ctx);
 	}
-
 	if (script.GetType() != AnyArrayType) {
 		// we found a simple value, append it, Append because of scripting
 		Trace("Script is a simple value, write it on stream...");
 		os << script.AsString();
 		return true;
 	}
-
 	// now for the scripting case, similar to Renderers
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
+	return interpretMapperScript(key, os, ctx, script);
+}
+
+bool ParameterMapper::interpretMapperScriptEntry(const char *key, std::ostream & os, Context & ctx,
+		ROAnything script, String const & slotname) {
+	StartTrace1(ParameterMapper.interpretMapperScriptEntry,
+			"( \"" << NotNull(key) << "\" , ValueType &os, Context &ctx, ROAnything script)");
+	ParameterMapper *m;
+	if (slotname.Length() <= 0) {
+		Trace("Anonymous slot, call myself again with script");
+		return doGetValue(key, os, ctx, script);
+	}
+	if ((m = ParameterMapper::FindParameterMapper(slotname))) {
+		Trace("Slotname equals mapper: " << slotname);
+		ROAnything newConfig = m->selectNewScript(key, ctx, script);
+		TraceAny(newConfig, "Calling " << slotname << " with script");
+		return m->doGetValue(key, os, ctx, newConfig);
+	}
+	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+	return doGetValueWithSlotname(key, os, ctx, script, slotname);
+}
+
+bool ParameterMapper::interpretMapperScript(const char *key, std::ostream &os, Context &ctx, ROAnything script) {
+	StartTrace1(ParameterMapper.interpretMapperScript, "( \"" << NotNull(key) << "\" , ValueType &os, Context &ctx, ROAnything script)");
+	// now for the scripting case, similar to Renderers
+	// interpret as long as you get return values. stop if you don't
 	bool retval = true;
 	for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
-		String slotname(script.SlotName(i));
-		ParameterMapper *m;
-		if (slotname.Length() <= 0) {
-			Trace("Anonymous slot, call myself again with script[" << i << "]");
-			retval = DoGetStream(key, os, ctx, script[i]);
-		} else if ((m = ParameterMapper::FindParameterMapper(slotname))) {
-			Trace("Slotname equals mapper: " << slotname);
-			if (script[i].IsNull()) {
-				// no more config in script, use original mappers config
-				// fallback to orignal mapping with m's config
-				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetStream(key, os, ctx, m->SelectScript(key, m->fConfig, ctx));
-			} else {
-				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetStream(key, os, ctx, m->SelectScript(key, script[i], ctx));
-			}
-		} else {
-			Trace("Slotname " << slotname << " is not a mapper (not found).");
-			Trace("Using slot as new key and call myself again with script[" << i << "]");
-			retval = DoGetStream(slotname, os, ctx, script[i]);
-		}
+		retval = interpretMapperScriptEntry(key, os, ctx, script[i], script.SlotName(i));
 	}
 	return retval;
+}
+
+bool ParameterMapper::DoGetStreamWithSlotname(const char *key, std::ostream &os, Context &ctx, ROAnything roaScript, const char *slotname) {
+	StartTrace1(ParameterMapper.DoGetStreamWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	return DoGetStream(slotname, os, ctx, roaScript);
 }
 
 bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &ctx)
@@ -616,17 +641,13 @@ bool ResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, 
 	return retval;
 }
 
-bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname)
-{
+bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything &value, Context &ctx, ROAnything roaScript, const char *slotname) {
 	StartTrace1(ResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
-	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
 	return DoPutAny(slotname, value, ctx, roaScript);
 }
 
-bool ResultMapper::DoPutStreamWithSlotname(const char *key, std::istream &is, Context &ctx, ROAnything roaScript, const char *slotname)
-{
+bool ResultMapper::DoPutStreamWithSlotname(const char *key, std::istream &is, Context &ctx, ROAnything roaScript, const char *slotname) {
 	StartTrace1(ResultMapper.DoPutStreamWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
-	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
 	return DoPutStream(slotname, is, ctx, roaScript);
 }
 

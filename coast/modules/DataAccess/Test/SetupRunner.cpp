@@ -24,6 +24,7 @@
 #include "RegExpFilterFieldsResultMapperTest.h"
 #include "RegExpSearchReplaceResultMapperTest.h"
 #include "RenderedKeyResultMapperTest.h"
+#include "RegExpFilterFieldsParameterMapperTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -45,4 +46,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, RegExpFilterFieldsResultMapperTest);
 	ADD_SUITE(runner, RegExpSearchReplaceResultMapperTest);
 	ADD_SUITE(runner, RenderedKeyResultMapperTest);
+	ADD_SUITE(runner, RegExpFilterFieldsParameterMapperTest);
 } // setupRunner

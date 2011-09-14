@@ -351,4 +351,10 @@
 		/MainSwitch			0
 		/EnableAll			20
 	}
+	/Coast {
+		/HTTP {
+			/MainSwitch			2211
+			/EnableAll			2211
+		}
+	}
 }
