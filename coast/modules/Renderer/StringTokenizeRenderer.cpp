@@ -9,12 +9,7 @@
 #include "StringTokenizeRenderer.h"
 #include "StringStream.h"
 
-//---- StringTokenizeRenderer ---------------------------------------------------------------
 RegisterRenderer(StringTokenizeRenderer);
-
-StringTokenizeRenderer::StringTokenizeRenderer(const char *name) : Renderer(name) { }
-
-StringTokenizeRenderer::~StringTokenizeRenderer() { }
 
 void StringTokenizeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {

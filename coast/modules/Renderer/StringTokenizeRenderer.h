@@ -32,13 +32,11 @@
 
 Examples in the TestCases
 */
-class StringTokenizeRenderer : public Renderer
-{
+class StringTokenizeRenderer: public Renderer {
 public:
-	//--- constructors
-	StringTokenizeRenderer(const char *name);
-	~StringTokenizeRenderer();
-
+	StringTokenizeRenderer(const char *name) :
+			Renderer(name) {
+	}
 	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 protected:

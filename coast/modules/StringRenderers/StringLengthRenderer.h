@@ -11,12 +11,12 @@
 
 #include "Renderer.h"
 
-//! really brief class description
+//! Calculates length of rendered String and places it onto output stream
 /*!
  \par Configuration
  \code
  {
- /String		Rendererspec	mandatory, string to render lenght of
+ /Value		Rendererspec	mandatory, string to render length of
  }
  \endcode
  */

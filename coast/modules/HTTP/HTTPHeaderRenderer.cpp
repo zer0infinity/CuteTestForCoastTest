@@ -17,7 +17,7 @@ namespace {
 
 	void RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config) {
 		StartTrace(HTTPHeaderRenderer.RenderHeader);
-		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
+		TraceAny(config, "HTTPHeaders to render to stream");
 		AnyExtensions::Iterator<ROAnything> headerStructureIter(config);
 		ROAnything fieldValues;
 		String strSlotname;
