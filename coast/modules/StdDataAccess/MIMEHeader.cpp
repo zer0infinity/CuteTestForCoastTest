@@ -23,11 +23,11 @@ namespace Coast {
 			line.Trim(0L);
 			// read line up to but not including next LF
 			line.Append(in, maxlinelen, LF);
-			Trace("Line length: " << line.Length() << " maxlinelen: " << maxlinelen << "\n" << line.DumpAsHex());
 			char c = '\0';
 			if ( in.peek() != EOF && in.get(c)) {
 				line.Append(c);
 			}
+			Trace("Line length: " << line.Length() << " maxlinelen: " << maxlinelen << "\n" << line.DumpAsHex());
 			if (line.Length() > maxlinelen) throw MIMEHeader::LineSizeExceededException("Line size exceeded", line, maxlinelen, line.Length());
 		}
 	}

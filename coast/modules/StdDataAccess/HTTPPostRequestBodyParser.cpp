@@ -26,10 +26,7 @@ bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.ParseBody);
 	ROAnything contenttype;
-	if (!fHeader.Lookup("CONTENT-TYPE", contenttype)) {
-		return false;
-	}
-	if (contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1) {
+	if (fHeader.Lookup("CONTENT-TYPE", contenttype) && contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
 		if (not a.Import(input) || a.IsNull()) {
@@ -44,10 +41,11 @@ bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	bool readSuccess = false;
 	long contentLength = fHeader.GetContentLength();
 	if (contentLength >= 0) {
+		Trace("content length: " << contentLength);
 		fUnparsedContent.Append(input, contentLength);
 		readSuccess = (fUnparsedContent.Length() == contentLength);
 	} else {
-		// get everything
+		Trace("get everything until eof()");
 		while (input.good()) {
 			fUnparsedContent.Append(input, 4096);
 		}
