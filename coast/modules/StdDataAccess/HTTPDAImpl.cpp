@@ -236,25 +236,6 @@ namespace {
 
 bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.SendInput);
-	//XXX: this section should probably be conditional
-	//FIXME: string length calculation is now aware of utf8 characters but this might be wrong for other content-types (like some sort of binary data)!
-	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
-	Trace("PostContentLengthToStream:" << uploadSize);
-	if (uploadSize == -1L) {
-		String content(16384L);
-		OStringStream oss(content);
-		in->Get("Input", oss, context);
-		oss.flush();
-		long lIdx = content.Contains("\r\n\r\n");
-		if (lIdx >= 0) {
-			content.TrimFront(lIdx+4L);
-			uploadSize = getStringLength(content);
-		} else {
-			uploadSize = 0L;
-		}
-	}
-	Trace("Request.BodyLength:" << uploadSize);
-	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
 	if (TriggerEnabled(HTTPDAImpl.SendInput)) {
 		String request(16384L);
 		{
