@@ -7,11 +7,9 @@
  */
 
 #include "OracleConnection.h"
-#include "OracleEnvironment.h"
 #include "OracleStatement.h"
 #include "OracleException.h"
 #include "AnyIterators.h"
-#include "SystemLog.h"
 #include "Tracer.h"
 #include <string.h>	// for strlen
 Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
@@ -31,19 +29,6 @@ OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	   ) {
 		fStatus = eHandlesAllocated;
 	}
-}
-
-template< class handlePtrType >
-bool OracleConnection::AllocateHandle( handlePtrType &aHandlePtr )
-{
-	StartTrace(OracleConnection.AllocateHandle);
-	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), aHandlePtr.getVoidAddr(), aHandlePtr.getHandleType(), (size_t) 0,
-						 (dvoid **) 0 ) != OCI_SUCCESS ) {
-		SystemLog::Error( String( "FAILED: OCIHandleAlloc(): alloc handle of type " ) << (long) aHandlePtr.getHandleType()
-						  << " failed" );
-		return false;
-	}
-	return true;
 }
 
 bool OracleConnection::Open( String const &strServer, String const &strUsername, String const &strPassword )

@@ -13,8 +13,9 @@
 #include "Anything.h"
 #include "Threads.h"
 #include "OciAutoHandle.h"
+#include "SystemLog.h"
+#include "OracleEnvironment.h"
 
-class OracleEnvironment;
 class OracleStatement;
 
 //---- OracleConnection -----------------------------------------------------------
@@ -150,8 +151,15 @@ public:
 	 */
 	bool checkError( sword status );
 
-	template< class handlePtrType >
-	bool AllocateHandle( handlePtrType &aHandlePtr );
+	template<class handlePtrType>
+	bool AllocateHandle(handlePtrType &aHandlePtr) {
+		if (OCIHandleAlloc(fOracleEnv.EnvHandle(), aHandlePtr.getVoidAddr(), aHandlePtr.getHandleType(), (size_t) 0, (dvoid **) 0)
+				!= OCI_SUCCESS) {
+			SystemLog::Error(String("FAILED: OCIHandleAlloc(): alloc handle of type ") << (long) aHandlePtr.getHandleType() << " failed");
+			return false;
+		}
+		return true;
+	}
 
 private:
 	ObjectType GetSPDescription( const String &command, ROAnything &desc );
