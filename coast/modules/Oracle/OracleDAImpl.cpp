@@ -8,21 +8,16 @@
 
 #include "OracleDAImpl.h"
 #include "OraclePooledConnection.h"
-#include "OracleStatement.h"
 #include "OracleException.h"
 #include "OracleResultset.h"
 #include "OracleModule.h"
-#include "SystemLog.h"
 #include "Timers.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
-#include "Tracer.h"
 #include "AnyIterators.h"
-#include <limits>
-#include <cstring>
 
 static const long glStringBufferSize( 4096L );
-//---- OracleDAImpl ---------------------------------------------------------
+
 RegisterDataAccessImpl( OracleDAImpl);
 
 OracleDAImpl::OracleDAImpl( const char *name ) :

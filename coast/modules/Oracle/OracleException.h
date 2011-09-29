@@ -9,10 +9,10 @@
 #ifndef ORACLEEXCEPTION_H_
 #define ORACLEEXCEPTION_H_
 
-#include "OracleConnection.h"
 #include "ITOString.h"
-#include <exception>
+#include "oratypes.h"
 
+class OracleConnection;
 //! Provide useful message when an exception gets thrown
 /*!
  * This class is used to abort the program flow with either a self written message or a message provided using the

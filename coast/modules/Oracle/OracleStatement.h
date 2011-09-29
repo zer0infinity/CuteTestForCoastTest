@@ -9,12 +9,13 @@
 #ifndef ORACLESTATEMENT_H_
 #define ORACLESTATEMENT_H_
 
-#include "OracleConnection.h"
 #include "IFAObject.h"
-#include "AllocatorNewDelete.h"
-#include <algorithm>	// std::max
+#include "Anything.h"
+#include "OciAutoHandle.h"	// std::max
+#include <algorithm>
 
 class OracleResultset;
+class OracleConnection;
 
 //! Abstraction of an Oracle statement
 /*!

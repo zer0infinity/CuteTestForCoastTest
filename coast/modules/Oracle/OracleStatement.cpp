@@ -7,13 +7,13 @@
  */
 
 #include "OracleStatement.h"
+#include "OracleConnection.h"
 #include "OracleEnvironment.h"
 #include "OracleException.h"
 #include "OracleResultset.h"
 #include "AnyIterators.h"
 #include "Tracer.h"
-#include <algorithm>
-#include <cstring>
+#include <cstring>	// memcpy
 
 OracleStatement::OracleStatement( OracleConnection *pConn, String const &strStmt ) :
 	fpConnection( pConn ), fStmt( strStmt ), fStatus( UNPREPARED ), fStmtType( STMT_UNKNOWN )

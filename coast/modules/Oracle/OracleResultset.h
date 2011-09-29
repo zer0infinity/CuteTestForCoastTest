@@ -9,13 +9,10 @@
 #ifndef ORACLERESULTSET_H_
 #define ORACLERESULTSET_H_
 
-//--- modules used in the interface
-#include "AllocatorNewDelete.h"
 #include "OracleStatement.h"
 #include "Anything.h"
 
-//---- OracleResultset -----------------------------------------------------------
-//! Abstraction for a set of results 
+//! Abstraction for a set of results
 /*!
  * This class - or a corresponding object of it - acts like a row iterator on the underlying statement. An instance
  * will be returned by calling OracleStatement::getResultset or OracleStatement::getCursor.
@@ -54,8 +51,6 @@ public:
 	OracleResultset( OracleStatement &rStmt ) :
 		frStmt( rStmt ), fFetchStatus( NOT_READY ) {
 	}
-	//! does nothing
-	~OracleResultset();
 	/*! Retrieve column layout of the current result set
 	 * @return Read only copy of the column descriptions
 	 */

@@ -7,23 +7,20 @@
  */
 
 #include "OracleException.h"
+#include "OracleConnection.h"
 
-OracleException::OracleException( OracleConnection &rConn, String const &strMessage ) :
-	fConnection( rConn ), fStatus( 0 ), fMessage( strMessage )
-{
+OracleException::OracleException(OracleConnection &rConn, String const &strMessage) :
+		fConnection(rConn), fStatus(0), fMessage(strMessage) {
 }
 
-OracleException::OracleException( OracleConnection &rConn, sword status ) :
-	fConnection( rConn ), fStatus( status ), fMessage( fConnection.errorMessage( fStatus ) )
-{
+OracleException::OracleException(OracleConnection &rConn, sword status) :
+		fConnection(rConn), fStatus(status), fMessage(fConnection.errorMessage(fStatus)) {
 }
 
-const String &OracleException::getMessage() const
-{
+const String &OracleException::getMessage() const {
 	return fMessage;
 }
 
-const char *OracleException::what() const throw ()
-{
+const char *OracleException::what() const throw () {
 	return fMessage;
 }

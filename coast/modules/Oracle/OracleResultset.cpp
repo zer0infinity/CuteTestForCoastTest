@@ -11,38 +11,31 @@
 #include "OracleException.h"
 #include "Tracer.h"
 
-OracleResultset::~OracleResultset()
-{
-}
-
-OracleStatement::Description &OracleResultset::GetOutputDescription()
-{
-	StartTrace( OracleResultset.GetOutputDescription );
+OracleStatement::Description &OracleResultset::GetOutputDescription() {
+	StartTrace(OracleResultset.GetOutputDescription);
 	return frStmt.GetOutputDescription();
 }
 
-bool OracleResultset::DefineOutputArea()
-{
+bool OracleResultset::DefineOutputArea() {
 	StartTrace(OracleResultset.DefineOutputArea);
 	return frStmt.DefineOutputArea();
 }
 
-OracleResultset::Status OracleResultset::next()
-{
+OracleResultset::Status OracleResultset::next() {
 	StartTrace(OracleResultset.next);
-	if ( fFetchStatus == NOT_READY ) {
+	if (fFetchStatus == NOT_READY) {
 		DefineOutputArea();
 		fFetchStatus = READY;
 	}
-	switch ( fFetchStatus ) {
+	switch (fFetchStatus) {
 		case READY:
 		case DATA_AVAILABLE: {
-			sword status = frStmt.Fetch( 1 );
-			Trace("fetch status: " << (long)status)
-			if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO ) {
+			sword status = frStmt.Fetch(1);
+			Trace("fetch status: " << (long) status)
+			if (status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO) {
 				fFetchStatus = DATA_AVAILABLE;
 			} else
-				// SQL_NO_DATA and other error/warn conditions
+			// SQL_NO_DATA and other error/warn conditions
 			{
 				fFetchStatus = END_OF_FETCH;
 			}
@@ -54,8 +47,7 @@ OracleResultset::Status OracleResultset::next()
 	return fFetchStatus;
 }
 
-Anything OracleResultset::getValue( long lColumnIndex )
-{
+Anything OracleResultset::getValue(long lColumnIndex) {
 	StartTrace1(OracleResultset.getValue, "col index: " << lColumnIndex);
-	return frStmt.getValue( lColumnIndex );
+	return frStmt.getValue(lColumnIndex);
 }

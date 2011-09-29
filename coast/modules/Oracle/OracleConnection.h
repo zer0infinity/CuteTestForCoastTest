@@ -18,7 +18,6 @@
 
 class OracleStatement;
 
-//---- OracleConnection -----------------------------------------------------------
 //! Abstraction for an Oracle connection
 /*!
  * This class serves as abstraction for all the OCI calls which need to be done to establish a connection to an oracle back end.

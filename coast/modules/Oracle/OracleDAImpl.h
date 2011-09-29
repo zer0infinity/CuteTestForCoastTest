@@ -9,10 +9,9 @@
 #ifndef _ORACLEDAIMPL_H
 #define _ORACLEDAIMPL_H
 
-//--- modules used in the interface
 #include "DataAccessImpl.h"
-#include "OracleStatement.h"
 
+class OracleStatement;
 class OracleResultset;
 class OraclePooledConnection;
 
