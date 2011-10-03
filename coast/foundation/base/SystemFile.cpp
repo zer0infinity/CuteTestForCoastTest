@@ -58,7 +58,7 @@ namespace {
 		}
 	};
 
-	PathInitializer *psgPathInitializer = new PathInitializer(1);
+	PathInitializer *psgPathInitializer = new PathInitializer(2);
 
 	//! checks existence of a path using stat
 	/*! \param path file or directory path

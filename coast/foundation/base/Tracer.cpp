@@ -151,7 +151,7 @@ namespace {
 		}
 	};
 
-	TracingInitializer *psgTracingInitializer = new TracingInitializer(2);
+	TracingInitializer *psgTracingInitializer = new TracingInitializer(4);
 
 	//! Utility class to keep track of trace indent
 	class TracerHelper

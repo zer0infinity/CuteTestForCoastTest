@@ -57,7 +57,7 @@ public:
 	}
 };
 
-static StringInitializer *psgStringInitializer = new StringInitializer(20);
+static StringInitializer *psgStringInitializer = new StringInitializer(1);
 
 void String::alloc(long capacity)
 {

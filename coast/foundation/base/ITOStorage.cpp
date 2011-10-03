@@ -19,34 +19,29 @@
 #endif
 
 
-MemChecker::MemChecker(const char *scope, Allocator *a)
-	: fAllocator( a )
-	, fSizeAllocated( ( a ? fAllocator->CurrentlyAllocated() : 0LL ) )
-	, fScope(scope)
-{
+MemChecker::MemChecker(const char *scope, Allocator *a) :
+		fAllocator(a), fSizeAllocated((a ? fAllocator->CurrentlyAllocated() : 0LL)), fScope(scope) {
 }
 
-MemChecker::~MemChecker()
-{
+MemChecker::~MemChecker() {
 	TraceDelta("MemChecker.~MemChecker: ");
-}//lint !e1579
+} //lint !e1579
 
-void MemChecker::TraceDelta(const char *message)
-{
+void MemChecker::TraceDelta(const char *message) {
 	l_long delta = CheckDelta();
-	if ( delta != 0 ) {
-		char msgbuf[1024] = {'\0'};
+	if (delta != 0) {
+		char msgbuf[1024] = { '\0' };
 		if (message) {
-			SystemLog::WriteToStderr( message, strlen(message));
+			SystemLog::WriteToStderr(message, strlen(message));
 		}
-		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double)delta, fScope, ( fAllocator ? fAllocator->GetId() : 0L ) );
-		SystemLog::WriteToStderr( msgbuf, bufsz );
+		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
+				(fAllocator ? fAllocator->GetId() : 0L));
+		SystemLog::WriteToStderr(msgbuf, bufsz);
 	}
 }
 
-l_long MemChecker::CheckDelta()
-{
-	return ( fAllocator ? ( fAllocator->CurrentlyAllocated() - fSizeAllocated ) : 0LL );
+l_long MemChecker::CheckDelta() {
+	return (fAllocator ? (fAllocator->CurrentlyAllocated() - fSizeAllocated) : 0LL);
 }
 
 //------------- Utilities for Memory Tracking --------------
@@ -202,7 +197,7 @@ namespace Coast
 		namespace
 		{
 			//exchange this object when MT_Storage is used
-			StorageHooks *hooks = 0;  // exchange this object when MT_Storage is used
+			StorageHooks *fgTopHook = 0;  // exchange this object when MT_Storage is used
 
 			//flag to force global store temporarily
 			bool forceGlobal = false;
@@ -216,88 +211,80 @@ namespace Coast
 
 			// the global allocator
 			Allocator *globalPool = 0;
+			static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 		} // anonymous namespace
 
-		Allocator *Current()
-		{
-			if (hooks && !forceGlobal) {
-				return hooks->Current();
-			}
-			return DoGlobal();
-		}
-
-		Allocator *Global()
-		{
-			if (hooks && !forceGlobal) {
-				return hooks->Global();
-			}
-			return DoGlobal();
-		}
-
-		void Initialize()
-		{
-			DoInitialize();
-			if ( hooks && !forceGlobal ) {
-				hooks->Initialize();
-			}
-		}
-
-		void Finalize()
-		{
-			if (hooks && !forceGlobal) {
-				hooks->Finalize();
-			}
-			DoFinalize();
-		}
-
-		void DoInitialize()
-		{
+		void DoInitialize() {
 			static bool once = true;
 			if (once) {
 				const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
-				long lLevel = ( ( pEnvVar != 0 ) ? atol(pEnvVar) : 0 );
+				long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
 				statisticLevel = lLevel;
 				once = false;
 			}
 		}
 
-		void DoFinalize()
-		{
-			// terminate global allocator and force printing statistics above level 1
-			if ( GetStatisticLevel() >= 1 ) {
-				DoGlobal()->PrintStatistic(2);
+		void Initialize() {
+			DoInitialize();
+			if (fgTopHook && !forceGlobal) {
+				fgTopHook->Initialize();
 			}
 		}
 
-		void PrintStatistic(long lLevel)
-		{
-			DoGlobal()->PrintStatistic(lLevel);
-		}
-
-		Allocator *DoGlobal()
-		{
-			if ( !globalPool ) {
+		Allocator *DoGlobal() {
+			if (!globalPool) {
 				Initialize();
 				globalPool = new GlobalAllocator();
 			}
 			return globalPool;
 		}
 
-		StorageHooks *SetHooks(StorageHooks *h)
-		{
-			StorageHooks *pOldHook = hooks;
-			if ( hooks ) {
-				hooks->Finalize();
+		Allocator *Current() {
+			if (fgTopHook && !forceGlobal) {
+				return fgTopHook->Current();
 			}
-			if ( h == NULL && hooks ) {
-				hooks = hooks->GetOldHook();
-				pOldHook = hooks;
-			} else {
-				hooks = h;
-				if ( hooks != NULL ) {
-					hooks->Initialize();
-					hooks->SetOldHook(pOldHook);
-				}
+			return DoGlobal();
+		}
+
+		Allocator *Global() {
+			if (fgTopHook && !forceGlobal) {
+				return fgTopHook->Global();
+			}
+			return DoGlobal();
+		}
+
+		void DoFinalize() {
+			// terminate global allocator and force printing statistics above level 1
+			if (GetStatisticLevel() >= 1) {
+				DoGlobal()->PrintStatistic(2);
+			}
+		}
+
+		void Finalize() {
+			if (fgTopHook && !forceGlobal) {
+				fgTopHook->Finalize();
+			}
+			DoFinalize();
+		}
+
+		void PrintStatistic(long lLevel) {
+			DoGlobal()->PrintStatistic(lLevel);
+		}
+
+		void pushHook(StorageHooks *h) {
+			if (h == NULL) {
+				return;
+			}
+			h->SetOldHook(fgTopHook);
+			h->Initialize();
+			fgTopHook = h;
+		}
+
+		StorageHooks *popHook() {
+			StorageHooks *pOldHook = fgTopHook;
+			fgTopHook = fgTopHook->GetOldHook();
+			if (pOldHook) {
+				pOldHook->Finalize();
 			}
 			return pOldHook;
 		}
@@ -310,15 +297,13 @@ namespace Coast
 			forceGlobal = b;
 		}
 
-		MemTracker *DoMakeMemTracker(const char *name)
-		{
+		MemTracker *DoMakeMemTracker(const char *name) {
 			return new MemTracker(name);
 		}
 
-		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe)
-		{
-			if  (hooks && !forceGlobal) {
-				return hooks->MakeMemTracker(name, bThreadSafe);
+		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) {
+			if (fgTopHook && !forceGlobal) {
+				return fgTopHook->MakeMemTracker(name, bThreadSafe);
 			}
 			return DoMakeMemTracker(name);
 		}
@@ -326,40 +311,31 @@ namespace Coast
 
 	namespace Memory
 	{
-		Allocator*& allocatorFor(void* ptr) throw()
-		{
+		Allocator*& allocatorFor(void* ptr) throw () {
 			return (reinterpret_cast<Allocator **>(ptr))[0L];
 		}
 
-		void *realPtrFor(void *ptr) throw()
-		{
+		void *realPtrFor(void *ptr) throw () {
 			return reinterpret_cast<char *>(ptr) - AlignedSize<Allocator *>::value;
 		}
 
-		void safeFree(Allocator *a, void *ptr) throw()
-		{
+		void safeFree(Allocator *a, void *ptr) throw () {
 			if (ptr) {
-				a->Free(ptr);//lint !e1550
+				a->Free(ptr); //lint !e1550
 			}
 		}
 	} // namespace Memory
 } // namespace Coast
 
-//--- Allocator -------------------------------------------------
-Allocator::Allocator(long allocatorid)
-	: fAllocatorId(allocatorid)
-	, fRefCnt(0)
-	, fTracker(0)
-{
+Allocator::Allocator(long allocatorid) :
+		fAllocatorId(allocatorid), fRefCnt(0), fTracker(0) {
 }
 
-Allocator::~Allocator()
-{
+Allocator::~Allocator() {
 	Assert(0 == fRefCnt);
-}//lint !e1540
+} //lint !e1540
 
-void *Allocator::Calloc(int n, size_t size)
-{
+void *Allocator::Calloc(int n, size_t size) {
 	void *ret = Alloc(AllocSize(n, size));
 	if (ret && n * size > 0) {
 		memset(ret, 0, n * size);
@@ -367,36 +343,31 @@ void *Allocator::Calloc(int n, size_t size)
 	return ret;
 }
 
-void *Allocator::Malloc(size_t size)
-{
+void *Allocator::Malloc(size_t size) {
 	return Alloc(AllocSize(size, 1));
 }
 
-void Allocator::Refresh()
-{
+void Allocator::Refresh() {
 	// give the allocator opportunity to reorganize
 }
 
-size_t Allocator::AllocSize(size_t n, size_t size)
-{
+size_t Allocator::AllocSize(size_t n, size_t size) {
 	return (n * size) + Coast::Memory::AlignedSize<MemoryHeader>::value;
 }
 
-void *Allocator::ExtMemStart(void *vp)
-{
+void *Allocator::ExtMemStart(void *vp) {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *)(vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //fUsableSize does *not* include header //lint !e429
+		void *s = (((char *) (vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //fUsableSize does *not* include header //lint !e429
 		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
 	return 0;
 }
 
-MemoryHeader *Allocator::RealMemStart(void *vp)
-{
-	if ( vp ) {
-		MemoryHeader *mh = (MemoryHeader *) (((char *)(vp)) - Coast::Memory::AlignedSize<MemoryHeader>::value);
+MemoryHeader *Allocator::RealMemStart(void *vp) {
+	if (vp) {
+		MemoryHeader *mh = (MemoryHeader *) (((char *) (vp)) - Coast::Memory::AlignedSize<MemoryHeader>::value);
 		if (mh->fMagic == MemoryHeader::gcMagic) {
 			return mh;
 		}
@@ -404,61 +375,49 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 	return 0;
 }
 
-//---- GlobalAllocator ------------------------------------------
-GlobalAllocator::GlobalAllocator()
-	: Allocator(11223344L)
-{
-	if ( Coast::Storage::GetStatisticLevel() >= 1 ) {
+GlobalAllocator::GlobalAllocator() :
+		Allocator(11223344L) {
+	if (Coast::Storage::GetStatisticLevel() >= 1) {
 		fTracker = Coast::Storage::MakeMemTracker("GlobalAllocator", false);
 		fTracker->SetId(fAllocatorId);
 	}
 }
 
-GlobalAllocator::~GlobalAllocator()
-{
-	if ( fTracker ) {
-		delete fTracker;//lint !e1551
+GlobalAllocator::~GlobalAllocator() {
+	if (fTracker) {
+		delete fTracker; //lint !e1551
 		fTracker = 0;
 	}
 }
 
-void GlobalAllocator::Free(void* p, size_t sz) {
-	Free(p);
-	(void)sz;
-}
-
-MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
-{
+MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t) {
 	MemTracker *pOld = fTracker;
 	fTracker = t;
 	return pOld;
 }
 
-ul_long GlobalAllocator::CurrentlyAllocated()
-{
-	if ( fTracker ) {
+ul_long GlobalAllocator::CurrentlyAllocated() {
+	if (fTracker) {
 		return fTracker->CurrentlyAllocated();
 	}
 	return 0LL;
 }
 
-void GlobalAllocator::PrintStatistic(long lLevel)
-{
-	if ( fTracker ) {
+void GlobalAllocator::PrintStatistic(long lLevel) {
+	if (fTracker) {
 		fTracker->PrintStatistic(lLevel);
 	}
 }
 
-void *GlobalAllocator::Alloc(size_t allocSize)
-{
+void *GlobalAllocator::Alloc(size_t allocSize) {
 	void *vp = ::malloc(allocSize);
 
 	if (vp) {
-		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
-		if ( fTracker ) {
+		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
+		if (fTracker) {
 			fTracker->TrackAlloc(mh);
 		}
-		return ExtMemStart(mh);//lint !e593//lint !e429
+		return ExtMemStart(mh); //lint !e593//lint !e429
 	} else {
 		static char crashmsg[255] = { 0 };
 		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
@@ -468,14 +427,18 @@ void *GlobalAllocator::Alloc(size_t allocSize)
 	return 0;
 }
 
-void GlobalAllocator::Free(void *vp)
-{
-	if ( vp ) {
+void GlobalAllocator::Free(void* p, size_t sz) {
+	Free(p);
+	(void) sz;
+}
+
+void GlobalAllocator::Free(void *vp) {
+	if (vp) {
 		MemoryHeader *header = RealMemStart(vp);
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
-			if ( fTracker ) {
+			if (fTracker) {
 				fTracker->TrackFree(header);
 			}
 			vp = header;
@@ -484,94 +447,69 @@ void GlobalAllocator::Free(void *vp)
 	}
 }
 
-Allocator *TestStorageHooks::Global()
-{
+Allocator *TestStorageHooks::Global() {
 	return Coast::Storage::DoGlobal();
 }
 
-Allocator *TestStorageHooks::Current()
-{
+Allocator *TestStorageHooks::Current() {
 	if (fAllocator) {
 		return fAllocator;
 	}
-
 	return Coast::Storage::DoGlobal();
 }
 
-void TestStorageHooks::Initialize()
-{
+TestStorageHooks::TestStorageHooks(Allocator *wdallocator) :
+		fAllocator(wdallocator) {
+	Coast::Storage::pushHook(this);
 }
 
-void TestStorageHooks::Finalize()
-{
-}
-
-TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
-	: fAllocator(wdallocator)
-	, fpOldHook(0)
-{
-	fpOldHook = Coast::Storage::SetHooks(this);
-}
-
-TestStorageHooks::~TestStorageHooks()
-{
-	StorageHooks *pHook = Coast::Storage::SetHooks(0);
-	(void)pHook;
-	Assert( pHook == fpOldHook && "another Coast::Storage::SetHook() was called without restoring old Hook!");
+TestStorageHooks::~TestStorageHooks() {
+	StorageHooks *pHook = Coast::Storage::popHook();
+	(void) pHook;
+	Assert( pHook != this && "another Coast::Storage::SetHook() was called without restoring old Hook!");
 	fAllocator = 0;
-	fpOldHook = 0;
 }
 
-MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)
-{
+MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool) {
 	return new MemTracker(name);
 }
 
-char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes)
-{
+char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes) {
 	return reinterpret_cast<char *>(Coast::Storage::Global()->Malloc(bytes));
 }
 
-void ITOStorage::BoostPoolUserAllocatorGlobal::free(char *const block)
-{
+void ITOStorage::BoostPoolUserAllocatorGlobal::free(char * const block) {
 	Coast::Storage::Global()->Free(block);
 }
 
-char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
-{
+char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes) {
 	return reinterpret_cast<char *>(Coast::Storage::Current()->Malloc(bytes));
 }
 
-void ITOStorage::BoostPoolUserAllocatorCurrent::free(char *const block)
-{
+void ITOStorage::BoostPoolUserAllocatorCurrent::free(char * const block) {
 	Coast::Storage::Current()->Free(block);
 }
 
-Allocator *FoundationStorageHooks::Global()
-{
+Allocator *FoundationStorageHooks::Global() {
 	return Coast::Storage::DoGlobal();
 }
 
-MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool)
-{
+MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool) {
 	return new MemTracker(name);
 }
 
-Allocator *FoundationStorageHooks::Current()
-{
+Allocator *FoundationStorageHooks::Current() {
 	return Global();
 }
 
-void FoundationStorageHooks::Initialize()
-{
-	if ( !fgInitialized ) {
+void FoundationStorageHooks::Initialize() {
+	if (!fgInitialized) {
 		fgInitialized = true;
 	}
 }
 
-void FoundationStorageHooks::Finalize()
-{
-	if ( fgInitialized ) {
+void FoundationStorageHooks::Finalize() {
+	if (fgInitialized) {
 		fgInitialized = false;
 	}
 }

@@ -12,8 +12,6 @@
 #include "TestCase.h"
 
 class Allocator;
-class PoolAllocator;
-class GlobalAllocator;
 
 //---- MTStorageTest2 ----------------------------------------------------------
 //!Test driver for tracing facility

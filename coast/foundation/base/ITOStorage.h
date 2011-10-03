@@ -416,7 +416,10 @@ namespace Coast
 		long GetStatisticLevel();
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		StorageHooks *SetHooks(StorageHooks *h);
+		void pushHook(StorageHooks *h);
+
+		//! used by mt system to redefine the hooks for mt-local storage policy
+		StorageHooks *popHook();
 
 		//!temporarily disable thread local storage policies e.g. to reinitialize server
 		void ForceGlobalStorage(bool b);
@@ -436,21 +439,20 @@ namespace Coast
 } // namespace Coast
 
 
-class TestStorageHooks : public StorageHooks
-{
+class TestStorageHooks: public StorageHooks {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);
+	Allocator *fAllocator;
 public:
 	TestStorageHooks(Allocator *allocator);
 	virtual ~TestStorageHooks();
-	virtual void Initialize();
-	virtual void Finalize();
+	virtual void Initialize() {
+	}
+	virtual void Finalize() {
+	}
 	virtual Allocator *Global();
 	virtual Allocator *Current();
 	virtual MemTracker *MakeMemTracker(const char *name, bool);
-
-	Allocator *fAllocator;
-	StorageHooks *fpOldHook;//lint !e1516
 };
 
 #endif		//not defined _ITOStorage_H

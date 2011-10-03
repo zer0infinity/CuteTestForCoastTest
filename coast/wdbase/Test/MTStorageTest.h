@@ -12,10 +12,6 @@
 #include "TestCase.h"
 #include "Threads.h"
 
-class Allocator;
-class PoolAllocator;
-class GlobalAllocator;
-
 //---- MTStorageTest ----------------------------------------------------------
 //!Test driver for tracing facility
 class MTStorageTest: public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer {
