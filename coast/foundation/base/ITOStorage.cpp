@@ -172,24 +172,6 @@ void MemTracker::PrintStatistic(long lLevel)
 }
 
 //---- Storage ------------------------------------------
-class StorageInitializer : public InitFinisManagerFoundation
-{
-public:
-	StorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
-		IFMTrace("StorageInitializer created\n");
-	}
-
-	virtual void DoInit() {
-		IFMTrace("Storage::Initialize\n");
-		Coast::Storage::Initialize();
-	}
-	virtual void DoFinis() {
-		IFMTrace("Storage::Finalize\n");
-		Coast::Storage::Finalize();
-	}
-};
-
 namespace Coast
 {
 	namespace Storage
@@ -211,7 +193,6 @@ namespace Coast
 
 			// the global allocator
 			Allocator *globalPool = 0;
-			static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 		} // anonymous namespace
 
 		void DoInitialize() {
@@ -326,6 +307,27 @@ namespace Coast
 		}
 	} // namespace Memory
 } // namespace Coast
+
+class StorageInitializer : public InitFinisManagerFoundation {
+public:
+	StorageInitializer(unsigned int uiPriority)
+		: InitFinisManagerFoundation(uiPriority) {
+		IFMTrace("StorageInitializer created\n");
+	}
+
+	virtual void DoInit() {
+		IFMTrace("Storage::Initialize\n");
+		Coast::Storage::Initialize();
+	}
+	virtual void DoFinis() {
+		IFMTrace("Storage::Finalize\n");
+		Coast::Storage::Finalize();
+	}
+};
+
+namespace {
+	static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
+}
 
 Allocator::Allocator(long allocatorid) :
 		fAllocatorId(allocatorid), fRefCnt(0), fTracker(0) {

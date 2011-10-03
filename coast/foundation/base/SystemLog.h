@@ -11,11 +11,6 @@
 
 #include "ITOString.h"//lint !e537
 
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
-//--- SystemLog ----------------------------------------------------------
 /*! <b>API for syslog access</b>
 This is the Coast system logging API. It is used for system-level and application-level logging.
 The values of <tt>COAST_LOGONCERR</tt> and <tt>COAST_DOLOG</tt> control the level of severities shown either on the console or in the syslog. Possible values are:
@@ -148,30 +143,5 @@ private:
 	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Alert(strFileLineMsg); }
 
-#if defined(WIN32)
-//! implementation of SystemLog api for WIN32
-class Win32SysLog : public SystemLog
-{
-public:
-	Win32SysLog(const char *appId);
-	~Win32SysLog();
-
-protected:
-	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-
-	HANDLE fLogHandle;
-};
-#else
-//! implementation for Unix syslog api
-class UnixSysLog : public SystemLog
-{
-public:
-	UnixSysLog(const char *appId);
-	~UnixSysLog();
-
-protected:
-	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-};
-#endif
 
 #endif		//not defined _SystemLog_H

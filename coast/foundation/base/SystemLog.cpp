@@ -12,18 +12,45 @@
 #include <cstdio>
 #include <cstring>
 #if defined(WIN32)
+#include <windows.h>
 #define IOSTREAM_IS_THREADSAFE
 #include <iostream>
 #else
 #include <syslog.h>
 #endif
 
-using namespace Coast;
 //--- SystemLog ----------------------------------------------------------
 SystemLog *SystemLog::fgSysLog = 0;
 SystemLog::eLogLevel SystemLog::fgDoSystemLevelLog = SystemLog::eALERT;
 SystemLog::eLogLevel SystemLog::fgDoLogOnCerr = SystemLog::eERR;
 
+#if defined(WIN32)
+//! implementation of SystemLog api for WIN32
+class Win32SysLog : public SystemLog
+{
+public:
+	Win32SysLog(const char *appId);
+	~Win32SysLog();
+
+protected:
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
+
+	HANDLE fLogHandle;
+};
+#else
+//! implementation for Unix syslog api
+class UnixSysLog : public SystemLog
+{
+public:
+	UnixSysLog(const char *appId);
+	~UnixSysLog();
+
+protected:
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
+};
+#endif
+
+using namespace Coast;
 //--- module initialization/termination
 void SystemLog::Init(const char *appId) {
 	// beware this is not thread safe
@@ -39,13 +66,13 @@ void SystemLog::Init(const char *appId) {
 	}
 
 	String strValue = System::EnvGet("COAST_DOLOG");
-	int iValue = static_cast<int>(strValue.AsLong(eNone));if
-(	( eNone < iValue ) && ( iValue < eLast ) ) {
+	int iValue = static_cast<int>(strValue.AsLong(eNone));
+	if ((eNone < iValue) && (iValue < eLast)) {
 		fgDoSystemLevelLog = static_cast<eLogLevel>(iValue);
 	}
 	strValue = System::EnvGet("COAST_LOGONCERR");
-	iValue = static_cast<int>(strValue.AsLong(eNone));if
-(	( eNone < iValue ) && ( iValue < eLast ) ) {
+	iValue = static_cast<int>(strValue.AsLong(eNone));
+	if ((eNone < iValue) && (iValue < eLast)) {
 		fgDoLogOnCerr = static_cast<eLogLevel>(iValue);
 	}
 

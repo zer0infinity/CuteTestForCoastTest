@@ -205,13 +205,13 @@ namespace {
 				return filepath;
 			}
 			// reset filepath and try next path
-			filepath = 0;
+			filepath.clear();
 		}
 		return filepath;
 	}
 
 	String buildFilename(const char *name, const char *extension) {
-		String filename(name);
+		String filename = name;
 		if (extension && strlen(extension) > 0) {
 			filename.Append('.').Append(extension);
 		}
@@ -434,8 +434,7 @@ namespace Coast {
 		// on WIN32, convert to correct drive notation and use only one kind of slashes
 		void ResolvePath(String &path)
 		{
-			String newPath = "";
-			if (!path.Length()) {
+			if ( path.empty() ) {
 				return;
 			}
 			// remember where the real path segmnent starts, needed especially for WIN32
@@ -449,9 +448,9 @@ namespace Coast {
 				StripDriveLetter(path);
 			}
 		#endif
-
+			String newPath;
 			if (IsAbsolutePath(path)) {
-				newPath << '/';
+				newPath.Append('/');
 			}
 
 		#if defined(WIN32)
@@ -469,9 +468,9 @@ namespace Coast {
 			bool boTok = myTok(token);
 			while (boTok) {
 				boTok = myTok(nxtoken);
-				if (token == ".") {
+				if (token.IsEqual(".")) {
 					// skip current path tokens
-				} else if (token == "..") {
+				} else if (token.IsEqual("..")) {
 					long idx = newPath.StrRChr('/');
 					if (idx == 0) {
 						// do not go beyond root, trim to first slash
@@ -484,28 +483,26 @@ namespace Coast {
 					} else {
 						// probably no slash found, seems to be a relative path
 						// reset the path because the back movement made it obsolete
-						if (newPath.Length()) {
-							newPath = "";
-						}
+						newPath.clear();
 					}
-				} else if (!token.Length()) {
+				} else if (token.empty()) {
 					// skip empty token
-					if (!boTok && newPath.Length() && newPath[newPath.Length()-1L] != '/') {
-						newPath << '/';
+					if (!boTok && not newPath.empty() > 0L && newPath[newPath.Length()-1L] != '/') {
+						newPath.Append('/');
 					}
 				} else {
 					// regular token
-					if (newPath.Length() && newPath[newPath.Length()-1L] != '/') {
+					if (not newPath.empty() && newPath[newPath.Length()-1L] != '/') {
 						newPath.Append('/');
 					}
 					newPath.Append(token);
 				}
 				token = nxtoken;
-				nxtoken = "";
+				nxtoken.clear();
 			}
-			if (drive.Length()) {
+			if (not drive.empty()) {
 				// prepend drive letter if any
-				drive << newPath;
+				drive.Append(newPath);
 				newPath = drive;
 			}
 			path = newPath;
@@ -572,11 +569,11 @@ namespace Coast {
 		{
 			String buf(4096L);
 			cwd = ".";
-			if (!getcwd((char *)(const char *)buf, buf.Capacity())) {
+			if (!getcwd((char *)buf.cstr(), buf.Capacity())) {
 				SystemLog::Alert("puh, cannot obtain current working directory" );
 				return;
 			} else {
-				cwd = String((void *)(const char *)buf, strlen((const char *)buf));
+				cwd = String((void *)buf.cstr(), strlen(buf.cstr()));
 				ResolvePath(cwd);
 			}
 		}
@@ -745,7 +742,7 @@ namespace Coast {
 
 		String GetFilePathOrInput(const String &relpath)
 		{
-			String foundpath( GetFilePath(relpath) );
+			String foundpath = GetFilePath(relpath);
 			if ( foundpath.Length() > 0L ) {
 				return foundpath;
 			}
@@ -777,7 +774,7 @@ namespace Coast {
 				// no search path given, default is to use PATH variable
 				envPATH = EnvGet("PATH");
 				Trace("using sysPath [" << envPATH << "]");
-				path = (const char *)envPATH;
+				path = envPATH.cstr();
 			}
 			// returns needed buffersize exclusive terminating null
 			long lBufSize = SearchPath(
@@ -899,12 +896,12 @@ namespace Coast {
 
 		const char *GetRootDir()
 		{
-			return (const char *) fgRootDir;
+			return fgRootDir.cstr();
 		}
 
 		const char *GetPathList()
 		{
-			return (const char *) fgPathList;
+			return fgPathList.cstr();
 		}
 
 		Anything DirFileList(const char *dir, const char *extension)
@@ -929,7 +926,7 @@ namespace Coast {
 
 			searchPath << Sep() << "*" << strExtension;
 			// Start searching for (.html) files in the directory.
-			hSearch = FindFirstFile((const char *)searchPath, &FileData);
+			hSearch = FindFirstFile(searchPath.cstr(), &FileData);
 			if (hSearch == INVALID_HANDLE_VALUE) {
 				return list;
 			}

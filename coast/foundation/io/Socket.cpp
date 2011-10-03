@@ -17,6 +17,7 @@ using namespace Coast;
 
 #include <cstring>
 #if defined (WIN32)
+#include <windows.h>
 #include <io.h>
 #else
 #include <errno.h> /* PS wg. SUNCC5 */

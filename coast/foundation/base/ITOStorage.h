@@ -390,12 +390,6 @@ namespace Coast
 
 	namespace Storage
 	{
-		//!initalize memory management depending on memory management strategy set
-		void Initialize();
-
-		//!cleanup memory management
-		void Finalize();
-
 		//!prints memory management statistics
 		void PrintStatistic(long lLevel = -1);
 
@@ -426,12 +420,6 @@ namespace Coast
 
 		//!access the global allocator
 		Allocator *DoGlobal();
-
-		//!do nothing; print statistics
-		void DoInitialize();
-
-		//!do nothing; print statistics
-		void DoFinalize();
 
 		//!factory method to allocate MemTracker
 		MemTracker *DoMakeMemTracker(const char *name);
