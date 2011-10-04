@@ -171,23 +171,50 @@ void MT_MemTracker::PrintStatistic(long lLevel)
 }
 
 class MTStorageHooks: public StorageHooks {
+	bool fgInitialized;
 public:
 	MTStorageHooks() :
 			fgInitialized(false) {
 	}
-	virtual void Initialize();
-	virtual void Finalize();
-	virtual Allocator *Global();
-	virtual Allocator *Current();
+protected:
+	virtual void DoInitialize() {
+		if (!fgInitialized) {
+			fgInitialized = true;
+		}
+	}
+
+	virtual void DoFinalize() {
+		if (fgInitialized) {
+			fgInitialized = false;
+		}
+	}
+	virtual Allocator *DoGlobal() {
+		return Coast::Storage::DoGlobal();
+	}
+	virtual Allocator *DoCurrent() {
+		if (fgInitialized) {
+			Allocator *wdallocator = 0;
+			// determine which allocator to use
+			if (GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator) && wdallocator) {
+				return wdallocator;
+			}
+		}
+		return Global();
+	}
 
 	/*! allocate a memory tracker object
 	 \param name name of the tracker
 	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
 	 \return poniter to a newly created MemTracker object */
-	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
-
-private:
-	bool fgInitialized;
+	virtual MemTracker *DoMakeMemTracker(const char *name, bool bThreadSafe) {
+		MemTracker *pTracker = NULL;
+		if (bThreadSafe) {
+			pTracker = new MT_MemTracker(name, 55667788);
+		} else {
+			pTracker = Coast::Storage::DoMakeMemTracker(name);
+		}
+		return pTracker;
+	}
 };
 
 MemTracker *MT_Storage::fOldTracker = NULL;
@@ -412,41 +439,4 @@ Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoo
 		newPoolAllocator = 0;
 	}
 	return newPoolAllocator;
-}
-
-MemTracker *MTStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe) {
-	MemTracker *pTracker = NULL;
-	if (bThreadSafe) {
-		pTracker = new MT_MemTracker(name, 55667788);
-	} else {
-		pTracker = Coast::Storage::DoMakeMemTracker(name);
-	}
-	return pTracker;
-}
-
-Allocator *MTStorageHooks::Global() {
-	return Coast::Storage::DoGlobal();
-}
-
-Allocator *MTStorageHooks::Current() {
-	if (fgInitialized) {
-		Allocator *wdallocator = 0;
-		// determine which allocator to use
-		if (GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator) && wdallocator) {
-			return wdallocator;
-		}
-	}
-	return Global();
-}
-
-void MTStorageHooks::Initialize() {
-	if (!fgInitialized) {
-		fgInitialized = true;
-	}
-}
-
-void MTStorageHooks::Finalize() {
-	if (fgInitialized) {
-		fgInitialized = false;
-	}
 }

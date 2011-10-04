@@ -171,7 +171,6 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
-//---- Storage ------------------------------------------
 namespace Coast
 {
 	namespace Storage
@@ -195,18 +194,7 @@ namespace Coast
 			Allocator *globalPool = 0;
 		} // anonymous namespace
 
-		void DoInitialize() {
-			static bool once = true;
-			if (once) {
-				const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
-				long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
-				statisticLevel = lLevel;
-				once = false;
-			}
-		}
-
 		void Initialize() {
-			DoInitialize();
 			if (fgTopHook && !forceGlobal) {
 				fgTopHook->Initialize();
 			}
@@ -317,6 +305,9 @@ public:
 
 	virtual void DoInit() {
 		IFMTrace("Storage::Initialize\n");
+		const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
+		long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
+		Coast::Storage::statisticLevel = lLevel;
 		Coast::Storage::Initialize();
 	}
 	virtual void DoFinis() {
@@ -330,7 +321,7 @@ namespace {
 }
 
 Allocator::Allocator(long allocatorid) :
-		fAllocatorId(allocatorid), fRefCnt(0), fTracker(0) {
+		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker()) {
 }
 
 Allocator::~Allocator() {
@@ -380,35 +371,27 @@ MemoryHeader *Allocator::RealMemStart(void *vp) {
 GlobalAllocator::GlobalAllocator() :
 		Allocator(11223344L) {
 	if (Coast::Storage::GetStatisticLevel() >= 1) {
-		fTracker = Coast::Storage::MakeMemTracker("GlobalAllocator", false);
+		fTracker = MemTrackerPtr(Coast::Storage::MakeMemTracker("GlobalAllocator", false));
 		fTracker->SetId(fAllocatorId);
 	}
 }
 
 GlobalAllocator::~GlobalAllocator() {
-	if (fTracker) {
-		delete fTracker; //lint !e1551
-		fTracker = 0;
-	}
+	fTracker.reset();
 }
 
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t) {
-	MemTracker *pOld = fTracker;
-	fTracker = t;
+	MemTracker *pOld = fTracker.get();
+	fTracker = Allocator::MemTrackerPtr(t);
 	return pOld;
 }
 
 ul_long GlobalAllocator::CurrentlyAllocated() {
-	if (fTracker) {
-		return fTracker->CurrentlyAllocated();
-	}
-	return 0LL;
+	return fTracker->CurrentlyAllocated();
 }
 
 void GlobalAllocator::PrintStatistic(long lLevel) {
-	if (fTracker) {
-		fTracker->PrintStatistic(lLevel);
-	}
+	fTracker->PrintStatistic(lLevel);
 }
 
 void *GlobalAllocator::Alloc(size_t allocSize) {
@@ -416,9 +399,7 @@ void *GlobalAllocator::Alloc(size_t allocSize) {
 
 	if (vp) {
 		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
-		if (fTracker) {
-			fTracker->TrackAlloc(mh);
-		}
+		fTracker->TrackAlloc(mh);
 		return ExtMemStart(mh); //lint !e593//lint !e429
 	} else {
 		static char crashmsg[255] = { 0 };
@@ -440,40 +421,11 @@ void GlobalAllocator::Free(void *vp) {
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
-			if (fTracker) {
-				fTracker->TrackFree(header);
-			}
+			fTracker->TrackFree(header);
 			vp = header;
 		}
 		::free(vp);
 	}
-}
-
-Allocator *TestStorageHooks::Global() {
-	return Coast::Storage::DoGlobal();
-}
-
-Allocator *TestStorageHooks::Current() {
-	if (fAllocator) {
-		return fAllocator;
-	}
-	return Coast::Storage::DoGlobal();
-}
-
-TestStorageHooks::TestStorageHooks(Allocator *wdallocator) :
-		fAllocator(wdallocator) {
-	Coast::Storage::pushHook(this);
-}
-
-TestStorageHooks::~TestStorageHooks() {
-	StorageHooks *pHook = Coast::Storage::popHook();
-	(void) pHook;
-	Assert( pHook != this && "another Coast::Storage::SetHook() was called without restoring old Hook!");
-	fAllocator = 0;
-}
-
-MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool) {
-	return new MemTracker(name);
 }
 
 char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes) {
@@ -490,28 +442,4 @@ char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes) {
 
 void ITOStorage::BoostPoolUserAllocatorCurrent::free(char * const block) {
 	Coast::Storage::Current()->Free(block);
-}
-
-Allocator *FoundationStorageHooks::Global() {
-	return Coast::Storage::DoGlobal();
-}
-
-MemTracker *FoundationStorageHooks::MakeMemTracker(const char *name, bool) {
-	return new MemTracker(name);
-}
-
-Allocator *FoundationStorageHooks::Current() {
-	return Global();
-}
-
-void FoundationStorageHooks::Initialize() {
-	if (!fgInitialized) {
-		fgInitialized = true;
-	}
-}
-
-void FoundationStorageHooks::Finalize() {
-	if (fgInitialized) {
-		fgInitialized = false;
-	}
 }

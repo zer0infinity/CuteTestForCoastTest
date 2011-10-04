@@ -90,11 +90,11 @@ public:
 
 protected:
 	//!tracks the currently allocated size in bytes, and the peek allocated size
-	ul_long  fAllocated, fMaxAllocated;
+	ul_long fAllocated, fMaxAllocated;
 	//!tracks the number and maximum of allocated bytes
-	ul_long  fNumAllocs, fSizeAllocated;
+	ul_long fNumAllocs, fSizeAllocated;
 	//!tracks the number and maximum of freed bytes
-	ul_long  fNumFrees, fSizeFreed;
+	ul_long fNumFrees, fSizeFreed;
 
 private:
 	MemTracker();
@@ -107,6 +107,21 @@ private:
 	const char *fpName;
 	//! list to store used MemoryHeaders
 	UsedListTypePtr fpUsedList;
+};
+
+class NullMemTracker : public MemTracker {
+public:
+	NullMemTracker() : MemTracker("NullMemTracker") {}
+	NullMemTracker(const char *) : MemTracker("NullMemTracker") {}
+
+	//!tracks allocation; chunk allocated has allocSz
+	virtual void TrackAlloc(MemoryHeader *) {}
+
+	//!tracks free; chunk freed has allocSz
+	virtual void TrackFree(MemoryHeader *) {}
+
+	//!prints statistic of allocated and freed bytes
+	virtual void PrintStatistic(long) {}
 };
 
 //!helper class to check for memory leaks
@@ -146,10 +161,12 @@ protected:
 
 #define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TriggerEnabled(trigger) ) { pAlloc->PrintStatistic(level); }
 
+#include <boost/shared_ptr.hpp>
+
 //! Base class for memory allocation policies
-class Allocator
-{
+class Allocator {
 public:
+	typedef boost::shared_ptr<MemTracker> MemTrackerPtr;
 	Allocator(long allocatorid);
 	virtual ~Allocator();
 
@@ -176,15 +193,15 @@ public:
 	virtual void Free(void *vp) = 0;
 
 	//!refcounting support
-	virtual void Ref() 		{
+	virtual void Ref() {
 		++fRefCnt;
 	}
 	//!refcounting support
-	virtual void Unref() 	{
+	virtual void Unref() {
 		--fRefCnt;
 	}
 	//!refcounting support
-	virtual long RefCnt()	{
+	virtual long RefCnt() const {
 		return fRefCnt;
 	}
 
@@ -247,7 +264,7 @@ protected:
 	long fRefCnt;
 
 	//!tracks allocation and deallocation of memory
-	MemTracker *fTracker;
+	MemTrackerPtr fTracker;
 };
 
 //!manages storage using the built-in C API and does some statistic
@@ -269,7 +286,7 @@ public:
 	virtual void Free(void *vp, size_t sz);
 
 	//!reference counting is disabled global allocator always exists (but only once)
-	virtual long RefCnt()	{
+	virtual long RefCnt() const {
 		return 1;
 	}
 
@@ -288,61 +305,7 @@ protected:
 	friend class MemChecker;
 };
 
-//!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
-class StorageHooks
-{
-	StorageHooks(const StorageHooks &);
-	StorageHooks &operator=(const StorageHooks &);
-public:
-	StorageHooks()
-		: fpOldHook(0) {};
-
-	virtual ~StorageHooks() {
-		fpOldHook = 0;
-	};
-
-	//!initialize storage subsystem
-	virtual void Initialize() = 0;
-
-	//!finalize storage subsystem
-	virtual void Finalize() = 0;
-
-	//!access global allocator
-	virtual Allocator *Global() = 0;
-
-	//!access allocator set for current context (e.g. thread)
-	virtual Allocator *Current() = 0;
-
-	/*! allocate a memory tracker object
-		\param name name of the tracker
-		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-		\return poniter to a newly created MemTracker object */
-	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) = 0;
-
-	void SetOldHook(StorageHooks *pOld) {
-		fpOldHook = pOld;
-	}
-
-	StorageHooks *GetOldHook() {
-		return fpOldHook;
-	}
-
-private:
-	StorageHooks *fpOldHook;
-};
-
-class FoundationStorageHooks: public StorageHooks {
-	bool fgInitialized;
-public:
-	FoundationStorageHooks() :
-		fgInitialized(false) {
-	}
-	virtual void Initialize();
-	virtual void Finalize();
-	virtual Allocator *Global();
-	virtual Allocator *Current();
-	virtual MemTracker *MakeMemTracker(const char *name, bool);
-};
+class StorageHooks;
 
 namespace Coast
 {
@@ -400,21 +363,131 @@ namespace Coast
 	} // namespace Storage
 } // namespace Coast
 
+//!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
+class StorageHooks {
+	StorageHooks(const StorageHooks &);
+	StorageHooks &operator=(const StorageHooks &);
+	StorageHooks *fParentHook;
+public:
+	StorageHooks() :
+			fParentHook(0) {
+	}
+
+	virtual ~StorageHooks() {
+		fParentHook = 0;
+	}
+
+	//!initialize storage subsystem
+	void Initialize() {
+		DoInitialize();
+	}
+	//!finalize storage subsystem
+	void Finalize() {
+		DoFinalize();
+	}
+	//!access global allocator
+	Allocator *Global() {
+		return DoGlobal();
+	}
+	//!access allocator set for current context (e.g. thread)
+	Allocator *Current() {
+		return DoCurrent();
+	}
+
+	/*! allocate a memory tracker object
+	 \param name name of the tracker
+	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+	 \return poniter to a newly created MemTracker object */
+	MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) {
+		return DoMakeMemTracker(name, bThreadSafe);
+	}
+
+	void SetOldHook(StorageHooks *pOld) {
+		fParentHook = pOld;
+	}
+
+	StorageHooks *GetOldHook() {
+		return fParentHook;
+	}
+
+protected:
+	//!initialize storage subsystem
+	virtual void DoInitialize() = 0;
+
+	//!finalize storage subsystem
+	virtual void DoFinalize() = 0;
+
+	//!access global allocator
+	virtual Allocator *DoGlobal() = 0;
+
+	//!access allocator set for current context (e.g. thread)
+	virtual Allocator *DoCurrent() = 0;
+
+	/*! allocate a memory tracker object
+	 \param name name of the tracker
+	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+	 \return poniter to a newly created MemTracker object */
+	virtual MemTracker *DoMakeMemTracker(const char *name, bool bThreadSafe) = 0;
+};
+
+#include <boost/shared_ptr.hpp>
+
+class FoundationStorageHooks: public StorageHooks {
+	typedef boost::shared_ptr<Allocator> AllocatorTypePtr;
+	AllocatorTypePtr fAllocator;
+public:
+	FoundationStorageHooks() : fAllocator(new GlobalAllocator()) {
+	}
+protected:
+	virtual void DoInitialize() {
+	}
+	virtual void DoFinalize() {
+	}
+	virtual Allocator *DoGlobal() {
+		return fAllocator.get();
+	}
+
+	virtual Allocator *DoCurrent() {
+		return fAllocator.get();
+	}
+	virtual MemTracker *DoMakeMemTracker(const char *name, bool) {
+		return new MemTracker(name);
+	}
+};
 
 class TestStorageHooks: public StorageHooks {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);
 	Allocator *fAllocator;
 public:
-	TestStorageHooks(Allocator *allocator);
-	virtual ~TestStorageHooks();
-	virtual void Initialize() {
+	TestStorageHooks(Allocator *wdallocator) :
+			fAllocator(wdallocator) {
+		Coast::Storage::pushHook(this);
 	}
-	virtual void Finalize() {
+	virtual ~TestStorageHooks() {
+		StorageHooks *pHook = Coast::Storage::popHook();
+		(void) pHook;
+		Assert( pHook != this && "another Coast::Storage::SetHook() was called without restoring old Hook!");
+		fAllocator = 0;
 	}
-	virtual Allocator *Global();
-	virtual Allocator *Current();
-	virtual MemTracker *MakeMemTracker(const char *name, bool);
+protected:
+	virtual void DoInitialize() {
+	}
+	virtual void DoFinalize() {
+	}
+	virtual Allocator *DoGlobal() {
+		return Coast::Storage::DoGlobal();
+	}
+	virtual Allocator *DoCurrent() {
+		if (fAllocator) {
+			return fAllocator;
+		}
+		return Coast::Storage::DoGlobal();
+	}
+
+	virtual MemTracker *DoMakeMemTracker(const char *name, bool) {
+		return new MemTracker(name);
+	}
 };
 
 #endif		//not defined _ITOStorage_H
