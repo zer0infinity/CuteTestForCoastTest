@@ -171,6 +171,30 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
+namespace {
+	class StorageInitializer : public InitFinisManagerFoundation {
+		/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
+						0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
+						1: Trace overall statistics
+						2: + trace detailed statistics
+						3: + keep track of allocated blocks to trace them in case they were not freed */
+		static long statisticLevel;
+	public:
+		StorageInitializer(unsigned int uiPriority)
+			: InitFinisManagerFoundation(uiPriority) {
+			IFMTrace("StorageInitializer created\n");
+		}
+
+		virtual void DoInit();
+		virtual void DoFinis();
+		long GetStatisticLevel() {
+			return statisticLevel;
+		}
+	};
+	long StorageInitializer::statisticLevel = 0L;
+	static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
+}
+
 namespace Coast
 {
 	namespace Storage
@@ -182,13 +206,6 @@ namespace Coast
 
 			//flag to force global store temporarily
 			bool forceGlobal = false;
-
-			/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
-							0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
-							1: Trace overall statistics
-							2: + trace detailed statistics
-							3: + keep track of allocated blocks to trace them in case they were not freed */
-			long statisticLevel = 0L;
 
 			// the global allocator
 			Allocator *globalPool = 0;
@@ -259,7 +276,7 @@ namespace Coast
 		}
 
 		long GetStatisticLevel() {
-			return statisticLevel;
+			return psgStorageInitializer->GetStatisticLevel();
 		}
 
 		void ForceGlobalStorage(bool b) {
@@ -296,28 +313,16 @@ namespace Coast
 	} // namespace Memory
 } // namespace Coast
 
-class StorageInitializer : public InitFinisManagerFoundation {
-public:
-	StorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
-		IFMTrace("StorageInitializer created\n");
-	}
-
-	virtual void DoInit() {
-		IFMTrace("Storage::Initialize\n");
-		const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
-		long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
-		Coast::Storage::statisticLevel = lLevel;
-		Coast::Storage::Initialize();
-	}
-	virtual void DoFinis() {
-		IFMTrace("Storage::Finalize\n");
-		Coast::Storage::Finalize();
-	}
-};
-
-namespace {
-	static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
+void StorageInitializer::DoInit() {
+	IFMTrace("Storage::Initialize\n");
+	const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
+	long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
+	statisticLevel = lLevel;
+	Coast::Storage::Initialize();
+}
+void StorageInitializer::DoFinis() {
+	IFMTrace("Storage::Finalize\n");
+	Coast::Storage::Finalize();
 }
 
 Allocator::Allocator(long allocatorid) :
