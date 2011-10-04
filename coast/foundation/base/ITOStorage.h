@@ -12,9 +12,7 @@
 #include "foundation.h"			// for definition of own types
 #include <sys/types.h>
 #include <cstdlib>
-#include <deque>
-
-class MemoryHeader;
+#include <vector>
 
 namespace ITOStorage {
 
@@ -36,14 +34,14 @@ namespace ITOStorage {
 	};
 }
 
+class MemoryHeader;
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
-class MemTracker
-{
+class MemTracker {
 	friend class MemoryHeader;
 	friend class MemTrackerTest;
 public:
-	typedef std::deque<MemoryHeader *> UsedListType;
+	typedef std::vector<MemoryHeader *> UsedListType;
 	typedef UsedListType *UsedListTypePtr;
 
 	MemTracker(const char *name);

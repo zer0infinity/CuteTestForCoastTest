@@ -9,6 +9,7 @@
 #include "ObjectList_rTest.h"
 #include "TestSuite.h"
 #include "ObjectList_r.h"
+#include <deque>
 
 #define OBJECTLISTMACRO(listtype, allocatortype)\
 {\

@@ -16,6 +16,7 @@
 #include "MT_Storage.h"
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <deque>
 #include <vector>
 #include <set>
 

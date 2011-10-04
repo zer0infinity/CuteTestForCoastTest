@@ -103,7 +103,7 @@ void MemTracker::TrackAlloc(MemoryHeader *mh)
 	fMaxAllocated = std::max(fMaxAllocated, fAllocated);
 	// only track used pool memory buckets
 	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
-		fpUsedList->push_front(mh);
+		fpUsedList->push_back(mh);
 	}
 }//lint !e429
 
