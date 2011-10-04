@@ -170,30 +170,24 @@ void MT_MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
-class MTStorageHooks : public StorageHooks
-{
+class MTStorageHooks: public StorageHooks {
 public:
-	MTStorageHooks();
-	virtual ~MTStorageHooks();
-
+	MTStorageHooks() :
+			fgInitialized(false) {
+	}
 	virtual void Initialize();
 	virtual void Finalize();
 	virtual Allocator *Global();
-
 	virtual Allocator *Current();
 
 	/*! allocate a memory tracker object
-		\param name name of the tracker
-		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-		\return poniter to a newly created MemTracker object */
+	 \param name name of the tracker
+	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+	 \return poniter to a newly created MemTracker object */
 	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
-
-	virtual void Lock() { fMutex.Lock(); }
-	virtual void Unlock() { fMutex.Unlock(); }
 
 private:
 	bool fgInitialized;
-    SimpleMutex fMutex;
 };
 
 MemTracker *MT_Storage::fOldTracker = NULL;
@@ -418,13 +412,6 @@ Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoo
 		newPoolAllocator = 0;
 	}
 	return newPoolAllocator;
-}
-
-MTStorageHooks::MTStorageHooks() :
-		fgInitialized(false), fMutex("MTStorageHooksGlobalAccessMutex", Coast::Storage::Global()) {
-}
-
-MTStorageHooks::~MTStorageHooks() {
 }
 
 MemTracker *MTStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe) {

@@ -326,32 +326,6 @@ public:
 	StorageHooks *GetOldHook() {
 		return fpOldHook;
 	}
-	virtual void Lock() {}
-	virtual void Unlock() {}
-
-	template <typename T>
-    class LockingProxy {
-    public:
-    	LockingProxy(T *t, StorageHooks *pH): fT(t), fHooks(pH) {
-    		fHooks->Lock();
-    	};
-
-    	T* operator->() const {
-    		return fT;
-    	}
-
-    	~LockingProxy() {
-    		fHooks->Unlock();
-    	}
-    private:
-    	T* fT;
-    	StorageHooks* fHooks;
-    };
-
-    template<typename T>
-    LockingProxy<T> LockedAccessFor(const T& t) {
-    	return LockingProxy<T>(&t, this);
-    }
 
 private:
 	StorageHooks *fpOldHook;
