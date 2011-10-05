@@ -171,28 +171,31 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
+#include <boost/pool/detail/singleton.hpp>
 namespace {
-	class StorageInitializer : public InitFinisManagerFoundation {
+	class StatisticLevelInitializer {
 		/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
 						0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
 						1: Trace overall statistics
 						2: + trace detailed statistics
 						3: + keep track of allocated blocks to trace them in case they were not freed */
-		static long statisticLevel;
+		long statisticLevel;
 	public:
-		StorageInitializer(unsigned int uiPriority)
-			: InitFinisManagerFoundation(uiPriority) {
-			IFMTrace("StorageInitializer created\n");
+		StatisticLevelInitializer() {
+			SystemLog::WriteToStderr("Storage::Initialize\n");
+			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
+			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
+			statisticLevel = lLevel;
 		}
-
-		virtual void DoInit();
-		virtual void DoFinis();
+		~StatisticLevelInitializer() {
+			SystemLog::WriteToStderr("Storage::Finalize\n");
+		}
 		long GetStatisticLevel() {
 			return statisticLevel;
 		}
 	};
-	long StorageInitializer::statisticLevel = 0L;
-	static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
+    typedef boost::details::pool::singleton_default<StatisticLevelInitializer> StatisticLevelInitializerSingleton;
+
 }
 
 namespace Coast
@@ -252,12 +255,15 @@ namespace Coast
 			}
 			DoFinalize();
 		}
+		long GetStatisticLevel() {
+			return StatisticLevelInitializerSingleton::instance().GetStatisticLevel();
+		}
 
 		void PrintStatistic(long lLevel) {
 			DoGlobal()->PrintStatistic(lLevel);
 		}
 
-		void pushHook(StorageHooks *h) {
+		void registerHooks(StorageHooks *h) {
 			if (h == NULL) {
 				return;
 			}
@@ -266,17 +272,13 @@ namespace Coast
 			fgTopHook = h;
 		}
 
-		StorageHooks *popHook() {
+		StorageHooks *unregisterHooks() {
 			StorageHooks *pOldHook = fgTopHook;
 			fgTopHook = fgTopHook->GetOldHook();
 			if (pOldHook) {
 				pOldHook->Finalize();
 			}
 			return pOldHook;
-		}
-
-		long GetStatisticLevel() {
-			return psgStorageInitializer->GetStatisticLevel();
 		}
 
 		void ForceGlobalStorage(bool b) {
@@ -312,18 +314,6 @@ namespace Coast
 		}
 	} // namespace Memory
 } // namespace Coast
-
-void StorageInitializer::DoInit() {
-	IFMTrace("Storage::Initialize\n");
-	const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
-	long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
-	statisticLevel = lLevel;
-	Coast::Storage::Initialize();
-}
-void StorageInitializer::DoFinis() {
-	IFMTrace("Storage::Finalize\n");
-	Coast::Storage::Finalize();
-}
 
 Allocator::Allocator(long allocatorid) :
 		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker()) {
@@ -382,7 +372,6 @@ GlobalAllocator::GlobalAllocator() :
 }
 
 GlobalAllocator::~GlobalAllocator() {
-	fTracker.reset();
 }
 
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t) {

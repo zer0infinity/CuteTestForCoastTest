@@ -268,7 +268,7 @@ void MT_Storage::Initialize()
 	// must be called before threading is activated
 	if ( !fgInitialized ) {
 		sgpMTHooks = new MTStorageHooks();
-		Coast::Storage::pushHook(sgpMTHooks);
+		Coast::Storage::registerHooks(sgpMTHooks);
 		// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
 		Allocator *a = Coast::Storage::Global();
 		if ( a && Coast::Storage::GetStatisticLevel() >= 1 ) {
@@ -308,7 +308,7 @@ void MT_Storage::Finalize()
 				fOldTracker = NULL;
 			}
 		}
-		StorageHooks *pOldHook = Coast::Storage::popHook();
+		StorageHooks *pOldHook = Coast::Storage::unregisterHooks();
 		if ( pOldHook == sgpMTHooks ) {
 			delete sgpMTHooks;
 			sgpMTHooks = NULL;

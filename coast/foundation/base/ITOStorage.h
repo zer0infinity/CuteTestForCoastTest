@@ -331,7 +331,7 @@ namespace Coast
 		/*! allocate a memory tracker object
 			\param name name of the tracker
 			\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-			\return poniter to a newly created MemTracker object */
+			\return pointer to a newly created MemTracker object */
 		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
 
 		//! get the global allocator
@@ -345,10 +345,10 @@ namespace Coast
 		long GetStatisticLevel();
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		void pushHook(StorageHooks *h);
+		void registerHooks(StorageHooks *h);
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		StorageHooks *popHook();
+		StorageHooks *unregisterHooks();
 
 		//!temporarily disable thread local storage policies e.g. to reinitialize server
 		void ForceGlobalStorage(bool b);
@@ -460,10 +460,10 @@ class TestStorageHooks: public StorageHooks {
 public:
 	TestStorageHooks(Allocator *wdallocator) :
 			fAllocator(wdallocator) {
-		Coast::Storage::pushHook(this);
+		Coast::Storage::registerHooks(this);
 	}
 	virtual ~TestStorageHooks() {
-		StorageHooks *pHook = Coast::Storage::popHook();
+		StorageHooks *pHook = Coast::Storage::unregisterHooks();
 		(void) pHook;
 		Assert( pHook != this && "another Coast::Storage::SetHook() was called without restoring old Hook!");
 		fAllocator = 0;
