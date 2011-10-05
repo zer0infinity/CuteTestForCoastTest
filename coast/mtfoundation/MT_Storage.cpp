@@ -7,7 +7,7 @@
  */
 
 #include "MT_Storage.h"
-#include "InitFinisManagerMTFoundation.h"
+#include "InitFinisManager.h"
 #include "Threads.h"
 #include "PoolAllocator.h"
 #include "SystemLog.h"
@@ -191,16 +191,7 @@ protected:
 	virtual Allocator *DoGlobal() {
 		return Coast::Storage::DoGlobal();
 	}
-	virtual Allocator *DoCurrent() {
-		if (fgInitialized) {
-			Allocator *wdallocator = 0;
-			// determine which allocator to use
-			if (GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator) && wdallocator) {
-				return wdallocator;
-			}
-		}
-		return Global();
-	}
+	virtual Allocator *DoCurrent();
 
 	/*! allocate a memory tracker object
 	 \param name name of the tracker
@@ -217,209 +208,186 @@ protected:
 	}
 };
 
-MemTracker *MT_Storage::fOldTracker = NULL;
-static MTStorageHooks *sgpMTHooks = NULL;
+#include <boost/pool/detail/singleton.hpp>
+#include <boost/shared_ptr.hpp>
 
-//---- MT_Storage ------------------------------------------
-THREADKEY MT_Storage::fgAllocatorKey = 0;
-SimpleMutex *MT_Storage::fgpAllocatorInit = NULL;
-bool MT_Storage::fgInitialized = false;
-
-struct AllocList {
-	Allocator *wdallocator;
-	AllocList *next;
-};
-
-static AllocList *fgPoolAllocatorList = 0;
-
-class MTStorageInitializer : public InitFinisManagerMTFoundation
-{
-public:
-	MTStorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerMTFoundation(uiPriority) {
-		IFMTrace("MTStorageInitializer created\n");
-	}
-
-	virtual void DoInit() {
-		IFMTrace("MTStorageInitializer::DoInit\n");
-		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
-			SystemLog::Error("TlsAlloc of MT_Storage::fgAllocatorKey failed");
+namespace {
+	struct AllocList {
+		Allocator *wdallocator;
+		AllocList *next;
+	};
+	class MTStorageInitializer {
+		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
+//		typedef boost::shared_ptr<StorageHooks> StorageHooksPtr;
+		typedef StorageHooks * StorageHooksPtr;
+		SimpleMutexPtr fAllocatorInit;
+		THREADKEY fAllocatorKey;
+		MemTracker *fOldTracker;
+		StorageHooksPtr fMTHooks;
+		AllocList *fPoolAllocatorList;
+		void Initialize() {
+			StatTrace(MT_Storage.Initialize, "entering", Coast::Storage::Global());
+			// must be called before threading is activated
+			fMTHooks = StorageHooksPtr(new MTStorageHooks());
+			Coast::Storage::registerHooks(fMTHooks);
+			// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
+			Allocator *a = Coast::Storage::Global();
+			if (a && Coast::Storage::GetStatisticLevel() >= 1) {
+				fOldTracker = a->ReplaceMemTracker(Coast::Storage::MakeMemTracker("MTGlobalAllocator", true));
+			}
+			StatTrace(MT_Storage.Initialize, "leaving", Coast::Storage::Global());
 		}
-		MT_Storage::fgpAllocatorInit = new SimpleMutex("AllocatorInit", Coast::Storage::Global());
-		MT_Storage::Initialize();
-	}
-
-	virtual void DoFinis() {
-		IFMTrace("MTStorageInitializer::DoFinis\n");
-		MT_Storage::Finalize();
-		delete MT_Storage::fgpAllocatorInit;
-		MT_Storage::fgpAllocatorInit = NULL;
-		if (THRKEYDELETE(MT_Storage::fgAllocatorKey) != 0) {
-			SystemLog::Error("TlsFree of MT_Storage::fgAllocatorKey failed" );
-		}
-	}
-};
-
-static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(5);
-
-void MT_Storage::Initialize()
-{
-	StatTrace(MT_Storage.Initialize, "entering", Coast::Storage::Global());
-	// must be called before threading is activated
-	if ( !fgInitialized ) {
-		sgpMTHooks = new MTStorageHooks();
-		Coast::Storage::registerHooks(sgpMTHooks);
-		// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
-		Allocator *a = Coast::Storage::Global();
-		if ( a && Coast::Storage::GetStatisticLevel() >= 1 ) {
-			fOldTracker = a->ReplaceMemTracker(Coast::Storage::MakeMemTracker("MTGlobalAllocator", true));
-		}
-		fgInitialized = true;
-	}
-	StatTrace(MT_Storage.Initialize, "leaving", Coast::Storage::Global());
-}
-
-void MT_Storage::Finalize()
-{
-	StatTrace(MT_Storage.Finalize, "entering", Coast::Storage::Global());
-	if ( fgInitialized ) {
-		// terminate pool allocators
+		void Finalize()
 		{
-			LockUnlockEntry me(*fgpAllocatorInit);
-			while (fgPoolAllocatorList) {
-				AllocList *elmt = fgPoolAllocatorList;
-				if ( elmt->wdallocator->GetId() != Coast::Storage::DoGlobal()->GetId() ) {
-					SYSERROR("unfreed allocator found id: " << elmt->wdallocator->GetId());
-					delete elmt->wdallocator;
-				}
-				fgPoolAllocatorList = elmt->next;
-				::free(elmt);
-			}
-		}
-		Allocator *a = Coast::Storage::Global();
-		if ( a ) {
-			if ( fOldTracker ) {
-				MemTracker *pCurrTracker = a->ReplaceMemTracker(fOldTracker);
-				StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Coast::Storage::Global());
-				if ( pCurrTracker && Coast::Storage::GetStatisticLevel() >= 1 ) {
-					pCurrTracker->PrintStatistic(2);
-				}
-				delete pCurrTracker;
-				fOldTracker = NULL;
-			}
-		}
-		StorageHooks *pOldHook = Coast::Storage::unregisterHooks();
-		if ( pOldHook == sgpMTHooks ) {
-			delete sgpMTHooks;
-			sgpMTHooks = NULL;
-		}
-		fgInitialized = false;
-	}
-	StatTrace(MT_Storage.Finalize, "leaving", Coast::Storage::Global());
-}
-
-void MT_Storage::RefAllocator(Allocator *wdallocator)
-{
-	StartTrace1(MT_Storage.RefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
-	if ( fgInitialized ) {
-		if ( wdallocator ) {
-			// in mt case we need to control ref counting with mutexes
-			LockUnlockEntry me(*fgpAllocatorInit);
-
-			AllocList *elmt = (AllocList *)::calloc(1, sizeof(AllocList));
-			// catch memory allocation problem
-			if (!elmt) {
-				static const char crashmsg[] = "FATAL: MT_Storage::RefAllocator calloc failed. I will crash :-(\n";
-				SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
-				SystemLog::Error("allocation failed for RefAllocator");
-				return;
-			}
-
-			// normal case everything ok
-			wdallocator->Ref();
-			Trace("refcount is now:" << wdallocator->RefCnt());
-			// update linked list
-			elmt->wdallocator = wdallocator;
-			elmt->next = fgPoolAllocatorList;
-			fgPoolAllocatorList = elmt;
-		}
-	} else {
-		SYSERROR("MT_Storage not initialized!");
-	}
-}
-
-void MT_Storage::UnrefAllocator(Allocator *wdallocator)
-{
-	const long allocId = wdallocator ? wdallocator->GetId() : -1L;
-	(void)allocId;  // to prevent unused compiler warning occurring when trace is disabled
-	StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", Coast::Storage::Global());
-	if ( fgInitialized ) {
-		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
-			LockUnlockEntry me(*fgpAllocatorInit);
-			wdallocator->Unref();
-			StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), Coast::Storage::Global());
-
-			if ( wdallocator->RefCnt() <= 0 ) {
-				// remove pool allocator
-				AllocList *elmt = fgPoolAllocatorList;
-				AllocList *prev = fgPoolAllocatorList;
-
-				while (elmt && (elmt->wdallocator != wdallocator)) {
-					prev = elmt;
-					elmt = elmt->next;
-				}
-				if ( elmt ) {
-					if ( elmt == fgPoolAllocatorList ) {
-						fgPoolAllocatorList = elmt->next;
-					} else {
-						prev->next = elmt->next;
+			StatTrace(MT_Storage.Finalize, "entering", Coast::Storage::Global());
+			// terminate pool allocators
+			{
+				LockUnlockEntry me(*fAllocatorInit);
+				while (fPoolAllocatorList) {
+					AllocList *elmt = fPoolAllocatorList;
+					if ( elmt->wdallocator->GetId() != Coast::Storage::DoGlobal()->GetId() ) {
+						SYSERROR("unfreed allocator found id: " << elmt->wdallocator->GetId());
+						delete elmt->wdallocator;
 					}
-
-					delete elmt->wdallocator;
+					fPoolAllocatorList = elmt->next;
 					::free(elmt);
 				}
 			}
+			Allocator *a = Coast::Storage::Global();
+			if ( a ) {
+				if ( fOldTracker ) {
+					MemTracker *pCurrTracker = a->ReplaceMemTracker(fOldTracker);
+					StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Coast::Storage::Global());
+					if ( pCurrTracker && Coast::Storage::GetStatisticLevel() >= 1 ) {
+						pCurrTracker->PrintStatistic(2);
+					}
+					delete pCurrTracker;
+					fOldTracker = NULL;
+				}
+			}
+			StorageHooks *pOldHook = Coast::Storage::unregisterHooks();
+			if ( pOldHook == fMTHooks ) {
+				delete fMTHooks;
+				fMTHooks = 0;
+			}
+			StatTrace(MT_Storage.Finalize, "leaving", Coast::Storage::Global());
 		}
-	} else {
-		SYSERROR("MT_Storage not initialized!");
-	}
-	StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- leaving ---", Coast::Storage::Global());
+	public:
+		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", Coast::Storage::Global())), fAllocatorKey(0), fOldTracker(0), fMTHooks(0), fPoolAllocatorList(0) {
+			InitFinisManager::IFMTrace("MTStorage::Initialize\n");
+			if (THRKEYCREATE(fAllocatorKey, 0)) {
+				SystemLog::Error("TlsAlloc of fAllocatorKey failed");
+			}
+			Initialize();
+		}
+		~MTStorageInitializer() {
+			Finalize();
+			if (THRKEYDELETE(fAllocatorKey) != 0) {
+				SystemLog::Error("TlsFree of fAllocatorKey failed" );
+			}
+			InitFinisManager::IFMTrace("MTStorage::Finalize\n");
+		}
+		void RefAllocator(Allocator *wdallocator) {
+			StartTrace1(MT_Storage.RefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
+			if ( wdallocator ) {
+				// in mt case we need to control ref counting with mutexes
+				LockUnlockEntry me(*fAllocatorInit);
+				AllocList *elmt = (AllocList *)::calloc(1, sizeof(AllocList));
+				// catch memory allocation problem
+				if (!elmt) {
+					static const char crashmsg[] = "FATAL: MT_Storage::RefAllocator calloc failed. I will crash :-(\n";
+					SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+					SystemLog::Error("allocation failed for RefAllocator");
+					return;
+				}
+				wdallocator->Ref();
+				Trace("refcount is now:" << wdallocator->RefCnt());
+				// update linked list
+				elmt->wdallocator = wdallocator;
+				elmt->next = fPoolAllocatorList;
+				fPoolAllocatorList = elmt;
+			}
+		}
+		void UnrefAllocator(Allocator *wdallocator) {
+			const long allocId = wdallocator ? wdallocator->GetId() : -1L;
+			(void)allocId;  // to prevent unused compiler warning occurring when trace is disabled
+			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", Coast::Storage::Global());
+			if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
+				LockUnlockEntry me(*fAllocatorInit);
+				wdallocator->Unref();
+				StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), Coast::Storage::Global());
+				if ( wdallocator->RefCnt() <= 0 ) {
+					AllocList *elmt = fPoolAllocatorList;
+					AllocList *prev = fPoolAllocatorList;
+					while (elmt && (elmt->wdallocator != wdallocator)) {
+						prev = elmt;
+						elmt = elmt->next;
+					}
+					if ( elmt ) {
+						if ( elmt == fPoolAllocatorList ) {
+							fPoolAllocatorList = elmt->next;
+						} else {
+							prev->next = elmt->next;
+						}
+						delete elmt->wdallocator;
+						::free(elmt);
+					}
+				}
+			}
+			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- leaving ---", Coast::Storage::Global());
+		}
+		bool RegisterThread(Allocator *wdallocator) {
+			// can only be used once for the same thread
+			Allocator *oldAllocator = 0;
+			// check for old allocator, and if any, dont override it
+			GETTLSDATA(getAllocatorKey(), oldAllocator, Allocator);
+			if (oldAllocator == NULL) {
+				StatTrace(MT_Storage.RegisterThread, "setting Allocator:" << (long)wdallocator << " to ThreadLocalStorage",
+						Coast::Storage::Global());
+				return !SETTLSDATA(getAllocatorKey(), wdallocator);
+			}
+			return false;
+		}
+		bool UnregisterThread() {
+			Allocator *oldAllocator = 0;
+			// check for old allocator, and if any delete it
+			GETTLSDATA(getAllocatorKey(), oldAllocator, Allocator);
+			if (oldAllocator) {
+				StatTrace(MT_Storage.UnregisterThread, "removing Allocator:" << (long)oldAllocator << " of ThreadLocalStorage",
+						Coast::Storage::Global());
+				return !SETTLSDATA(getAllocatorKey(), 0);
+			}
+			return false;
+		}
+		THREADKEY getAllocatorKey() const {
+			return fAllocatorKey;
+		}
+	};
+    typedef boost::details::pool::singleton_default<MTStorageInitializer> MTStorageInitializerSingleton;
 }
 
-bool MT_Storage::RegisterThread(Allocator *wdallocator)
-{
-	if ( fgInitialized ) {
-		// can only be used once for the same thread
-		Allocator *oldAllocator = 0;
-
-		// check for old allocator, and if any, dont override it
-		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
-		if ( oldAllocator == NULL ) {
-			StatTrace(MT_Storage.RegisterThread, "setting Allocator:" << (long)wdallocator << " to ThreadLocalStorage", Coast::Storage::Global());
-			return !SETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator);
+Allocator *MTStorageHooks::DoCurrent() {
+	if (fgInitialized) {
+		Allocator *wdallocator = 0;
+		// determine which allocator to use
+		if (GETTLSDATA(MTStorageInitializerSingleton::instance().getAllocatorKey(), wdallocator, Allocator) && wdallocator) {
+			return wdallocator;
 		}
-	} else {
-		SYSERROR("MT_Storage not initialized!");
 	}
-	return false;
+	return Global();
 }
 
-bool MT_Storage::UnregisterThread()
-{
-	if ( fgInitialized ) {
-		// check for current allocator
-		Allocator *oldAllocator = 0;
-
-		// check for old allocator, and if any delete it
-		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
-		if ( oldAllocator ) {
-			StatTrace(MT_Storage.UnregisterThread, "removing Allocator:" << (long)oldAllocator << " of ThreadLocalStorage", Coast::Storage::Global());
-			return !SETTLSDATA(MT_Storage::fgAllocatorKey, 0);
-		}
-	} else {
-		SYSERROR("MT_Storage not initialized!");
-	}
-	return false;
+void MT_Storage::RefAllocator(Allocator *wdallocator) {
+	MTStorageInitializerSingleton::instance().RefAllocator(wdallocator);
+}
+void MT_Storage::UnrefAllocator(Allocator *wdallocator) {
+	MTStorageInitializerSingleton::instance().UnrefAllocator(wdallocator);
+}
+bool MT_Storage::RegisterThread(Allocator *wdallocator) {
+	return MTStorageInitializerSingleton::instance().RegisterThread(wdallocator);
+}
+bool MT_Storage::UnregisterThread() {
+	return MTStorageInitializerSingleton::instance().UnregisterThread();
 }
 
 Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoolBucketSizes, long lPoolId)

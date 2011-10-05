@@ -10,10 +10,10 @@
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "MemHeader.h"
-#include "InitFinisManagerFoundation.h"
 #include "AllocatorNewDelete.h"
 #include <cstring>
-#include <stdio.h>//lint !e537//lint !e451
+#include <stdio.h> //lint !e537//lint !e451
+#include "InitFinisManager.h"
 #if defined(WIN32)
 #define snprintf	_snprintf
 #endif
@@ -182,20 +182,19 @@ namespace {
 		long statisticLevel;
 	public:
 		StatisticLevelInitializer() {
-			SystemLog::WriteToStderr("Storage::Initialize\n");
+			InitFinisManager::IFMTrace("Storage::Initialize\n");
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
 			statisticLevel = lLevel;
 		}
 		~StatisticLevelInitializer() {
-			SystemLog::WriteToStderr("Storage::Finalize\n");
+			InitFinisManager::IFMTrace("Storage::Finalize\n");
 		}
 		long GetStatisticLevel() {
 			return statisticLevel;
 		}
 	};
     typedef boost::details::pool::singleton_default<StatisticLevelInitializer> StatisticLevelInitializerSingleton;
-
 }
 
 namespace Coast

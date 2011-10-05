@@ -9,11 +9,13 @@
 #include "ITOString.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include "InitFinisManagerFoundation.h"
 #include <cstring>
+#include "InitFinisManager.h"
 
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
+
+#include <boost/pool/detail/singleton.hpp>
 
 #include <limits>	// for numeric_limits
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
@@ -26,38 +28,37 @@ const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for op
 const long cStrAllocLimit = 4096; // cStrAllocMinimum < StrAllocLimit
 const long cStrAllocIncrement =  1024;
 
-static const int giDblDigits = std::numeric_limits<double>::digits10;
-
-#if !defined(IOSTREAM_NUM_CONVERSION)
-static const int giFmtSize = 10;
-static char gpcFmtLow[giFmtSize] = { 0 };
-static char gpcFmtHi[] = "%.e";
-#endif
-
-class StringInitializer : public InitFinisManagerFoundation
-{
-public:
-	StringInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
-		IFMTrace("StringInitializer created\n");
-	}
-
-	virtual void DoInit() {
-#if !defined(IOSTREAM_NUM_CONVERSION)
-		if ( gpcFmtLow[0] == '\0' ) {
-			IFMTrace("String::Initialize\n");
-			snprintf(gpcFmtLow, giFmtSize, "%%.%df", giDblDigits);
+namespace {
+	class StringInitializer {
+		String fmtLow;
+		String fmtHi;
+	public:
+		StringInitializer() : fmtHi("%.e")
+		{
+			InitFinisManager::IFMTrace("String::Initialize\n");
+			initializeFormat();
 		}
-#else
-		IFMTrace("String::Initialize\n");
-#endif
-	}
-	virtual void DoFinis() {
-		IFMTrace("String::Finalize\n");
-	}
-};
+		~StringInitializer() {
+			InitFinisManager::IFMTrace("String::Finalize\n");
+		}
+		void initializeFormat() {
+	#if !defined(IOSTREAM_NUM_CONVERSION)
+			int const fmtSize = 10;
+			char pcFmtLow[fmtSize] = { 0 };
+			snprintf(pcFmtLow, fmtSize, "%%.%df", std::numeric_limits<double>::digits10);
+			fmtLow = pcFmtLow;
+	#endif
+		}
+		const char* getLowFormat() const {
+			return fmtLow.cstr();
+		}
+		const char* getHiFormat() const {
+			return fmtHi.cstr();
+		}
+	};
 
-static StringInitializer *psgStringInitializer = new StringInitializer(1);
+	typedef boost::details::pool::singleton_default<StringInitializer> StringInitializerSingleton;
+}
 
 void String::alloc(long capacity)
 {
@@ -451,13 +452,9 @@ void String::DoubleToString(const double &number, String &strBuf)
 #if !defined(IOSTREAM_NUM_CONVERSION)
 	const int iBufSize = 500;
 	char pcBuf[iBufSize] = { 0 };
-	if ( gpcFmtLow[0] == '\0' ) {
-		// safeguqard if used before StringInitializer was executed
-		psgStringInitializer->DoInit();
-	}
 	int iSize(0);
 	if ( number < 1e+16 ) {
-		iSize = snprintf(pcBuf, iBufSize, gpcFmtLow, number);
+		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getLowFormat(), number);
 		int iTmp(iSize);
 		--iTmp;
 		// eat trailing zeroes
@@ -465,7 +462,7 @@ void String::DoubleToString(const double &number, String &strBuf)
 			--iSize;
 		}
 	} else {
-		iSize = snprintf(pcBuf, iBufSize, gpcFmtHi, number);
+		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getHiFormat(), number);
 	}
 	strBuf.Set(strBuf.Length(), pcBuf, iSize);
 #else

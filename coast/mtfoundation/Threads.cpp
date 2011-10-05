@@ -7,7 +7,7 @@
  */
 
 #include "Threads.h"
-#include "InitFinisManagerMTFoundation.h"
+#include "InitFinisManager.h"
 #include "SystemLog.h"
 #include "DiffTimer.h"
 #include "StringStream.h"
@@ -17,11 +17,12 @@
 #if !defined(WIN32)
 #include <errno.h>
 #endif
+#include <boost/pool/detail/singleton.hpp>
+#include <boost/shared_ptr.hpp>
 
 //#define TRACE_LOCKS_IMPL 1
 //#define POOL_STARTEDHOOK 1
 
-//---- AllocatorUnref ------------------------------------------------------------
 AllocatorUnref::AllocatorUnref(Thread *t)
 	: fThread(t)
 {
@@ -62,42 +63,47 @@ protected:
 	virtual bool DoCleanup();
 };
 
-//---- Thread ------------------------------------------------------------
-THREADKEY Thread::fgCleanerKey = 0;
+namespace {
+	//:thread count variable
+	long fgNumOfThreads = 0;
+}
 
-//:thread count variable
-long Thread::fgNumOfThreads = 0;
-
-//:guard of thread count
-SimpleMutex *Thread::fgpNumOfThreadsMutex = NULL;
-
-class ThreadInitializer : public InitFinisManagerMTFoundation
-{
-public:
-	ThreadInitializer(unsigned int uiPriority)
-		: InitFinisManagerMTFoundation(uiPriority) {
-		IFMTrace("ThreadInitializer created\n");
-	}
-
-	virtual void DoInit() {
-		IFMTrace("ThreadInitializer::DoInit\n");
-		if (THRKEYCREATE(Thread::fgCleanerKey, 0)) {
-			SystemLog::Error("TlsAlloc of Thread::fgCleanerKey failed");
+namespace {
+	class ThreadInitializer {
+		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
+		THREADKEY fCleanerKey;
+		SimpleMutexPtr fNumOfThreadsMutex;
+	public:
+		ThreadInitializer() : fCleanerKey(0), fNumOfThreadsMutex(new SimpleMutex("NumOfThreads", Coast::Storage::Global())) {
+			InitFinisManager::IFMTrace("ThreadCleaner::Initialize\n");
+			if (THRKEYCREATE(fCleanerKey, 0)) {
+				SystemLog::Error("TlsAlloc of fCleanerKey failed");
+			}
 		}
-		Thread::fgpNumOfThreadsMutex = new SimpleMutex("NumOfThreads", Coast::Storage::Global());
-	}
-
-	virtual void DoFinis() {
-		IFMTrace("ThreadInitializer::DoFinis\n");
-		delete Thread::fgpNumOfThreadsMutex;
-		Thread::fgpNumOfThreadsMutex = NULL;
-		if (THRKEYDELETE(Thread::fgCleanerKey) != 0) {
-			SystemLog::Error("TlsFree of Thread::fgCleanerKey failed" );
+		~ThreadInitializer() {
+			if (THRKEYDELETE(fCleanerKey) != 0) {
+				SystemLog::Error("TlsFree of Thread::fCleanerKey failed" );
+			}
+			InitFinisManager::IFMTrace("ThreadCleaner::Finalize\n");
 		}
-	}
-};
-
-static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
+		void incrementNumOfThreads() {
+			LockUnlockEntry me(*fNumOfThreadsMutex);
+			++fgNumOfThreads;
+		}
+		void decrementNumOfThreads() {
+			LockUnlockEntry me(*fNumOfThreadsMutex);
+			--fgNumOfThreads;
+		}
+		long getNumberOfThreads() const {
+			LockUnlockEntry me(*fNumOfThreadsMutex);
+			return fgNumOfThreads;
+		}
+		THREADKEY getCleanerKey() const {
+			return fCleanerKey;
+		}
+	};
+    typedef boost::details::pool::singleton_default<ThreadInitializer> ThreadInitializerSingleton;
+}
 
 #if defined(__APPLE__)	//!@FIXME check if this is still needed with most current version of framework
 // notice: never delete this class or its internal structure!
@@ -670,10 +676,7 @@ void Thread::IntRun()
 #endif
 	{
 		if ( SetState(eRunning) ) {
-			{
-				LockUnlockEntry me(*fgpNumOfThreadsMutex);
-				++fgNumOfThreads;
-			}
+			ThreadInitializerSingleton::instance().incrementNumOfThreads();
 			{
 				String strWho(GetName());
 				strWho.Append("::Run [").Append(MyId()).Append(']');
@@ -681,10 +684,7 @@ void Thread::IntRun()
 				// do the real work
 				Run();
 			}
-			{
-				LockUnlockEntry me(*fgpNumOfThreadsMutex);
-				--fgNumOfThreads;
-			}
+			ThreadInitializerSingleton::instance().decrementNumOfThreads();
 		} else {
 			StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << GetId() << ")", Coast::Storage::Global());
 		}
@@ -713,23 +713,20 @@ long Thread::MyId()
 	return THRID();
 }
 
-long Thread::NumOfThreads()
-{
+long Thread::NumOfThreads() {
 	StartTrace(Thread.NumOfThreads);
-	LockUnlockEntry me(*fgpNumOfThreadsMutex);
-	return fgNumOfThreads;
+	return ThreadInitializerSingleton::instance().getNumberOfThreads();
 }
 
-bool Thread::RegisterCleaner(CleanupHandler *handler)
-{
+bool Thread::RegisterCleaner(CleanupHandler *handler) {
 #if defined(__APPLE__)
 	CleanupAllocator::initializeCleanupAllocator();
 #endif
 	StartTrace1(Thread.RegisterCleaner, "CallId: " << MyId());
 	Anything *handlerList = 0;
-	if (!GETTLSDATA(fgCleanerKey, handlerList, Anything)) {
+	if (!GETTLSDATA(ThreadInitializerSingleton::instance().getCleanerKey(), handlerList, Anything)) {
 		handlerList = new Anything(Anything::ArrayMarker(),Coast::Storage::Global());
-		if (!SETTLSDATA(fgCleanerKey, handlerList)) {
+		if (!SETTLSDATA(ThreadInitializerSingleton::instance().getCleanerKey(), handlerList)) {
 			// failed: immediately destroy Anything to avoid leak..
 			delete handlerList;
 			SystemLog::Error( "Thread::RegisterCleaner(CleanupHandler *) could not register cleanup handler" );
@@ -739,17 +736,14 @@ bool Thread::RegisterCleaner(CleanupHandler *handler)
 	String adrKey;
 	adrKey << (long)handler;
 	(*handlerList)[adrKey] = Anything(reinterpret_cast<IFAObject *>(handler), Coast::Storage::Global());
-
 	return true;
 }
 
-bool Thread::CleanupThreadStorage()
-{
+bool Thread::CleanupThreadStorage() {
 	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " entering", Coast::Storage::Global());
-
 	bool bRet = true;
 	Anything *handlerList = 0;
-	if (GETTLSDATA(fgCleanerKey, handlerList, Anything) && handlerList) {
+	if (GETTLSDATA(ThreadInitializerSingleton::instance().getCleanerKey(), handlerList, Anything) && handlerList) {
 		for (long i = (handlerList->GetSize() - 1); i >= 0; --i) {
 			CleanupHandler *handler = reinterpret_cast<CleanupHandler *>((*handlerList)[i].AsIFAObject(0));
 			if (handler) {
@@ -757,7 +751,7 @@ bool Thread::CleanupThreadStorage()
 			}
 		}
 		delete handlerList;
-		if (!SETTLSDATA(fgCleanerKey, 0)) {
+		if (!SETTLSDATA(ThreadInitializerSingleton::instance().getCleanerKey(), 0)) {
 			SystemLog::Error( "Thread::CleanupThreadStorage(CleanupHandler *) could not cleanup handler" );
 			bRet = false;
 		}
@@ -767,8 +761,6 @@ bool Thread::CleanupThreadStorage()
 	MT_Storage::UnregisterThread();
 	return bRet;
 }
-
-//---- Semaphore ------------------------------------------------------------
 
 Semaphore::Semaphore(unsigned i_nCount)
 {
@@ -824,8 +816,6 @@ SemaphoreEntry::~SemaphoreEntry()
 	fSemaphore.Release();
 }
 
-//---- SimpleMutex ------------------------------------------------------------
-
 SimpleMutex::SimpleMutex(const char *name, Allocator *a)
 	: fName(name, -1, a)
 {
@@ -878,48 +868,50 @@ bool SimpleMutex::TryLock()
 	return bRet;
 }
 
-//---- Mutex ------------------------------------------------------------
-long Mutex::fgMutexId = 0;
-SimpleMutex *Mutex::fgpMutexIdMutex = NULL;
-THREADKEY Mutex::fgCountTableKey = 0;	// WIN32 defined it 0xFFFFFFFF !!
+namespace {
+	long fgMutexId = 0;
+}
 
-class MutexInitializer : public InitFinisManagerMTFoundation
-{
-public:
-	MutexInitializer(unsigned int uiPriority)
-		: InitFinisManagerMTFoundation(uiPriority) {
-		IFMTrace("MutexInitializer created\n");
-	}
-
-	~MutexInitializer()
-	{}
-
-	virtual void DoInit() {
-		IFMTrace("MutexInitializer::DoInit\n");
-		Mutex::fgpMutexIdMutex = new SimpleMutex("MutexIdMutex", Coast::Storage::Global());
-		if (THRKEYCREATE(Mutex::fgCountTableKey, 0)) {
-			SystemLog::Error("TlsAlloc of Mutex::fgCountTableKey failed");
+namespace {
+	class MutexInitializer {
+		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
+		SimpleMutexPtr fMutexIdMutex;
+		THREADKEY fCountTableKey;	// WIN32 defined it 0xFFFFFFFF !!
+	public:
+		MutexInitializer() : fMutexIdMutex(new SimpleMutex("MutexIdMutex", Coast::Storage::Global())), fCountTableKey(0) {
+			InitFinisManager::IFMTrace("MutexCleaner::Initialize\n");
+			if (THRKEYCREATE(fCountTableKey, 0)) {
+				SystemLog::Error("TlsAlloc of fCountTableKey failed");
+			}
 		}
-	}
-
-	virtual void DoFinis() {
-		InitFinisManager::IFMTrace("MutexInitializer::DoFinis\n");
-		if (THRKEYDELETE(Mutex::fgCountTableKey) != 0) {
-			SystemLog::Error("TlsFree of Mutex::fgCountTableKey failed" );
+		~MutexInitializer() {
+			if (THRKEYDELETE(fCountTableKey) != 0) {
+				SystemLog::Error("TlsFree of fCountTableKey failed" );
+			}
+			InitFinisManager::IFMTrace("MutexCleaner::Finalize\n");
 		}
-		delete Mutex::fgpMutexIdMutex;
-		Mutex::fgpMutexIdMutex = NULL;
-	}
-};
-static MutexInitializer *psgMutexInitializer = new MutexInitializer(10);
-//---- MutexCountTableCleaner ------------------------------------------------------------
+		long incrementMutexId() {
+			LockUnlockEntry aMtx(*fMutexIdMutex);
+			return ++fgMutexId;
+		}
+		long decrementMutexId() {
+			LockUnlockEntry aMtx(*fMutexIdMutex);
+			return --fgMutexId;
+		}
+		THREADKEY getCountTableKey() const {
+			return fCountTableKey;
+		}
+	};
+    typedef boost::details::pool::singleton_default<MutexInitializer> MutexInitializerSingleton;
+}
+
 MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 
 bool MutexCountTableCleaner::DoCleanup()
 {
 	StatTrace(MutexCountTableCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Coast::Storage::Global());
 	Anything *countarray = 0;
-	if (GETTLSDATA(Mutex::fgCountTableKey, countarray, Anything)) {
+	if (GETTLSDATA(MutexInitializerSingleton::instance().getCountTableKey(), countarray, Anything)) {
 		// as the countarray behavior changed, mutex entries which were used by the thread
 		//  are still listed but should all have values of 0
 		long lSize((*countarray).GetSize());
@@ -940,34 +932,19 @@ bool MutexCountTableCleaner::DoCleanup()
 		}
 		delete countarray;
 		countarray = 0;
-		if (SETTLSDATA(Mutex::fgCountTableKey, countarray)) {
+		if (SETTLSDATA(MutexInitializerSingleton::instance().getCountTableKey(), countarray)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-class GlobalIdMutexNotInitialized : public std::exception
-{
-public:
-	virtual const char *what() const throw() {
-		static const char pMsg[] = "FATAL: fgpMutexIdMutex not created yet!!";
-		SYSERROR(pMsg);
-		return pMsg;
-	}
-};
-
 Mutex::Mutex(const char *name, Allocator *a)
 	: fMutexId(a)
 	, fLocker(-1)
 	, fName(name, -1, a)
 {
-	if ( !fgpMutexIdMutex ) {
-		throw GlobalIdMutexNotInitialized();
-	} else {
-		LockUnlockEntry aMtx(*fgpMutexIdMutex);
-		fMutexId.Append(++fgMutexId);
-	}
+	fMutexId.Append(MutexInitializerSingleton::instance().incrementMutexId());
 	int iRet = 0;
 	if ( !CREATEMUTEX(fMutex, iRet) ) {
 		SystemLog::Error(String("Mutex<").Append(fName).Append(">: CREATEMUTEX failed: ").Append(SystemLog::SysErrorMsg(iRet)));
@@ -993,7 +970,7 @@ long Mutex::GetCount()
 {
 	Anything *countarray = 0;
 	long lCount = 0L;
-	GETTLSDATA(fgCountTableKey, countarray, Anything);
+	GETTLSDATA(MutexInitializerSingleton::instance().getCountTableKey(), countarray, Anything);
 	if (countarray) {
 		StatTraceAny(Mutex.GetCount, (*countarray), "countarray", Coast::Storage::Current());
 		lCount = ((ROAnything)(*countarray))[fMutexId].AsLong(0L);
@@ -1006,12 +983,12 @@ bool Mutex::SetCount(long newCount)
 {
 	StatTrace(Mutex.SetCount, "CallId: " << Thread::MyId() << " newCount: " << newCount, Coast::Storage::Current());
 	Anything *countarray = 0;
-	GETTLSDATA(fgCountTableKey, countarray, Anything);
+	GETTLSDATA(MutexInitializerSingleton::instance().getCountTableKey(), countarray, Anything);
 
 	if (!countarray && newCount > 0) {
 		countarray = new Anything(Anything::ArrayMarker(),Coast::Storage::Global());
 		Thread::RegisterCleaner(&MutexCountTableCleaner::fgCleaner);
-		if (!SETTLSDATA(fgCountTableKey, countarray)) {
+		if (!SETTLSDATA(MutexInitializerSingleton::instance().getCountTableKey(), countarray)) {
 			SystemLog::Error("Mutex::SetCount: could not store recursive locking structure in TLS!");
 			return false;
 		}

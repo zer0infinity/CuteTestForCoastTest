@@ -14,17 +14,17 @@ class RegistryInitFinis : public InitFinisManagerWDBase
 public:
 	RegistryInitFinis(unsigned int uiPriority)
 		: InitFinisManagerWDBase(uiPriority) {
-		IFMTrace("RegistryInitFinis created\n");
+		InitFinisManager::IFMTrace("RegistryInitFinis created\n");
 		Registry::GetRegTable();
 		Registry::GetRegROTable();
 	}
 
 	virtual void DoInit() {
-		IFMTrace("RegistryInitFinis::DoInit\n");
+		InitFinisManager::IFMTrace("RegistryInitFinis::DoInit\n");
 	}
 
 	virtual void DoFinis() {
-		IFMTrace("RegistryInitFinis::DoFinis\n");
+		InitFinisManager::IFMTrace("RegistryInitFinis::DoFinis\n");
 		// do not create new registries anymore
 
 		Registry::FinalizeRegArray(*Registry::fgRegistryArray);

@@ -42,7 +42,7 @@ void InitFinisManager::Add(InitFinisManager *pManager, InitFinisManager *pCleane
 {
 	// do not add manager itself to the list of destructible elements
 	if ( pManager != 0 && pCleaner != 0 && pManager != pCleaner ) {
-		IFMTrace("InitFinisManager::Add: adding object\n");
+		SystemLog::WriteToStderr("InitFinisManager::Add: adding object\n");
 		InitFinisManager *t = pManager, *n = pManager->fNext;
 		// find position where to insert the object based on its priority
 		while ( n != 0 && pCleaner->fPriority >= n->fPriority ) {

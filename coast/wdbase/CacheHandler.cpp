@@ -35,18 +35,18 @@ class CacheHandlerMutexAllocator: public InitFinisManagerWDBase {
 public:
 	CacheHandlerMutexAllocator(unsigned int uiPriority) :
 		InitFinisManagerWDBase(uiPriority) {
-		IFMTrace("CacheHandlerMutexAllocator created\n");
+		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator created\n");
 	}
 
 	virtual void DoInit() {
-		IFMTrace("CacheHandlerMutexAllocator::DoInit\n");
+		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator::DoInit\n");
 		if (!CacheHandler::fgCacheHandlerMutex) {
 			CacheHandler::fgCacheHandlerMutex = new Mutex("CacheHandlerMutex", Coast::Storage::Global());
 		}
 	}
 
 	virtual void DoFinis() {
-		IFMTrace("CacheHandlerMutexAllocator::DoFinis\n");
+		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator::DoFinis\n");
 		delete CacheHandler::fgCacheHandlerMutex;
 		CacheHandler::fgCacheHandlerMutex = 0;
 	}

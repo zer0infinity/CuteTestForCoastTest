@@ -18,84 +18,99 @@
 #else
 #include <syslog.h>
 #endif
-
-//--- SystemLog ----------------------------------------------------------
-SystemLog *SystemLog::fgSysLog = 0;
-SystemLog::eLogLevel SystemLog::fgDoSystemLevelLog = SystemLog::eALERT;
-SystemLog::eLogLevel SystemLog::fgDoLogOnCerr = SystemLog::eERR;
+#include <boost/pool/detail/singleton.hpp>
+#include <boost/shared_ptr.hpp>
+#include "InitFinisManager.h"
 
 #if defined(WIN32)
 //! implementation of SystemLog api for WIN32
-class Win32SysLog : public SystemLog
-{
+class Win32SysLog : public SystemLog {
 public:
 	Win32SysLog(const char *appId);
 	~Win32SysLog();
-
 protected:
 	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-
 	HANDLE fLogHandle;
 };
 #else
 //! implementation for Unix syslog api
-class UnixSysLog : public SystemLog
-{
+class UnixSysLog: public SystemLog {
 public:
 	UnixSysLog(const char *appId);
 	~UnixSysLog();
-
 protected:
 	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 };
 #endif
 
 using namespace Coast;
-//--- module initialization/termination
-void SystemLog::Init(const char *appId) {
-	// beware this is not thread safe
-	// the syslog channel is initialized
-	// by the main thread in the server constructor
-	// but since logging takes place before the
-	// server object exists we have to take care
 
-	if (appId) {
-		Terminate(); // close existing syslog channel with default Coast name
-	} else {
-		appId = "Coast";
-	}
-
-	String strValue = System::EnvGet("COAST_DOLOG");
-	int iValue = static_cast<int>(strValue.AsLong(eNone));
-	if ((eNone < iValue) && (iValue < eLast)) {
-		fgDoSystemLevelLog = static_cast<eLogLevel>(iValue);
-	}
-	strValue = System::EnvGet("COAST_LOGONCERR");
-	iValue = static_cast<int>(strValue.AsLong(eNone));
-	if ((eNone < iValue) && (iValue < eLast)) {
-		fgDoLogOnCerr = static_cast<eLogLevel>(iValue);
-	}
-
-	// initialize the syslog channel
-	if (!fgSysLog) {
-		// open the syslog channel for this application
-		// there is always only one syslog channel per application
+namespace {
+	class SystemLogInitializer {
+		typedef boost::shared_ptr<SystemLog> SystemLogPtr;
+		SystemLogPtr fSysLog;
+		SystemLog::eLogLevel fDoSystemLevelLog;
+		SystemLog::eLogLevel fDoLogOnCerr;
+	public:
+		SystemLogInitializer() : fSysLog(), fDoSystemLevelLog(SystemLog::eALERT), fDoLogOnCerr(SystemLog::eERR) {
+			Init(0);
+			InitFinisManager::IFMTrace("SystemLog::Initialize\n");
+		}
+		~SystemLogInitializer() {
+			Terminate();
+			InitFinisManager::IFMTrace("SystemLog::Finalize\n");
+		}
+		void Init(const char *appId) {
+			// beware this is not thread safe since logging takes place before the server object exists we have to take care
+			if (appId) {
+				Terminate();
+			} else {
+				appId = "Coast";
+			}
+			String strValue = System::EnvGet("COAST_DOLOG");
+			int iValue = static_cast<int>(strValue.AsLong(SystemLog::eNone));
+			if ((SystemLog::eNone < iValue) && (iValue < SystemLog::eLast)) {
+				fDoSystemLevelLog = static_cast<SystemLog::eLogLevel>(iValue);
+			}
+			strValue = System::EnvGet("COAST_LOGONCERR");
+			iValue = static_cast<int>(strValue.AsLong(SystemLog::eNone));
+			if ((SystemLog::eNone < iValue) && (iValue < SystemLog::eLast)) {
+				fDoLogOnCerr = static_cast<SystemLog::eLogLevel>(iValue);
+			}
+			// open the syslog channel for this application
+			// there is always only one syslog channel per application
 #if defined(WIN32)
-		fgSysLog = new Win32SysLog(appId);
+			fSysLog = SystemLogPtr(new Win32SysLog(appId));
 #else
-		fgSysLog = new UnixSysLog(appId);
+			fSysLog = SystemLogPtr(new UnixSysLog(appId));
 #endif
-	}
+		}
+		void Terminate() {
+			fSysLog.reset();
+		}
+		SystemLog* getSysLog() {
+			if ( not fSysLog.get() ) {
+				Init(0);
+			}
+			return fSysLog.get();
+		}
+		bool doLogToSystem(SystemLog::eLogLevel const &level) const {
+			return level >= fDoSystemLevelLog;
+		}
+		bool doLogToCerr(SystemLog::eLogLevel const &level) const {
+			return level >= fDoLogOnCerr;
+		}
+	};
+    typedef boost::details::pool::singleton_default<SystemLogInitializer> SystemLogInitializerSingleton;
+}
+
+void SystemLog::Init(const char *appId) {
+	SystemLogInitializerSingleton::instance().Init(appId);
 }
 
 void SystemLog::Terminate() {
-	if (fgSysLog) {
-		delete fgSysLog;
-		fgSysLog = 0;
-	}
+	SystemLogInitializerSingleton::instance().Terminate();
 }
-
-//--- logging API -------------------------------------
 
 // severity eDEBUG for tracing server
 // activity during development and
@@ -135,22 +150,12 @@ void SystemLog::Alert(const char *msg) {
 // bottleneck routine used by others
 // here you can use severity levels directly
 void SystemLog::Log(eLogLevel level, const char *msg) {
-	if (InitOnce()) {
-		fgSysLog->DoLog(level, msg);
-	}
+	SystemLogInitializerSingleton::instance().getSysLog()->DoLog(level, msg);
 }
 
-bool SystemLog::InitOnce() {
-	static bool once = false;
-	if (!once) {
-		once = true;
-		Init(0);
-	}
-	return (fgSysLog != NULL);
+SystemLog* SystemLog::getSysLog() {
+	return SystemLogInitializerSingleton::instance().getSysLog();
 }
-
-//--- utilities ------------------------------------
-
 // const char *SysErrorMsg(long errnum) maps the error number in errnum
 // to an error  message  string,  and returns a pointer to that string.
 // SysErrorMsg(long errnum) uses the same set of error messages as perror().
@@ -247,11 +252,11 @@ void SystemLog::WriteToStdout(const char *msg, long length) {
 
 void SystemLog::DoLog(eLogLevel level, const char *msg) {
 	// override logging parameter if it is an alert message
-	if (level >= fgDoSystemLevelLog) {
+	if (SystemLogInitializerSingleton::instance().doLogToSystem(level)) {
 		DoSystemLevelLog(level, msg);
 	}
 	// override logging parameter if it is an error or alert message
-	if (level >= fgDoLogOnCerr) {
+	if (SystemLogInitializerSingleton::instance().doLogToCerr(level)) {
 		DoLogTrace(level, msg);
 	}
 }

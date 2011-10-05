@@ -13,7 +13,7 @@
 
 #define OBJECTLISTMACRO(listtype, allocatortype)\
 {\
-	TraceMemDelta("before allocation");\
+	TraceMemDelta1("before allocation");\
 	const long lCount=200;\
 	MemChecker mc("ObjectList_rTest.CtorTest", Coast::Storage::Global());\
 	{\
@@ -23,13 +23,13 @@
 		pString=new String("Guguseli");\
 		aStringList.InsertTail(pString);\
 		assertCompare(1L, equal_to, (long)aStringList.GetSize());\
-		TraceMemDelta("before deallocation");\
+		TraceMemDelta1("before deallocation");\
 		if ( t_assert(aStringList.RemoveHead(pString)) )\
 		{\
 			delete pString;\
 		}\
 		assertCompare(0L, equal_to, (long)aStringList.GetSize());\
-		TraceMemDelta("after deallocation");\
+		TraceMemDelta1("after deallocation");\
 		for (long lIdx=0; lIdx < lCount; ++lIdx)\
 		{\
 			pString = new String("Iteration:");\
@@ -37,7 +37,7 @@
 			aStringList.InsertTail(pString);\
 		}\
 		assertCompare(lCount, equal_to, (long)aStringList.GetSize());\
-		TraceMemDelta("after reallocation of many strings");\
+		TraceMemDelta1("after reallocation of many strings");\
 		for (long lIdx2=0; lIdx2 < (lCount/2); ++lIdx2)\
 		{\
 			if ( aStringList.RemoveHead(pString) )\
@@ -47,7 +47,7 @@
 				delete pString;\
 			}\
 		}\
-		TraceMemDelta("after removal of many strings");\
+		TraceMemDelta1("after removal of many strings");\
 		assertCompare(0LL, less, mc.CheckDelta());\
 		pString=NULL;\
 		Trace("Remove another element which should succeed"); \
@@ -67,7 +67,7 @@ void ObjectList_rTest::CtorTest()
 	MemTracker *oldTracker = Coast::Storage::Global()->ReplaceMemTracker( newTracker.get() );
 
 	StartTrace(ObjectList_rTest.CtorTest);
-	StartTraceMem(ObjectList_rTest.CtorTest);
+	StartTraceMem1(ObjectList_rTest.CtorTest, Coast::Storage::Global());
 	{
 		// Allocate several tester objects.  Delete two.
 		Trace("with deque. . .");
@@ -149,7 +149,7 @@ void ObjectList_rTest::CtorTest()
 #else
 	OBJECTLISTMACRO(std::list, std::allocator);
 #endif
-	TraceMemDelta("before terminating");
+	TraceMemDelta1("before terminating");
 
 	Coast::Storage::Global()->ReplaceMemTracker( oldTracker );
 }

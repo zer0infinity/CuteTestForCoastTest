@@ -165,8 +165,6 @@ public:
 	//! restores thread id after returning from a wait call
 	void AcquireAfterWait();
 
-	static THREADKEY fgCountTableKey;
-
 protected:
 	//!returns thread specific mutex lock count
 	long GetCount();
@@ -176,10 +174,6 @@ protected:
 	//!get mutex 'Id' (name) mainly for Tracing
 	const String &GetId();
 
-	//!global mutex id counter
-	static long fgMutexId;
-	//!guard for global mutex id counter
-	static SimpleMutex *fgpMutexIdMutex;
 	//!this mutex unique id
 	String fMutexId;
 #if defined(WIN32) && defined(TRACE_LOCK_UNLOCK)
@@ -439,17 +433,13 @@ public:
 
 //---- CleanupHandler ------------------------------------------------------------
 //!subclasses may be defined to perform cleanup in thread specific storage while thread is still alive. CleanupHandlers are supposed to be singletons..
-class CleanupHandler
-{
+class CleanupHandler {
 public:
-	//!Constructor does nothing
-	CleanupHandler() {}
-	virtual ~CleanupHandler() {}
-
+	virtual ~CleanupHandler() {
+	}
 	bool Cleanup() {
 		return DoCleanup();
 	}
-
 protected:
 	//!subclasses implement cleanup of thread specific storage
 	virtual bool DoCleanup() = 0;
@@ -630,7 +620,6 @@ public:
 	//! allows clients to register an additional cleanup handler, (which is put into a list)
 	static bool RegisterCleaner(CleanupHandler *);
 
-	static THREADKEY fgCleanerKey;
 #if defined(WIN32)
 	friend void  ThreadWrapper(void *);
 #else
@@ -724,12 +713,6 @@ protected:
 
 	//!synchronization condition for checking thread states
 	SimpleCondition fStateCond;
-
-	//!thread count variable
-	static long fgNumOfThreads;
-
-	//!guard of thread count
-	static SimpleMutex *fgpNumOfThreadsMutex;
 
 private:
 	/*! internal method implementing the state transition matrix

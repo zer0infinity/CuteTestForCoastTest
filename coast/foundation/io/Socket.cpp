@@ -12,6 +12,7 @@
 #include "Resolver.h"
 #include "SocketStream.h"
 #include "Tracer.h"
+#include "InitFinisManager.h"
 
 using namespace Coast;
 
@@ -38,15 +39,63 @@ using namespace Coast;
 #define INADDR_NONE ((unsigned long)-1)
 #endif
 
-//--- Socket ----------------------
-int closeSocket(int sd)
-{
+int closeSocket(int sd) {
 	StartTrace1(Socket.closeSocket, "fd:" << static_cast<long>(sd));
 #if defined(WIN32)
 	return closesocket(sd);		// clean up socket structure
 #else
 	return close(sd);
 #endif
+}
+
+#include <boost/pool/detail/singleton.hpp>
+
+namespace {
+	class SocketInitializer {
+	public:
+		SocketInitializer() {
+			InitFinisManager::IFMTrace("Socket::Initialize\n");
+#if defined(WIN32)
+			WORD wVersionRequested;
+			WSADATA wsaData = { 0, 0, {0}, {0}, 0, 0, 0 };
+			int err;
+
+			wVersionRequested = MAKEWORD( 2, 0 );
+
+			err = WSAStartup( wVersionRequested, &wsaData );
+			if ( err != 0 ) {
+				/* Tell the user that we couldn't find a useable */
+				/* WinSock DLL.                                  */
+				return;
+			}
+
+			/* Confirm that the WinSock DLL supports 2.0.*/
+			/* Note that if the DLL supports versions greater    */
+			/* than 2.0 in addition to 2.0, it will still return */
+			/* 2.0 in wVersion since that is the version we      */
+			/* requested.                                        */
+
+			if ( LOBYTE( wsaData.wVersion ) != 2 ||
+				 HIBYTE( wsaData.wVersion ) != 0 ) {
+				/* Tell the user that we couldn't find a useable */
+				/* WinSock DLL.                                  */
+				WSACleanup( );
+				return;
+			}
+#endif
+		}
+		~SocketInitializer() {
+#if defined(WIN32)
+			WSACleanup();
+#endif
+			InitFinisManager::IFMTrace("Socket::Finalize\n");
+		}
+		int dummyInt() const {
+			return 0;
+		}
+	};
+    typedef boost::details::pool::singleton_default<SocketInitializer> SocketInitializerSingleton;
+    int forceInitialize = SocketInitializerSingleton::instance().dummyInt();
 }
 
 Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long timeout, Allocator *a)

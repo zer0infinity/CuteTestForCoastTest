@@ -11,7 +11,8 @@
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include "InitFinisManagerFoundation.h"
+#include <boost/pool/detail/singleton.hpp>
+#include "InitFinisManager.h"
 
 using namespace Coast;
 
@@ -28,12 +29,6 @@ namespace {
 	char const *fgMainSwitchName = "MainSwitch";
 	char const *fgEnableAllName = "EnableAll";
 	int fgLevel = 0;
-	Anything fgTriggerMap(Coast::Storage::Global());
-	ROAnything fgROTriggerMap;
-	long fgLowerBound = 0;
-	long fgUpperBound = 0;
-	bool fgDumpAnythings = false;
-	bool fgTerminated = true;
 	bool fgIsInitialised = false;
 
 	enum EnablingMode {
@@ -41,117 +36,136 @@ namespace {
 		eDisableAll = 0,
 		eEnableAll = 1,
 	};
-	bool TracingActive() {
-		return ( fgLowerBound > 0 && fgUpperBound >= fgLowerBound );
-	}
-	bool CheckEntryGreaterEqual(long lEntryValue, long lMainSwitch) {
-		return ( lEntryValue <= fgUpperBound && lEntryValue >= fgLowerBound && lEntryValue >= lMainSwitch );
-	}
-	bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
-		return (lMainSwitch >= fgLowerBound) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
-	}
-	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode, long lParentMainSwitch) {
-		long lMainSwitch = anySection[fgMainSwitchName].AsLong(lParentMainSwitch);
-		long lEnableAll = anySection[fgEnableAllName].AsLong(-1L);
-		EnablingMode myMode = parentMode;
-		if ( lMainSwitch <= 0L || parentMode == eDisableAll ) { // disable this level and all levels below
-			myMode = eDisableAll;
-		} else if (lMainSwitch >= fgLowerBound && lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
-			myMode = eEnableAll;
-		}
-		if ( entryKey.Length() && ( myMode == eEnableAll || myMode == eDisableAll ) ) {
-			fgTriggerMap[entryKey] = static_cast<long>(myMode);
-		}
-		String strSlotname;
-		for (long lIdx = 0, lSize = anySection.GetSize(); lIdx < lSize; ++lIdx) {
-			strSlotname = anySection.SlotName(lIdx);
-			if (!strSlotname.Length() || strSlotname.IsEqual(fgMainSwitchName) || strSlotname.IsEqual(fgEnableAllName) || strSlotname.IsEqual(fgLowerBoundName) || strSlotname.IsEqual(fgUpperBoundName) || strSlotname.IsEqual(fgDumpAnythingsName) )
-				continue;
-			String currentKey = entryKey;
-			if ( currentKey.Length() ) currentKey.Append(fgPathDelim);
-			currentKey.Append(strSlotname);
-			if ( anySection[lIdx].GetType() == AnyArrayType ) {
-				ProcessEntry(anySection[lIdx], currentKey, myMode, lMainSwitch);
-			} else {
-				long lEntryValue = anySection[lIdx].AsLong(0L);
-				if ( myMode == eEnableAll || myMode == eDisableAll ) {
-					fgTriggerMap[currentKey] = ( lEntryValue < 0 ) ? 0L : static_cast<long>(myMode);
-				} else {
-					fgTriggerMap[currentKey] = EntryEnabled(lMainSwitch, lEnableAll, lEntryValue) ? 1L : 0L;
-				}
-			}
-		}
-	}
 
-	bool IsTriggerEnabled(const char *trigger) {
-		ROAnything dummy;
-		if (fgROTriggerMap.LookupPath(dummy, trigger, '\000')) {
-			return dummy.AsLong(0L) > 0L;
-		}
-		const char *cPos(strrchr(trigger, '.'));
-		if (cPos != NULL) {
-			int lpos(cPos - trigger);
-			int const iBufSize = 1024;
-			char pcPart[iBufSize] = { 0 };
-			memcpy(pcPart, trigger, std::min(lpos, iBufSize - 1));
-			return IsTriggerEnabled(pcPart);
-		}
-		return false;
-	}
-
-	void InitTracing(String const& strFilename = fgTracerAnyName) {
-		std::istream *ifp = System::OpenStream(strFilename, "any");
-		if (ifp) {
-			Anything anyDebugContext;
-			if ( anyDebugContext.Import(*ifp, strFilename) ) {
-				if (anyDebugContext.GetType() != AnyNullType) {
-					fgLowerBound = anyDebugContext[fgLowerBoundName].AsLong(0);
-					fgUpperBound = anyDebugContext[fgUpperBoundName].AsLong(0);
-					fgDumpAnythings = anyDebugContext[fgDumpAnythingsName].AsBool(true);
-					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll, fgLowerBound);
-					fgROTriggerMap = fgTriggerMap;
-					String strbuf(4096L);
-					{ StringStream stream(strbuf); fgTriggerMap.PrintOn(stream) << "\n"; }
-					SystemLog::Debug(strbuf);
-				}
-			}
-			delete ifp;
-		}
-	}
-	void TerminateTracing() {
-		fgTriggerMap = Anything(fgTriggerMap.GetAllocator());
-		fgROTriggerMap = fgTriggerMap;
-		fgLowerBound = 0;
-		fgUpperBound = 0;
-		fgDumpAnythings = false;
-		fgTerminated = true;
-		fgIsInitialised = false;
-	}
-
-	class TracingInitializer : public InitFinisManagerFoundation
-	{
+	class TracingInitializer {
+		Anything fgTriggerMap;
+		ROAnything fgROTriggerMap;
+		long fgLowerBound;
+		long fgUpperBound;
+		bool fgDumpAnythings;
 	public:
-		TracingInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
-			IFMTrace("TracingInitializer created\n");
-		}
-
-		~TracingInitializer() {
-			IFMTrace("TracingInitializer deleted\n");
-		}
-
-		virtual void DoInit() {
-			IFMTrace("TracingInitializer::DoInit\n");
+		TracingInitializer() :
+				fgTriggerMap(Coast::Storage::Global()), fgLowerBound(0), fgUpperBound(0), fgDumpAnythings(false) {
 			InitTracing();
+			InitFinisManager::IFMTrace("TracingInitializer::Initialized\n");
 		}
-
-		virtual void DoFinis() {
-			IFMTrace("TracingInitializer::DoFinis\n");
+		~TracingInitializer() {
 			TerminateTracing();
+			InitFinisManager::IFMTrace("TracingInitializer::Finalized\n");
+		}
+		bool TracingActive() {
+			return ( fgLowerBound > 0 && fgUpperBound >= fgLowerBound );
+		}
+		bool CheckEntryGreaterEqual(long lEntryValue, long lMainSwitch) {
+			return ( lEntryValue <= fgUpperBound && lEntryValue >= fgLowerBound && lEntryValue >= lMainSwitch );
+		}
+		bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
+			return (lMainSwitch >= fgLowerBound) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
+		}
+		void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode, long lParentMainSwitch) {
+			long lMainSwitch = anySection[fgMainSwitchName].AsLong(lParentMainSwitch);
+			long lEnableAll = anySection[fgEnableAllName].AsLong(-1L);
+			EnablingMode myMode = parentMode;
+			if ( lMainSwitch <= 0L || parentMode == eDisableAll ) { // disable this level and all levels below
+				myMode = eDisableAll;
+			} else if (lMainSwitch >= fgLowerBound && lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
+				myMode = eEnableAll;
+			}
+			if ( entryKey.Length() && ( myMode == eEnableAll || myMode == eDisableAll ) ) {
+				fgTriggerMap[entryKey] = static_cast<long>(myMode);
+			}
+			String strSlotname;
+			for (long lIdx = 0, lSize = anySection.GetSize(); lIdx < lSize; ++lIdx) {
+				strSlotname = anySection.SlotName(lIdx);
+				if (!strSlotname.Length() || strSlotname.IsEqual(fgMainSwitchName) || strSlotname.IsEqual(fgEnableAllName) || strSlotname.IsEqual(fgLowerBoundName) || strSlotname.IsEqual(fgUpperBoundName) || strSlotname.IsEqual(fgDumpAnythingsName) )
+					continue;
+				String currentKey = entryKey;
+				if ( currentKey.Length() ) currentKey.Append(fgPathDelim);
+				currentKey.Append(strSlotname);
+				if ( anySection[lIdx].GetType() == AnyArrayType ) {
+					ProcessEntry(anySection[lIdx], currentKey, myMode, lMainSwitch);
+				} else {
+					long lEntryValue = anySection[lIdx].AsLong(0L);
+					if ( myMode == eEnableAll || myMode == eDisableAll ) {
+						fgTriggerMap[currentKey] = ( lEntryValue < 0 ) ? 0L : static_cast<long>(myMode);
+					} else {
+						fgTriggerMap[currentKey] = EntryEnabled(lMainSwitch, lEnableAll, lEntryValue) ? 1L : 0L;
+					}
+				}
+			}
+		}
+		bool IsTriggerEnabled(const char *trigger) {
+			if ( not TracingActive() ) return false;
+			ROAnything dummy;
+			if (fgROTriggerMap.LookupPath(dummy, trigger, '\000')) {
+				return dummy.AsLong(0L) > 0L;
+			}
+			const char *cPos(strrchr(trigger, '.'));
+			if (cPos != NULL) {
+				int lpos(cPos - trigger);
+				int const iBufSize = 1024;
+				char pcPart[iBufSize] = { 0 };
+				memcpy(pcPart, trigger, std::min(lpos, iBufSize - 1));
+				return IsTriggerEnabled(pcPart);
+			}
+			return false;
+		}
+		void InitTracing(String const& strFilename = fgTracerAnyName) {
+			bool tracingDisabled = (System::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
+			if ( tracingDisabled ) {
+				TerminateTracing();
+				return;
+			}
+			std::istream *ifp = System::OpenStream(strFilename, "any");
+			if (ifp) {
+				Anything anyDebugContext;
+				if ( anyDebugContext.Import(*ifp, strFilename) ) {
+					if (anyDebugContext.GetType() != AnyNullType) {
+						fgLowerBound = anyDebugContext[fgLowerBoundName].AsLong(0);
+						fgUpperBound = anyDebugContext[fgUpperBoundName].AsLong(0);
+						fgDumpAnythings = anyDebugContext[fgDumpAnythingsName].AsBool(true);
+						ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll, fgLowerBound);
+						fgROTriggerMap = fgTriggerMap;
+						String strbuf(4096L);
+						{ StringStream stream(strbuf); fgTriggerMap.PrintOn(stream) << "\n"; }
+						SystemLog::Debug(strbuf);
+					}
+				}
+				delete ifp;
+			}
+			fgIsInitialised = true;
+		}
+		void TerminateTracing() {
+			fgTriggerMap = Anything(fgTriggerMap.GetAllocator());
+			fgROTriggerMap = fgTriggerMap;
+			fgLowerBound = 0;
+			fgUpperBound = 0;
+			fgDumpAnythings = false;
+			fgIsInitialised = false;
+		}
+		bool dumpAnythings() const {
+			return fgDumpAnythings;
 		}
 	};
 
-	TracingInitializer *psgTracingInitializer = new TracingInitializer(4);
+    typedef boost::details::pool::singleton_default<TracingInitializer> TracingInitializerSingleton;
+
+	bool TracingActive() {
+		return TracingInitializerSingleton::instance().TracingActive();
+	}
+	bool CheckEntryGreaterEqual(long lEntryValue, long lMainSwitch) {
+		return TracingInitializerSingleton::instance().CheckEntryGreaterEqual(lEntryValue, lMainSwitch);
+	}
+	bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
+		return TracingInitializerSingleton::instance().EntryEnabled(lMainSwitch, lEnableAll, lEntryValue);
+	}
+	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode, long lParentMainSwitch) {
+		return TracingInitializerSingleton::instance().ProcessEntry(anySection, entryKey, parentMode, lParentMainSwitch);
+	}
+	bool IsTriggerEnabled(const char *trigger) {
+		if (not fgIsInitialised) return false;
+		return TracingInitializerSingleton::instance().IsTriggerEnabled(trigger);
+	}
 
 	//! Utility class to keep track of trace indent
 	class TracerHelper
@@ -183,7 +197,7 @@ namespace {
 	void IntAnyWDDebug(const ROAnything &any, TracerHelper &hlp)
 	{
 		hlp.Tab(fgLevel);
-		if (fgDumpAnythings) {
+		if (TracingInitializerSingleton::instance().dumpAnythings()) {
 			hlp.GetStream() << "--- Start of Anything Dump ------------\n";
 			hlp.Tab(fgLevel);
 			any.Export(hlp.GetStream(), fgLevel);
@@ -198,23 +212,12 @@ namespace {
 }
 
 void Tracer::ExchangeConfigFile(const char *filename) {
-	TerminateTracing();
-	InitTracing( ( filename == 0 ) ? fgTracerAnyName : filename );
+	TracingInitializerSingleton::instance().TerminateTracing();
+	TracingInitializerSingleton::instance().InitTracing( ( filename == 0 ) ? fgTracerAnyName : filename );
 }
 
-bool Tracer::CheckWDDebug(const char *trigger)
-{
-	if (!fgIsInitialised) {
-		fgIsInitialised = true;
-		fgTerminated = (System::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
-	}
-	if ( fgTerminated ) {
-		return false;
-	}
-	if ( TracingActive() ) {
-		return IsTriggerEnabled(trigger);
-	}
-	return false;
+bool Tracer::CheckWDDebug(const char *trigger) {
+	return IsTriggerEnabled(trigger);
 }
 
 Tracer::Tracer(const char *trigger)

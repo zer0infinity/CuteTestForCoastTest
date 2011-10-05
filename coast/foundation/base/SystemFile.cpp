@@ -9,7 +9,6 @@
 #include "SystemFile.h"
 #include "SystemBase.h"
 #include "MmapStream.h"
-#include "InitFinisManagerFoundation.h"
 #include "SystemLog.h"
 #include "Tracer.h"
 #include <errno.h>
@@ -23,6 +22,8 @@
 #include <dirent.h>  // directory access
 #include <sys/statvfs.h>
 #endif
+#include "InitFinisManager.h"
+#include <boost/pool/detail/singleton.hpp>
 
 namespace {
 	//!contains the systems path separator
@@ -35,30 +36,77 @@ namespace {
 	const long cPATH_MAX = PATH_MAX;
 	#endif
 
-	//!contains the root directory path that is used to locate files, it can be relative or absolute
-	String fgRootDir(0L, Coast::Storage::Global());
-
-	//!contains a search path list that is ':' delimited, it is used to search for files
-	String fgPathList(0L, Coast::Storage::Global());
-
-	class PathInitializer : public InitFinisManagerFoundation
-	{
+	class PathInitializer {
+		//!contains the root directory path that is used to locate files, it can be relative or absolute
+		String fgRootDir;
+		//!contains a search path list that is ':' delimited, it is used to search for files
+		String fgPathList;
+		void setCoastRoot(const char *root) {
+		}
+		void setCoastPath(const char *path) {
+		}
 	public:
-		PathInitializer(unsigned int uiPriority)
-			: InitFinisManagerFoundation(uiPriority) {
-			IFMTrace("PathInitializer created\n");
+		PathInitializer() : fgRootDir(0L, Coast::Storage::Global()), fgPathList(0L, Coast::Storage::Global()) {
+			InitFinisManager::IFMTrace("PathInitializer::Initialize\n");
+			initialize(0,0);
+		}
+		~PathInitializer() {
+			InitFinisManager::IFMTrace("PathInitializer::Finalize\n");
+		}
+		void initialize(const char *root, const char *path) {
+			String tmpRoot((root) ? String(root) : Coast::System::EnvGet("COAST_ROOT"));
+			String tmpPath((path) ? String(path) : Coast::System::EnvGet("COAST_PATH"));
+			static bool once= false;
+			if (!once || tmpRoot.Length() > 0 || tmpPath.Length() > 0) {
+				once=true;
+				if (not tmpRoot.empty()) {
+					SetRootDir(tmpRoot, true);
+				} else {
+					SetRootDir(".", true);
+				}
+				if (not tmpPath.empty()) {
+					SetPathList(tmpPath, true);
+				} else {
+					SetPathList(".:config:src:", true);
+				}
+			}
+		}
+		void SetRootDir(const char *root, bool print) {
+			if (root) {
+				String rPath(root);
+				// when a dot is supplied as root, ResolvePath would remove it and leave the path blank
+				if (rPath != ".") {
+					Coast::System::ResolvePath(rPath);
+				}
+				if (print) {
+					SystemLog::WriteToStderr(String("Root Dir: <") << rPath << ">" << "\n");
+				}
+				String logMsg("Root Dir: <");
+				logMsg << rPath << ">";
+				SystemLog::Info(logMsg);
+				fgRootDir = rPath;
+			}
+		}
+		void SetPathList(const char *pathlist, bool print) {
+			if (pathlist) {
+				if (print) {
+					SystemLog::WriteToStderr(String("Pathlist: <") << pathlist << ">" << "\n");
+				}
+				String logMsg("Pathlist: <");
+				logMsg << pathlist << ">";
+				SystemLog::Info(logMsg);
+				fgPathList = pathlist;
+			}
+		}
+		const char *GetRootDir() {
+			return fgRootDir.cstr();
 		}
 
-		virtual void DoInit() {
-			IFMTrace("PathInitializer::DoInit\n");
-			Coast::System::InitPath();
-		}
-		virtual void DoFinis() {
-			IFMTrace("PathInitializer::DoFinis\n");
+		const char *GetPathList() {
+			return fgPathList.cstr();
 		}
 	};
-
-	PathInitializer *psgPathInitializer = new PathInitializer(2);
+    typedef boost::details::pool::singleton_default<PathInitializer> PathInitializerSingleton;
 
 	//! checks existence of a path using stat
 	/*! \param path file or directory path
@@ -180,7 +228,7 @@ namespace {
 			Trace("can't open " << filepath);
 		}
 		if ( Ios == NULL ) {
-			Trace("couldn't open file [" << filepath << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+			Trace("couldn't open file [" << filepath << "] searched in [" << Coast::System::GetRootDir() << "] with pathlist: [" << Coast::System::GetPathList() << "]");
 		}
 
 		return Ios;
@@ -197,7 +245,7 @@ namespace {
 		String dirpath, filepath;
 		// search over pathlist
 		while (st.NextToken(dirpath)) {
-			filepath.Append(fgRootDir).Append(Coast::System::Sep()).Append(dirpath).Append(Coast::System::Sep()).Append(name);
+			filepath.Append(Coast::System::GetRootDir()).Append(Coast::System::Sep()).Append(dirpath).Append(Coast::System::Sep()).Append(name);
 			Coast::System::ResolvePath(filepath);
 			Trace("trying [" << filepath << "]");
 
@@ -429,6 +477,18 @@ namespace Coast {
 			return cSep;
 		}
 
+		void InitPath(const char *root, const char *path) {
+			PathInitializerSingleton::instance().initialize(root, path);
+		}
+
+		void SetRootDir(const char *root, bool print) {
+			PathInitializerSingleton::instance().SetRootDir(root, print);
+		}
+
+		void SetPathList(const char *pathlist, bool print) {
+			PathInitializerSingleton::instance().SetPathList(pathlist, print);
+		}
+
 		// used to smoothify the given path;
 		// remove relative movements
 		// on WIN32, convert to correct drive notation and use only one kind of slashes
@@ -597,65 +657,6 @@ namespace Coast {
 		#endif
 		}
 
-		//---- System --------------------------------------------------------------------------
-		void InitPath(const char *root, const char *path)
-		{
-			static bool once = false;
-			String tmpRoot((root) ? String(root) : EnvGet("COAST_ROOT"));
-			String tmpPath((path) ? String(path) : EnvGet("COAST_PATH"));
-
-			if (!once || tmpRoot.Length() > 0 || tmpPath.Length() > 0) {
-				once = true;
-				if (tmpRoot.Length() > 0) {
-					SetRootDir(tmpRoot, true);
-				} else {
-					SetRootDir(".", true);
-				}
-				if (tmpPath.Length() > 0) {
-					SetPathList(tmpPath, true);
-				} else {
-					SetPathList(".:config:src:", true);
-				}
-			}
-		}
-
-		void SetRootDir(const char *root, bool print)
-		{
-			if (root) {
-				String rPath(root);
-				// when a dot is supplied as root, ResolvePath would remove it and leave the path blank
-				if (rPath != ".") {
-					ResolvePath(rPath);
-				}
-				if (print) {
-					SystemLog::WriteToStderr( String("Root Dir: <") << rPath << ">" << "\n" );
-				}
-
-				String logMsg("Root Dir: <");
-				logMsg << rPath << ">";
-				SystemLog::Info(logMsg);
-
-				fgRootDir.SetAllocator(Coast::Storage::Global());
-				fgRootDir = rPath;
-			}
-		}
-
-		void SetPathList(const char *pathlist, bool print)
-		{
-			if (pathlist) {
-				if (print) {
-					SystemLog::WriteToStderr( String("Pathlist: <") << pathlist << ">" << "\n" );
-				}
-
-				String logMsg("Pathlist: <");
-				logMsg << pathlist << ">";
-				SystemLog::Info(logMsg);
-
-				fgPathList.SetAllocator(Coast::Storage::Global());
-				fgPathList = pathlist;
-			}
-		}
-
 		std::iostream *OpenIStream(const char *name, const char *extension, openmode mode, bool log)
 		{
 			return OpenIStream(buildFilename(name, extension), mode);
@@ -725,15 +726,15 @@ namespace Coast {
 				Trace("absolute path given [" << relpath << "]");
 				resultPath = relpath;
 			} else {
-				Trace("file [" << relpath << "] is going to be searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
-				resultPath = searchFilePath(relpath, fgPathList);
+				Trace("file [" << relpath << "] is going to be searched in [" << GetRootDir() << "] with pathlist: [" << GetPathList() << "]");
+				resultPath = searchFilePath(relpath, GetPathList());
 			}
 
 			if (resultPath.Length() > 0L) {
 				Trace("path found: [" << resultPath << "]");
 			}
 			else {
-				Trace("couldn't find file [" << relpath << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+				Trace("couldn't find file [" << relpath << "] searched in [" << GetRootDir() << "] with pathlist: [" << GetPathList() << "]");
 			}
 
 			ResolvePath(resultPath);
@@ -894,14 +895,12 @@ namespace Coast {
 			return false;
 		}
 
-		const char *GetRootDir()
-		{
-			return fgRootDir.cstr();
+		const char *GetRootDir() {
+			return PathInitializerSingleton::instance().GetRootDir();
 		}
 
-		const char *GetPathList()
-		{
-			return fgPathList.cstr();
+		const char *GetPathList() {
+			return PathInitializerSingleton::instance().GetPathList();
 		}
 
 		Anything DirFileList(const char *dir, const char *extension)

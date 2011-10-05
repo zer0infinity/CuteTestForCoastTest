@@ -32,7 +32,7 @@ void SysLogTest::tearDown() {
 
 void SysLogTest::TestFlags() {
 	StartTrace(SysLogTest.TestFlags);
-	t_assertm(SystemLog::fgSysLog != NULL, " expected creation of fgSysLog");
+	t_assertm(SystemLog::getSysLog() != NULL, " expected creation of fgSysLog");
 }
 
 // builds up a suite of testcases, add a line for each testmethod

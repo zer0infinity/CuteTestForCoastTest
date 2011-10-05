@@ -32,11 +32,10 @@ public:
 	//! module initialization
 	static void Init(const char *appId);
 
-	//! ensure early initialization but do it only once
-	static bool InitOnce();
-
 	//! module termination
 	static void Terminate();
+
+	static SystemLog* getSysLog();
 
 	/*! define importancy levels in increasing order for easier */
 	enum eLogLevel {
@@ -110,16 +109,6 @@ protected:
 
 	//!write log messages to cerr if preprocessor flags are set accordingly
 	virtual void DoTraceLevel(const char *level, const char *msg);
-
-private:
-	//! fgSysLog is the system dependent variable that calls a system's log api
-	//! since SystemLog messages might be generated from everywhere we don't
-	//! know when this is happening for the first time<P>
-	//! Init is called normally in the bootstrap process once but then the syslog
-	//! might already be in use
-	static SystemLog *fgSysLog;
-	static eLogLevel fgDoSystemLevelLog;
-	static eLogLevel fgDoLogOnCerr;
 };
 
 #define	SYSDEBUG(msg) \

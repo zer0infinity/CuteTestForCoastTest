@@ -12,8 +12,6 @@
 #include "SystemAPI.h"
 #include "ITOStorage.h"
 
-class SimpleMutex;
-
 //! multithreading safe memory allocation tracker
 class MT_MemTracker : public MemTracker
 {
@@ -57,22 +55,11 @@ public:
 	//! unregister allocator in the current threads local store (true means success)
 	static bool UnregisterThread();
 
-	//! must be called before threading is activated
-	static void Initialize(); // register MT_Storage capability with Storage
-
-	//! must be called before threading is deactivated
-	static void Finalize(); // de-register MT_Storage capability
-
 	//!does ref counting for allocators with mutex protection; global mutex might be slightly inefficient
 	static void RefAllocator(Allocator *wdallocator);
 
 	//!does ref counting for allocators with mutex protection; global mutex might be slightly inefficient
 	static void UnrefAllocator(Allocator *wdallocator);
-
-	static THREADKEY fgAllocatorKey;
-	static bool fgInitialized;
-	static SimpleMutex *fgpAllocatorInit;
-	static MemTracker *fOldTracker;
 };
 
 #endif
