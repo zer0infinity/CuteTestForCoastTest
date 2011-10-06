@@ -56,28 +56,21 @@ bool LDAPDAICachePolicyModule::Init(const ROAnything config)
 bool LDAPDAICachePolicyModule::InitialLoad(const ROAnything dataAccesses, LDAPDAICachePolicyModule::EDataAccessType daType, const Anything &config )
 {
 	StartTrace(LDAPDAICachePolicyModule.InitialLoad);
-	CacheHandler *cache = CacheHandler::Get();
-	bool ret(true);
-	if (cache) {
-		LDAPDAIDataAcccessLoader ldl(config);
-		LDAPDAIActionLoader lal(config);
-		Anything tmp;
-		for (int i = 0; i < dataAccesses.GetSize(); i++) {
-			String toDo(dataAccesses[i].AsString());
-			if ( daType == dataaccess ) {
-				Trace("Loading ldl with: " << toDo);
-				cache->Load("LdapDAIGetter", toDo, &ldl);
-			}
-			if ( daType == action ) {
-				Trace("Loading lal with: " << toDo);
-				cache->Load("LdapDAIGetter", toDo, &lal);
-			}
+	LDAPDAIDataAcccessLoader ldl(config);
+	LDAPDAIActionLoader lal(config);
+	Anything tmp;
+	for (int i = 0; i < dataAccesses.GetSize(); i++) {
+		String toDo(dataAccesses[i].AsString());
+		if ( daType == dataaccess ) {
+			Trace("Loading ldl with: " << toDo);
+			CacheHandler::instance().Load("LdapDAIGetter", toDo, &ldl);
 		}
-	} else {
-		SystemLog::WriteToStderr("\tLDAPDAICachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
-		ret = false;
+		if ( daType == action ) {
+			Trace("Loading lal with: " << toDo);
+			CacheHandler::instance().Load("LdapDAIGetter", toDo, &lal);
+		}
 	}
-	return ret;
+	return true;
 }
 
 bool LDAPDAICachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses)
@@ -168,37 +161,28 @@ Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 	return (theResult);
 }
 
-//---- LDAPDAICacheGetter ---------------------------------------------------------
-LDAPDAICacheGetter::LDAPDAICacheGetter(const String &dataAccess)
-	: fDA(dataAccess)
-{
+LDAPDAICacheGetter::LDAPDAICacheGetter(const String &dataAccess) :
+		fDA(dataAccess) {
 	StartTrace("LDAPDAICacheGetter.LDAPDAICacheGetter");
 }
 
-LDAPDAICacheGetter::~LDAPDAICacheGetter()
-{
+LDAPDAICacheGetter::~LDAPDAICacheGetter() {
 	StartTrace(LDAPDAICacheGetter.~LDAPDAICacheGetter);
 }
 
-bool LDAPDAICacheGetter::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool LDAPDAICacheGetter::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace(LDAPDAICacheGetter.DoLookup);
 
 	return Get(result, fDA, key, delim, indexdelim);
 }
 
-ROAnything LDAPDAICacheGetter::GetAll(const String &dataAccess)
-{
+ROAnything LDAPDAICacheGetter::GetAll(const String &dataAccess) {
 	StartTrace1(LDAPDAICacheGetter.GetAll, dataAccess);
-
-	CacheHandler *cache = CacheHandler::Get();
-	return cache ? cache->Get("LdapDAIGetter", dataAccess) : ROAnything();
+	return CacheHandler::instance().Get("LdapDAIGetter", dataAccess);
 }
 
-bool LDAPDAICacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI)
-{
+bool LDAPDAICacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI) {
 	StartTrace1(LDAPDAICacheGetter.Get, key);
-
 	bool ret = GetAll(dataAccess).LookupPath(result, key, sepS, sepI);
 	TraceAny(result, "Result:");
 	return ret;

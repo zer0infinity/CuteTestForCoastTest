@@ -274,24 +274,21 @@ void TemplateParserTest::NoTagWithinJavascript() {
 
 void TemplateParserTest::BuildFormWithConfiguredTransitionTokens() {
 	StartTrace(TemplateParserTest.BuildFormWithConfiguredTransitionTokens);
-	CacheHandler *pCache = CacheHandler::Get();
-	if (t_assert(pCache != NULL)) {
-		ROAnything roaHTMLCache, roaCacheNameMap;
-		roaHTMLCache = pCache->GetGroup("HTML");
-		roaCacheNameMap = pCache->Get("HTMLMappings", "HTMLTemplNameMap");
-		TraceAny(roaHTMLCache, "HTML");
-		TraceAny(roaCacheNameMap, "NameMap");
-		ROAnything roaTestPage = roaHTMLCache[roaCacheNameMap["TemplateParserExtendedTest"][0L].AsCharPtr()];
-		TraceAny(roaTestPage, "content of page");
-		if (t_assertm(!roaTestPage.IsNull(), "expected to get a valid reference to the page")) {
-			String configFilename("TemplateParserExtendedTestMaster");
-			std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
-			if (t_assert(ifp != NULL)) {
-				Anything anyMaster;
-				anyMaster.Import(*ifp, configFilename);
-				delete ifp;
-				assertAnyCompareEqual(anyMaster, roaTestPage, configFilename << ".any", '.', ':');
-			}
+	ROAnything roaHTMLCache, roaCacheNameMap;
+	roaHTMLCache = CacheHandler::instance().GetGroup("HTML");
+	roaCacheNameMap = CacheHandler::instance().Get("HTMLMappings", "HTMLTemplNameMap");
+	TraceAny(roaHTMLCache, "HTML");
+	TraceAny(roaCacheNameMap, "NameMap");
+	ROAnything roaTestPage = roaHTMLCache[roaCacheNameMap["TemplateParserExtendedTest"][0L].AsCharPtr()];
+	TraceAny(roaTestPage, "content of page");
+	if (t_assertm(!roaTestPage.IsNull(), "expected to get a valid reference to the page")) {
+		String configFilename("TemplateParserExtendedTestMaster");
+		std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
+		if (t_assert(ifp != NULL)) {
+			Anything anyMaster;
+			anyMaster.Import(*ifp, configFilename);
+			delete ifp;
+			assertAnyCompareEqual(anyMaster, roaTestPage, configFilename << ".any", '.', ':');
 		}
 	}
 }

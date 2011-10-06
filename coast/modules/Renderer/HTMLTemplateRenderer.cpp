@@ -13,7 +13,6 @@
 #include "TemplateParser.h"
 #include "StringStream.h"
 
-//---- HTMLTemplateRenderer ----------------------------------------------------
 RegisterRenderer(HTMLTemplateRenderer);
 ROAnything HTMLTemplateRenderer::fgTemplates;
 ROAnything HTMLTemplateRenderer::fgNameMap;
@@ -24,17 +23,12 @@ HTMLTemplateRenderer::HTMLTemplateRenderer(const char *name) : Renderer(name)
 void HTMLTemplateRenderer::BuildCache(const ROAnything config)
 {
 	StartTrace(HTMLTemplateRenderer.BuildCache);
-
 	HTMLTemplateCacheBuilder htcb;
-
 	htcb.BuildCache(config);
-	CacheHandler *cache = CacheHandler::Get();
-	if (cache) {
-		fgTemplates = cache->GetGroup("HTML");
-		TraceAny(fgTemplates, "Cache Templates");
-		fgNameMap = cache->Get("HTMLMappings", "HTMLTemplNameMap");
-		TraceAny(fgNameMap, "Cache Map");
-	}
+	fgTemplates = CacheHandler::instance().GetGroup("HTML");
+	TraceAny(fgTemplates, "Cache Templates");
+	fgNameMap = CacheHandler::instance().Get("HTMLMappings", "HTMLTemplNameMap");
+	TraceAny(fgNameMap, "Cache Map");
 }
 
 TemplateParser *HTMLTemplateRenderer::GetParser()

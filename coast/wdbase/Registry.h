@@ -12,7 +12,6 @@
 //PS make Registry an IFAObject --> NotCloned to have clean handling of Anything
 #include "IFAConfObject.h"
 
-//---- Registry -----------------------------------------------------------------------
 //!an infrastructure class to register and retrieve objects by name
 //!objects of given types can be registered according to a specification and a InstallerPolicy object.<br>
 //!After installation they are available by name. The <i>"type"</i> of the objects is defined by the registry name;<br>
@@ -58,7 +57,7 @@ public:
 	RegisterableObject *Find(const char *name);
 
 	/*! Returns the registry for category; creates it if it is not already there.
-		\param category Name for the registry; usually a name of the 'managing' object used to initialile/finalize belonging objects
+		\param category Name for the registry; usually a name of the 'managing' object used to initialize/finalize belonging objects
 		\return Registry object for the category/group given. If the object does not yet exist, a new one will be created
 		\note Create registries before starting threads which could possibly use it. For performance reasons, this was intentionally left out! */
 	static Registry *GetRegistry(const char *category);
@@ -97,12 +96,10 @@ protected:
 	Anything *fTable;
 
 private:
-	// don't use these
 	Registry(const Registry &);
 	Registry &operator=(const Registry &);
 };
 
-//---- RegistryIterator -----------------------------------------------------------------------
 //!simple non-robust, non mt-safe iterator over registry
 //! this iterator is neither robust against changes in the underlying
 //! data structur, nor threadsafe

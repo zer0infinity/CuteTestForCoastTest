@@ -67,16 +67,15 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config) {
 	String templateDir;
 	Anything fileNameMap(Coast::Storage::Global());
 
-	CacheHandler *cache = CacheHandler::Get();
 	TemplateParser tp;
 	HTMLTemplateCacheLoader htcl(&tp, config);
 
-	while (cache && st.NextToken(templateDir)) {
+	while (st.NextToken(templateDir)) {
 		// cache templates of template dir
 		filepath = rootDir;
 		filepath << System::Sep() << templateDir;
 		System::ResolvePath(filepath);
-		CacheDir(filepath, cache, &htcl, langDirMap, fileNameMap);
+		CacheDir(filepath, &htcl, langDirMap, fileNameMap);
 
 		// search over localized dirs
 		for (long j = 0, sz = langDirMap.GetSize(); j < sz; ++j) {
@@ -88,19 +87,19 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config) {
 			filepath << System::Sep() << langDirMap[j].AsCharPtr("");
 			System::ResolvePath(filepath);
 
-			CacheDir(filepath, cache, &htcl, langDirMap.SlotName(j), fileNameMap);
+			CacheDir(filepath, &htcl, langDirMap.SlotName(j), fileNameMap);
 		}
 	}
 	TraceAny(fileNameMap, "FileNameMap after caching pages");
 
 	// install the mapping from file names to absolute pathnames in the cache
 	HTMLTemplateNameMapLoader htnml(fileNameMap);
-	cache->Load("HTMLMappings", "HTMLTemplNameMap", &htnml);
+	CacheHandler::instance().Load("HTMLMappings", "HTMLTemplNameMap", &htnml);
 
 	SystemLog::WriteToStderr(" done\n");
 }
 
-void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap,
+void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheLoadPolicy *htcl, const ROAnything langDirMap,
 		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
@@ -114,7 +113,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 		// smothen path not to load relative-path files more than once
 		System::ResolvePath(fileKey);
 		// ignore results, they are stored in the cachehandler anyway
-		cache->Load("HTML", fileKey, htcl);
+		CacheHandler::instance().Load("HTML", fileKey, htcl);
 		// store away the name,langKey to fileKey mapping
 		for (long j = 0, szl = langDirMap.GetSize(); j < szl; ++j) {
 			const char *langKey = langDirMap.SlotName(j);
@@ -126,7 +125,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 	}
 }
 
-void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const char *langKey,
+void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheLoadPolicy *htcl, const char *langKey,
 		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
@@ -140,7 +139,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 		// smothen path not to load relative-path files more than once
 		System::ResolvePath(fileKey);
 		// ignore results, they are stored in the cachehandler anyway
-		cache->Load("HTML", fileKey, htcl);
+		CacheHandler::instance().Load("HTML", fileKey, htcl);
 		// store away the name,langKey to fileKey mapping
 		fileNameMap[file][langKey] = fileKey;
 		// reset the filekey

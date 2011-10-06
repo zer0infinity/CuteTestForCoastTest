@@ -11,7 +11,6 @@
 #include "Tracer.h"
 #include "Policy.h"
 
-//---- Registry -----------------------------------------------------------------------
 void Registry::SetFinalize(bool finalize)
 {
 	fgFinalize = finalize;
@@ -216,7 +215,6 @@ ROAnything &Registry::GetRegROTable()
 	return (*fgRORegistryArray);
 }
 
-//---- Registry -----------------------------------------------------------------------
 RegistryIterator::RegistryIterator(Registry *rg, bool forward)
 	: fRegistry(rg)
 	, fForward(forward)

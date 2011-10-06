@@ -7,14 +7,9 @@
  */
 
 #include "CacheHandler.h"
-#include "InitFinisManagerWDBase.h"
-#include "Threads.h"
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "AnyUtils.h"
-
-CacheHandler *CacheHandler::fgCacheHandler = 0;
-Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 
 Anything SimpleAnyLoader::Load(const char *key) {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
@@ -31,40 +26,13 @@ Anything SimpleAnyLoader::Load(const char *key) {
 	return toLoad;
 }
 
-class CacheHandlerMutexAllocator: public InitFinisManagerWDBase {
-public:
-	CacheHandlerMutexAllocator(unsigned int uiPriority) :
-		InitFinisManagerWDBase(uiPriority) {
-		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator created\n");
-	}
-
-	virtual void DoInit() {
-		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator::DoInit\n");
-		if (!CacheHandler::fgCacheHandlerMutex) {
-			CacheHandler::fgCacheHandlerMutex = new Mutex("CacheHandlerMutex", Coast::Storage::Global());
-		}
-	}
-
-	virtual void DoFinis() {
-		InitFinisManager::IFMTrace("CacheHandlerMutexAllocator::DoFinis\n");
-		delete CacheHandler::fgCacheHandlerMutex;
-		CacheHandler::fgCacheHandlerMutex = 0;
-	}
-};
-
-static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(10); // must be of higher priority than RegistryInitFinis !
-
-void CacheHandler::Finis() {
-	StartTrace(CacheHandler.Finis);
-	if (fgCacheHandler) {
-		delete fgCacheHandler;
-		fgCacheHandler = 0;
-	}
+CacheHandlerPrototype::CacheHandlerPrototype() :
+		NotCloned("CacheHandler"), fCache(Coast::Storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", Coast::Storage::Global()) {
 }
 
-ROAnything CacheHandler::Reload(const char *group, const char *key, CacheLoadPolicy *clp) {
-	StartTrace1(CacheHandler.Reload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(*fgCacheHandlerMutex);
+ROAnything CacheHandlerPrototype::Reload(const char *group, const char *key, CacheLoadPolicy *clp) {
+	StartTrace1(CacheHandlerPrototype.Reload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+	LockUnlockEntry me(fCacheHandlerMutex);
 	Anything toCache(clp->Load(key), fCache.GetAllocator());
 	if (!toCache.IsNull()) {
 		if (IsLoaded(group, key)) {
@@ -77,9 +45,9 @@ ROAnything CacheHandler::Reload(const char *group, const char *key, CacheLoadPol
 	return Get(group, key);
 }
 
-ROAnything CacheHandler::Load(const char *group, const char *key, CacheLoadPolicy *clp) {
-	StartTrace1(CacheHandler.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(*fgCacheHandlerMutex);
+ROAnything CacheHandlerPrototype::Load(const char *group, const char *key, CacheLoadPolicy *clp) {
+	StartTrace1(CacheHandlerPrototype.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+	LockUnlockEntry me(fCacheHandlerMutex);
 	if (IsLoaded(group, key)) {
 		return Get(group, key);
 	} else {
@@ -91,51 +59,51 @@ ROAnything CacheHandler::Load(const char *group, const char *key, CacheLoadPolic
 	}
 }
 
-bool CacheHandler::IsLoaded(const char *group, const char *key) {
-	StartTrace1(CacheHandler.IsLoaded, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+bool CacheHandlerPrototype::IsLoaded(const char *group, const char *key) {
+	StartTrace1(CacheHandlerPrototype.IsLoaded, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	if (fCache.IsDefined(group)) {
 		return fCache[group].IsDefined(key);
 	}
 	return false;
 }
 
-void CacheHandler::Unload(const char *group, const char *key) {
-	StartTrace1(CacheHandler.Unload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(*fgCacheHandlerMutex);
+void CacheHandlerPrototype::Unload(const char *group, const char *key) {
+	StartTrace1(CacheHandlerPrototype.Unload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+	LockUnlockEntry me(fCacheHandlerMutex);
 	if ( IsLoaded(group, key) ) {
 		SlotCleaner::Operate(fCache, String(group).Append('.').Append(key));
 	}
 }
 
-ROAnything CacheHandler::Get(const char *group, const char *key) {
-	StartTrace1(CacheHandler.Get, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
+ROAnything CacheHandlerPrototype::Get(const char *group, const char *key) {
+	StartTrace1(CacheHandlerPrototype.Get, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	ROAnything cache(fCache);
 	return cache[group][key];
 }
 
-ROAnything CacheHandler::GetGroup(const char *group) {
-	StartTrace1(CacheHandler.GetGroup, "group [" << NotNull(group) << "]");
+ROAnything CacheHandlerPrototype::GetGroup(const char *group) {
+	StartTrace1(CacheHandlerPrototype.GetGroup, "group [" << NotNull(group) << "]");
 	ROAnything cache(fCache);
 	return cache[group];
 }
 
-CacheHandler *CacheHandler::Get() {
-	StartTrace(CacheHandler.Get);
-	if (!fgCacheHandler && fgCacheHandlerMutex) {
-		LockUnlockEntry me(*fgCacheHandlerMutex);
-		// test again if changed while waiting for mutex
-		if (!fgCacheHandler) {
-			fgCacheHandler = new (Coast::Storage::Global()) CacheHandler();
-		}
-	}
-	return fgCacheHandler;
+bool CacheHandlerPrototype::Init(const ROAnything) {
+	LockUnlockEntry me(fCacheHandlerMutex);
+	return true;
 }
+
+bool CacheHandlerPrototype::Finis() {
+	LockUnlockEntry me(fCacheHandlerMutex);
+	fCache.clear();
+	return true;
+}
+
 RegisterModule(CacheHandlerModule);
 
-bool CacheHandlerModule::Init(const ROAnything) {
+bool CacheHandlerModule::Init(const ROAnything config) {
 	StartTrace(CacheHandlerModule.Init);
 	SystemLog::WriteToStderr("\tCacheHandler");
-	if (CacheHandler::Get()) {
+	if (CacheHandler::instance().Init(config)) {
 		SystemLog::WriteToStderr(". done\n");
 		return true;
 	}
@@ -145,6 +113,6 @@ bool CacheHandlerModule::Init(const ROAnything) {
 
 bool CacheHandlerModule::Finis() {
 	StartTrace(CacheHandlerModule.Finis);
-	CacheHandler::Finis();
-	return true;
+	return CacheHandler::instance().Finis();
 }
+

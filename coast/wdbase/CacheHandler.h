@@ -10,10 +10,8 @@
 #define _CACHEHANDLER_H
 
 #include "WDModule.h"
+#include "Threads.h"
 
-class Mutex;
-
-//---- CacheHandlerModule -----------------------------------------------------------
 //! <B>Initializes the global caching structures</B><BR>Configuration: -
 //! This Module should be initialized at first to ensure proper functionality of dependent modules
 class CacheHandlerModule: public WDModule {
@@ -26,35 +24,18 @@ public:
 	virtual bool Finis();
 };
 
-//--- CacheLoadPolicy -----------------------------------------------
-/****
- Purpose_Begin
- CacheLoadPolicy builds up a cache. It uses an Anything as representation. The contents of the
+//! CacheLoadPolicy builds up a cache.
+/*! It uses an Anything as representation. The contents of the
  cache and the used tags are implementation dependent and must be defined between cache builder
  and cache user (e.g. HTMLTemplateCacheLoader and HTMLTemplateRenderer)
- Purpose_End
 
- Paramters_Begin
  Group/Key pair identifies the cached object uniquely
- Paramters_End
 
- Concurrency_Begin
  The build up of the cache is done before the server is accepting requests.
  There are no MT-Issues.
- Concurrency_End
 
- Collaborations_Begin
- Implementation dependent
- Collaborations_End
-
- Errorhandling_Begin
- None
- Errorhandling_End
-
- Assumptions_Begin
  Cache is uniquely identified by Group/Key pair
- Assumptions_End
- ****/
+ */
 class CacheLoadPolicy {
 public:
 	virtual ~CacheLoadPolicy() {
@@ -65,13 +46,11 @@ public:
 	}
 };
 
-//--- SimpleAnyLoader -----------------------------------------------
 class SimpleAnyLoader: public CacheLoadPolicy {
 public:
 	virtual Anything Load(const char *key);
 };
 
-//--- AnythingLoaderPolicy -----------------------------------------------
 //! Dummy policy wrap an Anything to cache
 class AnythingLoaderPolicy: public CacheLoadPolicy {
 public:
@@ -88,51 +67,33 @@ private:
 	Anything fCachedAny;
 };
 
-//---- CacheHandler --------------------------------------------------
-/****
- Purpose_Begin
- CacheHandler manages a cache for configuration information. This information consists of loaded
+#include <boost/pool/detail/singleton.hpp>
+#include <boost/shared_ptr.hpp>
+
+//! CacheHandlerPrototype manages a cache for configuration information
+/*!
+ This information consists of loaded
  configuration files (Anythings) and preprocessed HTML-template files. The construction of the
  cache is done by a strategy object that is submitted to the load method as parameter.
- Purpose_End
 
- Paramters_Begin
  CacheLoadPolicy, constructs the cache. Group/Key pair identifies the cached object uniquely
- Paramters_End
 
- Concurrency_Begin
  The build up of the cache is done before the server is accepting requests. It is distributed through
  ROAnything and installed into clients. There are no MT-Issues during normal operation.
  If the cache has to be reset (not implemented yet), this has to be done while no request is active.
- Concurrency_End
 
- Collaborations_Begin
- CacheLoadPolicy, Anything
- Collaborations_End
-
- Errorhandling_Begin
- None
- Errorhandling_End
-
- Assumptions_Begin
  Cache is uniquely identified by Group/Key pair
- Assumptions_End
- ****/
-class CacheHandler: public NotCloned {
-	friend class CacheHandlerMutexAllocator;
-
+*/
+class CacheHandlerPrototype: public NotCloned {
+	typedef Mutex MutexType;
 	// the central cache data structure
 	Anything fCache;
 
-	// the one and only cache handler in the system
-	static CacheHandler *fgCacheHandler;
 	// this mutex protects the cache handler from concurrent access
-	static Mutex *fgCacheHandlerMutex;
+	MutexType fCacheHandlerMutex;
 public:
-	CacheHandler() :
-		NotCloned("CacheHandler"), fCache(Coast::Storage::Global()) {
-	}
-	virtual ~CacheHandler() {
+	CacheHandlerPrototype();
+	virtual ~CacheHandlerPrototype() {
 		fCache = Anything(Coast::Storage::Global());
 	}
 
@@ -155,9 +116,9 @@ public:
 	// get a whole group (used for html templates)
 	ROAnything GetGroup(const char *group);
 
-	// accessor to the one and only cache handler
-	static CacheHandler *Get();
-	static void Finis();
+	bool Init(const ROAnything);
+	bool Finis();
 };
+typedef boost::details::pool::singleton_default<CacheHandlerPrototype> CacheHandler;
 
 #endif

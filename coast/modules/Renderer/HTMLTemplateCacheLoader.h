@@ -12,7 +12,6 @@
 
 #include "WDModule.h"
 #include "CacheHandler.h"
-
 class TemplateParser;
 
 //! Used to load HTML-pages at startup and cache them for later access
@@ -84,8 +83,8 @@ public:
 
 //! Worker class to load the html-files using the given CacheHandler and CacheLoadPolicy
 class HTMLTemplateCacheBuilder {
-	void CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap);
-	void CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const char *langDir, Anything &fileNameMap);
+	void CacheDir(const char *filepath, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap);
+	void CacheDir(const char *filepath, CacheLoadPolicy *htcl, const char *langDir, Anything &fileNameMap);
 public:
 	void BuildCache(const ROAnything config);
 };

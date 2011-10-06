@@ -42,27 +42,20 @@ bool LdapCachePolicyModule::Init(const ROAnything config) {
 
 bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType) {
 	StartTrace(LdapCachePolicyModule.InitialLoad);
-	CacheHandler *cache = CacheHandler::Get();
-	bool ret(true);
-	if (cache) {
-		LdapDataAccessLoader ldl;
-		LdapActionLoader lal;
-		for (int i = 0; i < dataAccesses.GetSize(); ++i) {
-			String toDo(dataAccesses[i].AsString());
-			if (daType == dataaccess) {
-				Trace("Loading ldl with: " << toDo);
-				cache->Load("LdapGetter", toDo, &ldl);
-			}
-			if (daType == action) {
-				Trace("Loading lal with: " << toDo);
-				cache->Load("LdapGetter", toDo, &lal);
-			}
+	LdapDataAccessLoader ldl;
+	LdapActionLoader lal;
+	for (int i = 0; i < dataAccesses.GetSize(); ++i) {
+		String toDo(dataAccesses[i].AsString());
+		if (daType == dataaccess) {
+			Trace("Loading ldl with: " << toDo);
+			CacheHandler::instance().Load("LdapGetter", toDo, &ldl);
 		}
-	} else {
-		SystemLog::WriteToStderr("\tLdapCachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
-		ret = false;
+		if (daType == action) {
+			Trace("Loading lal with: " << toDo);
+			CacheHandler::instance().Load("LdapGetter", toDo, &lal);
+		}
 	}
-	return ret;
+	return true;
 }
 
 bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses) {
@@ -141,20 +134,16 @@ Anything LdapActionLoader::Load(const char *ldapDaAction) {
 
 bool LdapCacheGetter::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace(LdapCacheGetter.DoLookup);
-
 	return Get(result, fDA, key, delim, indexdelim);
 }
 
 ROAnything LdapCacheGetter::GetAll(const String &dataAccess) {
 	StartTrace1(LdapCacheGetter.GetAll, dataAccess);
-
-	CacheHandler *cache = CacheHandler::Get();
-	return cache ? cache->Get("LdapGetter", dataAccess) : ROAnything();
+	return CacheHandler::instance().Get("LdapGetter", dataAccess);
 }
 
 bool LdapCacheGetter::Get(ROAnything &result, const String &dataAccess, const String &key, char sepS, char sepI) {
 	StartTrace1(LdapCacheGetter.Get, key);
-
 	bool ret = GetAll(dataAccess).LookupPath(result, key, sepS, sepI);
 	TraceAny(result, "Result:");
 	return ret;

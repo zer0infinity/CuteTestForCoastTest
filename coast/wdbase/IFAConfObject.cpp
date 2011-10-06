@@ -192,10 +192,9 @@ bool ConfNamedObject::DoCheckConfig(const char *category, bool bInitializeConfig
 bool ConfNamedObject::DoUnloadConfig()
 {
 	StartTrace1(ConfNamedObject.DoUnloadConfig, "cat <" << fCategory << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
-	// ensure that we do not access data out of CacheHandler anymore
+	// ensure that we do not access data out of CacheHandlerPrototype anymore
 	fConfig = ROAnything();
-	CacheHandler *cache = CacheHandler::Get();
-	if ( cache ) cache->Unload(fCategory, fName);
+	CacheHandler::instance().Unload(fCategory, fName);
 	return true;
 }
 
@@ -204,11 +203,8 @@ void ConfNamedObject::SetConfig(const char *category, const char *key, ROAnythin
 	StartTrace( ConfNamedObject.SetConfig);
 	TraceAny(fConfig, "currentConfig:");
 	TraceAny(newConfig, "newConfig:");
-	CacheHandler *cache = CacheHandler::Get();
-	if ( cache ) {
-		AnythingLoaderPolicy alp(newConfig);
-		fConfig = cache->Reload(category, key, &alp);
-	}
+	AnythingLoaderPolicy alp(newConfig);
+	fConfig = CacheHandler::instance().Reload(category, key, &alp);
 	TraceAny(fConfig, "adjustedConfig:");
 	// ensure that the next call to CheckConfig succeeds without loading config again
 	fbConfigLoaded = true;
@@ -237,11 +233,8 @@ bool ConfNamedObject::DoLoadConfig(const char *category)
 	// try to load only if a config name exists
 	if ( DoGetConfigName(category, fName, configFileName) ) {
 		Trace("loading cat <" << category << "> name <" << configFileName << ">");
-		CacheHandler *cache = CacheHandler::Get();
-		if ( cache ) {
-			SimpleAnyLoader sal;
-			fConfig = cache->Load(category, configFileName, &sal);
-		}
+		SimpleAnyLoader sal;
+		fConfig = CacheHandler::instance().Load(category, configFileName, &sal);
 		SubTraceAny(TraceConfig, fConfig, "Config &" << (long)&fConfig);
 		// always return true because even an empty config is a valid config
 		bRet = true;
