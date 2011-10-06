@@ -9,6 +9,7 @@
 	/DLL {
 		CoastAppLog
 		CoastRenderers
+		CoastFunctionalActions
 	}
 	/Modules {
 		ActionsModule

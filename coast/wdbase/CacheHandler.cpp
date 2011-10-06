@@ -29,12 +29,12 @@ Anything SimpleAnyLoader::Load(const char *key) {
 
 CacheHandlerImpl::CacheHandlerImpl() :
 		NotCloned("CacheHandler"), fCache(Coast::Storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", Coast::Storage::Global()) {
-	InitFinisManager::IFMTrace("CacheHandler::Initialize\n");
+	InitFinisManager::IFMTrace("CacheHandler::Initialized\n");
 }
 
 CacheHandlerImpl::~CacheHandlerImpl() {
 	fCache = Anything(Coast::Storage::Global());
-	InitFinisManager::IFMTrace("CacheHandler::Initialize\n");
+	InitFinisManager::IFMTrace("CacheHandler::Finalized\n");
 }
 
 ROAnything CacheHandlerImpl::Reload(const char *group, const char *key, CacheLoadPolicy *clp) {

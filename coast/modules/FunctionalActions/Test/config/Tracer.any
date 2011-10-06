@@ -5,9 +5,7 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
 	/LowerBound		0
 	/UpperBound		10
 	/DumpAnythings	1
@@ -17,6 +15,10 @@
 		/EnableAll	10
 	}
 	/AnythingNotNullAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/Action {
 		/MainSwitch	10
 		/EnableAll	10
 	}

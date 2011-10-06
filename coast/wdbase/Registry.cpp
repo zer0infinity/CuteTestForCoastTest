@@ -99,14 +99,14 @@ Anything &Registry::GetTable() {
 
 MetaRegistryImpl::MetaRegistryImpl() :
 		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()), fRORegistryArray(fRegistryArray) {
-	InitFinisManager::IFMTrace("MetaRegistry::Initialize\n");
 	// force initializing cache handler before us
 	CacheHandler::instance();
+	InitFinisManager::IFMTrace("MetaRegistry::Initialized\n");
 }
 
 MetaRegistryImpl::~MetaRegistryImpl() {
 	FinalizeRegArray();
-	InitFinisManager::IFMTrace("MetaRegistry::Finalize\n");
+	InitFinisManager::IFMTrace("MetaRegistry::Finalized\n");
 }
 
 Anything &MetaRegistryImpl::GetRegTable() {
@@ -151,8 +151,8 @@ Registry *MetaRegistryImpl::RemoveRegistry(const char *category) {
 }
 
 void MetaRegistryImpl::FinalizeRegArray() {
-	long sz = fRegistryArray.GetSize();
 	StartTrace(Registry.FinalizeRegArray);
+	long sz = fRegistryArray.GetSize();
 	TraceAny(fRegistryArray, "#" << sz << " fRegistryArray to delete");
 	for (long i = sz - 1; i >= 0; --i) {
 		Registry *r = SafeCast(fRegistryArray[i].AsIFAObject(0), Registry);

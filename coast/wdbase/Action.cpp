@@ -67,9 +67,12 @@ bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &c
 			Trace("action script is simple string, implicitly changing transition to <" << transitionToken << ">");
 			result = CallAction(transitionToken, transitionToken, c, ROAnything());
 			break;
-		default:
+		case AnyNullType:
 			TraceAny(config, "action script is neither any nor simple string, token remains <" << transitionToken << ">");
 			result = CallAction(transitionToken, transitionToken, c, config);
+			break;
+		default:
+			return false;
 	}
 	return result;
 }
