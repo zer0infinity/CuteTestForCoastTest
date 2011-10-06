@@ -18,6 +18,8 @@ class Socket;
 //---- LeaderFollowerPool ----------------------------------------------------------
 //!implements leader follower thread pool; description see POSA2 p.447 ff
 class LeaderFollowerPool: public ThreadPoolManager {
+	typedef Mutex MutexType;
+	typedef MutexType::ConditionType ConditionType;
 public:
 	LeaderFollowerPool(Reactor *reactor);
 	//!wait for a request and demultiplex the handling of it
@@ -50,8 +52,8 @@ protected:
 	long fOldLeader;
 	long fPoolState;
 
-	Condition fFollowersCondition;
-	Mutex fLFMutex;
+	ConditionType fFollowersCondition;
+	MutexType fLFMutex;
 };
 
 //!Thread that manages a passive connection end point using an Acceptor
@@ -76,11 +78,12 @@ struct pollfd;
 
 //!manages a set of file descriptors as accept points
 class HandleSet {
+	typedef Mutex MutexType;
 	HandleSet(const HandleSet &);
 	HandleSet &operator=(const HandleSet &);
 public:
 	HandleSet() :
-		fMutex("HandleSet"), fLastAcceptorUsedIndex(0) {
+		fMutex("HandleSet", Coast::Storage::Global()), fLastAcceptorUsedIndex(0) {
 	}
 	virtual ~HandleSet();
 
@@ -95,7 +98,7 @@ protected:
 	Acceptor *WaitForEvents(long timeout);
 
 	Anything fDemuxTable;
-	Mutex fMutex;
+	MutexType fMutex;
 	long fLastAcceptorUsedIndex;// for handling fairness, index into fDemuxTable
 };
 

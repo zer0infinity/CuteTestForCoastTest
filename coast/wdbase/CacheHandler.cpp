@@ -28,19 +28,19 @@ Anything SimpleAnyLoader::Load(const char *key) {
 }
 
 CacheHandlerImpl::CacheHandlerImpl() :
-		NotCloned("CacheHandler"), fCache(Coast::Storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", Coast::Storage::Global()) {
+		NotCloned("CacheHandler"), fCache(Anything::ArrayMarker(), Coast::Storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", Coast::Storage::Global()) {
 	InitFinisManager::IFMTrace("CacheHandler::Initialized\n");
 }
 
 CacheHandlerImpl::~CacheHandlerImpl() {
-	fCache = Anything(Coast::Storage::Global());
+	fCache.clear();
 	InitFinisManager::IFMTrace("CacheHandler::Finalized\n");
 }
 
 ROAnything CacheHandlerImpl::Reload(const char *group, const char *key, CacheLoadPolicy *clp) {
 	StartTrace1(CacheHandlerImpl.Reload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(fCacheHandlerMutex);
 	Anything toCache(clp->Load(key), fCache.GetAllocator());
+	LockUnlockEntry me(fCacheHandlerMutex);
 	if (!toCache.IsNull()) {
 		if (IsLoaded(group, key)) {
 			//! \note  never replace a cached anything because tracking ROAnything's will not detect the changed Impl!
@@ -54,30 +54,25 @@ ROAnything CacheHandlerImpl::Reload(const char *group, const char *key, CacheLoa
 
 ROAnything CacheHandlerImpl::Load(const char *group, const char *key, CacheLoadPolicy *clp) {
 	StartTrace1(CacheHandlerImpl.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(fCacheHandlerMutex);
-	if (IsLoaded(group, key)) {
-		return Get(group, key);
-	} else {
-		Anything toCache(clp->Load(key), Coast::Storage::Global());
+	if (not IsLoaded(group, key)) {
+		Anything toCache(clp->Load(key), fCache.GetAllocator());
 		if (!toCache.IsNull()) {
+			LockUnlockEntry me(fCacheHandlerMutex);
 			fCache[group][key] = toCache;
 		}
-		return toCache;
 	}
+	return Get(group, key);
 }
 
 bool CacheHandlerImpl::IsLoaded(const char *group, const char *key) {
 	StartTrace1(CacheHandlerImpl.IsLoaded, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	if (fCache.IsDefined(group)) {
-		return fCache[group].IsDefined(key);
-	}
-	return false;
+	return ROAnything(fCache).IsDefined(group) && ROAnything(fCache)[group].IsDefined(key);
 }
 
 void CacheHandlerImpl::Unload(const char *group, const char *key) {
 	StartTrace1(CacheHandlerImpl.Unload, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	LockUnlockEntry me(fCacheHandlerMutex);
 	if ( IsLoaded(group, key) ) {
+		LockUnlockEntry me(fCacheHandlerMutex);
 		SlotCleaner::Operate(fCache, String(group).Append('.').Append(key));
 	}
 }

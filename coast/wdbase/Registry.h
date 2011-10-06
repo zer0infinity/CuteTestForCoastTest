@@ -22,7 +22,7 @@ class Registry : public NotCloned {
 
 public:
 	//!standard named object constructor
-	Registry(const char *registryname);
+	Registry(const char *category);
 
 	//!deletes internal table
 	~Registry();
@@ -66,12 +66,9 @@ private:
 };
 
 #include <boost/pool/detail/singleton.hpp>
-//#include <boost/shared_ptr.hpp>
 class MetaRegistryImpl {
 	//! Global container holding any registry entries
 	Anything fRegistryArray;
-	//! read-only copy of the global registry
-	ROAnything fRORegistryArray;
 	//!delete global registry
 	void FinalizeRegArray();
 public:
@@ -95,9 +92,6 @@ public:
 
 	//!accessor to the global registry table
 	Anything &GetRegTable();
-
-	//!accessor to the global registry table as ROAnything
-	ROAnything &GetRegROTable();
 };
 typedef boost::details::pool::singleton_default<MetaRegistryImpl> MetaRegistry;
 

@@ -25,7 +25,7 @@ const long LeaderFollowerPool::cBlockPromotion = -2;
 
 LeaderFollowerPool::LeaderFollowerPool(Reactor *reactor) :
 	ThreadPoolManager("LeaderFollowerPool"), fReactor(reactor), fCurrentLeader(cNoCurrentLeader), fOldLeader(cNoCurrentLeader),
-			fPoolState(Thread::eCreated), fLFMutex("LeaderFollowerPool") {
+			fPoolState(Thread::eCreated), fLFMutex("LeaderFollowerPool", Coast::Storage::Global()) {
 	StartTrace(LeaderFollowerPool.Ctor);
 	Assert(fReactor);
 }

@@ -91,6 +91,10 @@ class CacheHandlerImpl: public NotCloned {
 
 	// this mutex protects the cache handler from concurrent access
 	MutexType fCacheHandlerMutex;
+
+	// check for already loaded group/key
+	bool IsLoaded(const char *group, const char *key);
+
 public:
 	CacheHandlerImpl();
 	virtual ~CacheHandlerImpl();
@@ -103,9 +107,6 @@ public:
 	ROAnything Reload(const char *group, const char *key, CacheLoadPolicy *clp);
 
 	void Unload(const char *group, const char *key);
-
-	// check for already loaded group/key
-	bool IsLoaded(const char *group, const char *key);
 
 	// get a group/key without loading, returns null-roanything if not
 	// already loaded

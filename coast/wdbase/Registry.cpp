@@ -13,8 +13,8 @@
 #include "InitFinisManager.h"
 #include "CacheHandler.h"
 
-Registry::Registry(const char *registryname) :
-		NotCloned(registryname), fTable(Anything::ArrayMarker(), Coast::Storage::Global()) {
+Registry::Registry(const char *category) :
+		NotCloned(category), fTable(Anything::ArrayMarker(), Coast::Storage::Global()) {
 }
 
 Registry::~Registry() {
@@ -22,7 +22,7 @@ Registry::~Registry() {
 
 bool Registry::Terminate(TerminationPolicy *terminator)
 {
-	StartTrace(Registry.Terminate);
+	StartTrace1(Registry.Terminate, "category <" << GetName() << ">");
 	bool bRet = true;
 	if ( terminator ) {
 		bRet = terminator->Terminate(this);
@@ -32,7 +32,7 @@ bool Registry::Terminate(TerminationPolicy *terminator)
 
 bool Registry::Install(const ROAnything installerSpec, InstallerPolicy *ip)
 {
-	StartTrace1(Registry.Install, " in &" << (long)this);
+	StartTrace1(Registry.Install, "category <" << GetName() << "> in &" << (long)this);
 	TraceAny(GetTable(), "Table");
 	TraceAny(installerSpec, "Installer Specification");
 	bool ret = false;
@@ -98,7 +98,7 @@ Anything &Registry::GetTable() {
 }
 
 MetaRegistryImpl::MetaRegistryImpl() :
-		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()), fRORegistryArray(fRegistryArray) {
+		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()) {
 	// force initializing cache handler before us
 	CacheHandler::instance();
 	InitFinisManager::IFMTrace("MetaRegistry::Initialized\n");
@@ -113,13 +113,9 @@ Anything &MetaRegistryImpl::GetRegTable() {
 	return fRegistryArray;
 }
 
-ROAnything &MetaRegistryImpl::GetRegROTable() {
-	return fRORegistryArray;
-}
-
 Registry *MetaRegistryImpl::GetRegistry(const char *category) {
 	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
-	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
+	Registry *r = dynamic_cast<Registry *>(ROAnything(fRegistryArray)[category].AsIFAObject(0));
 	if (not r) {
 		r = MakeRegistry(category);
 	}
@@ -144,7 +140,7 @@ Registry *MetaRegistryImpl::RemoveRegistry(const char *category) {
 	Registry *r = 0;
 	Anything a;
 	if (GetRegTable().LookupPath(a, category)) {
-		r = (Registry *) a.AsIFAObject(0);
+		r = dynamic_cast<Registry *>(a.AsIFAObject(0));
 		GetRegTable().Remove(category);
 	}
 	return r;
@@ -155,7 +151,7 @@ void MetaRegistryImpl::FinalizeRegArray() {
 	long sz = fRegistryArray.GetSize();
 	TraceAny(fRegistryArray, "#" << sz << " fRegistryArray to delete");
 	for (long i = sz - 1; i >= 0; --i) {
-		Registry *r = SafeCast(fRegistryArray[i].AsIFAObject(0), Registry);
+		Registry *r = dynamic_cast<Registry *>(fRegistryArray[i].AsIFAObject(0));
 		if (r) {
 			const char *pName = r->GetName();
 			Trace("Registry[" << pName << "]->AliasTerminate()");
