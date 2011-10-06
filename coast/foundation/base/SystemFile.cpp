@@ -47,11 +47,11 @@ namespace {
 		}
 	public:
 		PathInitializer() : fgRootDir(0L, Coast::Storage::Global()), fgPathList(0L, Coast::Storage::Global()) {
-			InitFinisManager::IFMTrace("PathInitializer::Initialize\n");
+			InitFinisManager::IFMTrace("PathInitializer::Initialized\n");
 			initialize(0,0);
 		}
 		~PathInitializer() {
-			InitFinisManager::IFMTrace("PathInitializer::Finalize\n");
+			InitFinisManager::IFMTrace("PathInitializer::Finalized\n");
 		}
 		void initialize(const char *root, const char *path) {
 			String tmpRoot((root) ? String(root) : Coast::System::EnvGet("COAST_ROOT"));

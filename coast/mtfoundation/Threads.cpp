@@ -75,16 +75,16 @@ namespace {
 		SimpleMutexPtr fNumOfThreadsMutex;
 	public:
 		ThreadInitializer() : fCleanerKey(0), fNumOfThreadsMutex(new SimpleMutex("NumOfThreads", Coast::Storage::Global())) {
-			InitFinisManager::IFMTrace("ThreadCleaner::Initialize\n");
 			if (THRKEYCREATE(fCleanerKey, 0)) {
 				SystemLog::Error("TlsAlloc of fCleanerKey failed");
 			}
+			InitFinisManager::IFMTrace("ThreadCleaner::Initialized\n");
 		}
 		~ThreadInitializer() {
 			if (THRKEYDELETE(fCleanerKey) != 0) {
 				SystemLog::Error("TlsFree of Thread::fCleanerKey failed" );
 			}
-			InitFinisManager::IFMTrace("ThreadCleaner::Finalize\n");
+			InitFinisManager::IFMTrace("ThreadCleaner::Finalized\n");
 		}
 		void incrementNumOfThreads() {
 			LockUnlockEntry me(*fNumOfThreadsMutex);
@@ -879,16 +879,16 @@ namespace {
 		THREADKEY fCountTableKey;	// WIN32 defined it 0xFFFFFFFF !!
 	public:
 		MutexInitializer() : fMutexIdMutex(new SimpleMutex("MutexIdMutex", Coast::Storage::Global())), fCountTableKey(0) {
-			InitFinisManager::IFMTrace("MutexCleaner::Initialize\n");
 			if (THRKEYCREATE(fCountTableKey, 0)) {
 				SystemLog::Error("TlsAlloc of fCountTableKey failed");
 			}
+			InitFinisManager::IFMTrace("MutexCleaner::Initialized\n");
 		}
 		~MutexInitializer() {
 			if (THRKEYDELETE(fCountTableKey) != 0) {
 				SystemLog::Error("TlsFree of fCountTableKey failed" );
 			}
-			InitFinisManager::IFMTrace("MutexCleaner::Finalize\n");
+			InitFinisManager::IFMTrace("MutexCleaner::Finalized\n");
 		}
 		long incrementMutexId() {
 			LockUnlockEntry aMtx(*fMutexIdMutex);

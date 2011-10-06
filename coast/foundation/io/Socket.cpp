@@ -54,7 +54,6 @@ namespace {
 	class SocketInitializer {
 	public:
 		SocketInitializer() {
-			InitFinisManager::IFMTrace("Socket::Initialize\n");
 #if defined(WIN32)
 			WORD wVersionRequested;
 			WSADATA wsaData = { 0, 0, {0}, {0}, 0, 0, 0 };
@@ -83,12 +82,13 @@ namespace {
 				return;
 			}
 #endif
+			InitFinisManager::IFMTrace("Socket::Initialized\n");
 		}
 		~SocketInitializer() {
 #if defined(WIN32)
 			WSACleanup();
 #endif
-			InitFinisManager::IFMTrace("Socket::Finalize\n");
+			InitFinisManager::IFMTrace("Socket::Finalized\n");
 		}
 		int dummyInt() const {
 			return 0;

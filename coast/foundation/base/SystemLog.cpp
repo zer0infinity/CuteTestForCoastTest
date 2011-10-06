@@ -54,11 +54,11 @@ namespace {
 	public:
 		SystemLogInitializer() : fSysLog(), fDoSystemLevelLog(SystemLog::eALERT), fDoLogOnCerr(SystemLog::eERR) {
 			Init(0);
-			InitFinisManager::IFMTrace("SystemLog::Initialize\n");
+			InitFinisManager::IFMTrace("SystemLog::Initialized\n");
 		}
 		~SystemLogInitializer() {
 			Terminate();
-			InitFinisManager::IFMTrace("SystemLog::Finalize\n");
+			InitFinisManager::IFMTrace("SystemLog::Finalized\n");
 		}
 		void Init(const char *appId) {
 			// beware this is not thread safe since logging takes place before the server object exists we have to take care

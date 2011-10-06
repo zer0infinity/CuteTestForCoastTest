@@ -85,7 +85,7 @@ private:
  Cache is uniquely identified by Group/Key pair
 */
 class CacheHandlerImpl: public NotCloned {
-	typedef Mutex MutexType;
+	typedef SimpleMutex MutexType;
 	// the central cache data structure
 	Anything fCache;
 

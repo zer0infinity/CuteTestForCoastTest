@@ -269,18 +269,18 @@ namespace {
 		}
 	public:
 		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", Coast::Storage::Global())), fAllocatorKey(0), fOldTracker(), fMTHooks(), fPoolAllocatorList(0) {
-			InitFinisManager::IFMTrace("MTStorage::Initialize\n");
 			if (THRKEYCREATE(fAllocatorKey, 0)) {
 				SystemLog::Error("TlsAlloc of fAllocatorKey failed");
 			}
 			Initialize();
+			InitFinisManager::IFMTrace("MTStorage::Initialized\n");
 		}
 		~MTStorageInitializer() {
 			Finalize();
 			if (THRKEYDELETE(fAllocatorKey) != 0) {
 				SystemLog::Error("TlsFree of fAllocatorKey failed" );
 			}
-			InitFinisManager::IFMTrace("MTStorage::Finalize\n");
+			InitFinisManager::IFMTrace("MTStorage::Finalized\n");
 		}
 		void RefAllocator(Allocator *wdallocator) {
 			StartTrace1(MT_Storage.RefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));

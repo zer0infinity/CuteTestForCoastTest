@@ -33,13 +33,13 @@ namespace {
 		String fmtLow;
 		String fmtHi;
 	public:
-		StringInitializer() : fmtHi("%.e")
-		{
-			InitFinisManager::IFMTrace("String::Initialize\n");
+		StringInitializer() :
+				fmtHi("%.e") {
 			initializeFormat();
+			InitFinisManager::IFMTrace("String::Initialized\n");
 		}
 		~StringInitializer() {
-			InitFinisManager::IFMTrace("String::Finalize\n");
+			InitFinisManager::IFMTrace("String::Finalized\n");
 		}
 		void initializeFormat() {
 	#if !defined(IOSTREAM_NUM_CONVERSION)

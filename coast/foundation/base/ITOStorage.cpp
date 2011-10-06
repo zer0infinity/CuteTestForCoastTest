@@ -182,13 +182,13 @@ namespace {
 		long statisticLevel;
 	public:
 		StatisticLevelInitializer() {
-			InitFinisManager::IFMTrace("Storage::Initialize\n");
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
 			statisticLevel = lLevel;
+			InitFinisManager::IFMTrace("Storage::Initialized\n");
 		}
 		~StatisticLevelInitializer() {
-			InitFinisManager::IFMTrace("Storage::Finalize\n");
+			InitFinisManager::IFMTrace("Storage::Finalized\n");
 		}
 		long GetStatisticLevel() {
 			return statisticLevel;
