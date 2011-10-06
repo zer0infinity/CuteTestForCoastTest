@@ -11,11 +11,6 @@
 #include "Tracer.h"
 #include "Policy.h"
 
-void Registry::SetFinalize(bool finalize)
-{
-	fgFinalize = finalize;
-}
-
 Registry::Registry(const char *registryname)
 	: NotCloned(registryname)
 	, fTable(0)
@@ -109,110 +104,96 @@ void Registry::RemoveAliases(RegisterableObject *obj)
 	}
 }
 
-Anything &Registry::GetTable()
-{
-	if ( !fTable && !fgFinalize ) {
-		fTable = new Anything(Anything::ArrayMarker(),Coast::Storage::Global());
+Anything &Registry::GetTable() {
+	if (!fTable) {
+		fTable = new Anything(Anything::ArrayMarker(), Coast::Storage::Global());
 	}
-	static Anything fake; // just to let the compiler be happy
-	if ( fgFinalize || !fTable ) {
-		return fake;
-	}
-
 	return (*fTable);
 }
 
-//----- static accessor to global registry of Registries
+Anything &Registry::GetRegTable() {
+	return MetaRegistry::instance().GetRegTable();
+}
+ROAnything &Registry::GetRegROTable() {
+	return MetaRegistry::instance().GetRegROTable();
+}
+Registry *Registry::GetRegistry(const char *category) {
+	return MetaRegistry::instance().GetRegistry(category);
+}
+Registry *Registry::MakeRegistry(const char *category) {
+	return MetaRegistry::instance().MakeRegistry(category);
+}
+Registry *Registry::RemoveRegistry(const char *category) {
+	return MetaRegistry::instance().RemoveRegistry(category);
+}
 
-Registry *Registry::GetRegistry(const char *category)
-{
-	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
+MetaRegistryImpl::MetaRegistryImpl() :
+		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()), fRORegistryArray(fRegistryArray) {
+}
+
+MetaRegistryImpl::~MetaRegistryImpl() {
+	FinalizeRegArray();
+}
+
+Anything &MetaRegistryImpl::GetRegTable() {
+	return fRegistryArray;
+}
+
+ROAnything &MetaRegistryImpl::GetRegROTable() {
+	return fRORegistryArray;
+}
+
+Registry *MetaRegistryImpl::GetRegistry(const char *category) {
+	StatTrace(MetaRegistryImpl.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
 	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
-	if ( !r && !fgFinalize ) {
+	if (not r) {
 		r = MakeRegistry(category);
 	}
 	return r;
 }
 
-Registry *Registry::MakeRegistry(const char *category)
-{
+Registry *MetaRegistryImpl::MakeRegistry(const char *category) {
 	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
 	String msg("Creating Registry for: <");
 	msg.Append(NotNull(category)).Append('>');
 	SystemLog::Info(msg);
-
 	Registry *r = new (Coast::Storage::Global()) Registry(category);
 	GetRegTable()[category] = Anything(r, Coast::Storage::Global()); // r stored as pointer to IFAObject (AB)
 	return r;
 }
 
-Registry *Registry::RemoveRegistry(const char *category)
-{
+Registry *MetaRegistryImpl::RemoveRegistry(const char *category) {
 	String msg("Removing Registry for: <");
 	msg << NotNull(category) << ">";
 	StartTrace1(Registry.RemoveRegistry, "category <" << NotNull(category) << ">");
-
 	SystemLog::Info(msg);
-
 	Registry *r = 0;
 	Anything a;
 	if (GetRegTable().LookupPath(a, category)) {
-		r = (Registry *)a.AsIFAObject(0);
+		r = (Registry *) a.AsIFAObject(0);
 		GetRegTable().Remove(category);
 	}
 	return r;
 }
 
-void Registry::FinalizeRegArray(Anything &registries)
-{
-	long sz = registries.GetSize();
+void MetaRegistryImpl::FinalizeRegArray() {
+	long sz = fRegistryArray.GetSize();
 	StartTrace(Registry.FinalizeRegArray);
-	TraceAny(registries, "#" << sz << " registries to delete");
+	TraceAny(fRegistryArray, "#" << sz << " fRegistryArray to delete");
 	for (long i = sz - 1; i >= 0; --i) {
-		Registry *r = SafeCast(registries[i].AsIFAObject(0), Registry);
-		if ( r ) {
+		Registry *r = SafeCast(fRegistryArray[i].AsIFAObject(0), Registry);
+		if (r) {
 			const char *pName = r->GetName();
 			Trace("Registry[" << pName << "]->AliasTerminate()");
-			const char *category = registries.SlotName(i);
+			const char *category = fRegistryArray.SlotName(i);
 			AliasTerminator at(NotNull(category));
 			r->Terminate(&at);
 			Trace("delete Registry[" << pName << "]");
 			delete r;
 			Trace("Registry deleted");
 		}
-		registries.Remove(i);
+		fRegistryArray.Remove(i);
 	}
-}
-
-Anything &Registry::GetRegTable()
-{
-	// fgRegistryArray and fgRORegistryArray have to be pointers because
-	// of the initialization during the startup phase.
-	// if they are simple static variables they get initialized in every
-	// library (Coast, sbc and application)
-	// because of that no root objects already registered are visible
-	// during installation phase, which causes it to fail
-	static Anything fake; // just to let the compiler be happy
-	if ( !fgRegistryArray && !fgFinalize ) {
-		fgRegistryArray = new Anything(Anything::ArrayMarker(),Coast::Storage::Global()); // this is the registry of Registry s
-	}
-	if ( fgFinalize || !fgRegistryArray ) {
-		return fake;
-	}
-
-	return (*fgRegistryArray);
-}
-
-ROAnything &Registry::GetRegROTable()
-{
-	static ROAnything fake; //just let the compiler be happy
-	if ( !fgRORegistryArray && !fgFinalize ) {
-		fgRORegistryArray = new ROAnything(GetRegTable());
-	}
-	if ( fgFinalize || !fgRORegistryArray ) {
-		return fake;
-	}
-	return (*fgRORegistryArray);
 }
 
 RegistryIterator::RegistryIterator(Registry *rg, bool forward)

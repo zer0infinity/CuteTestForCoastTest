@@ -17,10 +17,8 @@
 //!After installation they are available by name. The <i>"type"</i> of the objects is defined by the registry name;<br>
 //!installed objects should be "subtypes" of this type (instances of this class or a subclass).<br>
 //!the objects are removed from the registry by a termination policy.
-class Registry : public NotCloned
-{
+class Registry : public NotCloned {
 	friend class RegistryIterator;
-	friend class RegistryInitFinis;
 
 public:
 	//!standard named object constructor
@@ -78,18 +76,7 @@ public:
 	//!accessor to the global registry table as ROAnything
 	static ROAnything &GetRegROTable();
 
-	//!set the finalize flag
-	static void SetFinalize(bool);
-
 protected:
-	//! Global container holding any registry entries
-	static Anything *fgRegistryArray;
-	//! read-only copy of the global registry
-	static ROAnything *fgRORegistryArray;
-	//!flag to prevent reallocation of the global registry when shutting down
-	static bool fgFinalize;
-	//!delete global registry
-	static void FinalizeRegArray(Anything &registries);
 	//!accessor to the registry's representation
 	Anything &GetTable();
 	//!Anything holding the registered objects for this registry s category
@@ -99,6 +86,42 @@ private:
 	Registry(const Registry &);
 	Registry &operator=(const Registry &);
 };
+
+#include <boost/pool/detail/singleton.hpp>
+//#include <boost/shared_ptr.hpp>
+class MetaRegistryImpl {
+	//! Global container holding any registry entries
+	Anything fRegistryArray;
+	//! read-only copy of the global registry
+	ROAnything fRORegistryArray;
+	//!delete global registry
+	void FinalizeRegArray();
+public:
+	MetaRegistryImpl();
+	~MetaRegistryImpl();
+	/*! Returns the registry for category; creates it if it is not already there.
+		\param category Name for the registry; usually a name of the 'managing' object used to initialize/finalize belonging objects
+		\return Registry object for the category/group given. If the object does not yet exist, a new one will be created
+		\note Create registries before starting threads which could possibly use it. For performance reasons, this was intentionally left out! */
+	Registry *GetRegistry(const char *category);
+
+	//!creates a registry and inserts it into the global registry table
+	//! \param category the name for the registry; usually a class name
+	//! \return a newly created Registry object
+	Registry *MakeRegistry(const char *category);
+
+	//!removes the registry associated with category from the registry table
+	//! \param category the name for the registry; usually a class name
+	//! \return a removed Registry object
+	Registry *RemoveRegistry(const char *category);
+
+	//!accessor to the global registry table
+	Anything &GetRegTable();
+
+	//!accessor to the global registry table as ROAnything
+	ROAnything &GetRegROTable();
+};
+typedef boost::details::pool::singleton_default<MetaRegistryImpl> MetaRegistry;
 
 //!simple non-robust, non mt-safe iterator over registry
 //! this iterator is neither robust against changes in the underlying

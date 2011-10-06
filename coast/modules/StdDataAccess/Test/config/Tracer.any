@@ -13,7 +13,6 @@
 	/Registry {
 		/MainSwitch						0
 		/EnableAll						0
-		/FinalizeRegArray				10
 		/RemoveRegistry					10
 		/GetRegistry					10
 	}

@@ -6,21 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include "InitFinisManagerWDBase.h"
+#include "InitFinisManager.h"
 #include "SystemLog.h"
-
-// special include to inline static objects needed for registry
-// -> this one needs to be here - or say needs to be the first object linked/created by the linker/runtime
-#include "RegistryInitFinis.h"
 
 namespace {
 	void Init()
 	{
 		InitFinisManager::IFMTrace(">> wdbase::Init\n");
-		// initialize InitFinisManagerWDBase relative components
-		if ( InitFinisManagerWDBase::Instance() != NULL ) {
-			InitFinisManagerWDBase::Instance()->Init();
-		}
 		InitFinisManager::IFMTrace("<< wdbase::Init\n");
 	}
 
@@ -30,11 +22,6 @@ namespace {
 		TerminateKilledThreads();
 #endif
 		InitFinisManager::IFMTrace(">> wdbase::Finis\n");
-		// finalize InitFinisManagerWDBase relative components
-		if ( InitFinisManagerWDBase::Instance() != NULL ) {
-			InitFinisManagerWDBase::Instance()->Finis();
-			delete InitFinisManagerWDBase::Instance();
-		}
 		InitFinisManager::IFMTrace("<< wdbase::Finis\n");
 	}
 }
