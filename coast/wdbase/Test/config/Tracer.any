@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/LowerBound		0
-	/UpperBound		3400
+	/UpperBound		33
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -24,7 +24,7 @@
 	}
 	/Registry {
 		/MainSwitch	33
-		/EnableAll	0
+		/EnableAll	33
 	}
 	/RegistryTest {
 		/MainSwitch	33
@@ -32,7 +32,7 @@
 	}
 	/RegisterableObject {
 		/MainSwitch	33
-		/EnableAll	0
+		/EnableAll	33
 	}
 	/Mutex {
 		/MainSwitch	3
@@ -164,15 +164,15 @@
 	}
 	/ConfNamedObject {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/HierarchConfNamed {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/HierarchyInstaller {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/AliasInstaller {
 		/MainSwitch			33
@@ -184,7 +184,7 @@
 	}
 	/TerminationPolicy {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/AliasTerminator {
 		/MainSwitch			33
@@ -495,7 +495,7 @@
 		/EnableAll				10
 		/ProcessRequestTest		10
 	}
-	/CacheHandler {
+	/CacheHandlerImpl {
 		/MainSwitch				33
 		/EnableAll				0
 	}

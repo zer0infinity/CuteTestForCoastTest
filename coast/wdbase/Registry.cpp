@@ -10,6 +10,8 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 #include "Policy.h"
+#include "InitFinisManager.h"
+#include "CacheHandler.h"
 
 Registry::Registry(const char *registryname)
 	: NotCloned(registryname)
@@ -129,10 +131,14 @@ Registry *Registry::RemoveRegistry(const char *category) {
 
 MetaRegistryImpl::MetaRegistryImpl() :
 		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()), fRORegistryArray(fRegistryArray) {
+	InitFinisManager::IFMTrace("MetaRegistry::Initialize\n");
+	// force initializing cache handler before us
+	CacheHandler::instance();
 }
 
 MetaRegistryImpl::~MetaRegistryImpl() {
 	FinalizeRegArray();
+	InitFinisManager::IFMTrace("MetaRegistry::Finalize\n");
 }
 
 Anything &MetaRegistryImpl::GetRegTable() {
@@ -144,7 +150,7 @@ ROAnything &MetaRegistryImpl::GetRegROTable() {
 }
 
 Registry *MetaRegistryImpl::GetRegistry(const char *category) {
-	StatTrace(MetaRegistryImpl.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
+	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
 	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
 	if (not r) {
 		r = MakeRegistry(category);

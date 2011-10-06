@@ -70,7 +70,7 @@ private:
 #include <boost/pool/detail/singleton.hpp>
 #include <boost/shared_ptr.hpp>
 
-//! CacheHandlerPrototype manages a cache for configuration information
+//! CacheHandlerImpl manages a cache for configuration information
 /*!
  This information consists of loaded
  configuration files (Anythings) and preprocessed HTML-template files. The construction of the
@@ -84,7 +84,7 @@ private:
 
  Cache is uniquely identified by Group/Key pair
 */
-class CacheHandlerPrototype: public NotCloned {
+class CacheHandlerImpl: public NotCloned {
 	typedef Mutex MutexType;
 	// the central cache data structure
 	Anything fCache;
@@ -92,10 +92,8 @@ class CacheHandlerPrototype: public NotCloned {
 	// this mutex protects the cache handler from concurrent access
 	MutexType fCacheHandlerMutex;
 public:
-	CacheHandlerPrototype();
-	virtual ~CacheHandlerPrototype() {
-		fCache = Anything(Coast::Storage::Global());
-	}
+	CacheHandlerImpl();
+	virtual ~CacheHandlerImpl();
 
 	// this operation loads a cache identified by a group, key pair
 	// how the cache is built is defined by the CacheLoadPolicy
@@ -119,6 +117,6 @@ public:
 	bool Init(const ROAnything);
 	bool Finis();
 };
-typedef boost::details::pool::singleton_default<CacheHandlerPrototype> CacheHandler;
+typedef boost::details::pool::singleton_default<CacheHandlerImpl> CacheHandler;
 
 #endif

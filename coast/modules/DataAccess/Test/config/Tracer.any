@@ -90,7 +90,7 @@
 		/DoLoadConfig	10
 		/IntFinalize 10
 	}
-	/CacheHandler {
+	/CacheHandlerImpl {
 		/MainSwitch 10
 		/EnableAll	10
 	}
