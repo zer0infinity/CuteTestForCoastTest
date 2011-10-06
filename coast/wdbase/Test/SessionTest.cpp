@@ -197,7 +197,7 @@ void SessionTest::RetrieveFromDelayed() {
 
 void SessionTest::CheckInstalled() {
 	StartTrace(SessionTest.CheckInstalled);
-	Registry *reg = Registry::GetRegistry("Role");
+	Registry *reg = MetaRegistry::instance().GetRegistry("Role");
 	t_assert(reg != 0);
 	RegistryIterator ri(reg);
 

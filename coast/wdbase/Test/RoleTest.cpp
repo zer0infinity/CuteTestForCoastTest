@@ -251,7 +251,7 @@ void RoleTest::VerifyLogout ()
 void RoleTest::CheckInstalled ()
 {
 	StartTrace(RoleTest.CheckInstalled);
-	Registry *reg = Registry::GetRegistry("Role");
+	Registry *reg = MetaRegistry::instance().GetRegistry("Role");
 	t_assert(reg != 0);
 	RegistryIterator ri(reg);
 

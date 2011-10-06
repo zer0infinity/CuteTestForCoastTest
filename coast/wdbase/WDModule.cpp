@@ -275,7 +275,7 @@ WDModule *ConfiguredWDMIterator::Next()
 //--- RegistryWDMIterator ---------
 RegistryWDMIterator::RegistryWDMIterator(WDModuleCaller *wdmc, bool forward)
 	: WDModuleIterator(wdmc, forward)
-	, fIter(Registry::GetRegistry("WDModule"), forward)
+	, fIter(MetaRegistry::instance().GetRegistry("WDModule"), forward)
 {
 }
 
@@ -340,7 +340,7 @@ bool WDTerminate::DoCall(WDModule *wdm)
 	SystemLog::WriteToStderr(wdm->GetName());
 	bool ret = DoCallInner(wdm);
 	if ( !wdm->IsStatic() ) {
-		Registry::GetRegistry("WDModule")->UnregisterRegisterableObject(fModuleName);
+		MetaRegistry::instance().GetRegistry("WDModule")->UnregisterRegisterableObject(fModuleName);
 		delete wdm;
 	}
 	SystemLog::WriteToStderr( ( ret ? " done\n" : " failed\n" ) );

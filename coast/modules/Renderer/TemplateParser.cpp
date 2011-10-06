@@ -703,7 +703,7 @@ bool TemplateParser::IsSpecialTag(String &tagName, Anything &tagAttributes)
 				// because we do not know the correct Role at the moment of parsing this file (startup)
 				// we need to iterate over all registered roles to find a possible match although this
 				// could lead to misinterpretations
-				Registry *reg = Registry::GetRegistry("Role");
+				Registry *reg = MetaRegistry::instance().GetRegistry("Role");
 				RegistryIterator ri(reg);
 				while ( ri.HasMore() ) {
 					String roleName("null");

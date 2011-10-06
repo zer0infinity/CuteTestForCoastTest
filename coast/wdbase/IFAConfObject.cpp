@@ -33,7 +33,7 @@ bool RegisterableObject::Install(const ROAnything installerSpec, const char *cat
 	// the basic assumption is that at least one object is already registered
 	// with the register macro
 	StartTrace1(RegisterableObject.Install, "cat <" << NotNull(category) << ">");
-	Registry *reg = Registry::GetRegistry(category);
+	Registry *reg = MetaRegistry::instance().GetRegistry(category);
 	TraceAny(installerSpec, "Installing Spec:");
 	if ( reg ) {
 		return reg->Install(installerSpec, installer);
@@ -53,7 +53,7 @@ bool RegisterableObject::ResetTerminate(const char *category, TerminationPolicy 
 {
 	StartTrace1(RegisterableObject.ResetTerminate, "category <" << category << ">");
 	Registry *r;
-	r = Registry::GetRegistry(category);
+	r = MetaRegistry::instance().GetRegistry(category);
 	if ( r ) {
 		Trace("found registry, terminating it");
 		//!@FIXME how to delete registered alias without
@@ -69,7 +69,7 @@ bool RegisterableObject::Terminate(const char *category, TerminationPolicy *term
 	StartTrace1(RegisterableObject.Terminate, "category <" << category << ">");
 	if ( ResetTerminate(category, terminator) ) {
 		//SOP: do not delete registries, they might contain "static" objects for further use
-		//		Registry *r= Registry::RemoveRegistry(category);
+		//		Registry *r= MetaRegistry::instance().RemoveRegistry(category);
 		//		delete r;
 		return true;
 	}
@@ -80,7 +80,7 @@ void RegisterableObject::Register(const char *name, const char *category)
 {
 	StartTrace1(RegisterableObject.Register, "cat <" << NotNull(category) << "> name <" << NotNull(name) << ">");
 	fCategory = category;
-	Registry *reg = Registry::GetRegistry(category);
+	Registry *reg = MetaRegistry::instance().GetRegistry(category);
 	if (reg) {
 		Trace("Registering: <" << name << "> of category <" << category << ">");
 		reg->RegisterRegisterableObject(name, this);
@@ -90,7 +90,7 @@ void RegisterableObject::Register(const char *name, const char *category)
 void RegisterableObject::Unregister(const char *name, const char *category)
 {
 	StartTrace1(RegisterableObject.Unregister, "cat <" << NotNull(category) << "> name <" << NotNull(name) << ">");
-	Registry *reg = Registry::GetRegistry(category);
+	Registry *reg = MetaRegistry::instance().GetRegistry(category);
 	if (reg) {
 		Trace("Unregistering: <" << name << "> of category <" << category << ">");
 		reg->UnregisterRegisterableObject(name);

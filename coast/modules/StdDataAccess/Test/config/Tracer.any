@@ -13,6 +13,10 @@
 	/Registry {
 		/MainSwitch						0
 		/EnableAll						0
+	}
+	/MetaRegistryImpl {
+		/MainSwitch						0
+		/EnableAll						0
 		/RemoveRegistry					10
 		/GetRegistry					10
 	}

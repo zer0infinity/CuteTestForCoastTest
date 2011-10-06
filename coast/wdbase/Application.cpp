@@ -148,7 +148,7 @@ Application *Application::GetGlobalApplication(String &applicationName)
 		} else {
 			// if no application object is configured in the config any
 			// return the first in the list
-			RegistryIterator ri(Registry::GetRegistry("Application"), false);
+			RegistryIterator ri(MetaRegistry::instance().GetRegistry("Application"), false);
 			for ( ; ri.HasMore() && !application ; application = SafeCast(ri.Next(applicationName), Application));
 		}
 	}

@@ -61,8 +61,8 @@ WDModuleTest::~WDModuleTest()
 void WDModuleTest::setUp ()
 {
 	// safe it for later restore
-	fOrigWDModuleRegistry = Registry::RemoveRegistry("WDModule");
-	Registry::MakeRegistry("WDModule");
+	fOrigWDModuleRegistry = MetaRegistry::instance().RemoveRegistry("WDModule");
+	MetaRegistry::instance().MakeRegistry("WDModule");
 	WDModule::ResetCache(true);
 	WDModule::FindWDModule("dummy");
 	WDModule::ResetCache(false);
@@ -71,10 +71,10 @@ void WDModuleTest::setUp ()
 void WDModuleTest::tearDown ()
 {
 	// reset the correct WDModule registry
-	Anything regTable = Registry::GetRegTable();
+	Anything regTable = MetaRegistry::instance().GetRegTable();
 
 	// safe it for later restore
-	Registry *wdmoduleTestRegistry = Registry::RemoveRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().RemoveRegistry("WDModule");
 	regTable["WDModule"] = Anything(fOrigWDModuleRegistry);
 	AliasTerminator at("WDModule");
 	wdmoduleTestRegistry->Terminate(&at);
@@ -88,7 +88,7 @@ void WDModuleTest::tearDown ()
 void WDModuleTest::InstallTest()
 {
 	// set up the correct WDModule registry
-	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
 	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Coast::Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Install(Anything()) == 0);
@@ -110,7 +110,7 @@ void WDModuleTest::InstallTest()
 void WDModuleTest::Install2Test()
 {
 	// set up the correct WDModule registry
-	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
 	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Coast::Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Install(Anything()) == 0);
@@ -131,7 +131,7 @@ void WDModuleTest::Install2Test()
 void WDModuleTest::TerminateTest()
 {
 	// set up the correct WDModule registry
-	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
 	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Coast::Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Terminate(Anything()) == 0);
@@ -158,7 +158,7 @@ void WDModuleTest::TerminateTest()
 void WDModuleTest::ResetTest()
 {
 	// set up the correct WDModule registry
-	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().GetRegistry("WDModule");
 	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Coast::Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Reset(Anything(), Anything()) == 0);
 	t_assert(wdmoduleTestRegistry->Find("TestModuleTrue") == 0);
@@ -177,7 +177,7 @@ void WDModuleTest::ResetTest()
 void WDModuleTest::ResetWithDiffConfigsTest()
 {
 	// set up the correct WDModule registry
-	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
+	Registry *wdmoduleTestRegistry = MetaRegistry::instance().GetRegistry("WDModule");
 
 	WDModule *testmodulold = new (Coast::Storage::Global()) TestModuleTrue;
 	WDModule *testmodulnew = new (Coast::Storage::Global()) TestModuleTrue;

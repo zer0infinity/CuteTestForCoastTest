@@ -26,12 +26,12 @@ RegistryTest::~RegistryTest()
 
 void RegistryTest::setUp ()
 {
-	fRegistry = Registry::GetRegistry(fName);
+	fRegistry = MetaRegistry::instance().GetRegistry(fName);
 }
 
 void RegistryTest::tearDown ()
 {
-	fRegistry = Registry::RemoveRegistry(fName);
+	fRegistry = MetaRegistry::instance().RemoveRegistry(fName);
 }
 void RegistryTest::InstallAliases ( )
 {
@@ -194,7 +194,7 @@ void RegistryTest::InstallHierarchy ( )
 void RegistryTest::GetRegistry ()
 {
 	StartTrace(RegistryTest.GetRegistry);
-	Registry *myRegistry = Registry::GetRegistry("NewRegistry");
+	Registry *myRegistry = MetaRegistry::instance().GetRegistry("NewRegistry");
 	NotCloned test("Test");
 
 	t_assert(myRegistry->Find("Key") == 0);
@@ -202,7 +202,7 @@ void RegistryTest::GetRegistry ()
 	myRegistry->RegisterRegisterableObject("Key", &test);
 	t_assert(myRegistry->Find("Key") == &test);
 
-	Registry *myRegistry2 = Registry::GetRegistry("NewRegistry");
+	Registry *myRegistry2 = MetaRegistry::instance().GetRegistry("NewRegistry");
 	// must return the same registry
 	t_assert(myRegistry2->Find("Key") == &test);
 	// therefore the same key must return the same value
@@ -224,7 +224,7 @@ void RegistryTest::TerminateTest()
 	a.MarkStatic();
 	NotCloned *b = new (Coast::Storage::Global()) NotCloned("terminate2");
 
-	Registry *r = Registry::GetRegistry("TerminateTest");
+	Registry *r = MetaRegistry::instance().GetRegistry("TerminateTest");
 	t_assert(r != 0);
 	if ( r ) {
 		r->RegisterRegisterableObject("terminate1", &a);
@@ -234,7 +234,7 @@ void RegistryTest::TerminateTest()
 		t_assert(r->Terminate(&at));
 
 		// registry is still there
-		t_assert(Registry::GetRegistry("TerminateTest") != 0);
+		t_assert(MetaRegistry::instance().GetRegistry("TerminateTest") != 0);
 		// static objects are still there
 		t_assert(r->Find("terminate1") != 0);
 
@@ -258,7 +258,7 @@ void RegistryTest::InstallHierarchyConfig()
 {
 	StartTrace(RegistryTest.InstallHierarchyConfig);
 	// generate test registry in the central registry
-	Registry *registry = Registry::GetRegistry( "InstallerResetTest" );
+	Registry *registry = MetaRegistry::instance().GetRegistry( "InstallerResetTest" );
 
 	// generate test pages which are initially there
 	Page *a = new (Coast::Storage::Global()) Page("Page");

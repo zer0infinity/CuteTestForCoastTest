@@ -54,33 +54,11 @@ public:
 
 	RegisterableObject *Find(const char *name);
 
-	/*! Returns the registry for category; creates it if it is not already there.
-		\param category Name for the registry; usually a name of the 'managing' object used to initialize/finalize belonging objects
-		\return Registry object for the category/group given. If the object does not yet exist, a new one will be created
-		\note Create registries before starting threads which could possibly use it. For performance reasons, this was intentionally left out! */
-	static Registry *GetRegistry(const char *category);
-
-	//!creates a registry and inserts it into the global registry table
-	//! \param category the name for the registry; usually a class name
-	//! \return a newly created Registry object
-	static Registry *MakeRegistry(const char *category);
-
-	//!removes the registry associated with category from the registry table
-	//! \param category the name for the registry; usually a class name
-	//! \return a removed Registry object
-	static Registry *RemoveRegistry(const char *category);
-
-	//!accessor to the global registry table
-	static Anything &GetRegTable();
-
-	//!accessor to the global registry table as ROAnything
-	static ROAnything &GetRegROTable();
-
 protected:
 	//!accessor to the registry's representation
 	Anything &GetTable();
 	//!Anything holding the registered objects for this registry s category
-	Anything *fTable;
+	Anything fTable;
 
 private:
 	Registry(const Registry &);

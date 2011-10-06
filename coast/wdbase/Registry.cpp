@@ -13,24 +13,11 @@
 #include "InitFinisManager.h"
 #include "CacheHandler.h"
 
-Registry::Registry(const char *registryname)
-	: NotCloned(registryname)
-	, fTable(0)
-{
-	// don't set fTable to 0 because sometimes Register got called earlier
+Registry::Registry(const char *registryname) :
+		NotCloned(registryname), fTable(Anything::ArrayMarker(), Coast::Storage::Global()) {
 }
 
-Registry::~Registry()
-{
-//	free the table if not already done
-//  note: 	it is not possible to free the objects
-//			in the table, since nothing is known about them
-//			therefore we introduced the termination policy,
-//			that can be supplied by clients
-	if (fTable) {
-		delete fTable;
-		fTable = 0;
-	}
+Registry::~Registry() {
 }
 
 bool Registry::Terminate(TerminationPolicy *terminator)
@@ -107,26 +94,7 @@ void Registry::RemoveAliases(RegisterableObject *obj)
 }
 
 Anything &Registry::GetTable() {
-	if (!fTable) {
-		fTable = new Anything(Anything::ArrayMarker(), Coast::Storage::Global());
-	}
-	return (*fTable);
-}
-
-Anything &Registry::GetRegTable() {
-	return MetaRegistry::instance().GetRegTable();
-}
-ROAnything &Registry::GetRegROTable() {
-	return MetaRegistry::instance().GetRegROTable();
-}
-Registry *Registry::GetRegistry(const char *category) {
-	return MetaRegistry::instance().GetRegistry(category);
-}
-Registry *Registry::MakeRegistry(const char *category) {
-	return MetaRegistry::instance().MakeRegistry(category);
-}
-Registry *Registry::RemoveRegistry(const char *category) {
-	return MetaRegistry::instance().RemoveRegistry(category);
+	return fTable;
 }
 
 MetaRegistryImpl::MetaRegistryImpl() :

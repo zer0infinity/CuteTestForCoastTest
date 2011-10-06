@@ -156,7 +156,7 @@ protected:
 	_NAME1_(category) *_NAME1_(category)::_NAME2_(Find, category)(const char *name) 			\
 	{ 																							\
 		static Registry *fgRegistry= 0;															\
-		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= Registry::GetRegistry(_NAME1_(_QUOTE_(category))); 				\
+		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= MetaRegistry::instance().GetRegistry(_NAME1_(_QUOTE_(category))); 				\
 		_NAME1_(category) *catMember = 0;														\
 		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
@@ -169,7 +169,7 @@ protected:
 	static _NAME1_(category) *_NAME2_(Find, category)(const char *name)		\
 	{ 																							\
 		static Registry *fgRegistry= 0;															\
-		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= Registry::GetRegistry(_NAME1_(_QUOTE_(category))); 				\
+		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= MetaRegistry::instance().GetRegistry(_NAME1_(_QUOTE_(category))); 				\
 		_NAME1_(category) *catMember = 0;														\
 		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
