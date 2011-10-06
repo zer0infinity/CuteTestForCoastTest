@@ -204,7 +204,7 @@ namespace Coast
 		namespace
 		{
 			//exchange this object when MT_Storage is used
-			StorageHooks *fgTopHook = 0;  // exchange this object when MT_Storage is used
+			StorageHooksPtr fgTopHook;
 
 			//flag to force global store temporarily
 			bool forceGlobal = false;
@@ -262,8 +262,8 @@ namespace Coast
 			DoGlobal()->PrintStatistic(lLevel);
 		}
 
-		void registerHooks(StorageHooks *h) {
-			if (h == NULL) {
+		void registerHooks(StorageHooksPtr h) {
+			if (!h) {
 				return;
 			}
 			h->SetOldHook(fgTopHook);
@@ -271,8 +271,8 @@ namespace Coast
 			fgTopHook = h;
 		}
 
-		StorageHooks *unregisterHooks() {
-			StorageHooks *pOldHook = fgTopHook;
+		StorageHooksPtr unregisterHooks() {
+			StorageHooksPtr pOldHook = fgTopHook;
 			fgTopHook = fgTopHook->GetOldHook();
 			if (pOldHook) {
 				pOldHook->Finalize();
@@ -373,10 +373,9 @@ GlobalAllocator::GlobalAllocator() :
 GlobalAllocator::~GlobalAllocator() {
 }
 
-MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t) {
-	MemTracker *pOld = fTracker.get();
-	fTracker = Allocator::MemTrackerPtr(t);
-	return pOld;
+Allocator::MemTrackerPtr GlobalAllocator::ReplaceMemTracker(MemTrackerPtr t) {
+	std::swap(fTracker, t);
+	return t;
 }
 
 ul_long GlobalAllocator::CurrentlyAllocated() {

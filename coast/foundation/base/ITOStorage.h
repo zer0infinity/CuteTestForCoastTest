@@ -227,9 +227,8 @@ public:
 	virtual ul_long CurrentlyAllocated() = 0;
 
 	//!change of memtrackers to be e.g. MT-Safe
-	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
-		(void)t;
-		return NULL;
+	virtual MemTrackerPtr ReplaceMemTracker(MemTrackerPtr t) {
+		return MemTrackerPtr();
 	}
 
 	//!Memory debugging and tracking support; implementer should report all statistic on cerr
@@ -295,7 +294,7 @@ public:
 	ul_long CurrentlyAllocated();
 
 	//!replaces the memory tracker with sthg. different e.g. thread safe
-	virtual MemTracker *ReplaceMemTracker(MemTracker *t);
+	virtual MemTrackerPtr ReplaceMemTracker(MemTrackerPtr t);
 
 protected:
 	//!implements allocation bottleneck routine
@@ -325,6 +324,8 @@ namespace Coast
 
 	namespace Storage
 	{
+		typedef boost::shared_ptr<StorageHooks> StorageHooksPtr;
+
 		//!prints memory management statistics
 		void PrintStatistic(long lLevel = -1);
 
@@ -345,10 +346,10 @@ namespace Coast
 		long GetStatisticLevel();
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		void registerHooks(StorageHooks *h);
+		void registerHooks(Coast::Storage::StorageHooksPtr h);
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		StorageHooks *unregisterHooks();
+		Coast::Storage::StorageHooksPtr unregisterHooks();
 
 		//!temporarily disable thread local storage policies e.g. to reinitialize server
 		void ForceGlobalStorage(bool b);
@@ -365,14 +366,13 @@ namespace Coast
 class StorageHooks {
 	StorageHooks(const StorageHooks &);
 	StorageHooks &operator=(const StorageHooks &);
-	StorageHooks *fParentHook;
+	Coast::Storage::StorageHooksPtr fParentHook;
 public:
 	StorageHooks() :
-			fParentHook(0) {
+			fParentHook() {
 	}
 
 	virtual ~StorageHooks() {
-		fParentHook = 0;
 	}
 
 	//!initialize storage subsystem
@@ -400,11 +400,11 @@ public:
 		return DoMakeMemTracker(name, bThreadSafe);
 	}
 
-	void SetOldHook(StorageHooks *pOld) {
+	void SetOldHook(Coast::Storage::StorageHooksPtr pOld) {
 		fParentHook = pOld;
 	}
 
-	StorageHooks *GetOldHook() {
+	Coast::Storage::StorageHooksPtr GetOldHook() {
 		return fParentHook;
 	}
 
@@ -453,38 +453,43 @@ protected:
 	}
 };
 
-class TestStorageHooks: public StorageHooks {
+class TestStorageHooks {
 	TestStorageHooks(const TestStorageHooks &);
 	TestStorageHooks &operator=(const TestStorageHooks &);
-	Allocator *fAllocator;
+	struct _Hooks: public StorageHooks {
+		Allocator *fAllocator;
+		_Hooks(Allocator *wdallocator) :
+				fAllocator(wdallocator) {
+		}
+		~_Hooks() {
+				fAllocator = 0;
+		}
+		virtual void DoInitialize() {
+		}
+		virtual void DoFinalize() {
+		}
+		virtual Allocator *DoGlobal() {
+			return Coast::Storage::DoGlobal();
+		}
+		virtual Allocator *DoCurrent() {
+			if (fAllocator) {
+				return fAllocator;
+			}
+			return Coast::Storage::DoGlobal();
+		}
+		virtual MemTracker *DoMakeMemTracker(const char *name, bool) {
+			return new MemTracker(name);
+		}
+	};
+	Coast::Storage::StorageHooksPtr theHooks;
 public:
 	TestStorageHooks(Allocator *wdallocator) :
-			fAllocator(wdallocator) {
-		Coast::Storage::registerHooks(this);
+			theHooks(new _Hooks(wdallocator)) {
+		Coast::Storage::registerHooks(theHooks);
 	}
 	virtual ~TestStorageHooks() {
-		StorageHooks *pHook = Coast::Storage::unregisterHooks();
-		(void) pHook;
-		Assert( pHook != this && "another Coast::Storage::SetHook() was called without restoring old Hook!");
-		fAllocator = 0;
-	}
-protected:
-	virtual void DoInitialize() {
-	}
-	virtual void DoFinalize() {
-	}
-	virtual Allocator *DoGlobal() {
-		return Coast::Storage::DoGlobal();
-	}
-	virtual Allocator *DoCurrent() {
-		if (fAllocator) {
-			return fAllocator;
-		}
-		return Coast::Storage::DoGlobal();
-	}
-
-	virtual MemTracker *DoMakeMemTracker(const char *name, bool) {
-		return new MemTracker(name);
+		Coast::Storage::StorageHooksPtr pHook = Coast::Storage::unregisterHooks();
+		Assert( pHook != theHooks && "another Coast::Storage::SetHook() was called without restoring old Hook!");
 	}
 };
 

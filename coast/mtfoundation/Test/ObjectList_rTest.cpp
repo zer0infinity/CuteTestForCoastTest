@@ -63,8 +63,8 @@
 
 void ObjectList_rTest::CtorTest()
 {
-	std::auto_ptr<MemTracker> newTracker( Coast::Storage::MakeMemTracker("GlobalAllocator", false) );
-	MemTracker *oldTracker = Coast::Storage::Global()->ReplaceMemTracker( newTracker.get() );
+	Allocator::MemTrackerPtr tmpTracker( Coast::Storage::MakeMemTracker("GlobalAllocator", false) );
+	tmpTracker = Coast::Storage::Global()->ReplaceMemTracker( tmpTracker );
 
 	StartTrace(ObjectList_rTest.CtorTest);
 	StartTraceMem1(ObjectList_rTest.CtorTest, Coast::Storage::Global());
@@ -151,7 +151,7 @@ void ObjectList_rTest::CtorTest()
 #endif
 	TraceMemDelta1("before terminating");
 
-	Coast::Storage::Global()->ReplaceMemTracker( oldTracker );
+	Coast::Storage::Global()->ReplaceMemTracker( tmpTracker );
 }
 
 // builds up a suite of testcases, add a line for each testmethod

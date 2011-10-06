@@ -79,8 +79,6 @@ protected:
 	}
 };
 
-//------------- Utilities for Memory Tracking (multi threaded) --------------
-
 MT_MemTracker::MT_MemTracker(const char *name, long lId)
 	: MemTracker(name)
 {
@@ -218,11 +216,10 @@ namespace {
 	};
 	class MTStorageInitializer {
 		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
-//		typedef boost::shared_ptr<StorageHooks> StorageHooksPtr;
-		typedef StorageHooks * StorageHooksPtr;
+		typedef Coast::Storage::StorageHooksPtr StorageHooksPtr;
 		SimpleMutexPtr fAllocatorInit;
 		THREADKEY fAllocatorKey;
-		MemTracker *fOldTracker;
+		Allocator::MemTrackerPtr fOldTracker;
 		StorageHooksPtr fMTHooks;
 		AllocList *fPoolAllocatorList;
 		void Initialize() {
@@ -233,7 +230,7 @@ namespace {
 			// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
 			Allocator *a = Coast::Storage::Global();
 			if (a && Coast::Storage::GetStatisticLevel() >= 1) {
-				fOldTracker = a->ReplaceMemTracker(Coast::Storage::MakeMemTracker("MTGlobalAllocator", true));
+				fOldTracker = a->ReplaceMemTracker(Allocator::MemTrackerPtr(Coast::Storage::MakeMemTracker("MTGlobalAllocator", true)));
 			}
 			StatTrace(MT_Storage.Initialize, "leaving", Coast::Storage::Global());
 		}
@@ -256,24 +253,22 @@ namespace {
 			Allocator *a = Coast::Storage::Global();
 			if ( a ) {
 				if ( fOldTracker ) {
-					MemTracker *pCurrTracker = a->ReplaceMemTracker(fOldTracker);
-					StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Coast::Storage::Global());
-					if ( pCurrTracker && Coast::Storage::GetStatisticLevel() >= 1 ) {
-						pCurrTracker->PrintStatistic(2);
+					Allocator::MemTrackerPtr tmpTracker = a->ReplaceMemTracker(fOldTracker);
+					StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( tmpTracker ? tmpTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Coast::Storage::Global());
+					if ( tmpTracker && Coast::Storage::GetStatisticLevel() >= 1 ) {
+						tmpTracker->PrintStatistic(2);
 					}
-					delete pCurrTracker;
-					fOldTracker = NULL;
+					fOldTracker.reset();
 				}
 			}
-			StorageHooks *pOldHook = Coast::Storage::unregisterHooks();
-			if ( pOldHook == fMTHooks ) {
-				delete fMTHooks;
-				fMTHooks = 0;
+			Coast::Storage::StorageHooksPtr pOldHook = Coast::Storage::unregisterHooks();
+			if ( pOldHook != fMTHooks ) {
+				SYSERROR("unregistered different hooks, oops");
 			}
 			StatTrace(MT_Storage.Finalize, "leaving", Coast::Storage::Global());
 		}
 	public:
-		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", Coast::Storage::Global())), fAllocatorKey(0), fOldTracker(0), fMTHooks(0), fPoolAllocatorList(0) {
+		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", Coast::Storage::Global())), fAllocatorKey(0), fOldTracker(), fMTHooks(), fPoolAllocatorList(0) {
 			InitFinisManager::IFMTrace("MTStorage::Initialize\n");
 			if (THRKEYCREATE(fAllocatorKey, 0)) {
 				SystemLog::Error("TlsAlloc of fAllocatorKey failed");
