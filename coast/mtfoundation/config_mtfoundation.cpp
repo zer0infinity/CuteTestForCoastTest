@@ -7,21 +7,6 @@
  */
 
 #include "config_mtfoundation.h"
-#include "InitFinisManager.h"
-
-namespace {
-	void Init()
-	{
-		InitFinisManager::IFMTrace(">> mtfoundation::Init\n");
-		InitFinisManager::IFMTrace("<< mtfoundation::Init\n");
-	}
-
-	void Finis()
-	{
-		InitFinisManager::IFMTrace(">> mtfoundation::Finis\n");
-		InitFinisManager::IFMTrace("<< mtfoundation::Finis\n");
-	}
-}
 
 #if defined(WIN32)
 #ifdef _DLL
@@ -120,13 +105,4 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
 #endif	// _DLL
-#else
-extern "C" void __attribute__ ((constructor)) mtfoundation_init()
-{
-	Init();
-}
-extern "C" void __attribute__ ((destructor)) mtfoundation_fini()
-{
-	Finis();
-}
 #endif	// WIN32
