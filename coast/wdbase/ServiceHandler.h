@@ -32,8 +32,7 @@ public:
 	//!default named object constructor
 	ServiceHandler(const char *serviceHandlerName);
     //!registry interface
-	RegCacheImplInline(ServiceHandler);
-
+	RegCacheDef(ServiceHandler);
 	//!handles requested service
 	bool HandleService(std::ostream &os, Context &ctx);
 

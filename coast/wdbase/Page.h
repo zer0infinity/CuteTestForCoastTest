@@ -57,7 +57,7 @@ public:
 	//!postprocessing of a request coming from this page
 	virtual bool Finish(String &action, Context &context);
 
-	RegCacheImplInline(Page);
+	RegCacheDef(Page);
 
 	static const char* gpcCategory;
 	static const char* gpcConfigPath;

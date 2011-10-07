@@ -7,23 +7,18 @@
  */
 
 #include "StressProcessor.h"
-#include "StringStream.h"
 #include "Stresser.h"
-#include "Tracer.h"
 
-//---- StressProcessor ----------------------------------------------------------------
 RegisterRequestProcessor(StressProcessor);
 
-StressProcessor::StressProcessor(const char *name) : RequestProcessor(name)
-{
+StressProcessor::StressProcessor(const char *name) :
+		RequestProcessor(name) {
 }
 
-StressProcessor::~StressProcessor()
-{
+StressProcessor::~StressProcessor() {
 }
 
-bool StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
-{
+bool StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(StressProcessor.DoProcessRequest);
 	TraceAny(ctx.GetRequest(), "Request");
 

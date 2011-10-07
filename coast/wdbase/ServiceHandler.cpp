@@ -27,6 +27,7 @@ bool ServiceHandler::HandleService(std::ostream &os, Context &ctx) {
 	return status;
 }
 
+RegCacheImpl(ServiceHandler);
 RegisterModule(ServiceHandlersModule);
 
 bool ServiceHandlersModule::Init(const ROAnything config) {

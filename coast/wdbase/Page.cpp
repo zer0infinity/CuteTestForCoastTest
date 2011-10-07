@@ -16,6 +16,8 @@
 
 const char* Page::gpcCategory = "Page";
 const char* Page::gpcConfigPath = "Pages";
+
+RegCacheImpl(Page);
 RegisterModule(PagesModule);
 
 bool PagesModule::Init(const ROAnything config) {

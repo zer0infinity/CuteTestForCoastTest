@@ -45,7 +45,7 @@ public:
 	//! \param config the action script
 	//! \return true if the script run successfully, false if an error occurred.
 	static bool ExecAction(String & transitionToken, Context & c, const ROAnything & config);
-	RegCacheImplInline(Action);
+	RegCacheDef(Action);
 
 	static const char* gpcCategory;
 	static const char* gpcConfigPath;

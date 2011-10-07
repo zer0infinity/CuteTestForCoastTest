@@ -75,7 +75,7 @@ public:
 	 This is retrieved from the roles configuration slot "SessionTimeout", if not configured the default is 60 seconds. Configuration hierarchy is used
 	 \return session timeout value for this role */
 	virtual long GetTimeout() const;
-	RegCacheImplInline(Role); // FindRole()
+	RegCacheDef(Role);
 
 	//! Like Role, but when FindRole(role_name) fails, try FileRole(dflt)
 	static Role *FindRoleWithDefault(const char *role_name, Context &ctx, const char *dflt = "Role");

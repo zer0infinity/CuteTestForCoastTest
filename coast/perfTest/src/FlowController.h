@@ -11,7 +11,6 @@
 
 #include "WDModule.h"
 #include "Context.h"
-#include "Registry.h"
 
 class FlowControllersModule: public WDModule {
 public:
@@ -64,7 +63,7 @@ public:
 	virtual bool AnalyseReply(Context & ctx, Anything & result);
 	virtual void CleanupAfterStep(Context & ctx);
 	virtual void Init(Context & ctx);
-	RegCacheImplInline(FlowController);
+	RegCacheDef(FlowController);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) FlowController(fName);

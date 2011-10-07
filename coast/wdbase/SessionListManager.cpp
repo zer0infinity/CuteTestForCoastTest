@@ -745,6 +745,7 @@ bool SessionFactory::DoGetConfigName(const char *category, const char *objName, 
 	return true;
 }
 
+RegCacheImpl(SessionFactory);
 RegisterSessionFactory(SessionFactory);
 
 RegisterAction(CleanSessions);

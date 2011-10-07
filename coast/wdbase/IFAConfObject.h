@@ -165,19 +165,6 @@ protected:
 		return catMember;																		\
 	}
 
-#define RegCacheImplInline(category) 										\
-	static _NAME1_(category) *_NAME2_(Find, category)(const char *name)		\
-	{ 																							\
-		static Registry *fgRegistry= 0;															\
-		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= MetaRegistry::instance().GetRegistry(_NAME1_(_QUOTE_(category))); 				\
-		_NAME1_(category) *catMember = 0;														\
-		if (name) {																				\
-			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
-		}																						\
-		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Coast::Storage::Current());\
-		return catMember;																		\
-	}
-
 //---- NotCloned ----------------------------------------------------------
 //!RegisterableObject as singleton; only aliases to the same object are installed
 //! NotCloned provides a special clone method that just returns this

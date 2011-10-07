@@ -14,6 +14,8 @@
 #include <cstring>
 
 RegisterModule(RolesModule);
+
+RegCacheImpl(Role);
 RegisterRole(Role);
 
 const char* Role::gpcCategory = "Role";

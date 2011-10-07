@@ -9,6 +9,8 @@
 #include "ServiceHandler.h"
 #include "Renderer.h"
 #include "Policy.h"
+
+RegCacheImpl(ServiceDispatcher);
 RegisterModule(ServiceDispatchersModule);
 
 bool ServiceDispatchersModule::Init(const ROAnything config) {

@@ -11,6 +11,8 @@
 #include "Timers.h"
 #include "AnyIterators.h"
 #include "Policy.h"
+
+RegCacheImpl(Action);
 RegisterModule(ActionsModule);
 
 const char* Action::gpcCategory = "Action";

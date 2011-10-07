@@ -37,7 +37,7 @@ public:
 		HierarchConfNamed(serviceDispatcherName) {
 	}
 	//!registry interface
-	RegCacheImplInline(ServiceDispatcher);
+	RegCacheDef(ServiceDispatcher);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) ServiceDispatcher(fName);

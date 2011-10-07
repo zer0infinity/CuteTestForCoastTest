@@ -10,6 +10,9 @@
 #include "DataAccess.h"
 #include "Timers.h"
 #include "Policy.h"
+#include "Registry.h"
+
+RegCacheImpl(FlowController);
 RegisterFlowController(FlowController);
 FlowController::FlowController(const char *FlowControllerName) :
 	ConfNamedObject(FlowControllerName) {

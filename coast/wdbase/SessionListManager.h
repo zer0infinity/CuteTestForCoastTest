@@ -38,7 +38,7 @@ public:
 	SessionFactory(const char *SessionFactoryName) :
 		HierarchConfNamed(SessionFactoryName) {
 	}
-	RegCacheImplInline(SessionFactory) // FindSessionFactory()
+	RegCacheDef(SessionFactory);
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
 		return new (a) SessionFactory(fName);
