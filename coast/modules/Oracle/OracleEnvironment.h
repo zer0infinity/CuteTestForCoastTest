@@ -35,20 +35,6 @@ private:
 	OracleEnvironment( const OracleEnvironment & );
 	OracleEnvironment &operator=( const OracleEnvironment & );
 
-	//! <b>Automatic terminator of OCI</b>
-	/*!
-	 *  This static object should only be destructed once when OCI services are not in use anymore.
-	 */
-	static struct OraTerminator {
-		OracleEnvironmentPtr fEnvironment;
-		OraTerminator() {
-			fEnvironment = OracleEnvironmentPtr( new (Coast::Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
-												 16 ) );
-		}
-		~OraTerminator() {
-			OCITerminate( OCI_DEFAULT );
-		}
-	} fgOraTerminator;
 public:
 	/*! construction mode of environment */
 	enum Mode {
@@ -94,9 +80,7 @@ public:
 	Allocator *getAllocator() {
 		return fMemPool.get();
 	}
-	static OracleEnvironment &getGlobalEnv() {
-		return *fgOraTerminator.fEnvironment.get();
-	}
+	static OracleEnvironment &getGlobalEnv();
 };
 
 #endif /* ORACLEENVIRONMENT_H_ */

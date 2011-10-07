@@ -16,15 +16,73 @@
 #include "AnyIterators.h"
 #include "Tracer.h"
 #include "MT_Storage.h"
+#include "InitFinisManager.h"
+#include <boost/pool/detail/singleton.hpp>
 
 namespace Coast
 {
 	namespace Oracle
 	{
+		namespace {
+			class OracleTlsKeyInitializer {
+				THREADKEY fCleanerKey;	// WIN32 defined it 0xFFFFFFFF !!
+				bool fTLSUsable;
+				StatEvtHandlerPtrType fpStatEvtHandlerTLS;
+			public:
+				OracleTlsKeyInitializer() : fCleanerKey(0), fTLSUsable(false)  {
+					if (THRKEYCREATE(fCleanerKey, 0)) {
+						SystemLog::Error("TlsAlloc of fCleanerKey failed");
+					} else {
+						fTLSUsable = true;
+						fpStatEvtHandlerTLS = StatEvtHandlerPtrType( new WPMStatHandler( 0 ) );
+					}
+					InitFinisManager::IFMTrace("OracleTlsKeyInitializer::Initialized\n");
+				}
+				~OracleTlsKeyInitializer() {
+					if (THRKEYDELETE(fCleanerKey) != 0) {
+						SystemLog::Error("TlsFree of fCleanerKey failed" );
+					}
+					InitFinisManager::IFMTrace("OracleTlsKeyInitializer::Finalized\n");
+				}
+				THREADKEY getCleanerKey() const {
+					return fCleanerKey;
+				}
+				bool TLSUsable() const {
+					return fTLSUsable;
+				}
+				WPMStatHandler* getStatHandlerTLS() const {
+					return fpStatEvtHandlerTLS.get();
+				}
+			};
+		    typedef boost::details::pool::singleton_default<OracleTlsKeyInitializer> OracleTlsKeyInitializerSingleton;
+		}
+
+		class ThreadSpecificConnectionCleaner : public CleanupHandler {
+		public:
+			static ThreadSpecificConnectionCleaner fgCleaner;
+		protected:
+			//:close and destruct OraclePooledConnection
+			virtual bool DoCleanup() {
+				StatTrace(ThreadSpecificConnectionCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Coast::Storage::Global());
+				OraclePooledConnection *pConnection = 0;
+				if (GETTLSDATA(OracleTlsKeyInitializerSingleton::instance().getCleanerKey(), pConnection, OraclePooledConnection)) {
+					if ( pConnection->isOpen() ) {
+						pConnection->Close( true );
+					}
+					delete pConnection;
+					pConnection = 0;
+					if (SETTLSDATA(OracleTlsKeyInitializerSingleton::instance().getCleanerKey(), pConnection)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+		ThreadSpecificConnectionCleaner ThreadSpecificConnectionCleaner::fgCleaner;
 
 		ConnectionPool::ConnectionPool( const char *name ) :
 			fStructureMutex( String( name ).Append( "StructureMutex" ), Coast::Storage::Global() ), fListOfConnections(
-				Coast::Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)
+				Coast::Storage::Global() ), fInitialized( false ), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)
 		{
 			StartTrace(ConnectionPool.ConnectionPool);
 		}
@@ -42,35 +100,12 @@ namespace Coast
 				fpStatEvtHandlerPool->Statistic( anyStats );
 				statistics["Pool"] = anyStats;
 			}
-			if ( fpStatEvtHandlerTLS.get() ) {
+			if ( OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS() ) {
 				Anything anyStats;
-				fpStatEvtHandlerTLS->Statistic( anyStats );
+				OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS()->Statistic( anyStats );
 				statistics["TLS"] = anyStats;
 			}
 		}
-
-//:perform close and destruction of OraclePooledConnection in thread specific storage
-		static class ThreadSpecificConnectionCleaner : public CleanupHandler
-		{
-		protected:
-			//:close and destruct OraclePooledConnection
-			virtual bool DoCleanup() {
-				StatTrace(ThreadSpecificConnectionCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Coast::Storage::Global());
-				OraclePooledConnection *pConnection = 0;
-				if (GETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection, OraclePooledConnection)) {
-					if ( pConnection->isOpen() ) {
-						pConnection->Close( true );
-					}
-					delete pConnection;
-					pConnection = 0;
-					if (SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		} fgTSCCleaner;
-		THREADKEY ConnectionPool::fgTSCCleanerKey = 0;
 
 		static Allocator *getListAllocator( const ROAnything roaConfig )
 		{
@@ -99,13 +134,6 @@ namespace Coast
 			if ( !fInitialized ) {
 				long nrOfConnections( myCfg["ParallelQueries"].AsLong( 5L ) );
 				long lCloseConnectionTimeout( myCfg["CloseConnectionTimeout"].AsLong( 60L ) );
-
-				if ( THRKEYCREATE(ConnectionPool::fgTSCCleanerKey, 0) != 0 ) {
-					SYSERROR("TlsAlloc of ConnectionPool::fgTSCCleanerKey failed");
-				} else {
-					fTLSUsable = true;
-					fpStatEvtHandlerTLS = StatEvtHandlerPtrType( new WPMStatHandler( 0 ) );
-				}
 
 				LockUnlockEntry me( fStructureMutex );
 				{
@@ -169,12 +197,6 @@ namespace Coast
 				}
 				delete fpResourcesSema;
 				fpResourcesSema = NULL;
-
-				if ( fTLSUsable ) {
-					if (THRKEYDELETE(ConnectionPool::fgTSCCleanerKey) != 0) {
-						SYSERROR("TlsFree of ConnectionPool::fgTSCCleanerKey failed" );
-					}
-				}
 				Allocator *pAlloc = fListOfConnections.GetAllocator();
 				fListOfConnections.clear();
 				fListOfConnections.SetAllocator(Coast::Storage::Global());
@@ -187,8 +209,8 @@ namespace Coast
 		{
 			StartTrace(ConnectionPool.BorrowConnection);
 			bool bRet(false);
-			if ( fTLSUsable && bUseTLS ) {
-				if ( ( bRet = GETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection, OraclePooledConnection) ) ) {
+			if ( OracleTlsKeyInitializerSingleton::instance().TLSUsable() && bUseTLS ) {
+				if ( ( bRet = GETTLSDATA(OracleTlsKeyInitializerSingleton::instance().getCleanerKey(), pConnection, OraclePooledConnection) ) ) {
 					// verify if current connection is for same server/user
 					Trace("got connection from TLS, server [" << pConnection->getServer() << "], user [" << pConnection->getUser() << "]");
 					if ( !pConnection->isOpenFor(server, user) ) {
@@ -197,18 +219,18 @@ namespace Coast
 					}
 				} else {
 					Trace("need to create new Connection")
-					Thread::RegisterCleaner(&fgTSCCleaner);
+					Thread::RegisterCleaner(&ThreadSpecificConnectionCleaner::fgCleaner);
 					pConnection = new ( Coast::Storage::Global() ) OraclePooledConnection( Thread::MyId(), 2048L, 26L );
 					if ( pConnection != NULL ) {
-						bRet = SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection);
+						bRet = SETTLSDATA(OracleTlsKeyInitializerSingleton::instance().getCleanerKey(), pConnection);
 						Trace("connection stored in TLS:" << (bRet ? "true" : "false"));
-						if ( fpStatEvtHandlerTLS.get() ) {
-							fpStatEvtHandlerTLS->incrementPoolSize();
+						if ( OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS() ) {
+							OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS()->incrementPoolSize();
 						}
 					}
 				}
-				if ( fpStatEvtHandlerTLS.get() ) {
-					fpStatEvtHandlerTLS->HandleStatEvt( WPMStatHandler::eEnter );
+				if ( OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS() ) {
+					OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS()->HandleStatEvt( WPMStatHandler::eEnter );
 				}
 			} else {
 				if ( fpStatEvtHandlerPool.get() ) {
@@ -224,10 +246,10 @@ namespace Coast
 		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS )
 		{
 			StartTrace(ConnectionPool.ReleaseConnection);
-			if ( fTLSUsable && bUseTLS ) {
+			if ( OracleTlsKeyInitializerSingleton::instance().TLSUsable() && bUseTLS ) {
 				Trace("nothing to do, keep connection as long as we (Thread) are alive");
-				if ( fpStatEvtHandlerTLS.get() ) {
-					fpStatEvtHandlerTLS->HandleStatEvt( WPMStatHandler::eLeave );
+				if ( OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS() ) {
+					OracleTlsKeyInitializerSingleton::instance().getStatHandlerTLS()->HandleStatEvt( WPMStatHandler::eLeave );
 				}
 			} else {
 				{

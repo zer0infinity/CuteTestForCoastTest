@@ -20,6 +20,7 @@ namespace Coast
 {
 	namespace Oracle
 	{
+		typedef std::auto_ptr<WPMStatHandler> StatEvtHandlerPtrType;
 
 //! Oracle specific class to handle backend connection pooling
 		/*!
@@ -75,7 +76,7 @@ namespace Coast
 			 */
 			Anything fListOfConnections;
 			//! track if the pool is initialized - if not, every access will fail
-			bool fInitialized, fTLSUsable;
+			bool fInitialized;
 			//! pointer to action which periodically checks for timed out connections to close
 			PeriodicAction *fpPeriodicAction;
 			//! counting semaphore to keep track of the available connections
@@ -83,10 +84,8 @@ namespace Coast
 			//! name of the Pool
 			String fName;
 
-			typedef std::auto_ptr<WPMStatHandler> StatEvtHandlerPtrType;
-
 			//! statistic event handler
-			StatEvtHandlerPtrType fpStatEvtHandlerPool, fpStatEvtHandlerTLS;
+			StatEvtHandlerPtrType fpStatEvtHandlerPool;
 
 		public:
 			/*! construct the connection pool
@@ -128,8 +127,6 @@ namespace Coast
 			 * @param user name of the user which was used to connect
 			 */
 			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS = false );
-
-			static THREADKEY fgTSCCleanerKey;
 
 		protected:
 			/*! implements the StatGatherer interface used by StatObserver

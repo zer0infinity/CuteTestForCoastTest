@@ -201,4 +201,10 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/AppBooter {
+		/MainSwitch						20
+		/EnableAll						10
+		/OpenLibs						20
+		/CloseLibs						20
+	}
 }

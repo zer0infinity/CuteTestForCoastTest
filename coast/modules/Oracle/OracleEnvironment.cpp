@@ -51,7 +51,31 @@ void free_func( void *ctxp, dvoid *ptr )
 #	define	ctx_ptr			NULL
 #endif
 
-OracleEnvironment::OraTerminator OracleEnvironment::fgOraTerminator;
+#include <boost/pool/detail/singleton.hpp>
+namespace {
+	//! <b>Automatic terminator of OCI</b>
+	/*!
+	 *  This static object should only be destructed once when OCI services are not in use anymore.
+	 */
+	struct OraTerminatorImpl {
+		OracleEnvironmentPtr fEnvironment;
+		OraTerminatorImpl() {
+			fEnvironment = OracleEnvironmentPtr( new (Coast::Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
+												 16 ) );
+		}
+		~OraTerminatorImpl() {
+//			OCITerminate( OCI_DEFAULT );
+		}
+		OracleEnvironment &getGlobalEnv() {
+			return *fEnvironment.get();
+		}
+	};
+    typedef boost::details::pool::singleton_default<OraTerminatorImpl> OraTerminator;
+}
+
+OracleEnvironment &OracleEnvironment::getGlobalEnv() {
+	return OraTerminator::instance().getGlobalEnv();
+}
 
 OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPoolSize,
 									  unsigned long ulBuckets ) :
