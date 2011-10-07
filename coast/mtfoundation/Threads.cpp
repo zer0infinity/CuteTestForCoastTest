@@ -50,19 +50,6 @@ AllocatorUnref::~AllocatorUnref()
 	}
 }
 
-//:subclasses may be defined to perform cleanup in thread specific storage
-// while thread is still alive. CleanupHandlers are supposed to be singletons..
-class MutexCountTableCleaner : public CleanupHandler
-{
-public:
-	static MutexCountTableCleaner fgCleaner;
-
-protected:
-	//:method used to cleanup specific settings within
-	// thread specific storage
-	virtual bool DoCleanup();
-};
-
 namespace {
 	//:thread count variable
 	long fgNumOfThreads = 0;
@@ -904,6 +891,18 @@ namespace {
 	};
     typedef boost::details::pool::singleton_default<MutexInitializer> MutexInitializerSingleton;
 }
+
+//:subclasses may be defined to perform cleanup in thread specific storage
+// while thread is still alive. CleanupHandlers are supposed to be singletons..
+class MutexCountTableCleaner: public CleanupHandler {
+public:
+	static MutexCountTableCleaner fgCleaner;
+
+protected:
+	//:method used to cleanup specific settings within
+	// thread specific storage
+	virtual bool DoCleanup();
+};
 
 MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 
