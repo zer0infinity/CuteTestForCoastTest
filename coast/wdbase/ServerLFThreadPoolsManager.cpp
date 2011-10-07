@@ -15,7 +15,6 @@
 
 RegisterServerPoolsManagerInterface(ServerLFThreadPoolsManager);
 
-//---- ServerLFThreadPoolsManager -----------------------------------------------------------
 ServerLFThreadPoolsManager::ServerLFThreadPoolsManager(const char *ServerThreadPoolsManagerName)
 	: ServerPoolsManagerInterface(ServerThreadPoolsManagerName)
 	, fLFPool(0)

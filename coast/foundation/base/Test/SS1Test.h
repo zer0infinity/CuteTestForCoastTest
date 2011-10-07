@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- SS1Test -----------------------------------------------------------
-//!testcases for StringStream
 class SS1Test : public TestFramework::TestCase
 {
 public:

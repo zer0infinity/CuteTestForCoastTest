@@ -11,8 +11,6 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-//---- ConnectorTest ----------------------------------------------------------
-//!testcases for Connector class
 class ConnectorTest : public TestFramework::TestCaseWithConfig
 {
 public:

@@ -13,7 +13,6 @@
 
 class Socket;
 
-//---- AcceptorTest ----------------------------------------------------------
 //!TestClass for Acceptor functionality
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>

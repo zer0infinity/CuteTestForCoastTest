@@ -11,8 +11,6 @@
 
 #include "IFAConfObject.h"
 
-//--- URLFilter ----------------------------------------------------------
-
 class Context;
 class Anything;
 class ROAnything;

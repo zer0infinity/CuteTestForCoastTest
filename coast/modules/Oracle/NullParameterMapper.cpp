@@ -10,7 +10,6 @@
 #include "Tracer.h"
 #include "AnyIterators.h"
 
-//---- NullParameterMapper ------------------------------------------------------------------
 RegisterParameterMapper(NullParameterMapper);
 
 NullParameterMapper::NullParameterMapper( const char *name ) :

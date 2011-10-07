@@ -57,7 +57,6 @@ protected:
 
 #define RegisterSessionFactory(name) RegisterObject(name, SessionFactory)
 
-//---- SessionListManager ----------------------------------------------------------
 //! manages list of sessions
 /*! this is the one and only manager of the session list; it is a singleton\n
 \b creation: sessions are created by factory objects; they have a unique session id\n
@@ -71,7 +70,6 @@ public:
 	static SessionListManager *SLM();
 	static void SetFinalize(bool finalize);
 
-	//--- module initialization termination ---
 	//!initialize SessionList during initialization phase
 	virtual bool Init(const ROAnything config);
 	//!finalize SessionList (delete all Sessions) during termination phase
@@ -116,7 +114,6 @@ public:
 protected:
 	friend class SessionListManagerTest;
 
-	//--- creation and intialization ---
 	//!tries to create a new session if possible
 	virtual Session *MakeSession(Context &ctx);
 	//! hook for subclasses if they want to create their own sessions; preferred way use factories
@@ -126,7 +123,6 @@ protected:
 	//!store the session in the fSessions list with the key id
 	virtual void AddSession(const String &id, Session *session, Context &ctx);
 
-	//--- url filtering ---
 	//! Filters and unscrambles query content by using an URLFilter object
 	/*! This method tries to find a registered URLFilter by looking up its name in the Context at \b URLFilterName. If no name is set,
 	 * the default URLFilter is used.
@@ -153,7 +149,6 @@ protected:
 	//! find url filter defined in context
 	virtual URLFilter *FindURLFilter(Context &ctx);
 
-	//--- retrieval -----
 	//! retrieves a session object from the sessions list
 	//!accesses the fSessions list of sessions; therefore it locks the fSessionsListMutex
 	//! it returns the session found if it is not terminated or busy
@@ -182,7 +177,6 @@ protected:
 	//!forces removal of sessions
 	virtual void ForcedSessionCleanUp(Context &ctx);
 
-	//--- statistics ---------
 	//!returns number of sessions that are activ
 	virtual long GetNumberOfSessions();
 

@@ -12,7 +12,6 @@
 #include "TestAction.h"
 #include <iostream>
 
-//---- PageTest ----------------------------------------------------------------
 PageTest::PageTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(PageTest.Ctor);

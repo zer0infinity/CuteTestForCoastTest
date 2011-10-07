@@ -13,8 +13,6 @@
 
 class String;
 
-//---- StringStreamTest -----------------------------------------------------------
-//!testcases for StringStream
 class StringStreamTest : public TestFramework::TestCase
 {
 public:

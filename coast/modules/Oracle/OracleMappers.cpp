@@ -10,7 +10,6 @@
 #include "Context.h"
 #include "Tracer.h"
 
-//---- OracleParameterMapper ------------------------------------------------------------------
 RegisterParameterMapper(OracleParameterMapper);
 
 OracleParameterMapper::OracleParameterMapper( const char *name ) :
@@ -37,7 +36,6 @@ bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context 
 	return ParameterMapper::DoGetAny( strKey, value, ctx, script );
 }
 
-//---- OracleResultMapper ------------------------------------------------------------------
 RegisterResultMapper(OracleResultMapper);
 
 OracleResultMapper::OracleResultMapper( const char *name ) :

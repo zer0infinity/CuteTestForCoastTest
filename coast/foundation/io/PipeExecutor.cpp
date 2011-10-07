@@ -27,7 +27,6 @@
 #endif
 
 using namespace Coast;
-//---- PipeExecutor ----------------------------------------------------------------
 PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long lExecTimeout, bool bOpenStreamForStderr)
 	: fPipe(0)
 	, fChildPid(0)

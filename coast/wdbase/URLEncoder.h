@@ -11,7 +11,6 @@
 
 #include "SecurityModule.h"
 
-//---- URLEncoder -----------------------------------------------------------
 class URLEncoder : public Encoder
 {
 public:

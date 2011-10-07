@@ -17,7 +17,6 @@ HRTIME  gettimes()
 }
 #endif
 
-//---- DiffTimer ---------------------------------------------------------------
 DiffTimer::DiffTimer(DiffTimer::eResolution resolution)
 	: fStart(0),
 	  fResolution(resolution)

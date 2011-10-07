@@ -14,7 +14,6 @@
 #include <iomanip>
 #include <memory>
 
-//---- AnyImplsTest ----------------------------------------------------------------
 AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(AnyImplsTest.Ctor);

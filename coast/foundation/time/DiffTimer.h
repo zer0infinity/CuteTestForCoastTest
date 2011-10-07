@@ -31,7 +31,6 @@ extern "C" HRTIME gettimes();
 #define GetHRTIME() gettimes()
 #endif
 
-//---- DiffTimer ----------------------------------------------------------
 //! Timer infrastructure to measure elapsed time in program scopes.
 /*! The Timer can be setup to return a scaled result based on the resolution specified when constructing it.
 \note The accuracy depends on the system timer used for measurement. Therefore you should not expect more precise results than the appropriate platform default. */

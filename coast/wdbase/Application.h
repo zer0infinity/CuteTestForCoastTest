@@ -12,7 +12,6 @@
 #include "IFAConfObject.h"
 #include "Threads.h"
 
-//---- Application -----------------------------------------------------------
 //! life-cycle of an application: Init - Run - Terminate
 class Application : public HierarchConfNamed
 {

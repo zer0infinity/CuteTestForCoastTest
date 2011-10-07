@@ -11,7 +11,6 @@
 #include "TestSuite.h"
 #include "AnyIterators.h"
 
-//---- SimpleListenerPoolTest ----------------------------------------------------------------
 SimpleListenerPoolTest::SimpleListenerPoolTest(TString tname)
 	: ListenerPoolTest(tname)
 {

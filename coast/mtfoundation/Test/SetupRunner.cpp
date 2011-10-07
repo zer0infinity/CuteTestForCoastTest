@@ -8,7 +8,6 @@
 
 #include "TestRunner.h"
 
-//--- test cases ---------------------------------------------------------------
 #include "SystemAPITest.h"
 #include "MTStorageTest2.h"
 #include "ThreadsTest.h"

@@ -62,7 +62,6 @@ SessionListManager *SessionListManager::SLM() {
 }
 
 RegisterModule(SessionListManager);
-//---- SessionListManager ----------------------------------------------------------------
 SessionListManager::SessionListManager(const char *name)
 	: WDModule(name)
 	, fSessionCleaner(0)

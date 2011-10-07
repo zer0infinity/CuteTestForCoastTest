@@ -21,7 +21,6 @@ public:
 	}
 };
 
-//---- ROSimpleAnythingTest --------------------------------------------------
 ROSimpleAnythingTest::ROSimpleAnythingTest(TString tname) : TestCaseType(tname)
 {
 }

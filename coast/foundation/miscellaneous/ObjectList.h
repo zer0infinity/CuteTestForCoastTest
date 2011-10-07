@@ -16,7 +16,6 @@
 #include <algorithm>
 #include <list>
 
-//---- class ObjectList ----------------------------------------------------------------
 #define DefaultListType std::list
 
 template <

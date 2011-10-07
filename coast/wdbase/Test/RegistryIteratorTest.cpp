@@ -11,7 +11,6 @@
 #include "TestSuite.h"
 #include "Registry.h"
 
-//---- RegistryIteratorTest ----------------------------------------------------------------
 RegistryIteratorTest::RegistryIteratorTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(RegistryIteratorTest.Ctor);

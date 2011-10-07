@@ -13,7 +13,6 @@
 
 class String;
 
-//---- IFAObject ----------------------------------------------------------
 //! This is the abstract root class for all IFAObjects
 /*! It defines the cloning API IFAObject.Clone(), that is needed for the prototype pattern.
  */
@@ -37,7 +36,6 @@ private:
 	}
 };
 
-//---- NamedObject ----------------------------------------------------------
 //! Defines abstract named object api
 /*! This object serves as a base class for \em logically \em named objects of same type.
  * The name could be used to distinguish different instances of an object of the same base.

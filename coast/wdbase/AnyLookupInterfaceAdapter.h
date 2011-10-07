@@ -13,7 +13,6 @@
 #include "ITOTypeTraits.h"
 #include "Tracer.h"
 
-//---- AnyLookupInterfaceAdapter ----------------------------------------------------------
 /*! <B>Wraps [RO]Anything in a LookupInterface (as needed eg. by Context::Push())</B> */
 template < class ContainerType >
 class AnyLookupInterfaceAdapter : public LookupInterface

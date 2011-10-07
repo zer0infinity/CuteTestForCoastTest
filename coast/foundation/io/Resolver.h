@@ -15,7 +15,6 @@ namespace {
 	static const String defaultIP("127.0.0.1");
 	static const String defaultName("localhost");
 }
-//---- Resolver ----------------------------------------------------------
 //!dns to ip adress and vice versa resolver
 //!api wrapper to resolver library;
 //!converts DNS names to ip addresses

@@ -9,7 +9,6 @@
 #include "PeriodicAction.h"
 #include "Context.h"
 
-//--- PeriodicAction ----
 PeriodicAction::PeriodicAction(const String &action, long waitTime)
 	: Thread((const char *)action, true)
 	, fAction(action)

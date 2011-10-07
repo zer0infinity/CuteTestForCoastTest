@@ -11,7 +11,6 @@
 #include "Timers.h"
 #include "MT_Storage.h"
 
-//----- AllocTestThread -------------------------------------------------------------
 class AllocTestThread : public Thread
 {
 public:
@@ -27,7 +26,6 @@ protected:
 	MTStorageTest *fTest;
 };
 
-//---- MTStorageTest ----------------------------------------------------------------
 MTStorageTest::MTStorageTest(TString tname) : TestCaseType(tname), fFinishedMutex("Finish"), fFinished(0), fStarted(false)
 {
 	THRSETCONCURRENCY(3);
@@ -138,7 +136,6 @@ Test *MTStorageTest::suite ()
 	return testSuite;
 }
 
-//---- AllocTestThread ----------------------------------------------------
 AllocTestThread::AllocTestThread(TString allocatorName, Allocator *alloc, MTStorageTest *mts)
 	: Thread("AllocTestThread", false, true, false, false, alloc), fAllocatorName(allocatorName), fTest(mts)
 {

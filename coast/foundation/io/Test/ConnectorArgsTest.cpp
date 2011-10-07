@@ -11,8 +11,6 @@
 #include "Socket.h"
 #include "Tracer.h"
 
-//---- ConnectorArgsTest ----------------------------------------------------------------
-
 ConnectorArgsTest::ConnectorArgsTest(TString tname)
 	: TestCaseType(tname)
 {

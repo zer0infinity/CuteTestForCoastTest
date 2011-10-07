@@ -11,7 +11,6 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- AnyImplsTest ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class

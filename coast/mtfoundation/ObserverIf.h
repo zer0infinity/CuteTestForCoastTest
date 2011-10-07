@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <list>
 
-//---- ObserverIf ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class

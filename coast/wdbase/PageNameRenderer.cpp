@@ -9,7 +9,6 @@
 #include "PageNameRenderer.h"
 #include "Page.h"
 
-//---- PageNameRenderer ---------------------------------------------------------------
 RegisterRenderer(PageNameRenderer);
 
 PageNameRenderer::PageNameRenderer(const char *name) : Renderer(name) { }

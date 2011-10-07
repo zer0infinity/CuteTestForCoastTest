@@ -242,7 +242,6 @@ protected:
 	friend class DataAccessTest; // check for auto-unlocking
 };
 
-//---- SessionInfo ----------------------------------------------------------
 //! collects session information
 class SessionInfo: public Action {
 public:

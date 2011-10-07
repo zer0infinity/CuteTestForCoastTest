@@ -11,7 +11,6 @@
 
 #include "Action.h"
 
-//---- OracleCheckCloseOpenedConnectionsAction ----------------------------------------------------------
 //! Periodic action to check for timed out connections
 /*!
  * The action will get called from within a PeriodicAction through its registered name.

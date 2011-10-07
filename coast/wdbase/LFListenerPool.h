@@ -18,7 +18,6 @@ class RequestReactor;
 class Socket;
 class WPMStatHandler;
 
-//---- LFListenerPool -----------------------------------------------------------
 //! Leader Follower implementation for socket connection dispatching and request processing
 class LFListenerPool : public LeaderFollowerPool
 {
@@ -48,7 +47,6 @@ public:
 	virtual bool AwaitEmpty(long secs);
 };
 
-//--- RequestReactor -------------
 //!dispatcher of socket connection requests
 class RequestReactor: public Reactor, public StatGatherer
 {

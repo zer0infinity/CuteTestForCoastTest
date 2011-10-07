@@ -12,7 +12,6 @@
 #include "Registry.h"
 #include "Context.h"
 
-//---- RoleTest ----------------------------------------------------------------
 RoleTest::RoleTest(TString tname)
 	: TestCaseType(tname)
 {

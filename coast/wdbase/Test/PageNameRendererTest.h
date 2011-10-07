@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- PageNameRendererTest ----------------------------------------------------------
-//!TestCases description
 class PageNameRendererTest : public TestFramework::TestCase
 {
 public:

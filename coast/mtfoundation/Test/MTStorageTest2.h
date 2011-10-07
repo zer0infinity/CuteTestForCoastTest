@@ -13,8 +13,6 @@
 
 class Allocator;
 
-//---- MTStorageTest2 ----------------------------------------------------------
-//!Test driver for tracing facility
 class MTStorageTest2 : public TestFramework::TestCase
 {
 public:

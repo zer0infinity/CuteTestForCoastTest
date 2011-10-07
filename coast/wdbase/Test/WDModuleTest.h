@@ -13,8 +13,6 @@
 
 class Registry;
 
-//---- WDModuleTest ----------------------------------------------------------
-//!TestCases for Coast state transitions
 class WDModuleTest : public TestFramework::TestCase
 {
 public:

@@ -11,7 +11,6 @@
 
 #include "STLStorage.h"//lint !e537
 
-//---- STL_fast_pool_allocator ----------------------------------------------------------
 namespace STLStorage
 {
 	// use fast_pool_allocator type for std::vector container types which allocate a bunch of elements at once

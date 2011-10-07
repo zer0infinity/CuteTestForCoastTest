@@ -13,7 +13,6 @@
 #include "AnythingConfigTestPolicy.h"
 #include "AnythingStatisticTestPolicy.h"
 
-//---- specialized test types ----------------------------------------------------------
 namespace TestFramework
 {
 

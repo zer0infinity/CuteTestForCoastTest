@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- RegistryIteratorTest ----------------------------------------------------------
-//!TestCases description
 class RegistryIteratorTest : public TestFramework::TestCase
 {
 public:

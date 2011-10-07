@@ -9,7 +9,6 @@
 #ifndef _GenericXMLParser_H
 #define _GenericXMLParser_H
 
-//---- GenericXMLParser ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
 further explanation of the purpose of the class

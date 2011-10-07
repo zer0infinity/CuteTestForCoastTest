@@ -28,7 +28,6 @@ iosITOSocket::iosITOSocket(Socket *s, long timeout, long sockbufsz, int mode )
 	init(&fSocketBuf);
 }
 
-//---- SocketStream -------------------------------------------------------------------
 SocketStream::SocketStream(Socket *s, long timeout, long sockbufsz)
 	: iosITOSocket(s, timeout, sockbufsz, std::ios::in | std::ios::out)
 	, std::iostream(&fSocketBuf)
@@ -47,7 +46,6 @@ long SocketStreamBuf::GetTimeout()
 	return fSocket ? fSocket->GetTimeout() : 0L;
 }
 
-//---- TimeoutModifier -------------------------------------------------------------------
 TimeoutModifier::TimeoutModifier(SocketStream *Ios, long timeout) : fOriginalTimeout(0), fStream(Ios)
 {
 	if (fStream) {
@@ -63,7 +61,6 @@ TimeoutModifier::~TimeoutModifier()
 	}
 }
 
-//---- SocketStreamBuf -------------------------------------------------------------------
 SocketStreamBuf::SocketStreamBuf(Socket *psocket, long timeout, long sockbufsz, int mode)
 	: fReadBufStorage(mode &std::ios::in ? sockbufsz : 0L)
 	, fWriteBufStorage(mode &std::ios::out ? sockbufsz : 0L)

@@ -13,8 +13,6 @@
 
 class Socket;
 
-//---- LFListenerPoolTest ----------------------------------------------------------
-//!TestCases description
 class LFListenerPoolTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

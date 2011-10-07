@@ -11,7 +11,6 @@
 
 #include "FoundationTestTypes.h"
 
-//---- StatementDescriptionTest ----------------------------------------------------------
 class StatementDescriptionTest : public TestFramework::TestCaseWithConfig
 {
 public:

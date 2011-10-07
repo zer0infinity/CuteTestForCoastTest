@@ -11,7 +11,6 @@
 #include "OracleEnvironment.h"
 #include "Context.h"
 
-//--- OracleCheckCloseOpenedConnectionsAction ---
 RegisterAction(OracleCheckCloseOpenedConnectionsAction);
 
 bool OracleCheckCloseOpenedConnectionsAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)

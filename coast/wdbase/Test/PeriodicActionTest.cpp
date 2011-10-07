@@ -15,7 +15,6 @@
 Condition PeriodicActionTest::fgCalledCond;
 Mutex PeriodicActionTest::fgCalledMutex("PeriodicActionTest");
 
-//---- PeriodicAction ----------------------------------------------------------
 class PeriodicTestAction : public Action
 {
 public:
@@ -27,7 +26,6 @@ public:
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 
-//---- PeriodicActionTest ----------------------------------------------------------------
 long PeriodicActionTest::fgCalled = 0;
 
 PeriodicActionTest::PeriodicActionTest(TString tname) : TestCaseType(tname)

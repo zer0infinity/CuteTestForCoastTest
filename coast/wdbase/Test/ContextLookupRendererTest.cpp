@@ -16,7 +16,6 @@ ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
 }
 
 void ContextLookupRendererTest::ContextCharPtr()
-// test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -35,7 +34,6 @@ void ContextLookupRendererTest::ContextCharPtr()
 }
 
 void ContextLookupRendererTest::ContextLong()
-// test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -54,7 +52,6 @@ void ContextLookupRendererTest::ContextLong()
 }
 
 void ContextLookupRendererTest::ContextDouble()
-// test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -73,7 +70,6 @@ void ContextLookupRendererTest::ContextDouble()
 }
 
 void ContextLookupRendererTest::ContextNull()
-// test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -92,7 +88,6 @@ void ContextLookupRendererTest::ContextNull()
 }
 
 void ContextLookupRendererTest::ContextCharPtrConfigArray()
-// test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -111,7 +106,6 @@ void ContextLookupRendererTest::ContextCharPtrConfigArray()
 }
 
 void ContextLookupRendererTest::ContextCharPtrDef()
-// test the date renderer with simple formatting strings
 {
 	Context fContext;
 
@@ -128,7 +122,6 @@ void ContextLookupRendererTest::ContextCharPtrDef()
 }
 
 void ContextLookupRendererTest::ContextLongDef()
-// test the date renderer with simple formatting strings
 {
 	Context fContext;
 
@@ -145,7 +138,6 @@ void ContextLookupRendererTest::ContextLongDef()
 }
 
 void ContextLookupRendererTest::ContextDoubleDef()
-// test the date renderer with simple formatting strings
 {
 	Context fContext;
 
@@ -162,7 +154,6 @@ void ContextLookupRendererTest::ContextDoubleDef()
 }
 
 void ContextLookupRendererTest::ContextNullDef()
-// test the date renderer with simple formatting strings
 {
 	Context fContext;
 
@@ -179,7 +170,6 @@ void ContextLookupRendererTest::ContextNullDef()
 }
 
 void ContextLookupRendererTest::NestedLookup()
-// test the lookup in nested things
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;
@@ -240,7 +230,6 @@ void ContextLookupRendererTest::NestedLookup()
 } // NestedLookup
 
 void ContextLookupRendererTest::NestedLookupWithoutSlotnames()
-// test the lookup in nested things without using slotnames (positional params)
 {
 	ContextLookupRenderer contextLookupRenderer("");
 	Context fContext;

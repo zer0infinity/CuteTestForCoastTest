@@ -10,7 +10,6 @@
 #include "ConfiguredLookupAdapter.h"
 #include "TestSuite.h"
 
-//---- ConfiguredLookupAdapterTest ----------------------------------------------------------------
 ConfiguredLookupAdapterTest::ConfiguredLookupAdapterTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

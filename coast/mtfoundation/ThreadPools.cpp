@@ -13,7 +13,6 @@
 #include "MT_Storage.h"
 #include <iomanip>
 
-//---- ThreadPoolManager ---------------------------------------------------------
 ThreadPoolManager::ThreadPoolManager(const char *name)
 	: fTerminated(true)
 	, fMutex( name, Coast::Storage::Global() )
@@ -361,7 +360,6 @@ ROAnything ThreadPoolManager::DoGetStartConfig(long i, ROAnything roaThreadArgs)
 	return roaThreadArgs[i];
 }
 
-//--- WorkerThread implementation -------------------------------
 WorkerThread::WorkerThread(const char *name)
 	: Thread(name)
 	, fRefreshAllocator(false)
@@ -400,7 +398,6 @@ void WorkerThread::DoReadyHook(ROAnything)
 	}
 }
 
-//---- WorkerPoolManager ------------------------------------------------
 WorkerPoolManager::WorkerPoolManager(const char *name)
 	: fMutex( name, Coast::Storage::Global() )
 	, fName( name, Coast::Storage::Global() )

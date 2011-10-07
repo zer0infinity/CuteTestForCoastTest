@@ -14,7 +14,6 @@
 
 class RWLock;
 
-//---- RequestBlocker ----------------------------------------------------------
 //!Maintains a state
 //! this is the one and only manager of the servers state, where state may be
 //! requests should be blocked by implementors of request processing or
@@ -31,7 +30,6 @@ public:
 
 	static RequestBlocker *RB();
 
-	//--- module initialization termination ---
 	//!initialize
 	virtual bool Init(const ROAnything config);
 	//!finalize

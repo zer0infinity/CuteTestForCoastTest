@@ -11,7 +11,6 @@
 
 #include "ThreadPools.h"
 
-//---- TestThread ----------------------------------------------------------
 //!utility class - simple Thread to play around - Run returns immediately
 class TestThread: public Thread {
 public:
@@ -21,7 +20,6 @@ public:
 	virtual void Run();
 };
 
-//---- TerminateMeTestThread ----------------------------------------------------------
 //!utility class - simple Thread to play around - Runs until Terminate is called
 class TerminateMeTestThread: public TestThread {
 public:
@@ -81,7 +79,6 @@ protected:
 	class WorkerPoolManagerTest *fTest;
 };
 
-//---- SamplePoolManager ------------------------------------------------
 //! this class demonstrates how to properly subclass WorkerPoolManager
 class SamplePoolManager: public WorkerPoolManager {
 public:

@@ -10,7 +10,6 @@
 #include "Tracer.h"
 #include <ctype.h>
 
-//---- HTTPChunkedStreamBuf ----------------------------------------------------------------
 HTTPChunkedStreamBuf::HTTPChunkedStreamBuf(std::ostream &os, long chunklength, Allocator *alloc)
 	: fAllocator(alloc ? alloc : Coast::Storage::Current())
 	, fStore(chunklength, fAllocator)

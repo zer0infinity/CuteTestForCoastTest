@@ -18,7 +18,6 @@
 //! smallest size of allocation unit: 16UL for the usable memory block
 static const size_t fgMinPayloadSize = 16UL;
 
-//---- PoolAllocator ------------------------------------------
 struct PoolBucket {
 	size_t fSize;
 	size_t fUsableSize;

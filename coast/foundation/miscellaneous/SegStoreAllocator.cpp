@@ -8,7 +8,6 @@
 
 #include "SegStoreAllocator.h"
 
-//---- SegStoreAllocator ----------------------------------------------------------
 void* SegStoreAllocator::Alloc(size_t sz) {
 	AllocPoolMapping::iterator it;
 	CurrentPoolTypePtr aPool;

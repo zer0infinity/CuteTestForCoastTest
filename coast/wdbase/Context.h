@@ -18,7 +18,6 @@ class Page;
 class Server;
 class Socket;
 
-//---- Context -------------------------------------------------------------------
 //!Request Context object that contains read only configuration information and read writable stores
 class Context : public virtual LookupInterface
 {

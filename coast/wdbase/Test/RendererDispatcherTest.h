@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- RendererDispatcherTest ----------------------------------------------------------
-//!TestCases description
 class RendererDispatcherTest : public TestFramework::TestCase
 {
 public:

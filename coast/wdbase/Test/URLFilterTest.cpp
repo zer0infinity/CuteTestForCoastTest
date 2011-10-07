@@ -12,7 +12,6 @@
 #include "Context.h"
 #include "SecurityModule.h"
 
-//---- URLFilterTest ----------------------------------------------------------------
 URLFilterTest::URLFilterTest(TString tname)
 	: TestCaseType(tname)
 {

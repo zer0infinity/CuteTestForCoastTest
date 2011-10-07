@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- OracleParameterMapper ----------------------------------------------------------
 //! Mapper able to handle Oracle specific stored procedure/function parameters
 /*!
  * This mapper can be used for any OracleDAImpl specific query but it is required for PL/SQL queries. To separate
@@ -70,7 +69,6 @@ private:
 	OracleParameterMapper &operator=(const OracleParameterMapper &);
 };
 
-//---- OracleResultMapper ----------------------------------------------------------
 //! Mapper used to process Oracle specific output mappings
 /*!
  * This mapper should be used for any OracleDAImpl.

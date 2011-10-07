@@ -31,7 +31,6 @@ class OraclePooledConnection;
  *  <a href="http://www.ifsoftware.ch">www.ifsoftware.ch</a></center>
  */
 
-//---- OracleDAImpl -----------------------------------------------------------
 //! Oracle DataAccessImpl using OCI
 /*!
  * Oracle specific DataAccessImpl to execute database access based on settings in the Context and configuration

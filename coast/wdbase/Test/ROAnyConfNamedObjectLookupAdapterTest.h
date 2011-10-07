@@ -11,10 +11,8 @@
 
 #include "TestCase.h"
 
-//---- framework classes include -----------------------------------------
 #include "Registry.h"
 
-//---- ROAnyConfNamedObjectLookupAdapter ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class

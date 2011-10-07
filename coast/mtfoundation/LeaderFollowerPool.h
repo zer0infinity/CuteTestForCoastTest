@@ -15,7 +15,6 @@ class Reactor;
 class Acceptor;
 class Socket;
 
-//---- LeaderFollowerPool ----------------------------------------------------------
 //!implements leader follower thread pool; description see POSA2 p.447 ff
 class LeaderFollowerPool: public ThreadPoolManager {
 	typedef Mutex MutexType;

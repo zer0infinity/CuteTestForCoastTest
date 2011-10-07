@@ -13,7 +13,6 @@
 #include "ConnectionPool.h"
 #include <memory>
 
-//---- OracleModule ----------------------------------------------------------
 //! Module to initialize Oracle Data Access
 /*!
  * OracleModule is the module needed to initialize when wanting to access Oracle database server back ends. The

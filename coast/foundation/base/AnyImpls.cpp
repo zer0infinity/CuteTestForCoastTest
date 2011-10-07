@@ -34,8 +34,6 @@
 static const String fgStrEmpty(Coast::Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Coast::Storage::Global()); // avoid temporary
 
-//---- AnyImpl --------------------------------------------------------------
-
 String AnyImpl::ThisToHex(Allocator *a) const {
 	char buf[1+2*sizeof(ptrdiff_t)];
 	static char const *const fmt = (sizeof(this)>4)?"%016tx":"%08tx"; // assume large pointers are 64bit = 8 Bytes large
@@ -68,7 +66,6 @@ AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const {
 	return this->DoDeepClone(pObj, a, xreftable);
 }
 
-//---- AnyLongImpl -----------------------------------------------------------------
 AnyLongImpl::AnyLongImpl(long l, Allocator *a) :
 	AnyImpl(a), fLong(l), fBuf(a) {
 	fBuf.Append(fLong);
@@ -95,7 +92,6 @@ AnyImpl *AnyLongImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 }
 
-//---- AnyObjectImpl -----------------------------------------------------------------
 static const char *gcObjectText = "IFAObject";
 
 const char *AnyObjectImpl::AsCharPtr(const char *, long &buflen) const {
@@ -119,7 +115,6 @@ void AnyObjectImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	v.VisitObject(fObject, this, lIdx, slotname);
 }
 
-//---- AnyDoubleImpl -----------------------------------------------------------------
 AnyDoubleImpl::AnyDoubleImpl(double d, Allocator *a) :
 	AnyImpl(a), fDouble(d), fBuf(64, a) {
 	fBuf.Append(d);
@@ -146,7 +141,6 @@ void AnyDoubleImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	v.VisitDouble(fDouble, this, lIdx, slotname);
 }
 
-//---- AnyBinaryBufImpl -----------------------------------------------------------------
 const char *AnyBinaryBufImpl::AsCharPtr(const char *dflt, long &buflen) const {
 	if (fBuf.Capacity() > 0) {
 		buflen = fBuf.Length();
@@ -165,7 +159,6 @@ AnyImpl *AnyBinaryBufImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 }
 
-//---- AnyStringImpl -----------------------------------------------------------------
 long AnyStringImpl::Compare(const char *other) const {
 	if ( fString.Compare(other) == 0 ) {
 		return 0;
@@ -202,7 +195,6 @@ AnyImpl *AnyStringImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Coast::Storage::Current()) AnyStringImpl(this->fString, a);
 }
 
-//---- AnyKeyAssoc --------------------------------------------------
 class AnyKeyAssoc : public Coast::SegStorAllocatorNewDelete<AnyKeyAssoc> {
 public:
 	AnyKeyAssoc(const Anything &value, const char *key = 0) :
@@ -248,7 +240,6 @@ private:
 	String fKey;
 };//lint !e1510
 
-//---- AnyKeyTable --------------------------------------------------
 #define LOADFACTOR 0.75
 
 long IFANextPrime(long x) {
@@ -428,7 +419,6 @@ void AnyKeyTable::PrintHash() const {
 	SystemLog::WriteToStderr("\n", 1);
 }
 
-//---- AnyIndTable --------------------------------------------------
 AnyIndTable::AnyIndTable(long initCapacity, Allocator *a) :
 	fIndexTable(0), fEmptyTable(0), fCapacity(initCapacity), fSize(0), fAllocator(a) {
 	fEmptyTable = 0;
@@ -594,7 +584,6 @@ void AnyIndTable::PrintTable() const {
 	SystemLog::WriteToStderr(m);
 }
 
-//---- AnyArrayImpl -----------------------------------------------------------------
 static const char *gcArrayText = "AnyArrayImpl";
 
 AnyArrayImpl::AnyArrayImpl(Allocator *a) :

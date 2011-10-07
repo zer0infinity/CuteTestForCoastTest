@@ -10,7 +10,6 @@
 #include "HTTPChunkedOStream.h"
 #include "HTTPStreamStack.h"
 
-//---- HTTPStreamStack ----------------------------------------------------------------
 HTTPStreamStack::HTTPStreamStack(std::ostream &output, bool chunked, bool zipEnc) :
 	fOutput(output),
 	fTopOfStack(&output),

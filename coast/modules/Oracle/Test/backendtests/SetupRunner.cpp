@@ -8,7 +8,6 @@
 
 #include "TestRunner.h"
 
-//--- test cases ---------------------------------------------------------------
 #include "ConfiguredActionTest.h"
 #include "MultiThreadedTest.h"
 

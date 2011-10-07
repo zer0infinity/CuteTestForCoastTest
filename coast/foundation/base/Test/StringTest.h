@@ -12,8 +12,6 @@
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
 
-//---- StringTest -----------------------------------------------------------
-//!testcases for String
 class StringTest : public TestFramework::TestCase
 {
 protected:

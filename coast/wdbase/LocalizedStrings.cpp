@@ -10,7 +10,6 @@
 #include "SystemLog.h"
 #include "SystemFile.h"
 
-//---- LocalizedStrings ---------------------------------------------------------
 LocalizedStrings *LocalizedStrings::fgLocStrings = 0;
 Mutex LocalizedStrings::fgLocMutex("LocalizedStrings");
 
@@ -41,7 +40,6 @@ bool LocalizedStrings::Lookup(const char *key, ROAnything &result, char delim, c
 	return fLocalizedStrings.LookupPath(result, key, delim, indexdelim);
 }
 
-//---- LocalizationModule -----------------------------------------------------------
 RegisterModule(LocalizationModule);
 
 LocalizationModule::LocalizationModule(const char *name) : WDModule(name)

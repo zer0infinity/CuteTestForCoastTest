@@ -16,7 +16,6 @@
 #include "SecurityModule.h"
 #include "StringStream.h"
 
-//---- SessionInfoRenderer ----------------------------------------------------------------
 class SessionInfoRenderer : public Renderer
 {
 public:
@@ -40,7 +39,6 @@ void SessionInfoRenderer::RenderAll(std::ostream &reply, Context &c, const ROAny
 	reply << "/delayed " << ROAnything(c.GetQuery())["delayedIndex"].AsLong(-1) << std::endl;
 }
 
-//---- LoginAction ----------------------------------------------------------------------
 //:simple login action
 class LoginAction : public Action
 {
@@ -73,7 +71,6 @@ bool LoginAction::DoAction(String &action, Context &c)
 	return true;
 }
 
-//---- TransitionTests ----------------------------------------------------------------
 TransitionTests::TransitionTests(TString tname)
 	: TestCaseType(tname)
 {

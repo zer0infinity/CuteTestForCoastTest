@@ -49,7 +49,6 @@ public:
 	}
 };
 
-//---- WDModuleTest ----------------------------------------------------------------
 WDModuleTest::WDModuleTest(TString tname) : TestCaseType(tname)
 {
 }

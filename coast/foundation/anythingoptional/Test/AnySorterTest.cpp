@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "AnySorter.h"
 
-//---- AnySorterTest ---------------------------------------------------------
 AnySorterTest::AnySorterTest (TString tname)
 	: TestCaseType(tname)
 {

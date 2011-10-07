@@ -12,7 +12,6 @@
 #include "TestCase.h"
 #include "Context.h"
 
-//---- LocalizationUtilsTest -----------------------------------------------------------
 class LocalizationUtilsTest : public TestFramework::TestCase
 {
 public:

@@ -14,7 +14,6 @@ using namespace Coast;
 #include "DiffTimer.h"
 #include "SystemLog.h"
 
-//---- SystemBaseTest --------------------------------------------------------
 SystemBaseTest::SystemBaseTest(TString tname)
 	: TestCaseType(tname)
 {

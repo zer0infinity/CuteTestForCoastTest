@@ -9,10 +9,6 @@
 #ifndef _ThreadPools_IPP
 #define _ThreadPools_IPP
 
-//--- project modules used -----------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-
 //--- c-modules used -----------------------------------------------------------
 
 template< class WorkerParamType >

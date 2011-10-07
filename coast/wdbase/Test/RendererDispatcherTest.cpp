@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "ServiceDispatcher.h"
 
-//---- RendererDispatcherTest ----------------------------------------------------------------
 RendererDispatcherTest::RendererDispatcherTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(RendererDispatcherTest.Ctor);

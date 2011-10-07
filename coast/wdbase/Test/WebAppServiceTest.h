@@ -11,7 +11,6 @@
 
 #include "FoundationTestTypes.h"
 
-//---- WebAppServiceTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
 further explanation of the purpose of the class

@@ -15,8 +15,6 @@
 class Context;
 class SessionListManagerTest;
 
-//---- TestSession ----------------------------------------------------------
-//!test the notify protocol of session
 class TestSession : public Session
 {
 public:
@@ -33,8 +31,6 @@ private:
 
 };
 
-//---- SessionFactory -----------------------------------------------------------
-//!test the factory configuration of SessionListManager
 class TestSessionFactory : public SessionFactory
 {
 public:

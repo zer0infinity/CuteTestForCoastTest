@@ -12,7 +12,6 @@
 #include "AnyIterators.h"
 #include "Tracer.h"
 
-//---- StatementDescriptionTest --------------------------------------------------------
 StatementDescriptionTest::StatementDescriptionTest(TString tname)
 	: TestCaseType(tname)
 {

@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- LookupRenderer -------------------------------------------------------
 //! Abstract base class for LookupRenderers
 /*!
  \par Configuration
@@ -68,7 +67,6 @@ protected:
 	virtual ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim) = 0;
 };
 
-//---- ContextLookupRenderer -------------------------------------------------------
 //! Concrete Renderer to lookup and renderer things from Context
 /*!
  \par Configuration
@@ -104,7 +102,6 @@ protected:
 	ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
 };
 
-//---- StoreLookupRenderer -------------------------------------------------------
 //! Concrete Renderer to lookup and renderer things from TempStore
 /*!
  \par Configuration
@@ -139,7 +136,6 @@ protected:
 	ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
 };
 
-//---- QueryLookupRenderer -------------------------------------------------------
 //! Concrete Renderer to lookup and renderer things from Query
 /*!
  \par Configuration

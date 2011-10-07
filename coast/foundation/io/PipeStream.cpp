@@ -20,14 +20,12 @@ using namespace Coast;
 #include <io.h>
 #endif
 
-//---- PipeStream -------------------------------------------------------------------
 PipeStream::PipeStream(Pipe *s, long timeout, long sockbufsz)
 	: iosCoastPipe(s, timeout, sockbufsz, std::ios::in | std::ios::out)
 	, std::iostream(&fPipeBuf)
 {
 }
 
-//---- PipeTimeoutModifier -------------------------------------------------------------------
 PipeTimeoutModifier::PipeTimeoutModifier(PipeStream *ioStream, long timeout)
 	: fStream(ioStream)
 {
@@ -40,7 +38,6 @@ PipeTimeoutModifier::~PipeTimeoutModifier()
 	fStream->rdbuf()->SetTimeout(fOriginalTimeout);
 }
 
-//---- PipeStreamBuf -------------------------------------------------------------------
 PipeStreamBuf::PipeStreamBuf(Pipe *myPipe, long timeout, long sockbufsz, int mode)
 	: fReadBufStorage(mode &std::ios::in ? sockbufsz : 0L)
 	, fWriteBufStorage(mode &std::ios::out ? sockbufsz : 0L)

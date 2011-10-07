@@ -11,7 +11,6 @@
 #include "StringStream.h"
 #include "Policy.h"
 
-//---- RenderersModule -----------------------------------------------------------
 RegisterModule(RenderersModule);
 
 bool RenderersModule::Init(const ROAnything config)
@@ -34,7 +33,6 @@ bool RenderersModule::Finis()
 	return StdFinis("Renderer", "Renderers");
 }
 
-//---- Renderer ---------------------------------------------------------
 RegisterRenderer(Renderer);
 RegCacheImpl(Renderer);	// FindRenderer()
 

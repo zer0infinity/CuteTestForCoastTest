@@ -9,7 +9,6 @@
 #include "TimeStampRenderer.h"
 #include "TimeStamp.h"
 
-//---- TimeStampRenderer ---------------------------------------------------------------
 RegisterRenderer(TimeStampRenderer);
 
 TimeStampRenderer::TimeStampRenderer(const char *name) : Renderer(name) { }

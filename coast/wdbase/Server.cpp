@@ -27,7 +27,6 @@ using namespace Coast;
 #include <io.h>
 #endif
 
-//---- ServerReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
 class ServerReInitInstaller : public InstallerPolicy
 {
@@ -44,7 +43,6 @@ protected:
 	}
 };
 
-//---- ServerReInitTerminator ------------------------------------------------------
 class ServerReInitTerminator : public TerminationPolicy
 {
 public:
@@ -60,7 +58,6 @@ protected:
 	}
 };
 
-//---- ServersModule -----------------------------------------------------------
 RegisterModule(ServersModule);
 
 Server *ServersModule::fgServerForReInit = 0;
@@ -141,7 +138,6 @@ bool ServersModule::ResetInit(const ROAnything config)
 	return false;
 }
 
-//---- Server -------------------------------------------------------------------------
 RegisterServer(Server);
 
 Mutex Server::fgReInitMutex("Reinit");
@@ -398,8 +394,6 @@ bool Server::IsReady(bool ready, long timeout)
 	return false;
 }
 
-//---- process a request ---------------------------------------------
-
 bool Server::ProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Server.ProcessRequest);
@@ -634,7 +628,6 @@ void Server::AddStatGatherer2Observe(StatGatherer *sg)
 	}
 }
 
-//---- MasterServer -------------------------------------------------------------------
 RegisterServer(MasterServer);
 
 int MasterServer::DoInit()
@@ -812,7 +805,6 @@ int MasterServer::DoTerminate(int val)
 	return Server::DoTerminate(val);
 }
 
-//---- ServerThread ------------------------------------------------------------
 ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)

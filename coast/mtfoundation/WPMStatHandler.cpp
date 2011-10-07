@@ -11,7 +11,6 @@
 
 static DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;
 
-//---- WPMStatHandler ----------------------------------------------------------------
 WPMStatHandler::WPMStatHandler(long poolSize)
 	: StatEvtHandler()
 	, fPoolSize(poolSize)

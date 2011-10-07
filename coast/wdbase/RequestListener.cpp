@@ -12,7 +12,6 @@
 #include "Policy.h"
 #include "Socket.h"
 
-//---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
 class AcceptorFactoriesReInitInstaller: public InstallerPolicy {
 public:
@@ -28,7 +27,6 @@ protected:
 	}
 };
 
-//---- AcceptorFactoriesReInitTerminator ------------------------------------------------------
 class AcceptorFactoriesReInitTerminator: public TerminationPolicy {
 public:
 	AcceptorFactoriesReInitTerminator(const char *category) :
@@ -42,7 +40,6 @@ protected:
 		return true;
 	}
 };
-//---- AcceptorFactoriesModule -----------------------------------------------------------
 RegisterModule(AcceptorFactoriesModule);
 
 AcceptorFactoriesModule::AcceptorFactoriesModule(const char *name) :

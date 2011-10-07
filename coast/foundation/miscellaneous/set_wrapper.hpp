@@ -98,7 +98,6 @@ protected:
 };
 // END LOKI Visitor Part
 
-//---- set_wrapper ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
 further explanation of the purpose of the class

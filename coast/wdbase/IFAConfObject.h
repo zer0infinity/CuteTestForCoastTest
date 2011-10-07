@@ -17,7 +17,6 @@ class Registry;
 class InstallerPolicy;
 class TerminationPolicy;
 
-//---- RegisterableObject ----------------------------------------------------------
 //!defines api to support registerable objects; objects registered with a name in a category
 class RegisterableObject: public NamedObject, public Coast::AllocatorNewDelete {
 	friend class WDModuleTest;
@@ -165,7 +164,6 @@ protected:
 		return catMember;																		\
 	}
 
-//---- NotCloned ----------------------------------------------------------
 //!RegisterableObject as singleton; only aliases to the same object are installed
 //! NotCloned provides a special clone method that just returns this
 //! therefore it installes simple aliases ( entries in the registry, that
@@ -188,7 +186,6 @@ public:
 	}
 };
 
-//---- ConfNamedObject ----------------------------------------------------------
 /*! configurable object; api for configuration support with default implementation
 ConfNamedObject provides a protocol for handling configuration data
 it already provides a default implementation that is sufficient
@@ -313,7 +310,6 @@ protected:
 	}
 };
 
-//---- HierarchConfNamed ----------------------------------------------------------
 //!configurable object; api for configuration support with hierachical object relationships (inheritance)
 //!implements inheritance relationship of configurations through super objects
 class HierarchConfNamed: public ConfNamedObject {

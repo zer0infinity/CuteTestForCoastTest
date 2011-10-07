@@ -11,7 +11,6 @@
 
 #include "STLStorage.h"//lint !e537
 
-//---- STL_pool_allocator ----------------------------------------------------------
 namespace STLStorage
 {
 	// use pool_allocator type for std::list container types which allocate elements one by one

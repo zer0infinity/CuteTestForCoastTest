@@ -13,7 +13,6 @@
 
 class AppBooterTest;
 
-//---- SimpleTestApp -----------------------------------------------------------
 //! test application to test sequencing of init and terminate calls by AppBooter
 class SimpleTestApp : public Application
 {

@@ -11,7 +11,6 @@
 
 #include "Context.h"
 
-//--- RequestProcessor ----------------------------------------------------------
 //! Policy object shared by all threads to handle a request message;
 class RequestProcessor : public RegisterableObject
 {

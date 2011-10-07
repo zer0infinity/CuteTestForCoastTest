@@ -11,7 +11,6 @@
 
 #include "FoundationTestTypes.h"
 
-//---- PipeExecutorTest ----------------------------------------------------------
 //!
 class PipeExecutorTest : public TestFramework::TestCaseWithConfig
 {

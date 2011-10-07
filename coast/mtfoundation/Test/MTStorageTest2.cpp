@@ -14,7 +14,6 @@
 #include <io.h>
 #endif
 
-//--- TestWorkerThread --------------------------------------------------
 class TestWorkerThread: public Thread {
 protected:
 	TestWorkerThread(Allocator *a) :
@@ -53,7 +52,6 @@ void DataProviderThread::Run() {
 	fData["Sub"] = b;
 }
 
-//---- MTStorageTest2 ----------------------------------------------------------------
 MTStorageTest2::MTStorageTest2(TString tname) :
 	TestCaseType(tname), fGlobal(0), fPool(0) {
 	StartTrace1(MTStorageTest2.Ctor, "ThrdId: " << Thread::MyId());

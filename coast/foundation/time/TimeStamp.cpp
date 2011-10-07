@@ -23,7 +23,6 @@ static const int WeekDayMonthCorrectLeap[] = { 6, 2, 3, 6, 1, 4, 6, 2, 5, 0, 3, 
 static const char *Monthes[] = { "---", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 static const char *Days[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 
-//---- TimeStamp ----------------------------------------------------------------
 TimeStamp::TimeStamp():fTimeStruct()
 {
 	StartTrace1(TimeStamp.TimeStamp, "empty");

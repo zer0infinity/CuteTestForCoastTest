@@ -14,7 +14,6 @@
 
 class Context;
 
-//---- PeriodicActionTest ----------------------------------------------------------
 //!tests for PeriodicAction thread
 class PeriodicActionTest : public TestFramework::TestCase
 {

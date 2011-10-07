@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "Socket.h"
 
-//---- AcceptorTest ----------------------------------------------------------------
 AcceptorTest::AcceptorTest(TString tname)
 	: TestCaseType(tname)
 {

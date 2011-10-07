@@ -26,7 +26,6 @@ public:
 	virtual bool Finis();
 };
 
-//---- Role -------------------------------------------------------------------
 /*!abstraction of authentication level and manager of the sites possible navigation paths for this level
 A role represents the <b>authentication level</b> a session has.
 A request is always checked against the necessary authentication level a session must have.

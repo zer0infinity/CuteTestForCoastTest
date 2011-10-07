@@ -11,7 +11,6 @@
 #include "Renderer.h"
 #include "StringStream.h"
 
-//---- BasicRendererTest ----------------------------------------------------------------
 BasicRendererTest::BasicRendererTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(BasicRendererTest.Ctor);

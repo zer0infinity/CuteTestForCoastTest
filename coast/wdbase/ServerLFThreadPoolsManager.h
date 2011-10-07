@@ -12,8 +12,6 @@
 #include "ServerPoolsManagerInterface.h"
 
 class LFListenerPool;
-//---- ServerLFThreadPoolsManager -----------------------------------------------------------
-
 class ServerLFThreadPoolsManager: public ServerPoolsManagerInterface
 {
 public:

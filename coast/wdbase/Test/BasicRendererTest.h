@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- BasicRendererTest ----------------------------------------------------------
-//!Test the core functionality of base class Renderer
 class BasicRendererTest : public TestFramework::TestCase
 {
 public:

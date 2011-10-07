@@ -11,7 +11,6 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- ConnectorArgsTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
 further explanation of the purpose of the class

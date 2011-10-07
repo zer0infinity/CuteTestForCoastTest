@@ -12,7 +12,6 @@
 #include "Tracer.h"
 #include <stdlib.h>
 
-//---- URLEncoderTest ----------------------------------------------------------------
 Test *URLEncoderTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;

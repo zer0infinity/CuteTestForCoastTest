@@ -15,7 +15,6 @@
 #include <io.h>
 #endif
 
-//---- ConnectorTest ----------------------------------------------------------------
 ConnectorTest::ConnectorTest(TString tname)
 	: TestCaseType(tname)
 {

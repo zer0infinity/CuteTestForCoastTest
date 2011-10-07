@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- TestRenderer ----------------------------------------------------------
 //! <B>Do not delete this file! It is used to create a test library which
 //! is used to test library loading (AppBootLoader).</B>
 /*!

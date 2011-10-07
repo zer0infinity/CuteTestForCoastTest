@@ -12,7 +12,6 @@
 
 using namespace Coast;
 
-//---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)
 {

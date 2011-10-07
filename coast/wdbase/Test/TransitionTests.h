@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- TransitionTests ----------------------------------------------------------
-//!TestCases for Coast state transitions
 class TransitionTests : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

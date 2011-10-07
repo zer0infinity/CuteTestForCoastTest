@@ -12,7 +12,6 @@
 #include "LookupInterface.h"
 #include "Anything.h"
 
-//---- newclass ----------------------------------------------------------
 //! LookupInterface with configured default
 /*!
 Param1		ROAnything containing the configuration

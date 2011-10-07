@@ -22,7 +22,6 @@ namespace Coast
 	namespace Oracle
 	{
 
-//---- ConnectionPool ----------------------------------------------------------------
 		ConnectionPool::ConnectionPool( const char *name ) :
 			fStructureMutex( String( name ).Append( "StructureMutex" ), Coast::Storage::Global() ), fListOfConnections(
 				Coast::Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)

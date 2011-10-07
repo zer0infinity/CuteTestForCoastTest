@@ -51,7 +51,6 @@ void RBRunner::Run()
 	}
 }
 
-//---- RequestBlockerTest ----------------------------------------------------------------
 RequestBlockerTest::RequestBlockerTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(RequestBlockerTest.Ctor);

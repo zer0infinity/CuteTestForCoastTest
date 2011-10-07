@@ -12,7 +12,6 @@
 #include "PageNameRenderer.h"
 #include "StringStream.h"
 
-//---- PageNameRendererTest ----------------------------------------------------------------
 PageNameRendererTest::PageNameRendererTest(TString tname)
 	: TestCaseType(tname)
 {

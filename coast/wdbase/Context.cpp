@@ -19,7 +19,6 @@
 
 const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -->");
 
-//---- Context ------------------------------------------------------------------
 Context::Context() :
 	fSession(0), fSessionStoreGlobal(Anything::ArrayMarker(), Coast::Storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
 			Coast::Storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fRequest(Anything::ArrayMarker()), fSocket(0),

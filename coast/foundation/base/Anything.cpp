@@ -54,7 +54,6 @@ long IFAHash(const char *key, long &len, char stop1, char stop2)
 	return h;
 }
 
-//---- InputContext -------------------------------------------------------------
 class InputContext
 {
 public:
@@ -738,7 +737,6 @@ private:
 	InputContext &fContext;
 };
 
-//---- Anything ---------------------------------------------------------------------
 Anything::Anything(Allocator *a) 		: fAnyImp(0)
 {
 	SetAllocator(a);
@@ -1631,8 +1629,6 @@ Anything::iterator Anything::do_insert(iterator pos, size_type n, const value_ty
 	return pos;
 }
 
-//---- ROAnything ---------------------------------------------------------------------
-
 ROAnything::ROAnything() : fAnyImp(0)
 {
 }
@@ -1965,7 +1961,6 @@ void ROAnything::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	}
 }
 
-//---- InputContext -----------------------------------------------------------------
 void InputContext::SkipToEOL()
 {
 	char c = ' ';
@@ -2249,7 +2244,6 @@ void AnythingParser::Error(String const &msg, String const &toktext)
 	SYSWARNING(m);
 }
 
-//---------------- test case support ------------
 String Anything::CompareForTestCases(const ROAnything &expected, const ROAnything &actual, bool &result)
 {
 	String sexp, act;
@@ -2264,7 +2258,6 @@ String Anything::CompareForTestCases(const ROAnything &expected, const ROAnythin
 	return retval;
 }
 
-//-- SlotFinder ---------------------------------------------------------------
 void SlotFinder::Operate(Anything &source, Anything &dest, const Anything &config)
 {
 	StartTrace(SlotFinder.Operate);
@@ -2374,8 +2367,6 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 	return false;
 }
 
-//-- SlotPutter ---------------------------------------------------------------
-
 void SlotPutter::Operate(Anything &source, Anything &dest, const Anything &config)
 {
 	StartTrace(SlotPutter.Operate);
@@ -2425,8 +2416,6 @@ void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, 
 	}
 	SubTraceAny(TraceAny, dest, "destination after");
 }
-
-//-- SlotCleaner ---------------------------------------------------------------
 
 void SlotCleaner::Operate(Anything &dest, const Anything &config)
 {
@@ -2488,7 +2477,6 @@ void SlotCleaner::Operate(Anything &dest, String slotName, bool removeLast, char
 	}
 }
 
-//-- SlotCopier ---------------------------------------------------------------
 void SlotCopier::Operate(Anything &source, Anything &dest, const Anything &config, char delim, char indexdelim)
 {
 	StartTrace(SlotCopier.Operate);
@@ -2512,7 +2500,6 @@ void SlotCopier::Operate(Anything &source, Anything &dest, const ROAnything &con
 	}
 }
 
-//----- SlotnameSorter -------------------------------------
 void SlotnameSorter::Sort(Anything &toSort, EMode mode)
 {
 	StartTrace(SlotnameSorter.Sort);

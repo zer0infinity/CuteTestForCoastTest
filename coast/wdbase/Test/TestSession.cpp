@@ -10,8 +10,6 @@
 #include "SessionListManagerTest.h"
 #include "Tracer.h"
 
-//---- TestSession ----------------------------------------------------------
-//:test the notify protocol of session
 TestSession::TestSession(const char *name, Context &ctx, SessionListManagerTest *slmt)
 	: 	Session(name),
 		fTest(slmt)
@@ -30,9 +28,7 @@ void TestSession::Notify(Session::ESessionEvt evt, Context &ctx)
 	fTest->NotifyCalled(evt, ctx);
 }
 
-//---- SessionFactory -----------------------------------------------------------
 RegisterSessionFactory(TestSessionFactory);
-//:test the factory configuration of SessionListManager
 TestSessionFactory::TestSessionFactory(const char *testSessionFactoryName, SessionListManagerTest *slmt)
 	:	SessionFactory(testSessionFactoryName),
 		fTest(slmt)

@@ -10,7 +10,6 @@
 #include "AnythingUtils.h"
 #include "Tracer.h"
 
-//---- TimeLoggingModule ---------------------------------------------------------------
 RegisterModule(TimeLoggingModule);
 
 bool TimeLoggingModule::fgDoTiming = false;
@@ -93,7 +92,6 @@ bool TimeLoggingModule::ResetFinis(const ROAnything config)
 	return WDModule::ResetFinis(config);
 }
 
-//---- TimeLoggerEntry --------------------------------------------------------------------------
 TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution)
 	: fpLogger(0)
 {
@@ -105,7 +103,6 @@ TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String 
 TimeLoggerEntry::~TimeLoggerEntry()
 {}
 
-//---- TimeLogger --------------------------------------------------------------------------
 TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg, Context &ctx, TimeLogger::eResolution aResolution)
 	: fMsgStr(msg)
 	, fpSection( pSection )

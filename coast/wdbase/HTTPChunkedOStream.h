@@ -11,8 +11,6 @@
 
 #include "StringStream.h"
 
-//---- HTTPChunkedStreamBuf --------------------------------------------------------------
-
 //! Streambuffer for HTTPChunkedOStream.
 class HTTPChunkedStreamBuf : public streambuf
 {
@@ -66,8 +64,6 @@ private:
 	long fBufSize;
 };
 
-//---- HTTPChunkedStreamBase --------------------------------------------------------------
-
 //! Base class for HTTPChunkedStream classes (see RFC 2068 sec 3.6).
 class HTTPChunkedStreamBase : virtual public std::ios
 {
@@ -97,8 +93,6 @@ public:
 protected:
 	HTTPChunkedStreamBuf fBuf;
 };
-
-//---- HTTPChunkedOStream --------------------------------------------------------------
 
 //! Output stream filter to generate http chunked encoding (see RFC 2068 sec 3.6).
 //! Can be used if the content length of the generated server output is not known in advanced,

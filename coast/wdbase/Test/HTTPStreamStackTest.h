@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- HTTPStreamStackTest ----------------------------------------------------------
-//! TestCases description
 class HTTPStreamStackTest : public TestFramework::TestCase
 {
 public:

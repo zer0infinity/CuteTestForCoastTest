@@ -13,7 +13,6 @@
 #include "StringIterator.h"
 #include <stdexcept>
 
-//---- String --------------------------------------------------------------
 //! simple mt-safe string handling class
 /*! class that eases use of strings and its memory management, a notorious source of errors in c and c++ */
 class String
@@ -541,7 +540,6 @@ protected:
 	friend class StringTest;
 };
 
-//---- StringTokenizer ---------------------------------------------------------
 //! an efficient implementation of tokenization with one delimiter
 class StringTokenizer
 {
@@ -569,7 +567,6 @@ protected:
 	friend class StringTokenizerTest;
 };
 
-//---- StringTokenizer ---------------------------------------------------------
 //! more flexible but slower implementation of tokenization
 //! allows several delimiting characters, instead of one
 class StringTokenizer2
@@ -601,8 +598,6 @@ protected:
 	long fPos;
 	friend class StringTokenizer2Test;
 };
-
-//---- inlines -----------------------------------------------------------------
 
 #define NotNull(s) ((s) ? (s) : "null")
 #define NotNullStr(s) ((s.Length() > 0) ? s.cstr() : "null")

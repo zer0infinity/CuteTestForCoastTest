@@ -21,7 +21,6 @@ class AcceptorCallBack;
 struct 	 sockaddr_in;
 int closeSocket(int sd);
 
-//--- Socket --------------------------------------------------------------------------
 //!represents a read/write socket end point that is connected
 //! it is a <B>communication end point</B> for read/write sockets.
 //! it has an api that allows the manipulation of the socket and
@@ -330,7 +329,6 @@ protected:
 	friend class ConnectorTest;
 };
 
-//--- ConnectorArgs-------------------------------------------------------------------------
 //! DataObject to hold the plenty arguments needed for Connector derived classes.
 //! This class  unlike ConnectorParameters does not "hold" or "take" a Context, which is crucial
 //! for independent project structures.
@@ -358,7 +356,6 @@ private:
 	long fConnectTimeout;
 };
 
-//--- Connector ---------------------------------------------------------------------------
 //!defines the active side socket factory that establishes a socket connection
 //! It holds an active end point specification for a socket
 //! It connects to the server on the other side creating a socket connection that's read/writeable
@@ -446,7 +443,6 @@ private:
 	Connector &operator=(const Connector &);
 };
 
-//--- Acceptor ---------------------------------------------------------------------------
 //!represents a listener socket end point that listens on a server port for incoming connections
 //! it implements the socket protocol for listener sockets and runs the accept loop
 //! it is usually started in its own thread
@@ -531,7 +527,6 @@ private:
 	Acceptor &operator=(const Acceptor &);
 };
 
-//--- CallBackFactory ---------------------------------------------------------------------------
 //!factory object that creates AcceptorCallbacks on demand
 class CallBackFactory
 {
@@ -558,7 +553,6 @@ private:
 	CallBackFactory &operator=(const CallBackFactory &);
 };
 
-//--- AcceptorCallBack ---------------------------------------------------------------------------
 //!callback object that calls the client of the accept loop back when a connection has suceeded
 //!this class is abstract and must be subclassed to provide request handling functionality
 //!CallBack provides the Socket object resulting from the accepted connection

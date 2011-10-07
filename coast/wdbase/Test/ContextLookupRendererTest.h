@@ -13,8 +13,6 @@
 #include "StringStream.h"
 #include "Anything.h"
 
-//---- ContextLookupRendererTest -----------------------------------------------------------
-
 class ContextLookupRendererTest : public TestFramework::TestCase
 {
 public:

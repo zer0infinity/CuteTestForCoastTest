@@ -12,8 +12,6 @@
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
 
-//---- StringTokenizer -----------------------------------------------------------
-//!testcases for StringTokenizer2
 class StringTokenizer2Test : public TestFramework::TestCase
 {
 protected:

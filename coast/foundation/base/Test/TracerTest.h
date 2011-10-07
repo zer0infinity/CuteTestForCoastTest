@@ -11,8 +11,6 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- TracerTest ----------------------------------------------------------
-//!testcases for Tracer class
 class TracerTest : public TestFramework::TestCase
 {
 public:

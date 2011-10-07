@@ -11,7 +11,6 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-//---- GenericXMLParserTest ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class

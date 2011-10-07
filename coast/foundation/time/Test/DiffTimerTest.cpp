@@ -14,7 +14,6 @@
 
 using namespace Coast;
 
-//---- DiffTimerTest ----------------------------------------------------------------
 DiffTimerTest::DiffTimerTest(TString tname) : TestCaseType(tname)
 {
 }

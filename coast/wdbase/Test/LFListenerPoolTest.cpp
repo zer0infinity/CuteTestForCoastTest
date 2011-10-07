@@ -13,8 +13,6 @@
 #include "WPMStatHandler.h"
 #include "RequestProcessor.h"
 
-//--- TestRequestReactor ----
-//:test driver for lf pool testing
 class TestProcessor: public RequestProcessor
 {
 public:
@@ -44,7 +42,6 @@ void TestProcessor::ProcessRequest(Context &ctx)
 	fTest->EventProcessed(ctx.GetSocket());
 }
 
-//---- LFListenerPoolTest ----------------------------------------------------------------
 LFListenerPoolTest::LFListenerPoolTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

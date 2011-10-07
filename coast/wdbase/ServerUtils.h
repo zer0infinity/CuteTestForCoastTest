@@ -18,7 +18,6 @@ class RequestThreadsManager;
 class Anything;
 class ROAnything;
 
-//---- InterruptHandler ------------------------------------------------------------------
 #if defined(WIN32)
 // implementation for the WIN32 interrupthandler
 // which is quite different from the solaris one
@@ -55,7 +54,6 @@ private:
 };
 #endif
 
-//---- HandleRequest -----------------------------------------------
 /*!handles request execution in its own thread; it handles at most one request at a time
 wraps RequestProcessor with a thread of control; it implements the worker metapher
 with the setup; work and ready cycle */
@@ -87,7 +85,6 @@ protected:
 	long fRequestNumber;	// the sequence number of this request
 };
 
-//---- RequestThreadsManager ------------------------------------------------
 class RequestThreadsManager : public WorkerPoolManager
 {
 public:

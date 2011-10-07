@@ -11,7 +11,6 @@
 
 #include "FoundationTestTypes.h"
 
-//---- ConfiguredLookupAdapterTest ----------------------------------------------------------
 //! LookupAdapter providing a configured default
 /*!
 The first argument is the "Config" to look up. If the lookup fails,

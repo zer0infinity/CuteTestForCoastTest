@@ -15,7 +15,6 @@
 class Server;
 class RequestProcessor;
 
-//---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
 class ServerPoolsManagerInterfacesModule: public WDModule {
 public:
 	ServerPoolsManagerInterfacesModule(const char *name) :
@@ -26,7 +25,6 @@ public:
 	virtual bool ResetFinis(const ROAnything config);
 };
 
-//---- ServerThreadPoolsManager -----------------------------------------------------------
 class ServerPoolsManagerInterface: public ConfNamedObject {
 	virtual RequestProcessor* DoGetRequestProcessor() = 0;
 

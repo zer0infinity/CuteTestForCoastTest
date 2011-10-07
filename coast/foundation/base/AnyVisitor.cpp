@@ -8,7 +8,6 @@
 
 #include "AnyVisitor.h"
 
-//---- AnyVisitor ----------------------------------------------------------------
 void	AnyVisitor::VisitArray(const ROAnything value, const AnyImpl *id, long index, const char *slotname)
 {
 	// template method for convenient forward iteration when visiting

@@ -12,7 +12,6 @@
 #include "ITOString.h"//lint !e537
 #include "PipeStream.h"//lint !e537
 
-//--- Pipe --------------------------------------------------------------------------
 /*! represents a read/write pipe end point that is connected
 It is a <B>communication end point</B> for read/write (anonymous) pipes.
 It has an api that allows the manipulation of the pipe and the generation of an iostream which is a PipeStream. */

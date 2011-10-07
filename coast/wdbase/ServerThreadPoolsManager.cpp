@@ -22,7 +22,6 @@ public:
 protected:
 	RequestThreadsManager *fWorkerPool;
 };
-//---- ServerThreadPoolsManager -----------------------------------------------------------
 RegisterServerPoolsManagerInterface(ServerThreadPoolsManager);
 
 ServerThreadPoolsManager::ServerThreadPoolsManager(const char *ServerThreadPoolsManagerName) :
@@ -192,7 +191,6 @@ long ServerThreadPoolsManager::GetThreadPoolSize() {
 	return 25;
 }
 
-//---- ServerCallBack ------------------------------------------------------------------
 class ServerCallBack: public AcceptorCallBack {
 public:
 	ServerCallBack(RequestThreadsManager *poolManager) :

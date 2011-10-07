@@ -11,7 +11,6 @@
 
 #include "ThreadPools.h"
 
-//---- TestWorker -----------------------------------------------
 class TestWorker : public WorkerThread
 {
 public:
@@ -38,7 +37,6 @@ protected:
 	class ThreadedTimeStampTest *fTest;
 };
 
-//---- SamplePoolManager ------------------------------------------------
 //! this class demonstrates how to properly subclass WorkerPoolManager
 class SamplePoolManager : public WorkerPoolManager
 {

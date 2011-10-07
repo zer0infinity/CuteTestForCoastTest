@@ -25,7 +25,6 @@ public:
 	virtual bool Finis();
 };
 
-//---- Action ----------------------------------------------------------------------
 //! MultiPurpose Do Something building block to script application behaviour
 class Action: public NotCloned {
 public:

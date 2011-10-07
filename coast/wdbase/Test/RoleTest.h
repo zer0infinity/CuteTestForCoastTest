@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- RoleTest ----------------------------------------------------------
-//!TestCases for the Registry class
 class RoleTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

@@ -15,7 +15,6 @@
 class String;
 class Anything;
 
-//---- AnySorter ---------------------------------------------------------------------
 //! Sorts Array-Anything
 class AnySorter
 {

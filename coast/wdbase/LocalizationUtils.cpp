@@ -15,7 +15,6 @@ using namespace Coast;
 Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", Coast::Storage::Global());
 bool	LocalizationUtils::fgLanguageMapIsInit = false;
 Anything LocalizationUtils::fgLanguageMap(Coast::Storage::Global());
-//---- LocalizationUtils ----------------------------------------------------------------
 const char *LocalizationUtils::Eval(const char *lang, const ROAnything &config)
 {
 	const char *string = 0;

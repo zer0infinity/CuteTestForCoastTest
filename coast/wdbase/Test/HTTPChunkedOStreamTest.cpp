@@ -11,7 +11,6 @@
 #include "TestSuite.h"
 #include "Tracer.h"
 
-//---- HTTPChunkedOStreamTest ----------------------------------------------------------------
 HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPChunkedOStreamTest.Ctor);

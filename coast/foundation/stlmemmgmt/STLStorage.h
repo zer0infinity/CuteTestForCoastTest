@@ -36,7 +36,6 @@
 #define _Trace(msg);
 #endif
 
-//---- STLStorage ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
 further explanation of the purpose of the class

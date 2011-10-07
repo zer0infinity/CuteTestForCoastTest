@@ -11,7 +11,6 @@
 #include "TestSuite.h"
 #include "Anything.h"
 
-//---- TracerTest ----------------------------------------------------------------
 void TracerTest::setUp() {
 #ifdef COAST_TRACE
 	Tracer::ExchangeConfigFile(name());

@@ -11,7 +11,6 @@
 
 #include "IFAConfObject.h"
 
-//---- InstallerPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
 class InstallerPolicy {
 	InstallerPolicy();
@@ -38,7 +37,6 @@ protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) = 0;
 };
 
-//---- TerminationPolicy ----------------------------------------------------------------
 /*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
 class TerminationPolicy {
 	TerminationPolicy();
@@ -64,7 +62,6 @@ protected:
 	virtual bool DoTerminate(Registry *r) = 0;
 };
 
-//---- AliasInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
 class AliasInstaller: public InstallerPolicy {
 public:
@@ -76,7 +73,6 @@ protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
 };
 
-//---- AliasTerminator ------------------------------------------------------
 class AliasTerminator: public TerminationPolicy {
 public:
 	AliasTerminator(const char *category) :
@@ -87,7 +83,6 @@ protected:
 	virtual bool DoTerminate(Registry *r);
 };
 
-//---- HierarchyInstaller ------------------------------------------------------
 /*! hierarchyInstaller installs objects that are connected by a super relation into the registry */
 class HierarchyInstaller: public InstallerPolicy {
 public:

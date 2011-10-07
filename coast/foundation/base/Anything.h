@@ -19,7 +19,6 @@ class IFAObject;
 class AnyVisitor;
 class AnyComparer;
 
-//---- Anything --------------------------------------------------------------
 /*! Flexible data container that can store any basic data type and combines hashtable and array behaviour
 Anything define an easy to use data structure that comprehends built in data structures, arrays
 and dictionaries (associative access aka Hashtable). It's primary use is representation of configuration
@@ -522,7 +521,6 @@ protected:
 
 long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0');
 
-//---- SlotFinder -----------------------------------------------------------
 /*! Use this class to get a slot from an Anything according to configuration
 Takes care of both . and : path separators.
 To use this class call Operate on it.
@@ -571,7 +569,6 @@ public:
 		\param indexdelim LookupPath index delimiter */
 	static bool IntOperate(Anything &dest, String &destSlotname, long &destIdx, char delim = '.', char indexdelim = ':');
 };
-//---- SlotPutter -----------------------------------------------------------
 /*! Use this class to put a Anything into another Anything using lookup-syntax
 To use this class call Operate on it.
 The config Anything should have the form
@@ -613,7 +610,6 @@ public:
 		\post dest.LookupPath(destSlotname, delim, delimIdx)[.Append] = source */
 	static void Operate(Anything &source, Anything &dest, String destSlotname, bool append = false, char delim = '.', char indexdelim = ':');
 };
-//---- SlotCleaner -----------------------------------------------------------
 /*! Use this class to remove a slot from a Anything using lookup-syntax
 To use this class call Operate on it.
 The config Anything should have the form
@@ -652,7 +648,6 @@ public:
 		\post dest.LookupPath(slotName, delim, indexdelim) is removed */
 	static void Operate(Anything &dest, String slotName, bool removeLast = false, char delim = '.', char indexdelim = ':');
 };
-//---- SlotCopier -----------------------------------------------------------
 /*! Use this class to copy slots from an Anything to another
 To use this class call Operate on it.
 The config Anything should have the form
@@ -685,7 +680,6 @@ public:
 	static void Operate(Anything &source, Anything &dest, const ROAnything &config, char delim = '.', char indexdelim = ':');
 };
 
-//---- AnyComparer -----------------------------------------------------------
 /*! Interface for comparing Anythings. Subclasses may be used to sort Any-Arrays by value
  * see AnyComparers.h
  */
@@ -698,7 +692,6 @@ public:
 	virtual ~AnyComparer() {}
 };
 
-//---- SlotnameSorter -----------------------------------------------------------
 //!Sorts the slots of an Anything by Slotname, legacy (SOP)
 /*! bad api design, should better use bool for reverse */
 class SlotnameSorter
@@ -711,7 +704,6 @@ public:
 	static void Sort(Anything &toSort, EMode mode = asc);
 };
 
-//---- TrickyThing -----------------------------------------------------------------------
 /*! TrickyThing is a special Anything that is used exclusively for documentation purposes.
 	Under special circumstances the memory management employed for Anythings may lead to
 	non intuitive behavior which requires special attention by programmers. TrickyThing
@@ -761,7 +753,6 @@ public:
 	TrickyThing(TrickyThing &any) : Anything(any, any.GetAllocator()) {}
 };//lint !e1509
 
-//---- ROAnything --------------------------------------------------------------
 /*! ROAnything is an Anything which is immutable for MT-Safe reasons.
 	Every operation which would change the underlying data is therefore disabled
 	This is the mandatory implementation for Anything data that is shared between
@@ -872,9 +863,6 @@ protected:
 	{}
 };
 
-//---- inlines -------------------------------------------------------------------------
-
-//--- Anything ------------------------------------------
 inline const Anything &Anything::operator[](long slot) const
 {
 	return At(slot);
@@ -949,7 +937,6 @@ inline bool operator!= (const char *s, const Anything &a)
 	return !a.IsEqual(s);
 }
 
-//--- ROAnything ------------------------------------------
 inline const ROAnything ROAnything::operator[](long slot) const
 {
 	return At(slot);

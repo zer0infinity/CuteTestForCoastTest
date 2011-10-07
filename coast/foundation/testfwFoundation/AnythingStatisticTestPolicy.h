@@ -14,7 +14,6 @@
 #include "SystemBase.h"
 #include "SystemFile.h"
 
-//---- AnythingStatisticTestPolicy ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
 further explanation of the purpose of the class

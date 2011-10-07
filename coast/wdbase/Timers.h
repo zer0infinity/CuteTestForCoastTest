@@ -14,7 +14,6 @@
 #include "Context.h"
 #include "Threads.h"
 
-//---- TimeLoggingModule ----------------------------------------------------------
 //! Module to enable/disable timing and logging of methods
 /*!
 \par Configuration
@@ -55,7 +54,6 @@ public:
 	static bool fgTLSUsable;
 };
 
-//---- TimeLogger --------------------------------------------------------------------------
 //!helper class to log timing information
 class TimeLogger : public Coast::AllocatorNewDelete
 {
@@ -101,7 +99,6 @@ private:
 	TimeLogger &operator=(TimeLogger &);
 };
 
-//---- TimeLoggerEntry --------------------------------------------------------------------------
 //! Abstracting object to instantiate a TimeLogger object only if global TimeLoggingModule::fgDoTiming is enabled
 /*!
 This level of abstraction is needed to reduce the overhead of always instantiating a DiffTimer object as done in TimeLogger.

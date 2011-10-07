@@ -11,8 +11,6 @@
 
 #include "ListenerPoolTest.h"
 
-//---- SimpleListenerPoolTest -------------------------------------------------
-//!TestCases description
 class SimpleListenerPoolTest : public ListenerPoolTest
 {
 public:

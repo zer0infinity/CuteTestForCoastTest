@@ -21,7 +21,6 @@ RequestBlocker *RequestBlocker::RB()
 }
 
 RegisterModule(RequestBlocker);
-//---- RequestBlocker ----------------------------------------------------------------
 RequestBlocker::RequestBlocker(const char *name)
 	: WDModule(name)
 	, fRequestBlockerRWLock("RequestBlockerRWLock")

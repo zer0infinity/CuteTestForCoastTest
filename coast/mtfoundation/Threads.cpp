@@ -1156,8 +1156,6 @@ void Mutex::AcquireAfterWait()
 #endif
 }
 
-//---- RWLock ------------------------------------------------------------
-
 RWLock::RWLock()
 {
 	CREATERWLOCK(fLock);
@@ -1206,8 +1204,6 @@ bool RWLock::TryLock(eLockMode mode) const
 #endif
 	return hasLocked;
 }
-
-//---- SimpleCondition ------------------------------------------------
 
 SimpleCondition::SimpleCondition()
 {
@@ -1262,7 +1258,6 @@ long SimpleCondition::GetId()
 	return lId;
 }
 
-//---- Condition ------------------------------------------------
 Condition::Condition()
 {
 	if ( !CREATECOND(fCondition) ) {

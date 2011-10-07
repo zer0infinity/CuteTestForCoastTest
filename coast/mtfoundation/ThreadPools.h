@@ -12,7 +12,6 @@
 #include "Threads.h"
 #include "StatUtils.h"
 
-//---- ThreadPoolManager ------------------------------------------------
 //! abstract class which handles initialization, starting and termination of threads in a pool
 /*!
 A thread pool can be used in cases where we do not need to know what each thread does or when it does anything. Important is, that we can have an amount of parallel workers running and waiting on something to do.
@@ -168,7 +167,6 @@ private:
 	friend class TestThreadPool;
 };
 
-//---- WorkerThread -----------------------------------------------
 //! abstraction for processing some work on demand
 /*! The WorkerThread processes the workload assigned by its WorkerPoolManager<br>
 After processing the workload it sets its running state back to ERunningState::eReady and waits until it gets selected by the WorkerPoolManager again
@@ -216,7 +214,6 @@ private:
 	//!the master of the worker
 };
 
-//---- PoolManager ------------------------------------------------
 template
 <
 typename TObservedType,
@@ -315,7 +312,6 @@ private:
 	PoolManager &operator=(const PoolManager &);
 };
 
-//---- WorkerPoolManager ------------------------------------------------
 //! manages a pool of worker threads
 /*! this abstract class handles the critical region of parallel active requests
 it uses a semaphore which is set by the parameter numMaxParallelRequests

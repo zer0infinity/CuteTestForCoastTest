@@ -12,7 +12,6 @@
 #include "Context.h"
 #include "WDModule.h"
 
-//---- RenderersModule -----------------------------------------------------------
 class RenderersModule: public WDModule {
 public:
 	RenderersModule(const char *name) :
@@ -24,7 +23,6 @@ public:
 	virtual bool Finis();
 };
 
-//---- Renderer -----------------------------------------------------------
 //!rendering interpreter for configurable generation of output
 //!Renderer implements a render script interpreter to generate (mostly but necessarily html) output in a flexible, configurable way
 class Renderer : public NotCloned

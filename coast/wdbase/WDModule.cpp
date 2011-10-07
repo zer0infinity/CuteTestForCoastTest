@@ -56,7 +56,6 @@ protected:
 	RegistryIterator fIter;
 };
 
-//---- WDModuleCaller ----------------------------------------------
 //:abstracting calling some operation on a module
 class WDModuleCaller {
 public:
@@ -131,10 +130,7 @@ public:
 	}
 };
 
-//---- WDModule -----------------------------------------------------------
 RegCacheImpl(WDModule);	// FindWDModule()
-//---- static API first ---------------------------------------------------
-
 int WDModule::Install(const ROAnything roaConfig)
 {
 	StartTrace(WDModule.Install);
@@ -200,7 +196,6 @@ int WDModule::Reset(const ROAnything roaOldconfig, const ROAnything roaConfig)
 	return -1;
 }
 
-//--- object api ------------------------------------
 WDModule::WDModule() : NotCloned("WDModule")
 {
 }
@@ -235,7 +230,6 @@ bool WDModule::ResetFinis(const ROAnything )
 	return Finis();
 }
 
-//--- WDModuleIterators ------------------------------------------------
 int WDModuleIterator::DoForEach()
 {
 	while ( HasMore() ) {
@@ -272,7 +266,6 @@ WDModule *ConfiguredWDMIterator::Next()
 	return wdm;
 }
 
-//--- RegistryWDMIterator ---------
 RegistryWDMIterator::RegistryWDMIterator(WDModuleCaller *wdmc, bool forward)
 	: WDModuleIterator(wdmc, forward)
 	, fIter(MetaRegistry::instance().GetRegistry("WDModule"), forward)
@@ -290,7 +283,6 @@ WDModule *RegistryWDMIterator::Next()
 	return (WDModule *)fIter.Next(moduleName);
 }
 
-//--- WDModuleCallers ------------------------------------------------
 WDModuleCaller::WDModuleCaller(const ROAnything roaConfig)
 	: fConfig(roaConfig)
 {}

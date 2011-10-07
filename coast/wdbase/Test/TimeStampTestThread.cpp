@@ -73,7 +73,6 @@ void TestWorker::DoProcessWorkload()
 	fWasPrepared = false;
 }
 
-//---- SamplePoolManager ------------------------------------------------
 SamplePoolManager::SamplePoolManager(const String &name) : WorkerPoolManager(name), fRequests(0) {}
 
 SamplePoolManager::~SamplePoolManager()

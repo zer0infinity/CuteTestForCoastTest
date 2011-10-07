@@ -12,7 +12,6 @@
 class Allocator;
 class DummyCondition;
 
-//---- DummyMutex ----------------------------------------------------------
 //! Dummy implementation of Mutex
 /*! Can be used to instantiate classes using Mutex interface without any locking effects.
 */

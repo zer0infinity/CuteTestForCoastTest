@@ -15,8 +15,6 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- MmapTest -----------------------------------------------------------
-//!testcases for Mmap class
 class MmapTest : public TestFramework::TestCase
 {
 public:

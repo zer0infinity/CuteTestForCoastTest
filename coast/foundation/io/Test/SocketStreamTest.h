@@ -13,8 +13,6 @@
 
 class Connector;
 
-//---- SocketStreamTest -----------------------------------------------------------
-//!testcases for the SocketStream class
 class SocketStreamTest : public TestFramework::TestCaseWithConfig
 {
 public:

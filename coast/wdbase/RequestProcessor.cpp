@@ -12,7 +12,6 @@
 #include "Server.h"
 #include "ServerUtils.h"
 
-//--- RequestProcessor ----------------------------------------------------------
 RegCacheImpl(RequestProcessor)
 ; // FindRequestProcessor()
 RegisterRequestProcessor(RequestProcessor);

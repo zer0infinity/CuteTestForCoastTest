@@ -11,7 +11,6 @@
 
 #include "Anything.h"//lint !e537
 
-//---- AnyComparers ----------------------------------------------------------
 //! convenience classes implementing the AnyCompare interface
 //class AnyComparer {
 //public:

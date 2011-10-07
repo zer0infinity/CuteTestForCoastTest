@@ -70,8 +70,6 @@ public:
 	bool IP2DNS(const String &ipAddress, unsigned long addr);
 };
 
-//---- Resolver ----------------------------------------------------------------
-
 String Resolver::DNS2IPAddress( const String &dnsName, const String &dflt )
 {
 	StartTrace1(Resolver.DNS2IPAddress, "dns [" << dnsName << "]");
@@ -111,7 +109,6 @@ String Resolver::IPAddress2DNS( const String &ipAddress, const String &dflt )
 	return sysResolver.getCanonicalName();
 }
 
-//--- system dependent subclasses ----
 #if defined(__sun)
 
 bool SunResolver::DNS2IP(String &ipAddress, const String &dnsName)

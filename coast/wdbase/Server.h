@@ -23,7 +23,6 @@ class StatObserver;
 class StatGatherer;
 class ServerPoolsManagerInterface;
 
-//---- ServersModule -----------------------------------------------------------
 class ServersModule: public WDModule {
 public:
 	ServersModule(const char *);
@@ -43,7 +42,6 @@ protected:
 	static Server *fgServerForReInit;
 };
 
-//---- Server -----------------------------------------------------------
 //!manages the components of the process
 //!manages the life-cycle of the server: init run terminate
 //!the server initializes SystemLog, sets RootDir and Path and initializes the global modules using WDModule::Install(fgConfig)<p>
@@ -73,7 +71,6 @@ public:
 		@return true in case processing was successful */
 	virtual bool ProcessRequest(std::ostream &reply, Context &ctx);
 
-	//---- admin API -------------------
 	void PrepareShutdown(int retCode = 0);
 
 	virtual int BlockRequests();
@@ -194,7 +191,6 @@ protected:
 
 #define RegisterServer(name) RegisterApplication(name)
 
-//---- MasterServer -------------------------------------------------------------------
 class ServerThread;
 
 //! Manages several servers as a composite server
@@ -254,7 +250,6 @@ protected:
 	ServerThread *fServerThreads;
 };
 
-//---- ServerThread ------------------------------------------------------------
 //!thread wrapper for a server started by the MasterServer
 class ServerThread: public Thread
 {

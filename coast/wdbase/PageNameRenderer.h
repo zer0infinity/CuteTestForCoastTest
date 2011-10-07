@@ -11,7 +11,6 @@
 
 #include "Renderer.h"
 
-//---- PageNameRenderer ----------------------------------------------------------
 //! Renders the Name of the Page in the Context
 /*!
 \par Configuration

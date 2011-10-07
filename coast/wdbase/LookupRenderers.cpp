@@ -19,7 +19,6 @@ namespace {
 			delimIndex = 2L,
 			indexDelimIndex = 3L;
 }
-//---- LookupRenderer ----------------------------------------------------------------
 void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(LookupRenderer.Render);
@@ -84,7 +83,6 @@ void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAn
 	}
 }
 
-//---- ContextLookupRenderer ----------------------------------------------------------------
 RegisterRenderer(ContextLookupRenderer);
 
 ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
@@ -94,7 +92,6 @@ ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, c
 	return roaRet;
 }
 
-//---- StoreLookupRenderer ----------------------------------------------------------------
 // lookup is exclusively done in tmpStore
 RegisterRenderer(StoreLookupRenderer);
 
@@ -106,7 +103,6 @@ ROAnything StoreLookupRenderer::DoLookup(Context &context, const char *name, cha
 	return roaRet;
 }
 
-//---- QueryLookupRenderer ----------------------------------------------------------------
 // lookup is exclusively done in query
 RegisterRenderer(QueryLookupRenderer);
 

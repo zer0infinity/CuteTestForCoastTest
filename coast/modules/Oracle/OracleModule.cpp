@@ -10,7 +10,6 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 
-//---- OracleModule ---------------------------------------------------------------
 RegisterModule(OracleModule);
 
 OracleModule::OracleModule(const char *name)

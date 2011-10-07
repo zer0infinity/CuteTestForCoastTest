@@ -11,7 +11,6 @@
 
 #include "ITOString.h"//lint !e537
 
-//---- Tracer --------------------------------------------------------------------------
 #ifdef COAST_TRACE
 
 class Allocator;

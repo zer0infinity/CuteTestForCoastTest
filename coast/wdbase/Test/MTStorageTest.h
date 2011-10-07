@@ -12,8 +12,6 @@
 #include "TestCase.h"
 #include "Threads.h"
 
-//---- MTStorageTest ----------------------------------------------------------
-//!Test driver for tracing facility
 class MTStorageTest: public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer {
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;

@@ -11,7 +11,6 @@
 
 #include "Anything.h"
 
-//---- AnyUtils ----------------------------------------------------------------------
 //! Utility functions to compare and merge anythings
 /*!
 \par AnyUtils::AnyCompareEqual
@@ -155,7 +154,6 @@ protected:
 	static long DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, bool bOverwriteSlots, bool bTest, const char &delimSlot, const char &delimIdx);
 };
 
-//---- Recording ----------------------------------------------------------------------
 //! read and write anythings as testrun input
 /*!
 Defines a recorder api to read in and write out an anything containing activities for testruns

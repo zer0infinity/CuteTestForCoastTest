@@ -12,7 +12,6 @@
 #include "ObjectList.h"
 #include "Threads.h"
 #include <errno.h>
-//---- class ObjectList_r ----------------------------------------------------------------
 template <
 typename Tp,
 		 template < typename, typename > class tListType = DefaultListType,

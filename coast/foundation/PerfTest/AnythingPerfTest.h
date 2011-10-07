@@ -11,8 +11,6 @@
 
 #include "FoundationTestTypes.h"
 
-//---- AnythingPerfTest ----------------------------------------------------------
-//!TestCases description
 class AnythingPerfTest : public TestFramework::TestCaseWithStatistics
 {
 public:

@@ -11,8 +11,6 @@
 #include "TestSuite.h"
 #include "Socket.h"
 
-//--- TestReactor ----
-//:test driver for lf pool testing
 class TestReactor: public Reactor {
 public:
 	TestReactor(LeaderFollowerPoolTest *lfp) :

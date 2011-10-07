@@ -13,7 +13,6 @@
 #include "HTTPChunkedOStream.h"
 #include "ZipStream.h"
 
-//---- HTTPStreamStackTest ----------------------------------------------------------------
 HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPStreamStackTest.Ctor);

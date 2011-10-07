@@ -291,7 +291,6 @@ void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg) {
 	}
 }
 
-//---- System specific logger ----------------------------------------------------------------
 #if defined(WIN32)
 Win32SysLog::Win32SysLog(const char *appId) {
 	fLogHandle = ::RegisterEventSource(0, appId);

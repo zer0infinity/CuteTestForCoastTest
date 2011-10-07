@@ -10,7 +10,6 @@
 #include "LocalizedStrings.h"
 #include "TestSuite.h"
 
-//---- LocalizedStringsTest ----------------------------------------------------------------
 LocalizedStringsTest::LocalizedStringsTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

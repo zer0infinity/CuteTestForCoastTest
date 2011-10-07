@@ -11,7 +11,6 @@
 
 #include "TestCase.h"
 
-//---- RequestBlockerTest ----------------------------------------------------------
 //!test for RequestBlocker, migrated from mtfoundation/Test/ThreadsTest
 class RequestBlockerTest : public TestFramework::TestCase
 {

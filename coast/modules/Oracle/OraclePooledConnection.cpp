@@ -10,7 +10,6 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 #include <string.h>		// for strlen
-//----- OraclePooledConnection -----------------------------------------------------------------
 OraclePooledConnection::OraclePooledConnection( u_long lId, u_long lPoolSize, u_long lPoolBuckets ) :
 	fId( lId ), fPoolSize(lPoolSize), fPoolBuckets(lPoolBuckets)
 {

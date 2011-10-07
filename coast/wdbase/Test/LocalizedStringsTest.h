@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- LocalizedStringsTest ----------------------------------------------------------
-//!ConfiguredTestCases description
 class LocalizedStringsTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

@@ -22,7 +22,6 @@
 #include <strstream>
 #endif
 
-//---- String ----------------------------------------------------------------
 // tunable parameters for string implementation
 const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for optimizing
 const long cStrAllocLimit = 4096; // cStrAllocMinimum < StrAllocLimit
@@ -1234,7 +1233,6 @@ String::iterator String::erase(String::iterator from, String::iterator to) {
 	return this->end(); // should throw, but stay robust
 }
 
-//---- StringTokenizer ---------------------------------------------------------
 StringTokenizer::StringTokenizer(const char *s, char delimiter)
 	: fString(s)
 	, fTokEnd(fString)
@@ -1287,7 +1285,6 @@ String StringTokenizer::GetRemainder(bool boIncludeDelim)
 	}
 }
 
-//---- StringTokenizer2 ---------------------------------------------------------
 StringTokenizer2::StringTokenizer2(const char *s)
 	: fString(s)
 	, fDelimiters(" \t\n")

@@ -8,7 +8,6 @@
 
 #include "TestRenderer.h"
 
-//---- TestRenderer ---------------------------------------------------------------
 RegisterRenderer(TestRenderer);
 
 TestRenderer::TestRenderer(const char *name) : Renderer(name) { }

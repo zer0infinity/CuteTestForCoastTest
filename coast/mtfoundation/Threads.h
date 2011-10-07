@@ -74,7 +74,6 @@ private:
 };
 
 class SimpleCondition;
-//---- Mutex ------------------------------------------------------------
 /*! <b>mutual exclusion lock, wrapper for nativ system service</b>
 recursive call from the same thread means deadlock! */
 class SimpleMutex
@@ -197,7 +196,6 @@ private:
 	void operator=(const Mutex &);
 };
 
-//---- SimpleCondition --------------------------------------------------------------
 //!native condition variable api wrapper implementing the common condition variable operations wait, signal and broadcast
 class SimpleCondition
 {
@@ -236,7 +234,6 @@ private:
 	COND fSimpleCondition;
 };
 
-//---- Condition --------------------------------------------------------------
 //!native condition variable api wrapper implementing the common condition variable operations wait, signal and broadcast
 class Condition
 {
@@ -274,7 +271,6 @@ private:
 	COND fCondition;
 };
 
-//---- RWLock ------------------------------------------------------------
 //! read/write lock, wrapper for nativ system service
 class RWLock
 {
@@ -431,7 +427,6 @@ public:
 	{}
 };
 
-//---- CleanupHandler ------------------------------------------------------------
 //!subclasses may be defined to perform cleanup in thread specific storage while thread is still alive. CleanupHandlers are supposed to be singletons..
 class CleanupHandler {
 public:
@@ -445,7 +440,6 @@ protected:
 	virtual bool DoCleanup() = 0;
 };
 
-//---- AllocatorUnref ------------------------------------------------------------
 //! utility class used for proper destruction of thread local storage
 /*!destruction of thread local store belonging to a thread has to take place at the very
 last moment possible; but it has to be done; it is the only task of this class */
@@ -464,7 +458,6 @@ protected:
 #include "ObserverIf.h"
 
 
-//---- Thread ------------------------------------------------------------
 //! thread abstraction implementing its own thread state model using EThreadState and the available native thread api
 /*!
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>

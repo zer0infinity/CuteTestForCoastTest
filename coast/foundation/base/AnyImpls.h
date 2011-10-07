@@ -17,7 +17,6 @@
 class Anything;
 class AnyVisitor;
 
-//---- AnyImpl --------------------------------------------------------------
 class AnyImpl {
 	AnyImpl(AnyImpl const &);
 	AnyImpl& operator=(AnyImpl const &);
@@ -83,7 +82,6 @@ protected:
 	}
 };
 
-//---- AnyLongImpl -----------------------------------------------------------------
 class AnyLongImpl: public Coast::SegStorAllocatorNewDelete<AnyLongImpl>, public AnyImpl {
 	long fLong;
 	String fBuf;
@@ -123,7 +121,6 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-//---- AnyObjectImpl -----------------------------------------------------------------
 class AnyObjectImpl: public Coast::SegStorAllocatorNewDelete<AnyObjectImpl>, public AnyImpl {
 	IFAObject *fObject;
 
@@ -165,7 +162,6 @@ private:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-//---- AnyDoubleImpl -----------------------------------------------------------------
 class AnyDoubleImpl: public Coast::SegStorAllocatorNewDelete<AnyDoubleImpl>, public AnyImpl {
 	double fDouble;
 	String fBuf;
@@ -205,7 +201,6 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-//---- AnyBinaryBufImpl -----------------------------------------------------------------
 class AnyBinaryBufImpl: public Coast::SegStorAllocatorNewDelete<AnyBinaryBufImpl>, public AnyImpl {
 	String fBuf;
 
@@ -246,7 +241,6 @@ public:
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-//---- AnyStringImpl -----------------------------------------------------------------
 class AnyStringImpl: public Coast::SegStorAllocatorNewDelete<AnyStringImpl>, public AnyImpl {
 	String fString;
 
@@ -292,7 +286,6 @@ protected:
 };
 
 class AnyArrayImpl;
-//---- AnyKeyTable --------------------------------------------------
 class AnyKeyTable : public Coast::AllocatorNewDelete
 {
 public:
@@ -328,7 +321,6 @@ private:
 	AnyKeyTable& operator=(AnyKeyTable const &);
 };
 
-//---- AnyIndTable --------------------------------------------------
 class AnyIndTable : public Coast::AllocatorNewDelete
 {
 public:
@@ -363,7 +355,6 @@ private:
 
 class AnyKeyAssoc;
 class AnyComparer;
-//---- AnyArrayImpl -----------------------------------------------------------------
 class AnyArrayImpl : public Coast::SegStorAllocatorNewDelete<AnyArrayImpl>, public AnyImpl {
 	static const size_t ARRAY_BUF_SIZE = 4;
 

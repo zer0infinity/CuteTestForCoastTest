@@ -15,7 +15,6 @@
 
 using namespace Coast;
 
-//---- AnythingParserTest ---------------------------------------------------------
 AnythingParserTest::AnythingParserTest(TString tname) :
 	TestCaseType(tname), lineCounter(0) {
 }

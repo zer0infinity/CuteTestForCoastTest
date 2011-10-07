@@ -251,7 +251,6 @@ void ThreadsTest::ThreadStateTransitionTest() {
 	t_assert(t.Terminate(10));
 	assertComparem(Thread::eTerminated, equal_to, t.GetState(false, Thread::eRunning), "Thread is not running anymore");
 
-	//-- Can be restarted ----------------------------------
 	t_assertm(t.Start(), "should be restartable");
 	t_assertm(t.CheckState(Thread::eRunning, 10), "State should be eRunning");
 
@@ -267,7 +266,6 @@ void ThreadsTest::ThreadStateTransitionTest() {
 	anyExpected.Import(is1);
 	assertAnyEqual(anyExpected, t.fStates);
 
-	//-- Terminate before Start ---------------------------------
 	StateTransitionTestThread t2;
 	t_assertm(t2.CheckState(Thread::eCreated, 10), "State should be eCreated");
 	t_assert(t2.Terminate(10));
@@ -286,7 +284,6 @@ void ThreadsTest::ThreadStateTransitionTest() {
 	anyExpected.Import(is2);
 	assertAnyEqual(anyExpected, t2.fStates);
 
-	//-- Terminate because precondition of Start fails ---
 	TerminateMeTestThread t3(false);
 	t_assertm(!t3.Start(), "start should fail");
 	assertEqual(Thread::eTerminated, t3.GetState()); // Can not start again
@@ -324,7 +321,6 @@ private:
 	ThreadsTest *fTest;
 };
 
-//---- RecursiveSynchTestThread ----------------------------------------------------------
 //:utility class - simple Thread to play around - Runs until Terminate is called
 class RecursiveSynchTestThread: public TestThread {
 public:

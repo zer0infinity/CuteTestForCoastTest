@@ -17,7 +17,6 @@
 class Pipe;
 
 const int cPipeStreamBufferSize = 8024;
-//---- PipeStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
 class PipeStreamBuf : public std::streambuf
 {
@@ -125,7 +124,6 @@ protected: // seekxxx are protected in the std..
 	long fWriteCount;
 };
 
-//---- iosCoastPipe -------------------------------------------------------------------
 //! adapts ios to a Pipe Stream buffer
 class iosCoastPipe : virtual public std::ios
 {
@@ -148,7 +146,6 @@ protected:
 	// void autoflush()  { flags(flags() | std::ios::unitbuf); } don't ever use this sh... with sockets
 };
 
-//---- IPipeStream -------------------------------------------------------------------
 //! istream for sockets
 class IPipeStream : public iosCoastPipe, public std::istream
 {
@@ -170,7 +167,6 @@ private:
 	IPipeStream &operator=(const IPipeStream &);
 };
 
-//---- OPipeStream -------------------------------------------------------------------
 //! ostream for sockets
 class OPipeStream : public iosCoastPipe, public std::ostream
 {
@@ -193,7 +189,6 @@ private:
 	OPipeStream &operator=(const OPipeStream &);
 };
 
-//---- PipeStream -------------------------------------------------------------------
 //! iostream for sockets
 class PipeStream : public iosCoastPipe, public std::iostream
 {
@@ -213,7 +208,6 @@ private:
 	PipeStream &operator=(const PipeStream &);
 };
 
-//---- PipeTimeoutModifier -------------------------------------------------------------------
 //! temporarily changes the timeout used by a PipeStream
 class PipeTimeoutModifier
 {

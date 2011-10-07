@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "GenericXMLParser.h"
 
-//---- GenericXMLParserTest ----------------------------------------------------------------
 GenericXMLParserTest::GenericXMLParserTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

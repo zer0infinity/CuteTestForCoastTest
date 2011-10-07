@@ -16,7 +16,6 @@
 namespace AnyExtensions
 {
 
-//---- Iterator -----------------------------------------------------------
 	/*! Iterates simply over the (RO)Anythings slots, staying always on the uppermost level
 	 */
 	template
@@ -139,7 +138,6 @@ namespace AnyExtensions
 		Iterator &operator=(const Iterator &);
 	};
 
-//---- LeafIterator -----------------------------------------------------------
 	/*! Iterates through the whole Anything structure, and returns all Leafs (i.e. Type!=eArray)
 	 */
 	template <

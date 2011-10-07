@@ -11,7 +11,6 @@
 
 #include "ITOString.h"//lint !e537
 
-//---- TimeStamp ----------------------------------------------------------
 //! Timestamps as used by Frontdoor with external representation
 /*!
 The external representation is "%Y%m%d%H%M%S" relative to timezone GMT.

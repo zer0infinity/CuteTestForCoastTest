@@ -13,8 +13,6 @@
 
 class Registry;
 
-//---- RegistryTest ----------------------------------------------------------
-//!TestCases for the Registry class
 class RegistryTest : public TestFramework::TestCase
 {
 public:

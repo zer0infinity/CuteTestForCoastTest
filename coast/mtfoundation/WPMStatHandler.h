@@ -13,7 +13,6 @@
 #include "DiffTimer.h"
 #include "Threads.h"
 
-//---- WPMStatHandler ----------------------------------------------------------
 //!gather statistical information about a worker pool
 class WPMStatHandler: public StatEvtHandler
 {

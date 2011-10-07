@@ -11,8 +11,6 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-//---- URLUtilsTest -----------------------------------------------------------
-//!testcases for URLUtils
 class URLUtilsTest : public TestFramework::TestCaseWithConfig
 {
 public:

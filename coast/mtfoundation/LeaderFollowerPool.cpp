@@ -19,7 +19,6 @@
 #define USE_SELECT
 #endif
 
-//---- LeaderFollowerPool ----------------------------------------------------------------
 const long LeaderFollowerPool::cNoCurrentLeader = -1;
 const long LeaderFollowerPool::cBlockPromotion = -2;
 

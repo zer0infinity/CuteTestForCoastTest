@@ -16,7 +16,6 @@ void TestThread::Run()
 	SetReady();
 }
 
-//--- TerminateMeTestThread -------------------------------------------
 TerminateMeTestThread::TerminateMeTestThread(bool willStart)
 	: TestThread("TerminateMeTestThread")
 	, fWillStart(willStart)
@@ -53,13 +52,11 @@ bool TestThreadPool::AllThreadsTerminated()
 	return true;
 }
 
-//--- TerminateTestThreadPool -------------------------------------------
 Thread *TerminateTestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	return new (Coast::Storage::Global()) TerminateMeTestThread;
 }
 
-//---- TestWorker -----------------------------------------------
 TestWorker::TestWorker(const char *name)
 	: WorkerThread(name)
 	, fWaitTimeInProcess(2)
@@ -90,7 +87,6 @@ void TestWorker::DoProcessWorkload()
 	fWasPrepared = false;
 }
 
-//---- SamplePoolManager ------------------------------------------------
 SamplePoolManager::SamplePoolManager(const String &name)
 	: WorkerPoolManager(name)
 	, fRequests(0)

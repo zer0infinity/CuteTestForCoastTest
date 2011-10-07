@@ -12,7 +12,6 @@
 #include "Threads.h"
 #include "WDModule.h"
 
-//---- LocalizationModule -----------------------------------------------------------
 class LocalizationModule : public WDModule
 {
 	Anything fLocalizedStrings;
@@ -25,7 +24,6 @@ public:
 	virtual bool Finis();
 };
 
-//---- LocalizedStrings -----------------------------------------------------------
 class LocalizedStrings
 {
 public:

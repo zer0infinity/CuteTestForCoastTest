@@ -55,7 +55,6 @@ public:
 	static void operator delete(void *d);
 };
 
-//---- PoolAllocator ----------------------------------------------------------
 //!an allocator that uses a bucketing strategy with pre-allocated memory
 //! within Coast to be used as thread-specific allocator
 //! is definitely <B>not</B> thread-safe

@@ -13,7 +13,6 @@
 #include "AnyUtils.h"
 #include "SystemLog.h"
 
-//---- ThreadedTimeStampTest ----------------------------------------------------------------
 ThreadedTimeStampTest::ThreadedTimeStampTest(TString tstrName)
 	: TestCaseType(tstrName)
 	, fCheckMutex("ThreadedTimeStampTest")

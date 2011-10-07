@@ -11,7 +11,6 @@
 
 #include "StringStream.h"
 
-//---- HTTPStreamStack ----------------------------------------------------------
 //! Helper class to handle chunked and gzip encoding of http bodys.
 class HTTPStreamStack
 {

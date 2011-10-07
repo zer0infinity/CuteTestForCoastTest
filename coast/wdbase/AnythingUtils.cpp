@@ -9,7 +9,6 @@
 #include "AnythingUtils.h"
 #include "Renderer.h"
 
-//-- StoreCopier ---------------------------------------------------------------
 void StoreCopier::Operate(Context &c, Anything &dest, const Anything &config, char delim, char indexdelim)
 {
 	StartTrace(StoreCopier.Operate);
@@ -34,7 +33,6 @@ void StoreCopier::Operate(Context &c, Anything &dest, const ROAnything &config, 
 	}
 }
 
-//-- StoreFinder ---------------------------------------------------------------
 void StoreFinder::Operate(Context &c, Anything &dest, const Anything &config)
 {
 	StartTrace(StoreFinder.Operate);
@@ -75,8 +73,6 @@ Anything &StoreFinder::FindStore(Context &c, String &storeName)
 	}
 	return c.GetTmpStore();
 }
-
-//-- StorePutter ---------------------------------------------------------------
 
 void StorePutter::Operate(Anything &source, Context &c, const Anything &config)
 {

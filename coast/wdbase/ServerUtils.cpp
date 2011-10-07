@@ -15,7 +15,6 @@
 #include <errno.h>
 #include <signal.h>
 
-//---- InterruptHandler ------------------------------------------------------------------
 #if defined(WIN32)
 
 // implementation for the WIN32 interrupthandler
@@ -209,7 +208,6 @@ handlesignal:
 }
 #endif
 
-//--- HandleRequest implementation -------------------------------
 HandleRequest::HandleRequest(const char *name)
 	: WorkerThread(name)
 	, fClientSocket(0)
@@ -276,7 +274,6 @@ void HandleRequest::DoTerminationRequestHook(ROAnything workloadArgs)
 	}
 }
 
-//---- RequestThreadsManager ------------------------------------------------
 RequestThreadsManager::RequestThreadsManager(String name)
 	: WorkerPoolManager(name)
 	, fRequests(0)

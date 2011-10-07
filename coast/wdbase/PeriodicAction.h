@@ -11,7 +11,6 @@
 
 #include "Threads.h"
 
-//---- PeriodicAction ------------------------------------------------------------------
 //!performs periodic execution of action associated with string fAction
 //! this thread wakes up periodically and tries to cleanup sessions that have
 //! timed out

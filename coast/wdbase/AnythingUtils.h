@@ -11,8 +11,6 @@
 
 #include "Context.h"
 
-//---- StoreCopier -----------------------------------------------------------
-
 //! Use this class to copy item from Context to an Anything
 //! To use this class; create an instance and call Operate on it.
 class StoreCopier
@@ -41,8 +39,6 @@ private:
 	//!deprecated use static API
 	StoreCopier();
 };
-
-//---- StoreFinder -----------------------------------------------------------
 
 //! Use this class to get a slot from a context store according to configuration
 //! To use this class; create an instance and call Operate on it.
@@ -78,7 +74,6 @@ private:
 	StoreFinder();
 };
 
-//---- StorePutter -----------------------------------------------------------
 //! Use this class to put an Anything into a context store using lookup-syntax
 /*! To use this class; create an instance and call Operate on it.
  * @section storeputterconfiguration StorePutter Configuration

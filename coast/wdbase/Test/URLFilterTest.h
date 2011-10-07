@@ -11,8 +11,6 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- URLFilterTest ----------------------------------------------------------
-//!TestCases for the Registry class
 class URLFilterTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

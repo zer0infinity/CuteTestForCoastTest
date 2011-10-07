@@ -19,7 +19,6 @@ using namespace Coast;
 #include <cstring>
 #ifdef COAST_TRACE
 
-//---- Tracer -------------------------------------------------------------------------
 namespace {
 	char const fgPathDelim = '.';
 	char const *fgTracerAnyName = "Tracer";

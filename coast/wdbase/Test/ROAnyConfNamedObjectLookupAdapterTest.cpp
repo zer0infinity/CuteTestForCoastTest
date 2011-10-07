@@ -15,7 +15,6 @@
 RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()
 RegisterTestConfNamedObj(TestConfNamedObj);
 
-//---- ROAnyConfNamedObjectLookupAdapterTest ----------------------------------------------------------------
 ROAnyConfNamedObjectLookupAdapterTest::ROAnyConfNamedObjectLookupAdapterTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.Ctor);
@@ -115,7 +114,6 @@ void ROAnyConfNamedObjectLookupAdapterTest::NothingAtAllTest()
 	t_assert(0L == la.Lookup("long", 0L));
 }
 
-//---- TestConfNamedObj ----------------------------------------------------------------
 TestConfNamedObj::TestConfNamedObj(const char *name) : ConfNamedObject(name)
 {
 	StartTrace(TestConfNamedObj.TestConfNamedObj);

@@ -80,7 +80,6 @@ protected:
 
 #endif
 
-//---- AppBooter ----------------------------------------------------------------
 AppBooter::AppBooter()	{ }
 AppBooter::~AppBooter()	{ }
 
@@ -366,7 +365,6 @@ Application *AppBooter::FindApplication(ROAnything config, String &applicationNa
 	return application;
 }
 
-//--- dynamic library loading ---
 DynLibLoader::DynLibLoader(const char *name)
 	:	fName(name)
 {

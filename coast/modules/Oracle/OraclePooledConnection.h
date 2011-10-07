@@ -16,7 +16,6 @@
 #include "ITOString.h"
 #include "IFAObject.h"
 
-//---- OraclePooledConnection -----------------------------------------------------------
 //! Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool
 /*!
  * This class deals with oracle connection specific things like OracleEnvironment and OracleConnection. When

@@ -11,7 +11,6 @@
 #include "SystemLog.h"
 #include "Anything.h"
 
-//---- StatEvtHandler -----------------------------------------------------------
 StatEvtHandler::StatEvtHandler()
 {
 }
@@ -40,7 +39,6 @@ long StatEvtHandler::GetCurrentParallelRequests()
 	return DoGetCurrentParallelRequests();
 }
 
-//---- StatGatherer -----------------------------------------------------------
 StatGatherer::StatGatherer()
 {
 }
@@ -69,7 +67,6 @@ void StatGatherer::PrintStatisticsOnStderr( const String &strName )
 	SystemLog::WriteToStderr(strbuf);
 }
 
-//---- StatObserver -----------------------------------------------------------
 StatObserver::StatObserver()
 {
 }

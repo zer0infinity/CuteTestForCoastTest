@@ -12,8 +12,6 @@
 #include "TestCase.h"
 #include "Context.h"
 
-//---- PageTest ----------------------------------------------------------
-//!TestCases description
 class PageTest : public TestFramework::TestCase
 {
 public:

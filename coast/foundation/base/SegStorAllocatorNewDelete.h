@@ -14,7 +14,6 @@
 namespace Coast
 {
 
-//---- SegStorAllocatorNewDelete ----------------------------------------------------------
 //! Segregated Storage Allocator for operator new/delete
 /*!
 Caution: This class is only intended for AnyImpl's! Subclassing from one of the various AnyImpl

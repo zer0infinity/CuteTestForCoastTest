@@ -14,7 +14,6 @@
 #include "Tracer.h"
 #include "AnyIterators.h"
 
-//--- URLFilter ----------------------------------------------------------
 bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &filterCookieConf, Context &ctx)
 {
 	StartTrace(URLFilter.HandleCookie);

@@ -11,7 +11,6 @@
 
 #include "Anything.h"//lint !e537
 
-//---- AnyVisitor ----------------------------------------------------------
 //! apply Visitor pattern to Anything structures
 /*!
 apply the visitor pattern and externalize algorithms traversing anythings.

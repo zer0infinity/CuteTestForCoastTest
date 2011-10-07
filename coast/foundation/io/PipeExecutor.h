@@ -13,7 +13,6 @@
 
 class Pipe;
 
-//---- PipeExecutor ----------------------------------------------------------
 //!execute a program and connect its stdio to iostreams
 /*! this is useful for implementing CGI and all other kinds of delegation
 to existing programs.

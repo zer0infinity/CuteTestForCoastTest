@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "PoolAllocator.h"
 
-//---- AnythingPerfTest ----------------------------------------------------------------
 AnythingPerfTest::AnythingPerfTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

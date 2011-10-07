@@ -10,7 +10,6 @@
 #include "WebAppService.h"
 #include "TestSuite.h"
 
-//---- WebAppServiceTest ----------------------------------------------------------------
 WebAppServiceTest::WebAppServiceTest(TString tstrName)
 	: TestCaseType(tstrName)
 {

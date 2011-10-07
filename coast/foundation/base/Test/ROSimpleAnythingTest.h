@@ -11,8 +11,6 @@
 
 #include "TestCase.h"//lint !e537
 
-//---- ROSimpleAnythingTest ----------------------------------------------------------
-//!TestCases for the ROAnything class Simple types part
 class ROSimpleAnythingTest : public TestFramework::TestCase
 {
 public:

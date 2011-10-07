@@ -13,8 +13,6 @@
 #include "Threads.h"
 class Mutex;
 
-//---- ThreadedTimeStampTest ----------------------------------------------------------
-//!TestCases description
 class ThreadedTimeStampTest : public TestFramework::TestCaseWithConfigAndStatistics
 {
 public:

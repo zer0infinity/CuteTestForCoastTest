@@ -84,7 +84,6 @@ Test *RequestProcessorTest::suite() {
 
 	return testSuite;
 }
-//--- LoopbackProcessor ----------------------------------------------
 RegisterRequestProcessor(LoopbackProcessor);
 
 LoopbackProcessor::LoopbackProcessor(const char *processorName) :

@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "ResolverTest.h"
 
-//---- ResolverTest ------------------------------------------------------------
 ResolverTest::ResolverTest(TString tname) :
 	TestCaseType(tname)
 {

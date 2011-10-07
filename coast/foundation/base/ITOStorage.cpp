@@ -44,7 +44,6 @@ l_long MemChecker::CheckDelta() {
 	return (fAllocator ? (fAllocator->CurrentlyAllocated() - fSizeAllocated) : 0LL);
 }
 
-//------------- Utilities for Memory Tracking --------------
 MemTracker::MemTracker(const char *name)
 	: fAllocated(0)
 	, fMaxAllocated(0)

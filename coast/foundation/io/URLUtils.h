@@ -11,7 +11,6 @@
 
 #include "Anything.h"//lint !e537
 
-//---- URLUtils ----------------------------------------------------------------------
 namespace Coast {
 	namespace URLUtils {
 		enum NormalizeTag {

@@ -11,7 +11,6 @@
 
 #include "Mapper.h"
 
-//---- NullParameterMapper ----------------------------------------------------------
 //! Converts the value of a mapped key to AnyNullImpl if its original value is listed in the \c TreatAsNull slot
 /*!
  * This mapper can be used whenever a value conversion to AnyNullImpl is needed based on the String value of a mapped key.

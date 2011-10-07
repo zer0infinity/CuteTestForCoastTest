@@ -11,8 +11,6 @@
 
 #include "TestCase.h"
 
-//---- DiffTimerTest ----------------------------------------------------------
-//!testcases for DiffTimer class
 class DiffTimerTest : public TestFramework::TestCase
 {
 public:

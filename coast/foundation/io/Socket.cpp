@@ -422,7 +422,6 @@ public:
 };
 #endif
 
-//--- EndPoint ---------------------------------------
 void EndPoint::LogError(const char *contextmessage, int sockerrno)
 {
 	StartTrace(EndPoint.LogError);
@@ -563,7 +562,6 @@ bool EndPoint::SockOptGetError()
 	return false;
 }
 
-//---- ConnectorArgs ----------------------------------------------
 ConnectorArgs::ConnectorArgs(const String &ipAddr, long port, long connectTimeout) :
 	fIPAddress(ipAddr),  fPort(port), fConnectTimeout(connectTimeout)
 {
@@ -618,7 +616,6 @@ long ConnectorArgs::ConnectTimeout()
 	return fConnectTimeout;
 }
 
-//--- Connector --------------------------------------------
 Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPAdr, long srcPort, bool threadLocal) :
 	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()), port),
 	fConnectTimeout(connectTimeout),
@@ -760,7 +757,6 @@ ConnectStat::~ConnectStat()
 }
 #endif
 
-//---- Acceptor ---------------------------------------------------------
 class CallBackLocker
 {
 public:

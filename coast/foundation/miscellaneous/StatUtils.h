@@ -12,7 +12,6 @@
 class String;
 class Anything;
 
-//--- StatEvtHandler -----------------------------------------------
 //!event handler for gathering statistic data
 class StatEvtHandler
 {
@@ -45,8 +44,6 @@ private:
 	StatEvtHandler &operator=(const StatEvtHandler &);
 };
 
-//--- StatGatherer -----------------------------------------------
-
 //!gathering statistic data
 class StatGatherer
 {
@@ -69,8 +66,6 @@ private:
 	StatGatherer(const StatGatherer &);
 	StatGatherer &operator=(const StatGatherer &);
 };
-
-//--- StatObserver -----------------------------------------------
 
 //!observing statistic data
 class StatObserver

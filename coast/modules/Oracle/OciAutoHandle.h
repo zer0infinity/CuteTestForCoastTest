@@ -12,7 +12,6 @@
 #include <memory>
 #include "oci.h"
 
-//---- oci_auto_handle -----------------------------------------------------------
 //! Template wrapper around OCI handles
 /*!
  * Simplifies memory handling on allocated handles, frees the internal handle if allocated. It works almost like a

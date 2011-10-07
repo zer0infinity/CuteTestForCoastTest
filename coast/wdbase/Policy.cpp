@@ -11,7 +11,6 @@
 #include "Tracer.h"
 #include "Policy.h"
 
-//---- InstallerPolicy ------------------------------------------------------
 bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r) {
 	StartTrace1(InstallerPolicy.DoInstall, "Category: " << GetCategory());
 	SystemLog::WriteToStderr(String("\t") << GetCategory());
@@ -51,7 +50,6 @@ void InstallerPolicy::TellSuccess(bool success) {
 	}
 }
 
-//---- TerminationPolicy ------------------------------------------------------
 bool TerminationPolicy::Terminate(Registry *r) {
 	StartTrace(TerminationPolicy.Terminate);
 	bool bRet = DoTerminate(r);
@@ -80,7 +78,6 @@ bool TerminationPolicy::IntFinalize(Registry *r) {
 	return bRet;
 }
 
-//---- AliasInstaller ------------------------------------------------------
 bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r) {
 	StartTrace1(AliasInstaller.DoInstall, "Category: " << GetCategory());
 	bool installationSuccess = true;
@@ -145,7 +142,6 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r) {
 	return installationSuccess;
 }
 
-//---- AliasTerminator ------------------------------------------------------
 bool AliasTerminator::DoTerminate(Registry *r) {
 	StartTrace1(AliasTerminator.DoTerminate, "Category: " << GetCategory());
 	// iterate backwards over registry, since we're removing the objects
@@ -166,7 +162,6 @@ bool AliasTerminator::DoTerminate(Registry *r) {
 	return true;
 }
 
-//---- HierarchyInstaller ------------------------------------------------------
 bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r) {
 	StartTrace(HierarchyInstaller.DoInstall);
 	TraceAny(installerSpec, "");

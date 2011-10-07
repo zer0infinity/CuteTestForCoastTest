@@ -18,7 +18,6 @@ using namespace Coast;
 #include <errno.h> /* PS wg. SUNCC5 */
 #endif
 
-//--- Pipe ----------------------
 Pipe::Pipe(int readfd, int writefd, bool doClose, long timeout)
 	: fReadFd(readfd)
 	, fWriteFd(writefd)

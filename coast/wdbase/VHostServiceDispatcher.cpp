@@ -13,7 +13,6 @@
 #include "AnyIterators.h"
 
 RegisterServiceDispatcher(VHostServiceDispatcher);
-//--- VHostServiceDispatcher ---------------------------------------------------
 namespace {
 	Anything buildPathSegmentList(String requestURI) {
 		StartTrace1(VHostServiceDispatcher.buildPathSegmentList, "input URI [" << requestURI << "]");

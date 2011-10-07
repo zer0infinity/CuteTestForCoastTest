@@ -16,7 +16,6 @@
 
 const int cSocketStreamBufferSize = 8024;
 
-//---- SocketStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
 class SocketStreamBuf : public std::streambuf
 {
@@ -125,7 +124,6 @@ protected: // seekxxx are protected in the std..
 	long fWriteCount;
 };
 
-//---- iosITOSocket -------------------------------------------------------------------
 //! adapts ios to a Socket Stream buffer
 class iosITOSocket : virtual public std::ios, public Coast::AllocatorNewDelete
 {
@@ -146,7 +144,6 @@ protected:
 	// void autoflush()  { flags(flags() | ios::unitbuf); } don't ever use this sh... with sockets
 }; // iosITOSocket
 
-//---- ISocketStream -------------------------------------------------------------------
 //! istream for sockets
 class ISocketStream : public iosITOSocket, public std::istream
 {
@@ -168,7 +165,6 @@ private:
 	ISocketStream &operator=(const ISocketStream &);
 }; // ISocketStream
 
-//---- ISocketStream -------------------------------------------------------------------
 //! ostream for sockets
 class OSocketStream : public iosITOSocket, public std::ostream
 {
@@ -191,7 +187,6 @@ private:
 	OSocketStream &operator=(const OSocketStream &);
 }; // OSocketStream
 
-//---- SocketStream -------------------------------------------------------------------
 //! iostream for sockets
 class SocketStream : public iosITOSocket, public std::iostream
 {
@@ -211,7 +206,6 @@ private:
 	SocketStream &operator=(const SocketStream &);
 }; // SocketStream
 
-//---- TimeoutModifier -------------------------------------------------------------------
 //! modifies the timeout used by a SocketStream for a scope
 class TimeoutModifier
 {
