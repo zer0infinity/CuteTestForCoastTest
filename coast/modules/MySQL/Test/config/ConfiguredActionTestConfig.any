@@ -8,6 +8,7 @@
 
 {
 	/DLL {
+		CoastMySQL
 	}
 	/Modules {
 		DataAccessImplsModule

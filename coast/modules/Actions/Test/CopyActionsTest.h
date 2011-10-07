@@ -9,13 +9,12 @@
 #ifndef _CopyActionsTest_h_
 #define _CopyActionsTest_h_
 
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class Context;
 class String;
 
-//---- CopyActionsTest -----------------------------------------------------------
-class CopyActionsTest: public TestFramework::TestCaseWithConfig {
+class CopyActionsTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	CopyActionsTest(TString tname) :
 		TestCaseType(tname) {

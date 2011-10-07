@@ -10,6 +10,7 @@
 #include "Context.h"
 #include "TestSuite.h"
 #include "Action.h"
+#include "FoundationTestTypes.h"
 
 void CopyActionsTest::CopyActionTest() {
 	StartTrace(CopyActionsTest.CopyActionTest);
