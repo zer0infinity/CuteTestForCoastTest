@@ -324,3 +324,8 @@ Test *AppBooterTest::suite() {
 
 	return testSuite;
 }
+
+void AppBooterTest::tearDown() {
+	StartTrace(AppBooterTest.tearDown);
+	WDModule::Terminate(ROAnything());
+}

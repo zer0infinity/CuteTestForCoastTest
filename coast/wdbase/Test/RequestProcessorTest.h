@@ -22,6 +22,7 @@ public:
 
 	//!test processing of request with stub objects
 	void ProcessRequestTest();
+	void tearDown();
 };
 
 //! policy object shared by all threads to handle a request message;

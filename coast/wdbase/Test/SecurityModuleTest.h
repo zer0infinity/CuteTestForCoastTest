@@ -11,19 +11,14 @@
 
 #include "TestCase.h"
 
-//---- SecurityModuleTest ----------------------------------------------------------
-//!single line description of the class
-//! further explanation of the purpose of the class
-//! this may contain <B>HTML-Tags</B>
-//! ...
-class SecurityModuleTest : public TestFramework::TestCase
-{
+class SecurityModuleTest: public TestFramework::TestCase {
 public:
-	//--- constructors
 	SecurityModuleTest(TString tstrName);
 	~SecurityModuleTest();
 
-	static Test *suite ();
+	static Test *suite();
+
+	void tearDown();
 
 	void EncodeDecodeTest();
 	void InitWithConfigTest();

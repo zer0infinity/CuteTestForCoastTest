@@ -8,7 +8,6 @@
 
 #include "TestRunner.h"
 
-//--- test cases ---------------------------------------------------------------
 #include "RegistryTest.h"
 #include "ContextTest.h"
 #include "SessionTest.h"

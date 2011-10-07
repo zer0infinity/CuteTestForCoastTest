@@ -11,32 +11,13 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- ServiceDispatcherTest ----------------------------------------------------------
-//!Tests dispatching of standard handler
-class ServiceDispatcherTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
-{
+class ServiceDispatcherTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
-	//!TestCase constructor
-	//! \param name name of the test
 	ServiceDispatcherTest(TString tstrName);
-
-	//!destroys the test case
 	~ServiceDispatcherTest();
-
-	//--- public api
-
-	//!builds up a suite of testcases for this test
-	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!tests the find protocol of the service dispatcher class
+	static Test *suite();
+	void setUp();
 	void FindTests();
-
-	//!tests the ServiceDispatcherModule
 	void ServiceDispatcherModuleTest();
 };
 

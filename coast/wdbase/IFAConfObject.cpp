@@ -10,7 +10,6 @@
 #include "Registry.h"
 #include "CacheHandler.h"
 #include "SystemBase.h"
-#include "Tracer.h"
 
 bool RegisterableObject::fgResetCache = false;
 

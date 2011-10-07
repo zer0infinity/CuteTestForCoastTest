@@ -42,6 +42,8 @@ public:
 
 	void Method(const String &str);
 
+	void tearDown();
+
 protected:
 	Anything fSequence;
 	long fStep;

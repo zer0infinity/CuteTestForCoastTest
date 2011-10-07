@@ -11,7 +11,6 @@
 
 #include "Context.h"
 #include "WDModule.h"
-#include "Registry.h"
 
 class ServiceDispatchersModule: public WDModule {
 public:

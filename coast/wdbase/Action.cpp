@@ -6,7 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 #include "Action.h"
-#include "Registry.h"
 #include "Page.h"
 #include "Timers.h"
 #include "AnyIterators.h"

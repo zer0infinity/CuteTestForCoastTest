@@ -10,7 +10,6 @@
 #include "ThreadedTimeStampTest.h"
 #include "TimeStamp.h"
 
-//---- TestWorker -----------------------------------------------
 TestWorker::TestWorker()
 	: WorkerThread()
 	, fWaitTimeInProcess(0)

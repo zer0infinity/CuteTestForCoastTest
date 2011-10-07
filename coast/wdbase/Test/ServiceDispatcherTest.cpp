@@ -11,13 +11,10 @@
 #include "TestSuite.h"
 #include "ServiceHandler.h"
 
-//---- TestService ----------------------------------------------------------
-//:simple stub class to test service dispatcher
 class TestService: public ServiceHandler {
 public:
-	//:standard named object constructor
 	TestService(const char *serviceHandlerName) :
-		ServiceHandler(serviceHandlerName) {
+			ServiceHandler(serviceHandlerName) {
 	}
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -25,7 +22,6 @@ public:
 	}
 
 protected:
-	//:does nothing
 	virtual bool DoHandleService(std::ostream &os, Context &ctx) {
 		StartTrace(TestService.DoHandleService);
 		return true;
@@ -34,27 +30,22 @@ protected:
 
 RegisterServiceHandler(TestService);
 
-//---- ServiceDispatcherTest ----------------------------------------------------------------
-ServiceDispatcherTest::ServiceDispatcherTest(TString tname)
-	: TestCaseType(tname)
-{
+ServiceDispatcherTest::ServiceDispatcherTest(TString tname) :
+		TestCaseType(tname) {
 	StartTrace(ServiceDispatcherTest.ServiceDispatcherTest);
 }
 
-ServiceDispatcherTest::~ServiceDispatcherTest()
-{
+ServiceDispatcherTest::~ServiceDispatcherTest() {
 	StartTrace(ServiceDispatcherTest.Dtor);
 }
 
-void ServiceDispatcherTest::setUp ()
-{
+void ServiceDispatcherTest::setUp() {
 	StartTrace(ServiceDispatcherTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 	t_assert(GetConfig()["Modules"].Contains("ServiceDispatchersModule"));
 }
 
-void ServiceDispatcherTest::FindTests()
-{
+void ServiceDispatcherTest::FindTests() {
 	StartTrace(ServiceDispatcherTest.FindTests);
 	{
 		// test with no configuration
@@ -86,28 +77,25 @@ void ServiceDispatcherTest::FindTests()
 	}
 }
 
-void ServiceDispatcherTest::ServiceDispatcherModuleTest()
-{
+void ServiceDispatcherTest::ServiceDispatcherModuleTest() {
 	StartTrace(ServiceDispatcherTest.ServiceDispatcherModuleTest);
 	WDModule *serviceDispatchersModule = SafeCast(WDModule::FindWDModule("ServiceDispatchersModule"), WDModule);
 	ServiceDispatcher *sd;
 	if (t_assert(serviceDispatchersModule != NULL)) {
 		if (t_assert((sd = ServiceDispatcher::FindServiceDispatcher("TestDispatcher")) != NULL)) {
 			assertEqual("I am the TestDispatcher", sd->Lookup("MyIdString", "none"));
-		}
-		t_assert(ServiceDispatcher::FindServiceDispatcher("SecondTestDipatcher") != NULL);
+		}t_assert(ServiceDispatcher::FindServiceDispatcher("SecondTestDipatcher") != NULL);
 
 		Anything config;
 		Anything config1;
 		config1["ServiceDispatchers"]["ServiceDispatcher"].Append("NewTestDispatcher");
 		config1["ServiceDispatchers"]["ServiceDispatcher"].Append("NewSecondTestDispatcher");
 
-		if ( t_assert(serviceDispatchersModule->ResetFinis(config)) ) {
-			if ( t_assert(serviceDispatchersModule->ResetInit(config1)) ) {
+		if (t_assert(serviceDispatchersModule->ResetFinis(config))) {
+			if (t_assert(serviceDispatchersModule->ResetInit(config1))) {
 				if (t_assert((sd = ServiceDispatcher::FindServiceDispatcher("NewTestDispatcher")) != NULL)) {
 					assertEqual("I am the NewTestDispatcher", sd->Lookup("MyIdString", "none"));
-				}
-				t_assert(ServiceDispatcher::FindServiceDispatcher("NewSecondTestDispatcher") != NULL);
+				}t_assert(ServiceDispatcher::FindServiceDispatcher("NewSecondTestDispatcher") != NULL);
 				t_assert(ServiceDispatcher::FindServiceDispatcher("TestDispatcher") == 0);
 				t_assert(ServiceDispatcher::FindServiceDispatcher("SecondTestDipatcher") == 0);
 			}
@@ -116,8 +104,7 @@ void ServiceDispatcherTest::ServiceDispatcherModuleTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ServiceDispatcherTest::suite ()
-{
+Test *ServiceDispatcherTest::suite() {
 	StartTrace(ServiceDispatcherTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ServiceDispatcherTest, FindTests);

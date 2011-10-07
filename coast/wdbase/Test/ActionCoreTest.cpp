@@ -11,19 +11,16 @@
 #include "Context.h"
 #include "Action.h"
 
-//---- ActionCoreTest ----------------------------------------------------------------
-ActionCoreTest::ActionCoreTest(TString tname) : TestCaseType(tname)
-{
+ActionCoreTest::ActionCoreTest(TString tname) :
+		TestCaseType(tname) {
 	StartTrace(ActionCoreTest.Ctor);
 }
 
-ActionCoreTest::~ActionCoreTest()
-{
+ActionCoreTest::~ActionCoreTest() {
 	StartTrace(ActionCoreTest.Dtor);
 }
 
-void ActionCoreTest::ConsistentTransitionHandling()
-{
+void ActionCoreTest::ConsistentTransitionHandling() {
 	StartTrace(ActionCoreTest.ConsistentTransitionHandling);
 
 	String transitionToken;
@@ -58,8 +55,7 @@ void ActionCoreTest::ConsistentTransitionHandling()
 	assertEqual("ReturnFalse", transitionToken);
 }
 
-void ActionCoreTest::EmptyConfigurationTransitionHandling()
-{
+void ActionCoreTest::EmptyConfigurationTransitionHandling() {
 	StartTrace(ActionCoreTest.EmptyConfigurationTransitionHandling);
 
 	String transitionToken;
@@ -97,8 +93,7 @@ void ActionCoreTest::EmptyConfigurationTransitionHandling()
 	assertEqual("ReturnFalse", transitionToken);
 }
 
-void ActionCoreTest::ConfiguredTransitionHandling()
-{
+void ActionCoreTest::ConfiguredTransitionHandling() {
 	StartTrace(ActionCoreTest.ConfiguredTransitionHandling);
 
 	String transitionToken;
@@ -143,8 +138,7 @@ void ActionCoreTest::ConfiguredTransitionHandling()
 	assertEqual("Changed", transitionToken);
 }
 
-void ActionCoreTest::ActionSequence()
-{
+void ActionCoreTest::ActionSequence() {
 	StartTrace(ActionCoreTest.ActionSequence);
 
 	String transitionToken;
@@ -196,8 +190,7 @@ void ActionCoreTest::ActionSequence()
 	assertEqual("Changed", tmpStore["ConfiguredTestAction"].AsString("x"));
 }
 
-void ActionCoreTest::AbortedActionSequence()
-{
+void ActionCoreTest::AbortedActionSequence() {
 	StartTrace(ActionCoreTest.ActionSequence);
 
 	String transitionToken;
@@ -217,8 +210,7 @@ void ActionCoreTest::AbortedActionSequence()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *ActionCoreTest::suite ()
-{
+Test *ActionCoreTest::suite() {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ActionCoreTest, ConsistentTransitionHandling);
 	ADD_CASE(testSuite, ActionCoreTest, EmptyConfigurationTransitionHandling);

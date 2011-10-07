@@ -11,7 +11,6 @@
 #include "FoundationTestTypes.h"
 #include "StringStreamSocket.h"
 #include "Server.h"
-#include "Tracer.h"
 #include "AnythingUtils.h"
 
 void RequestProcessorTest::InitTest() {
@@ -70,6 +69,11 @@ void RequestProcessorTest::ProcessRequestTest() {
 	assertEqual("{\n  1\n}", str);
 }
 
+void RequestProcessorTest::tearDown() {
+	StartTrace(RequestProcessorTest.tearDown);
+	WDModule::Terminate(ROAnything());
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *RequestProcessorTest::suite() {
 	StartTrace(RequestProcessorTest.suite);
@@ -84,9 +88,8 @@ Test *RequestProcessorTest::suite() {
 RegisterRequestProcessor(LoopbackProcessor);
 
 LoopbackProcessor::LoopbackProcessor(const char *processorName) :
-	RequestProcessor(processorName) {
-	StartTrace(LoopbackProcessor.LoopbackProcessor)
-	;
+		RequestProcessor(processorName) {
+	StartTrace(LoopbackProcessor.LoopbackProcessor);
 }
 
 bool LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
