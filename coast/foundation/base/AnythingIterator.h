@@ -64,7 +64,7 @@ public:
 	}
 };
 
-typedef std::iterator<std::random_access_iterator_tag, class Anything, ptrdiff_t, const class Anything *, const class Anything &> ConstIteratorBase;
+typedef std::iterator<std::random_access_iterator_tag, class Anything, std::ptrdiff_t, const class Anything *, const class Anything &> ConstIteratorBase;
 
 // no direct support for const_iterators, need to spell out std::iterator template parameters
 class Anything_const_iterator : public ConstIteratorBase

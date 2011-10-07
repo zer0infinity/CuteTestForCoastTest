@@ -35,9 +35,9 @@ static const String fgStrEmpty(Coast::Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Coast::Storage::Global()); // avoid temporary
 
 String AnyImpl::ThisToHex(Allocator *a) const {
-	char buf[1+2*sizeof(ptrdiff_t)];
+	char buf[1+2*sizeof(std::ptrdiff_t)];
 	static char const *const fmt = (sizeof(this)>4)?"%016tx":"%08tx"; // assume large pointers are 64bit = 8 Bytes large
-	int iSize = snprintf(buf, sizeof(buf), fmt, reinterpret_cast<ptrdiff_t>(this));
+	int iSize = snprintf(buf, sizeof(buf), fmt, reinterpret_cast<std::ptrdiff_t>(this));
 	String hexStr(buf, iSize, a);
 	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Coast::Storage::Current());
 	return hexStr;

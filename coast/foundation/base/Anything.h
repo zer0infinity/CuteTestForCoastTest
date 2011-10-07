@@ -514,7 +514,7 @@ protected:
 	union {
 		AnyImpl *fAnyImp;
 		Allocator *fAlloc;
-		ptrdiff_t bits;
+		std::ptrdiff_t bits;
 	};
 	friend class AnythingTest;
 };
