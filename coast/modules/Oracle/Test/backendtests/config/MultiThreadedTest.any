@@ -15,11 +15,11 @@
 	/Modules {
 		ActionsModule
 		RenderersModule
-		OracleModule
 		DataAccessImplsModule
 		MappersModule
 		AppLogModule
 		ServersModule
+		OracleModule
 	}
 
 	/Servers {}

@@ -9,10 +9,7 @@
 #ifndef ORACLECONNECTION_H_
 #define ORACLECONNECTION_H_
 
-//--- modules used in the interface
 #include "Anything.h"
-#include "Threads.h"
-#include "OciAutoHandle.h"
 #include "SystemLog.h"
 #include "OracleEnvironment.h"
 
@@ -61,10 +58,6 @@ private:
 	SvcHandleType fSvchp;
 	//! OCI user session handle
 	UsrHandleType fUsrhp;
-
-	static Anything fgDescriptionCache;
-	static ROAnything fgDescriptionCacheRO;
-	static RWLock fgDescriptionLock;
 
 	OracleConnection();
 	OracleConnection( const OracleConnection & );

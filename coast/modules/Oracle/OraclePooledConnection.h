@@ -9,11 +9,8 @@
 #ifndef ORACLEPOOLEDCONNECTION_H_
 #define ORACLEPOOLEDCONNECTION_H_
 
-//--- modules used in the interface
-#include "AllocatorNewDelete.h"
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
-#include "ITOString.h"
 #include "IFAObject.h"
 
 //! Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool

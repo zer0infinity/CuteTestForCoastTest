@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/LowerBound		0		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
@@ -15,9 +14,12 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-### common Sybase section
+	/WDModule {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/OracleModule {
-		/MainSwitch						0
+		/MainSwitch						10
 		/EnableAll						10
 	}
 	/OracleDAImpl {

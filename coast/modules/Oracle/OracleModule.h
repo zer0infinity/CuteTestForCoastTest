@@ -11,7 +11,6 @@
 
 #include "WDModule.h"
 #include "ConnectionPool.h"
-#include <memory>
 
 //! Module to initialize Oracle Data Access
 /*!

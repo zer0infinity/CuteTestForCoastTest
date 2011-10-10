@@ -863,7 +863,7 @@ namespace {
 	class MutexInitializer {
 		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
 		SimpleMutexPtr fMutexIdMutex;
-		THREADKEY fCountTableKey;	// WIN32 defined it 0xFFFFFFFF !!
+		THREADKEY fCountTableKey;
 	public:
 		MutexInitializer() : fMutexIdMutex(new SimpleMutex("MutexIdMutex", Coast::Storage::Global())), fCountTableKey(0) {
 			if (THRKEYCREATE(fCountTableKey, 0)) {

@@ -16,7 +16,7 @@ def setUp(target, source, env):
     configDir='backendtests/config'
     env['ENV']['COAST_PATH'] = configDir
 #    env['ENV']['COAST_TRACE_INITFINIS'] = 1
-#    env['ENV']['COAST_LOGONCERR'] = 2
+#    env['ENV']['COAST_LOGONCERR'] = 3
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath, COAST_PATH=configDir)
 

@@ -9,8 +9,6 @@
 #ifndef CONNECTIONPOOL_H_
 #define CONNECTIONPOOL_H_
 
-#include "DataAccessImpl.h"
-#include "Threads.h"
 #include "WPMStatHandler.h"
 
 class OraclePooledConnection;

@@ -8,40 +8,43 @@
 
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
-#include "SystemLog.h"
-#include "MT_Storage.h"
 #include "Tracer.h"
+#include "PoolAllocator.h"
 
 // set to 1 to track OCI's memory usage using our MemTracker infrastructure
 #if (1)
-dvoid *malloc_func( void *ctxp, size_t size )
-{
-	Allocator *pAlloc( Coast::Storage::Global() );
-	if ( ctxp != 0 ) {
-		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
+dvoid *malloc_func(void *ctxp, size_t size) {
+	Allocator *pAlloc(Coast::Storage::Global());
+	if (ctxp != 0) {
+		pAlloc = (reinterpret_cast<OracleEnvironment *>(ctxp))->getAllocator();
 	}
-	dvoid *ptr( pAlloc->Malloc( size ) );
-	StatTrace(OracleEnvironment.mem_alloc, "size: " << (long)size << " ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
+	dvoid *ptr(pAlloc->Malloc(size));
+	StatTrace(
+			OracleEnvironment.mem_alloc,
+			"size: " << (long)size << " ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc,
+			Coast::Storage::Current());
 	return ptr;
 }
-dvoid *realloc_func( void *ctxp, void *ptr, size_t size )
-{
-	Allocator *pAlloc( Coast::Storage::Global() );
-	if ( ctxp != 0 ) {
-		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
+dvoid *realloc_func(void *ctxp, void *ptr, size_t size) {
+	Allocator *pAlloc(Coast::Storage::Global());
+	if (ctxp != 0) {
+		pAlloc = (reinterpret_cast<OracleEnvironment *>(ctxp))->getAllocator();
 	}
-	dvoid *nptr( realloc( ptr, size ) );
-	StatTrace(OracleEnvironment.mem_realloc, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
-	return ( nptr );
+	dvoid *nptr(realloc(ptr, size));
+	StatTrace(
+			OracleEnvironment.mem_realloc,
+			"size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc,
+			Coast::Storage::Current());
+	return (nptr);
 }
-void free_func( void *ctxp, dvoid *ptr )
-{
-	Allocator *pAlloc( Coast::Storage::Global() );
-	if ( ctxp != 0 ) {
-		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
-	}
-	StatTrace(OracleEnvironment.mem_free, "ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Coast::Storage::Current());
-	pAlloc->Free( ptr );
+void free_func(void *ctxp, dvoid *ptr) {
+	Allocator *pAlloc(Coast::Storage::Global());
+	if (ctxp != 0) {
+		pAlloc = (reinterpret_cast<OracleEnvironment *>(ctxp))->getAllocator();
+	}StatTrace(OracleEnvironment.mem_free,
+			"ptr: &" << (long)ptr << " allocator:" << (pAlloc == Coast::Storage::Global() ? "global" : "local") << "&" << (long)pAlloc,
+			Coast::Storage::Current());
+	pAlloc->Free(ptr);
 }
 #define ctx_ptr this
 #else
@@ -51,65 +54,30 @@ void free_func( void *ctxp, dvoid *ptr )
 #	define	ctx_ptr			NULL
 #endif
 
-#include <boost/pool/detail/singleton.hpp>
-namespace {
-	//! <b>Automatic terminator of OCI</b>
-	/*!
-	 *  This static object should only be destructed once when OCI services are not in use anymore.
-	 */
-	struct OraTerminatorImpl {
-		OracleEnvironmentPtr fEnvironment;
-		OraTerminatorImpl() {
-			fEnvironment = OracleEnvironmentPtr( new (Coast::Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
-												 16 ) );
-		}
-		~OraTerminatorImpl() {
-//			OCITerminate( OCI_DEFAULT );
-		}
-		OracleEnvironment &getGlobalEnv() {
-			return *fEnvironment.get();
-		}
-	};
-    typedef boost::details::pool::singleton_default<OraTerminatorImpl> OraTerminator;
-}
-
-OracleEnvironment &OracleEnvironment::getGlobalEnv() {
-	return OraTerminator::instance().getGlobalEnv();
-}
-
-OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPoolSize,
-									  unsigned long ulBuckets ) :
-	fEnvhp(), fMemPool( new PoolAllocator( (0xac1e << 16) | ulPoolId, ulPoolSize, ulBuckets ) )
-{
+OracleEnvironment::OracleEnvironment(Mode eMode, u_long ulPoolId, u_long ulPoolSize, unsigned long ulBuckets) :
+		fEnvhp(), fMemPool(new PoolAllocator((0xac1e << 16) | ulPoolId, ulPoolSize, ulBuckets)) {
 	StartTrace(OracleEnvironment.OracleEnvironment);
 	// caution: the following memory handles supplied must allocate on Coast::Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
 	// lifetime of the connection, multiple threads could share the same connection and so we
 	// must take care not to allocate on the first Thread opening the connection
-	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), eMode, ctx_ptr, // context
-					   malloc_func, // malloc function to allocate handles and env specific memory
-					   realloc_func, // realloc function to allocate handles and env specific memory
-					   free_func, // free function to allocate handles and env specific memory
-					   0, // extra memory to allocate
-					   NULL // pointer to user-memory
-					 ) != OCI_SUCCESS ) {
-		SystemLog::Error( "FAILED: OCIEnvCreate(): could not create OCI environment" );
+	if (OCIEnvCreate(fEnvhp.getHandleAddr(), eMode, ctx_ptr, // context
+			malloc_func, // malloc function to allocate handles and env specific memory
+			realloc_func, // realloc function to allocate handles and env specific memory
+			free_func, // free function to allocate handles and env specific memory
+			0, // extra memory to allocate
+			NULL // pointer to user-memory
+			) != OCI_SUCCESS) {
+		SystemLog::Error("FAILED: OCIEnvCreate(): could not create OCI environment");
 		fEnvhp.reset();
 	}
 }
 
-OracleEnvironment::~OracleEnvironment()
-{
-	StartTrace(OracleEnvironment.~OracleEnvironment);
-	fEnvhp.reset();
-}
-
-OracleConnectionPtr OracleEnvironment::createConnection( String const &strSrv, String const &strUsr, String const &strPwd )
-{
+OracleConnectionPtr OracleEnvironment::createConnection(String const &strSrv, String const &strUsr, String const &strPwd) {
 	StartTrace(OracleEnvironment.createConnection);
-	OracleConnectionPtr pConnection( new OracleConnection( *this ) );
-	if ( pConnection.get() ) {
-		if ( !pConnection->Open( strSrv, strUsr, strPwd ) ) {
+	OracleConnectionPtr pConnection(new OracleConnection(*this));
+	if (pConnection.get()) {
+		if (!pConnection->Open(strSrv, strUsr, strPwd)) {
 			pConnection.reset();
 		}
 	}

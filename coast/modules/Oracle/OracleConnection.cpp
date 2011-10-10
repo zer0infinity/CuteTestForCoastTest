@@ -10,11 +10,14 @@
 #include "OracleStatement.h"
 #include "OracleException.h"
 #include "AnyIterators.h"
-#include "Tracer.h"
+#include "Threads.h"
 #include <string.h>	// for strlen
-Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
-ROAnything OracleConnection::fgDescriptionCacheRO( fgDescriptionCache );
-RWLock OracleConnection::fgDescriptionLock( "OracleDescriptorLock", Coast::Storage::Global() );
+
+namespace {
+	Anything fDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
+	ROAnything fDescriptionCacheRO( fDescriptionCache );
+	RWLock fDescriptionLock( "OracleDescriptorLock", Coast::Storage::Global() );
+}
 
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fStatus( eUnitialized ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
@@ -235,27 +238,27 @@ OracleConnection::ObjectType OracleConnection::GetSPDescription( const String &c
 
 	ObjectType aObjType( TYPE_UNK );
 	{
-		LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eReading );
-		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
+		LockUnlockEntry aLockEntry( fDescriptionLock, RWLock::eReading );
+		if ( checkGetCacheEntry(fDescriptionCacheRO, aObjType, command, desc) ) {
 			return aObjType;
 		}
 	}
 	{
-		LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eWriting );
+		LockUnlockEntry aLockEntry( fDescriptionLock, RWLock::eWriting );
 		// check if someone was faster and already stored the description
-		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
+		if ( checkGetCacheEntry(fDescriptionCacheRO, aObjType, command, desc) ) {
 			return aObjType;
 		}
-		Anything anyDesc( fgDescriptionCache.GetAllocator() );
-		Anything anyType( fgDescriptionCache.GetAllocator() );
+		Anything anyDesc( fDescriptionCache.GetAllocator() );
+		Anything anyType( fDescriptionCache.GetAllocator() );
 		aObjType = ReadSPDescriptionFromDB( command, anyDesc );
 		anyType = (long) aObjType;
 
-		SlotPutter::Operate(anyDesc, fgDescriptionCache, String(command).Append('.').Append("description"));
-		SlotPutter::Operate(anyType, fgDescriptionCache, String(command).Append('.').Append("type"));
+		SlotPutter::Operate(anyDesc, fDescriptionCache, String(command).Append('.').Append("description"));
+		SlotPutter::Operate(anyType, fDescriptionCache, String(command).Append('.').Append("type"));
 
 		TraceAny(anyDesc, "new entry [" << command << "] stored in cache");
-		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
+		if ( checkGetCacheEntry(fDescriptionCacheRO, aObjType, command, desc) ) {
 			return aObjType;
 		}
 	}
@@ -300,8 +303,7 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 	String strErr( "ReadSPDescriptionFromDB: " );
 
 	MemChecker aCheckerLocal( "OracleConnection.ReadSPDescriptionFromDB", getEnvironment().getAllocator() );
-	MemChecker aCheckerGlobal( "OracleConnection.ReadSPDescriptionFromDB",
-							   OracleEnvironment::getGlobalEnv().getAllocator() );
+	MemChecker aCheckerGlobal( "OracleConnection.ReadSPDescriptionFromDB", Coast::Storage::Global());
 
 	sword attrStat;
 	DscHandleType aDschp;
@@ -309,8 +311,8 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 								  OCI_HTYPE_DESCRIBE, 0, 0 ) ) ) ) {
 		throw OracleException( *this, attrStat );
 	}
-	Trace("after HandleAlloc, local allocator:" << (long)getEnvironment().getAllocator());
-	Trace("after HandleAlloc, global allocator:" << (long)OracleEnvironment::getGlobalEnv().getAllocator());
+	Trace("after HandleAlloc, local allocator:" << reinterpret_cast<long>(getEnvironment().getAllocator()));
+	Trace("after HandleAlloc, global allocator:" << reinterpret_cast<long>(Coast::Storage::Global()));
 
 	OCIParam *parmh( 0 );
 	ObjectType aStmtType = DescribeObjectByName(command, aDschp, parmh);

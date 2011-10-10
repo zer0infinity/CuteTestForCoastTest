@@ -7,50 +7,43 @@
  */
 
 #include "OracleModule.h"
-#include "SystemLog.h"
-#include "Tracer.h"
 
 RegisterModule(OracleModule);
 
-OracleModule::OracleModule(const char *name)
-	: WDModule(name)
-{
+OracleModule::OracleModule(const char *name) :
+		WDModule(name) {
 	StartTrace(OracleModule.OracleModule);
 }
 
-OracleModule::~OracleModule()
-{
+OracleModule::~OracleModule() {
 	StartTrace(OracleModule.~OracleModule);
 	Finis();
 }
 
-bool OracleModule::Init(const ROAnything config)
-{
+bool OracleModule::Init(const ROAnything config) {
 	StartTrace(OracleModule.Init);
 	ROAnything myCfg;
 	if (config.LookupPath(myCfg, "OracleModule")) {
 		TraceAny(myCfg, "OracleModuleConfig");
 		// initialize ConnectionPool
-		if ( !fpConnectionPool.get() ) {
+		if (!fpConnectionPool.get()) {
 			fpConnectionPool = ConnectionPoolPtr(new Coast::Oracle::ConnectionPool("OracleConnectionPool"));
 		}
-		ROAnything roaPoolConfig( myCfg["ConnectionPool"] );
+		ROAnything roaPoolConfig(myCfg["ConnectionPool"]);
 		TraceAny(roaPoolConfig, "initializing ConnectionPool with config");
 		fpConnectionPool->Init(roaPoolConfig);
 	}
 	return true;
 }
 
-Coast::Oracle::ConnectionPool *OracleModule::GetConnectionPool()
-{
+Coast::Oracle::ConnectionPool *OracleModule::GetConnectionPool() {
 	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Coast::Storage::Current());
 	return fpConnectionPool.get();
 }
 
-bool OracleModule::Finis()
-{
+bool OracleModule::Finis() {
 	StartTrace(OracleModule.Finis);
-	if ( fpConnectionPool.get() ) {
+	if (fpConnectionPool.get()) {
 		Trace("de-initialize ConnectionPool");
 		fpConnectionPool->Finis();
 		fpConnectionPool.reset();

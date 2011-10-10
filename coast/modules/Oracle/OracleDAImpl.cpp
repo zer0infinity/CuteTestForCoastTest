@@ -16,7 +16,9 @@
 #include "TimeStamp.h"
 #include "AnyIterators.h"
 
-static const long glStringBufferSize( 4096L );
+namespace {
+	const long glStringBufferSize( 4096L );
+}
 
 RegisterDataAccessImpl( OracleDAImpl);
 

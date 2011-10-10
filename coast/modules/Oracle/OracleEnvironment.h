@@ -9,11 +9,8 @@
 #ifndef ORACLEENVIRONMENT_H_
 #define ORACLEENVIRONMENT_H_
 
-//--- modules used in the interface
 #include "AllocatorNewDelete.h"
 #include "OciAutoHandle.h"
-#include "PoolAllocator.h"
-#include <memory>
 
 class OracleConnection;
 class String;
@@ -50,9 +47,6 @@ public:
 	 * @note As we use an environment per OraclePooledConnection, we could safely use OracleEnvironment::THREADED_UNMUTEXED
 	 */
 	OracleEnvironment( Mode eMode, unsigned long ulPoolId, u_long ulPoolSize, u_long ulBuckets );
-	/*! destruction of environment handle
-	 */
-	~OracleEnvironment();
 
 	/*! access internal OCIEnv handle pointer
 	 * @return OCIEnv handle
@@ -80,7 +74,6 @@ public:
 	Allocator *getAllocator() {
 		return fMemPool.get();
 	}
-	static OracleEnvironment &getGlobalEnv();
 };
 
 #endif /* ORACLEENVIRONMENT_H_ */
