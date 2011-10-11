@@ -23,11 +23,12 @@
 #include <sys/time.h>
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
+#if defined(__sun)
+extern char **environ;
+#else
+#include <unistd.h>
 #endif
-
-namespace {
-
-}
+#endif
 
 namespace Coast {
 	namespace System {
@@ -399,7 +400,6 @@ namespace Coast {
 void Coast::System::GetProcessEnvironment(Anything &anyEnv)
 {
 	StartTrace(System.GetProcessEnvironment);
-	extern char **environ;
 	char **envp =
 #if defined(__APPLE__)
 			* _NSGetEnviron()
