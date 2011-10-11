@@ -14,7 +14,8 @@
 		ActionsModule
 		RenderersModule
 	}
-
+	/Actions {}
+	/Renderers {}
 	/Query {
 		/action		CopyTest
 		/fields		{
