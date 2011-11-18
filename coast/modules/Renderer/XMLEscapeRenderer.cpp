@@ -19,15 +19,9 @@ static const char *entitity_map[] = {
 	0
 };
 
-//---- XMLEscapeRenderer ---------------------------------------------------------------
 RegisterRenderer(XMLEscapeRenderer);
 
-XMLEscapeRenderer::XMLEscapeRenderer(const char *name) : Renderer(name) { }
-
-XMLEscapeRenderer::~XMLEscapeRenderer() { }
-
-void XMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void XMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(XMLEscapeRenderer.RenderAll);
 	String input(Renderer::RenderToString(ctx, config));
 	TraceAny(config, "Config");
@@ -36,25 +30,18 @@ void XMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAny
 		char c = input[i];
 		for (int iI = 0; entitity_map[iI]; iI += 2) {
 			if (c == entitity_map[iI][0]) {
-				reply << entitity_map[iI+1];
+				reply << entitity_map[iI + 1];
 				goto found;
 			}
 		}
 		reply << c;
-	found:
-		;
+		found: ;
 	}
 }
 
-//---- XMLUnescapeRenderer ---------------------------------------------------------------
 RegisterRenderer(XMLUnescapeRenderer);
 
-XMLUnescapeRenderer::XMLUnescapeRenderer(const char *name) : Renderer(name) { }
-
-XMLUnescapeRenderer::~XMLUnescapeRenderer() { }
-
-void XMLUnescapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
-{
+void XMLUnescapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(XMLUnescapeRenderer.RenderAll);
 	String input(Renderer::RenderToString(ctx, config));
 
@@ -65,13 +52,12 @@ void XMLUnescapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROA
 
 	while (tok(token)) {
 		for (int i = 0; entitity_map[i]; i += 2) {
-			if (token.StartsWith(entitity_map[i+1] + 1)) {
-				reply << entitity_map[i] << token.SubString(strlen(entitity_map[i+1]) - 1);
+			if (token.StartsWith(entitity_map[i + 1] + 1)) {
+				reply << entitity_map[i] << token.SubString(strlen(entitity_map[i + 1]) - 1);
 				goto found;
 			}
 		}
 		reply << "&" << token;
-	found:
-		;
+		found: ;
 	}
 }
