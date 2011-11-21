@@ -70,6 +70,7 @@ bool RegExpSearchReplaceResultMapper::DoPutAny(const char *key, Anything &value,
 			value = sText;
 		}
 	}
+	SubTraceAny(traceScript, script, "script to further process with key [" << key << "]");
 	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
 

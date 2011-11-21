@@ -7,12 +7,11 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/ConfiguredTests {
-		/NonUTF8SingleFieldAdjustLength {
-			/Value "10|x|y|abcd|"
+		/Issue293_ValueFieldContainingSeparator {
+			/Value "24|x|y|abcd | blubby \xC3\xA4blub blub|17|z|z|01234blubby 56789|"
 			/Putkey "Content"
 			/MapperConfig {
 				/MSAjaxFixFieldLengthResultMapper {
-					/DestinationSlot	Body
 					/Fields {
 						/len	0
 						/id1	*
@@ -20,67 +19,37 @@
 						/value	"+"
 					}
 					/FieldSeparator	"|"
+					/value {
+						/RegExpSearchReplaceResultMapper *
+					}
 					/Content {
 						/ResultMapper *
 					}
 				}
-			}
-			/Result {
-				/TmpStore {
-					/Body {
-						/Content "4|x|y|abcd|"
+				/RegExpSearchReplaceResultMapper {
+					/Expressions {
+						/blubby {
+							/Pattern "blubby\s+"
+							/Replacement ""
+						}
+					}
+					/PutPolicy	Put
+					/value {
+						/RootMapper *
 					}
 				}
-			}
-		}
-		/UTF8SingleFieldAdjustLength {
-			/Value "10|x|y|\xC3\xA4\xC3\xB6\xC3\xBC|"
-			/Putkey "Content"
-			/MapperConfig {
-				/MSAjaxFixFieldLengthResultMapper {
+				/RootMapper {
+					/PutPolicy	Put
+				}
+				/ResultMapper {
 					/DestinationSlot	Body
-					/Fields {
-						/len	0
-						/id1	*
-						/id2	*
-						/value	"+"
-					}
-					/FieldSeparator	"|"
-					/Content {
-						/ResultMapper *
-					}
+					/PutPolicy Put
 				}
 			}
 			/Result {
 				/TmpStore {
 					/Body {
-						/Content "3|x|y|\xC3\xA4\xC3\xB6\xC3\xBC|"
-					}
-				}
-			}
-		}
-		/NonUTF8MultipleFieldAdjustLength {
-			/Value "10|x|y|abcd|-1|a|b|0|77|hjhj|jkljlkl|blubby blub blub|"
-			/Putkey "Content"
-			/MapperConfig {
-				/MSAjaxFixFieldLengthResultMapper {
-					/DestinationSlot	Body
-					/Fields {
-						/len	0
-						/id1	*
-						/id2	*
-						/value	"+"
-					}
-					/FieldSeparator	"|"
-					/Content {
-						/ResultMapper *
-					}
-				}
-			}
-			/Result {
-				/TmpStore {
-					/Body {
-						/Content "4|x|y|abcd|1|a|b|0|16|hjhj|jkljlkl|blubby blub blub|"
+						/Content "17|x|y|abcd | \xC3\xA4blub blub|10|z|z|0123456789|"
 					}
 				}
 			}

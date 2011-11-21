@@ -12,6 +12,7 @@
 #include "StringStream.h"
 #include "utf8.h"
 #include "AnyIterators.h"
+#include "Context.h"
 
 namespace {
 	char const *_FieldList = "Fields";
@@ -19,14 +20,36 @@ namespace {
 	long const _lenMarker = 0L;
 	char const _addMarker = '+';
 
+	String getSubString(String const &sText, long const valueFieldLength) {
+		char const *itStart = sText.cstr(),
+				*it = itStart,
+				*itEnd = itStart+sText.Length();
+		try {
+			utf8::advance(it,valueFieldLength,itEnd);
+		} catch (utf8::not_enough_room& e) {
+			it=itStart+valueFieldLength;
+		} catch (utf8::invalid_code_point& e) {
+			it=itStart+valueFieldLength;
+		}
+		String valueString(itStart,it);
+		StatTrace(MSAjaxFixFieldLengthResultMapper.getSubString, "result str [" << valueString << "], len: " << (long)(it-itStart), Coast::Storage::Current());
+		return valueString;
+	}
 	Anything getEntryFromString(String &sText, char const delim, long const nFields, ROAnything roaFieldList) {
+		StartTrace(MSAjaxFixFieldLengthResultMapper.getEntryFromString);
 		Anything anyEntry;
 		long const _delimLen = 1;
-		for ( long lIdx=0, delimPos=0; lIdx < nFields; ++lIdx) {
+		long lIdx=0;
+		for ( long delimPos=0; lIdx < nFields-1; ++lIdx) {
 			delimPos = sText.StrChr(delim);
 			anyEntry[roaFieldList.SlotName(lIdx)] = sText.SubString(0, delimPos);
 			sText.TrimFront(delimPos+_delimLen);
 		}
+		TraceAny(anyEntry,"fields so far");
+		long valueFieldLength = anyEntry[0L].AsLong(-1L);
+		String value = getSubString(sText, valueFieldLength);
+		anyEntry[roaFieldList.SlotName(lIdx)] = value;
+		sText.TrimFront(value.Length()+_delimLen);
 		return anyEntry;
 	}
 	long getStringLength(String const &str) {
@@ -88,6 +111,21 @@ bool MSAjaxFixFieldLengthResultMapper::DoPutAny(const char *key, Anything &value
 		while ( sText.Length() ) {
 			Anything anyEntry = getEntryFromString(sText, delim, nFields, roaFieldList);
 			if ( anyEntry.GetSize() == nFields ) {
+				long valueEntryIndex = anyEntry.GetSize()-1; // or nFields-1
+				Anything anyValueTopProcess = anyEntry[valueEntryIndex];
+				String valuePutKey = roaFieldList.SlotName(valueEntryIndex);
+				Trace("putting value to process with key [" << valuePutKey << "]");
+				ROAnything valueScript = SelectScript(valuePutKey, fConfig, ctx);
+				TraceAny(valueScript, "configuration to put the current value");
+				if ( ResultMapper::DoPutAny(valuePutKey, anyValueTopProcess, ctx, valueScript) ) {
+					Trace("successfully put the value");
+					Anything anyModifiedValue;
+					// hack...
+					if ( ctx.GetTmpStore().LookupPath(anyModifiedValue,valuePutKey) ) {
+						TraceAny(anyModifiedValue, "modified value");
+						anyEntry[valueEntryIndex] = anyModifiedValue;
+					}
+				}
 				adjustLengthField(anyEntry, roaFieldList);
 				appendEntryToString(strOut, delim, anyEntry);
 			}

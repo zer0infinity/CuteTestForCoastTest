@@ -14,7 +14,14 @@
 #include "Mapper.h"
 
 //! Tokenize an MSAjax (UTF8 aware) string and fix potentially broken length fields, e.g. after replacements.
-/*! Search regular expression \c /Pattern or \c /SimplePattern in String convertible value or stream.
+/*! Adjust length field of MSAjax content after letting a Mapper script process the content.
+ * The script can be specified with the same name as it was listed in the Fields slot.
+ * \note Putting of each modified \em row will use the same key as this mapper was activated
+ * with. If the initial content contains multiple rows you probably need to adjust the
+ * PutPolicy to Append and finally use a Renderer to stringify the resulting Anything.
+ * \note The final mapper used to put the \em value field content should be configured
+ * to always overwrite, /PutPolicy Put, the existing content to not accumulate it with
+ * multiple rows.
  *
  * @section msarm1 Mapper configuration
 @code
@@ -50,6 +57,9 @@
 		/value	"+"
 	}
 	/FieldSeparator	"|"
+	/value {
+		/RootMapper *
+	}
 	/Content {
 		/ResultMapper *
 	}
