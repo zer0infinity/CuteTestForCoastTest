@@ -113,14 +113,14 @@ namespace {
 		\param stbuf stat buffer to fill
 		\param bIsSymbolicLink set to true if the given path is a link pointing either to a file or directory. The st_mode member of the stat param will be set to the real type the link points to.
 		\return true in case the call to stat was successful */
-	bool CheckPath(const char *path, struct stat *stbuf, bool &bIsSymbolicLink)
+	bool CheckPath(const char *path, struct stat64 *stbuf, bool &bIsSymbolicLink)
 	{
 		StartTrace(System.CheckPath);
 		bool result = false;
 #if defined(WIN32) //!@TODO: symlinks seem to be supported since vista
 		bIsSymbolicLink = false;
 #else
-		while ( !(result = (lstat(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
+		while ( !(result = (lstat64(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
 			String msg("OOPS, lstat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
 			Trace(msg);
@@ -131,7 +131,7 @@ namespace {
 			Trace("mode field value of lstat: " << (long)stbuf->st_mode);
 		}
 #endif
-		while ( !(result = (stat(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
+		while ( !(result = (stat64(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
 			String msg("OOPS, stat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
 			Trace(msg);
@@ -842,7 +842,7 @@ namespace Coast {
 
 		bool IsRegularFile(const char *path)
 		{
-			struct stat stbuf;
+			struct stat64 stbuf;
 			bool bIsSymbolicLink;
 			if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 		#if defined(WIN32)
@@ -858,7 +858,7 @@ namespace Coast {
 
 		bool IsDirectory(const char *path)
 		{
-			struct stat stbuf;
+			struct stat64 stbuf;
 			bool bIsSymbolicLink;
 			if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 		#if defined(WIN32)
@@ -874,7 +874,7 @@ namespace Coast {
 
 		bool IsSymbolicLink(const char *path)
 		{
-			struct stat stbuf;
+			struct stat64 stbuf;
 			bool bIsSymbolicLink = false;
 			if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 				return bIsSymbolicLink;
@@ -885,7 +885,7 @@ namespace Coast {
 		bool GetFileSize(const char *path, ul_long &ulFileSize)
 		{
 			StartTrace1(System.GetFileSize, "path to file [" << NotNull(path) << "]");
-			struct stat stbuf;
+			struct stat64 stbuf;
 			bool bIsSymbolicLink;
 			if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 				ulFileSize = stbuf.st_size;
@@ -1055,10 +1055,10 @@ namespace Coast {
 		int GetNumberOfHardLinks(const char *path)
 		{
 			StartTrace1(System.GetNumberOfHardLinks, "directory [" << NotNull(path) << "]");
-			struct stat	mystat;
+			struct stat64	mystat;
 
 			// acquire inode information
-			if (stat(path, &mystat) == -1) {
+			if (stat64(path, &mystat) == -1) {
 				SYSERROR("Could not acquire inode information for " << path << "; stat reports [" << SystemLog::LastSysError() << "]");
 				return -1;
 			}
