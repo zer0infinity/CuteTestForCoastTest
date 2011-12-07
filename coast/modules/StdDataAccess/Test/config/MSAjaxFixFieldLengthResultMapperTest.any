@@ -25,6 +25,13 @@
 					/Content {
 						/ResultMapper *
 					}
+					/ContentLength {
+						/RootMapper {
+							/ContentLength {
+								/"HTTPHeader.CONTENT-LENGTH" *
+							}
+						}
+					}
 				}
 				/RegExpSearchReplaceResultMapper {
 					/Expressions {
@@ -48,6 +55,9 @@
 			}
 			/Result {
 				/TmpStore {
+					/HTTPHeader {
+						/CONTENT-LENGTH 44
+					}
 					/Body {
 						/Content "17|x|y|abcd | \xC3\xA4blub blub|10|z|z|0123456789|"
 					}

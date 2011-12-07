@@ -17,6 +17,7 @@
 namespace {
 	char const *_FieldList = "Fields";
 	char const *_FieldSeparator = "FieldSeparator";
+	char const *_LengthFieldSlot = "ContentLength";
 	long const _lenMarker = 0L;
 	char const _addMarker = '+';
 
@@ -32,7 +33,7 @@ namespace {
 			it=itStart+valueFieldLength;
 		}
 		String valueString(itStart,it);
-		StatTrace(MSAjaxFixFieldLengthResultMapper.getSubString, "result str [" << valueString << "], len: " << (long)(it-itStart), Coast::Storage::Current());
+		StatTrace(MSAjaxFixFieldLengthResultMapper.getSubString, "len: " << valueFieldLength << " bytelen: " << (long)(it-itStart) << " str [" << valueString << "]", Coast::Storage::Current());
 		return valueString;
 	}
 	Anything getEntryFromString(String &sText, char const delim, long const nFields, ROAnything roaFieldList) {
@@ -45,11 +46,11 @@ namespace {
 			anyEntry[roaFieldList.SlotName(lIdx)] = sText.SubString(0, delimPos);
 			sText.TrimFront(delimPos+_delimLen);
 		}
-		TraceAny(anyEntry,"fields so far");
 		long valueFieldLength = anyEntry[0L].AsLong(-1L);
 		String value = getSubString(sText, valueFieldLength);
 		anyEntry[roaFieldList.SlotName(lIdx)] = value;
 		sText.TrimFront(value.Length()+_delimLen);
+		TraceAny(anyEntry,"fields so far");
 		return anyEntry;
 	}
 	long getStringLength(String const &str) {
@@ -71,7 +72,7 @@ namespace {
 		long lenIdx = -1L;
 		TraceAny(anyEntry, "unmodified entry");
 		while ( fieldIterator.Next(roaField) ) {
-			TraceAny(roaField, "current field");
+			SubTraceAny(CurrentField, roaField, "current field");
 			if ( roaField.IsNull() ) continue;
 			if ( roaField.AsString()[0L] == _addMarker ) {
 				if ( fieldIterator.SlotName(strSlotname) ) {
@@ -106,19 +107,20 @@ bool MSAjaxFixFieldLengthResultMapper::DoPutAny(const char *key, Anything &value
 	long nFields = 0L;
 	if (Lookup(_FieldList, roaFieldList, '\000') && ( nFields = roaFieldList.GetSize() ) > 0L ) {
 		TraceAny(roaFieldList, "field list");
+		Trace("length of input: " << sText.Length() << " 10 last chars [" << sText.SubString(sText.Length()-10) << "]");
 		char const delim = Lookup(_FieldSeparator, "|")[0];
 		String strOut;
 		while ( sText.Length() ) {
 			Anything anyEntry = getEntryFromString(sText, delim, nFields, roaFieldList);
 			if ( anyEntry.GetSize() == nFields ) {
 				long valueEntryIndex = anyEntry.GetSize()-1; // or nFields-1
-				Anything anyValueTopProcess = anyEntry[valueEntryIndex];
+				Anything anyValueToProcess = anyEntry[valueEntryIndex];
 				String valuePutKey = roaFieldList.SlotName(valueEntryIndex);
 				Trace("putting value to process with key [" << valuePutKey << "]");
 				ROAnything valueScript = SelectScript(valuePutKey, fConfig, ctx);
-				TraceAny(valueScript, "configuration to put the current value");
-				if ( ResultMapper::DoPutAny(valuePutKey, anyValueTopProcess, ctx, valueScript) ) {
-					Trace("successfully put the value");
+				SubTraceAny(TraceMapper, valueScript, "configuration to put the current value");
+				TraceAny(anyValueToProcess, "unmodified value");
+				if ( ResultMapper::DoPutAny(valuePutKey, anyValueToProcess, ctx, valueScript) ) {
 					Anything anyModifiedValue;
 					// hack...
 					if ( ctx.GetTmpStore().LookupPath(anyModifiedValue,valuePutKey) ) {
@@ -131,6 +133,9 @@ bool MSAjaxFixFieldLengthResultMapper::DoPutAny(const char *key, Anything &value
 			}
 		}
 		value = strOut;
+		Trace("length of output: " << strOut.Length());
+		Anything lengthValue = strOut.Length();
+		ResultMapper::DoPutAny(_LengthFieldSlot, lengthValue, ctx, SelectScript(_LengthFieldSlot, fConfig, ctx));
 	}
 	return ResultMapper::DoPutAny(key, value, ctx, script);
 }
