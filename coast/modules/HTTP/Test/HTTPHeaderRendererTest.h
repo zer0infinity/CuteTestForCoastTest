@@ -16,16 +16,12 @@ public:
 	HTTPHeaderRendererTest(TString tname) :
 		TestCaseType(tname) {
 	}
-	//! builds up a suite of testcases for this test
 	static Test *suite();
-	//! describe this testcase
 	void SingleLine();
-	//! describe this testcase
 	void SingleLineMultiValue();
-	//! describe this testcase
 	void MultiLine();
-	//! describe this testcase
 	void WholeHeaderConfig();
+	void Issue299MissingFilenamePrefix();
 };
 
 #endif

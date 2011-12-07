@@ -19,7 +19,7 @@ void HTTPHeaderRendererTest::WholeHeaderConfig() {
 	cfg["HTTPHeaderRenderer"]["HeaderSlot"] = "header";
 	StringStream result;
 	Renderer::Render(result, c, cfg);
-	assertEqual("adummyheaderline", result.str());
+	assertEqual("adummyheaderline\r\n", result.str());
 }
 
 void HTTPHeaderRendererTest::SingleLine() {
@@ -62,6 +62,19 @@ void HTTPHeaderRendererTest::MultiLine() {
 			"Content-Type: text/html\r\n", result.str());
 }
 
+void HTTPHeaderRendererTest::Issue299MissingFilenamePrefix() {
+	StartTrace(HTTPHeaderRendererTest.Issue299MissingFilenamePrefix);
+	Context c;
+	c.GetTmpStore()["header"]["CONTENT-DISPOSITION"][0] = "attachment";
+	c.GetTmpStore()["header"]["CONTENT-DISPOSITION"]["FILENAME"] = "12166_reservation_07.12.2011.pdf";
+	Anything cfg;
+	cfg["HTTPHeaderRenderer"]["HeaderSlot"] = "header";
+	StringStream result;
+	Renderer::Render(result, c, cfg);
+	assertEqual("CONTENT-DISPOSITION: attachment; FILENAME=12166_reservation_07.12.2011.pdf\r\n"
+			, result.str());
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *HTTPHeaderRendererTest::suite() {
 	StartTrace(HTTPHeaderRendererTest.suite);
@@ -70,5 +83,6 @@ Test *HTTPHeaderRendererTest::suite() {
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, MultiLine);
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, SingleLineMultiValue);
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, WholeHeaderConfig);
+	ADD_CASE(testSuite, HTTPHeaderRendererTest, Issue299MissingFilenamePrefix);
 	return testSuite;
 }

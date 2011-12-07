@@ -22,7 +22,7 @@ namespace Coast {
 			ROAnything entry;
 			String valueSlotname;
 			bool first = true;
-			bool isCookie = (slotname == _COOKIE);
+			bool isCookie = (slotname == _COOKIE || slotname == _CONTENTDISPOSITIONSLOTNAME);
 			char const argumentsDelimiter = ( isCookie ? _headerCookieArgumentsDelimiter : _headerArgumentsDelimiter );
 			os << slotname << _headerNameDelimiter << _whiteSpace;
 			while (entryIter.Next(entry)) {
@@ -48,7 +48,7 @@ namespace Coast {
 		}
 		void putHeaderFieldToStream(std::ostream &os, Context &ctx, String const &slotname, ROAnything const &values) {
 			RE multivalueRE(_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
-			if ( slotname.IsEqual(_COOKIE) || multivalueRE.ContainedIn(slotname) ) {
+			if ( slotname.IsEqual(_COOKIE) || multivalueRE.ContainedIn(slotname) || slotname.IsEqual(_CONTENTDISPOSITIONSLOTNAME) ) {
 				putValuesOnSameLine(os, ctx, slotname, values);
 			} else {
 				putValuesOnMultipleLines(os, ctx, slotname, values);

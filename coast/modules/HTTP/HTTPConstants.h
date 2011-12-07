@@ -24,6 +24,7 @@ namespace Coast {
 		static const char *_httpProtocolMsgSlotname = "ResponseMsg";
 		static const char *_COOKIE = "COOKIE";
 		static const char *_SET_COOKIE = "SET-COOKIE";
+		static char const *_CONTENTDISPOSITIONSLOTNAME = "CONTENT-DISPOSITION";
 		static char const *_newLine = ENDL;
 		static char const _headerNameDelimiter = ':';
 		static char const _headerArgumentsDelimiter = ',';
