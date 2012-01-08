@@ -23,6 +23,10 @@ typedef l_long HRTIME;
 #include <sys/times.h>
 typedef hrtime_t HRTIME;
 #define GetHRTIME() gethrtime()
+#elif defined(_POSIX_SOURCE)
+#include <time.h>
+typedef l_long HRTIME;
+HRTIME GetHRTIME();
 #else
 #include <time.h>//lint !e537
 #include <sys/times.h>
@@ -69,6 +73,16 @@ public:
 
 	//! starts/resets timer to a new start value
 	void Start();
+
+	//! retrieve raw start value
+	tTimeType getRawStartTime() const {
+		return fStart;
+	}
+
+	//! retrieve current raw value
+	static tTimeType getCurrentRawTime() {
+		return GetHRTIME();
+	}
 
 	//! resets timer to a new start value and returns the scaled result - according to used resolution - since last start
 	/*! \return scaled result - according to used resolution - since last start */

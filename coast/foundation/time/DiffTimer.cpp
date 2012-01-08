@@ -9,14 +9,27 @@
 #include "DiffTimer.h"
 #include "SystemBase.h"
 #include "Tracer.h"
+#include "SystemLog.h"
+
 #if !defined(WIN32)
-HRTIME  gettimes()
-{
+#include <sys/times.h>
+clock_t gettimes() {
 	struct tms tt;
 	return times(&tt);
 }
 #endif
-
+#if defined(_POSIX_SOURCE)
+#include <time.h>
+HRTIME GetHRTIME() {
+	static HRTIME tps = DiffTimer::TicksPerSecond();
+	timespec ts;
+	if ( clock_gettime(CLOCK_REALTIME, &ts) == 0 ) {
+		return tps*ts.tv_sec+ts.tv_nsec;
+	}
+	SYSERROR("clock_gettime(CLOCK_REALTIME, &ts) was not successful [" << SystemLog::LastSysError() << "]");
+	return gettimes();
+}
+#endif
 DiffTimer::DiffTimer(DiffTimer::eResolution resolution)
 	: fStart(0),
 	  fResolution(resolution)
@@ -60,7 +73,7 @@ DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, DiffTimer::eResolution 
 			scaled = ( rawDiff * ( resolution / TicksPerSecond() ) );
 		} else {
 			// beware of overflow
-			scaled = ( (rawDiff * resolution) / TicksPerSecond() );
+			scaled = static_cast<DiffTimer::tTimeType>(static_cast<double>(rawDiff)*(static_cast<double>(resolution)/static_cast<double>(TicksPerSecond())));
 		}
 	}
 	StatTrace(DiffTimer.Scale, "TicksPerSecond(): " << TicksPerSecond() << " resolution: " << resolution << " rawDiff: " << rawDiff << " scaled: " << scaled, Coast::Storage::Current());
@@ -98,11 +111,17 @@ DiffTimer::tTimeType DiffTimer::TicksPerSecond()
 {
 	tTimeType tps( 1 );
 #if defined(__sun)
-	tps = 1000000000;
+	tps = DiffTimer::eNanoseconds;
 #elif defined(WIN32)
-	tps = 1000;
+	tps = DiffTimer::eMilliseconds;
 #else
-	tps = sysconf(_SC_CLK_TCK);
+	timespec ts;
+	if ( clock_getres(CLOCK_REALTIME, &ts) == 0) {
+		tps=DiffTimer::eNanoseconds/ts.tv_nsec;
+	} else {
+		SYSERROR("clock_getres(CLOCK_REALTIME, &ts) was not successful with [" << SystemLog::LastSysError() << "]");
+		tps = sysconf(_SC_CLK_TCK);
+	}
 #endif
 	StatTrace(DiffTimer.TicksPerSecond, "tps: " << tps, Coast::Storage::Current());
 	return tps;

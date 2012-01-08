@@ -40,7 +40,7 @@ void DiffTimerTest::ConstructorTest()
 	DiffTimer dt;
 
 	assertEqual(1000L, dt.fResolution);
-	t_assert(dt.TicksPerSecond() >= 100);
+	assertCompare(static_cast<DiffTimer::tTimeType>(100), less_equal, dt.TicksPerSecond());
 
 	dt = DiffTimer((DiffTimer::eResolution)100);
 	assertEqual(100L, dt.fResolution);
@@ -50,14 +50,17 @@ void DiffTimerTest::ScaleTest()
 {
 	StartTrace(DiffTimerTest.ScaleTest);
 	DiffTimer dt;
-#if defined(WIN32)
-	assertEqual(10, dt.Scale(10, DiffTimer::eMilliseconds));
-#elif defined(__sun)
-	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), DiffTimer::eMilliseconds));
-	assertEqual(10L, dt.Scale(10 * 1000000, DiffTimer::eMilliseconds));
-#else
-	assertEqual(100L, dt.Scale(10, DiffTimer::eMilliseconds));
-#endif
+	DiffTimer::tTimeType tps = DiffTimer::TicksPerSecond();
+	double dFactor=static_cast<double>(tps)/DiffTimer::eMilliseconds;
+	if ( dFactor >= 0.1 ) {
+		// we can measure at least in milliseconds
+		// assume at least a resolution of 10ms - linux default when using clock-ticks
+		DiffTimer::tTimeType milliTime = 10;
+		DiffTimer::tTimeType toScale = static_cast<DiffTimer::tTimeType>(dFactor*milliTime);
+		assertCompare(milliTime, equal_to, dt.Scale(toScale, DiffTimer::eMilliseconds));
+	} else {
+		t_assertm(false, "need to invent some test method for resolutions less than 10ms");
+	}
 }
 
 void DiffTimerTest::DiffTest()
