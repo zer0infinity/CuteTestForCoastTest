@@ -18,7 +18,6 @@ class WPMStatHandler: public StatEvtHandler
 {
 public:
 	WPMStatHandler(long poolSize);
-	~WPMStatHandler();
 
 	enum EWPMStatEvt { eEnter, eLeave };
 

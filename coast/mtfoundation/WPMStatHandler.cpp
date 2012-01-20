@@ -9,7 +9,10 @@
 #include "WPMStatHandler.h"
 #include "boost/format.hpp"
 
-static DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;
+namespace
+{
+	DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;
+};
 
 WPMStatHandler::WPMStatHandler(long poolSize)
 	: StatEvtHandler()
@@ -22,11 +25,6 @@ WPMStatHandler::WPMStatHandler(long poolSize)
 	, fMutex( "WPMStatHandler", Coast::Storage::Global() )
 {
 	StartTrace(WPMStatHandler.Ctor);
-}
-
-WPMStatHandler::~WPMStatHandler()
-{
-	StartTrace(WPMStatHandler.Dtor);
 }
 
 void WPMStatHandler::DoHandleStatEvt(long evt)
@@ -73,16 +71,21 @@ void WPMStatHandler::DoStatistic(Anything &statElements)
 		statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
 		statElements["MaxParallelRequests"] = fMaxParallelRequests;
 		dTotalTime = fTotalTime;
+		if ( fCurrentParallelRequests > 0 ) {
+			// need to account for elapsed time when the pool is currently under load
+			dTotalTime += fTimer.Diff();
+		}
 		ullTotalRequests = fTotalRequests;
 	}
 	statElements["TotalRequests"] = (long)ullTotalRequests;
 	// scale from microseconds to milliseconds
 	boost::format avgFmt("%-0.1f"), trxFmt("%-0.1f"), totFmt("%-0.1f");
 	double dTotalRequests( ullTotalRequests ),
+		   dScaleResolutionToMillisecondsFactor = (static_cast<double>(DiffTimer::eMilliseconds) / static_cast<double>(ullResolution)),
 		   dTrxPusec = ( dTotalTime > 0.0 ? ( dTotalRequests / dTotalTime ) : 0.0 ),
-		   dAvgTimemsec = ( dTrxPusec > 0.0 ? ( 0.001 / dTrxPusec ) : 0.0 ),
-		   dTrxPSec = ( dTotalTime > 0.0 ? ( 1000.0 / dAvgTimemsec ) : 0.0 );
-	statElements["TotalTime [ms]"] = ( dTotalTime > 0.0 ? (totFmt % ( dTotalTime / 1000.0 )).str().c_str() : "0" );
+		   dAvgTimemsec = ( dTrxPusec > 0.0 ? ( dScaleResolutionToMillisecondsFactor / dTrxPusec ) : 0.0 ),
+		   dTrxPSec = ( dTotalTime > 0.0 ? ( 1 / dAvgTimemsec * static_cast<double>(DiffTimer::eMilliseconds) / static_cast<double>(DiffTimer::eSeconds)) : 0.0 );
+	statElements["TotalTime [ms]"] = ( ( dTotalTime * dScaleResolutionToMillisecondsFactor ) > 0.0 ? (totFmt % ( dTotalTime * dScaleResolutionToMillisecondsFactor )).str().c_str() : "0" );
 	statElements["AverageTime [ms]"] = (ullTotalRequests ? ( avgFmt % dAvgTimemsec ).str().c_str() : "0");
 	statElements["TRX/sec"] = (ullTotalRequests ? ( trxFmt % dTrxPSec ).str().c_str() : "0");
 	TraceAny(statElements, "statElements");

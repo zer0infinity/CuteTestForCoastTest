@@ -92,11 +92,11 @@ void WPMStatHandlerTest::StatisticTests()
 	Anything expected;
 	Anything value;
 	wpm.Statistic(value);
+	value.Remove("TotalTime [ms]");
 	expected["PoolSize"] = 100;
 	expected["CurrentParallelRequests"] = 2;
 	expected["MaxParallelRequests"] = 2;
 	expected["TotalRequests"] = 0;
-	expected["TotalTime [ms]"] = "0";
 	expected["AverageTime [ms]"] = "0";
 	expected["TRX/sec"] = "0";
 	assertAnyEqual(expected, value);
@@ -108,7 +108,6 @@ void WPMStatHandlerTest::StatisticTests()
 	value.Remove("TotalTime [ms]");
 	value.Remove("AverageTime [ms]");
 	value.Remove("TRX/sec");
-	expected.Remove("TotalTime [ms]");
 	expected["PoolSize"] = 100;
 	expected["CurrentParallelRequests"] = 0;
 	expected["MaxParallelRequests"] = 2;
