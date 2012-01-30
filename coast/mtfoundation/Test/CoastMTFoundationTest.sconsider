@@ -4,12 +4,25 @@ from stat import *
 
 Import('*')
 
+def setUp(target, source, env):
+    env['ENV']['COAST_LOGONCERR']=3
+    env['ENV']['COAST_TRACE_STORAGE']=0
+    env['ENV']['COAST_TRACE_INITFINIS']=1
+    pass
+
+def tearDown(target, source, env):
+    pass
+
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastMTFoundation', 'testfwFoundation'],
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [( SConsider.findFiles( ['config'], ['.any'] ), S_IRUSR | S_IRGRP | S_IROTH )],
+        'runConfig'        : {
+            'setUp' : setUp,
+            'tearDown' : tearDown,
+        },
     }
 }
 

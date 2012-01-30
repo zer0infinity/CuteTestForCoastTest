@@ -172,7 +172,7 @@ void MemTracker::PrintStatistic(long lLevel)
 
 #include <boost/pool/detail/singleton.hpp>
 namespace {
-	class StatisticLevelInitializer {
+	class StorageInitializer {
 		/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
 						0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
 						1: Trace overall statistics
@@ -180,20 +180,22 @@ namespace {
 						3: + keep track of allocated blocks to trace them in case they were not freed */
 		long statisticLevel;
 	public:
-		StatisticLevelInitializer() {
+		StorageInitializer() {
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
 			statisticLevel = lLevel;
 			InitFinisManager::IFMTrace("Storage::Initialized\n");
 		}
-		~StatisticLevelInitializer() {
+		~StorageInitializer() {
 			InitFinisManager::IFMTrace("Storage::Finalized\n");
 		}
 		long GetStatisticLevel() {
 			return statisticLevel;
 		}
+		//exchange this object when MT_Storage is used
+		Coast::Storage::StorageHooksPtr fgTopHook;
 	};
-    typedef boost::details::pool::singleton_default<StatisticLevelInitializer> StatisticLevelInitializerSingleton;
+    typedef boost::details::pool::singleton_default<StorageInitializer> StorageInitializerSingleton;
 }
 
 namespace Coast
@@ -202,8 +204,6 @@ namespace Coast
 	{
 		namespace
 		{
-			//exchange this object when MT_Storage is used
-			StorageHooksPtr fgTopHook;
 
 			//flag to force global store temporarily
 			bool forceGlobal = false;
@@ -213,8 +213,8 @@ namespace Coast
 		} // anonymous namespace
 
 		void Initialize() {
-			if (fgTopHook && !forceGlobal) {
-				fgTopHook->Initialize();
+			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
+				StorageInitializerSingleton::instance().fgTopHook->Initialize();
 			}
 		}
 
@@ -227,15 +227,15 @@ namespace Coast
 		}
 
 		Allocator *Current() {
-			if (fgTopHook && !forceGlobal) {
-				return fgTopHook->Current();
+			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
+				return StorageInitializerSingleton::instance().fgTopHook->Current();
 			}
 			return DoGlobal();
 		}
 
 		Allocator *Global() {
-			if (fgTopHook && !forceGlobal) {
-				return fgTopHook->Global();
+			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
+				return StorageInitializerSingleton::instance().fgTopHook->Global();
 			}
 			return DoGlobal();
 		}
@@ -248,13 +248,13 @@ namespace Coast
 		}
 
 		void Finalize() {
-			if (fgTopHook && !forceGlobal) {
-				fgTopHook->Finalize();
+			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
+				StorageInitializerSingleton::instance().fgTopHook->Finalize();
 			}
 			DoFinalize();
 		}
 		long GetStatisticLevel() {
-			return StatisticLevelInitializerSingleton::instance().GetStatisticLevel();
+			return StorageInitializerSingleton::instance().GetStatisticLevel();
 		}
 
 		void PrintStatistic(long lLevel) {
@@ -265,15 +265,15 @@ namespace Coast
 			if (!h) {
 				return;
 			}
-			h->SetOldHook(fgTopHook);
+			h->SetOldHook(StorageInitializerSingleton::instance().fgTopHook);
 			h->Initialize();
-			fgTopHook = h;
+			StorageInitializerSingleton::instance().fgTopHook = h;
 		}
 
 		StorageHooksPtr unregisterHooks() {
-			StorageHooksPtr pOldHook = fgTopHook;
-			fgTopHook = fgTopHook->GetOldHook();
-			if (pOldHook) {
+			StorageHooksPtr pOldHook = StorageInitializerSingleton::instance().fgTopHook;
+			if (pOldHook.get()) {
+				StorageInitializerSingleton::instance().fgTopHook = pOldHook->GetOldHook();
 				pOldHook->Finalize();
 			}
 			return pOldHook;
@@ -288,8 +288,8 @@ namespace Coast
 		}
 
 		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) {
-			if (fgTopHook && !forceGlobal) {
-				return fgTopHook->MakeMemTracker(name, bThreadSafe);
+			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
+				return StorageInitializerSingleton::instance().fgTopHook->MakeMemTracker(name, bThreadSafe);
 			}
 			return DoMakeMemTracker(name);
 		}
