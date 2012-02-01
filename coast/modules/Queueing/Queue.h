@@ -11,8 +11,10 @@
 
 #include "STLStorage.h"
 #include "Threads.h"
-#include "DateTime.h"
+#include "DiffTimer.h"
+#include "MT_Storage.h"
 #include <limits>
+#include "ITOTypeTraits.h"	// for demangle
 
 //---- Queue ----------------------------------------------------------
 //! Base class for simple, thread-safe, container based queue
@@ -51,16 +53,18 @@ class QueueBase : public IFAObject, public Coast::AllocatorNewDelete
 public:
 	typedef TElementType ElementType;
 	typedef ElementType &ElementTypeRef;
+	typedef ElementType const& ConstElementTypeRef;
 	typedef TListStorageType ListStorageType;
 	typedef ListStorageType &ListStorageTypeRef;
 	typedef QueueBase<ElementType, ListStorageType> ThisType;
+	typedef long size_type;
 
-	//--- constructors
-	QueueBase(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
-		: fName(name, -1, pAlloc)
+	QueueBase(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
+		: fName(name, -1, Coast::Storage::Global())
 		, fAllocator(pAlloc)
+		, fQueueSize(lQueueSize)
 		, fSemaFullSlots(0L)
-		, fSemaEmptySlots(lQueueSize)
+		, fSemaEmptySlots(fQueueSize)
 		, fPutCount(0L)
 		, fGetCount(0L)
 		, fMaxLoad(0L)
@@ -68,18 +72,13 @@ public:
 		, fBlockingGetCount(0L)
 		, fAlive(0xf007f007)
 		, feBlocked(eBothSides)
-		, fQueueLock("QueueMutex", fAllocator)
-		, fBlockedLock("BlockedLock", fAllocator)
-		, fBlockingPutLock("BlockingPutLock", fAllocator)
-		, fBlockingGetLock("BlockingGetLock", fAllocator)
+		, fQueueLock("QueueMutex", Coast::Storage::Global())
+		, fBlockedLock("BlockedLock", Coast::Storage::Global())
+		, fBlockingPutLock("BlockingPutLock", Coast::Storage::Global())
+		, fBlockingGetLock("BlockingGetLock", Coast::Storage::Global())
 		, fContainer()
-		, fAnyStatistics(fAllocator) {
+		, fQueueStartTime(DiffTimer::eMicroseconds) {
 		StartTrace1(Queue.Queue, "queue size:" << lQueueSize);
-		fAnyStatistics["QueueSize"] = lQueueSize;
-		Anything anyTime;
-		DateTime::GetTimeOfDay(anyTime);
-		fAnyStatistics["CreateTime"]["sec"] = anyTime["sec"].AsLong(0L);
-		fAnyStatistics["CreateTime"]["usec"] = anyTime["usec"].AsLong(0L);
 		UnBlock();
 	}
 
@@ -112,13 +111,13 @@ public:
 		eDead = eTryAcquireFailed << 1,				//!< queue already destructed
 	};
 
-	//! Put element of type ElementTypeRef into queue
+	//! Put element of type ConstElementTypeRef into queue
 	/*! Either blocking or non-blocking calls are possible by setting bTryLock appropriately. By default, blocking calls are made.
 		When the queue will get shut down, blocking callers will get released and informed by StatusCode::eBlocked
 		\param anyElement element to put into queue
 		\param bTryLock specify non-/blocking call, when set to true and the queue is already full, the method will exit with an appropriate StatusCode
 		\return depending on internal state, a corresponding code will be returned */
-	StatusCode Put(ElementTypeRef anyElement, bool bTryLock = false) {
+	StatusCode Put(ConstElementTypeRef anyElement, bool bTryLock=false) {
 		StartTrace(Queue.Put);
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(ePutSide) ) {
@@ -202,39 +201,29 @@ public:
 		return lSize;
 	}
 
+	size_type capacity() const {
+		return fQueueSize;
+	}
+
 	//! Return lifetime statistics of queue
 	/*! \param anyStatistics container to contain statistic values */
 	void GetStatistics(Anything &anyStatistics) {
 		StartTrace(Queue.GetStatistics);
 		if ( IsAlive() ) {
-			long lCurSec(0L), lCurUSec(0L);
 			{
 				LockUnlockEntry me(fQueueLock);
-				// must pass a DeepClone because of reference counting
-				anyStatistics = fAnyStatistics.DeepClone(anyStatistics.GetAllocator());
-				// this Anything uses Coast::Storage::Current as default allocator so we must take care
-				// when we use a Thread specific PoolAllocator because the Pool access is not locked
-				Anything anyTime;
-				DateTime::GetTimeOfDay(anyTime);
-				lCurSec = anyTime["sec"].AsLong(0L);
-				lCurUSec = anyTime["usec"].AsLong(0L);
+				anyStatistics["QueueSize"] = fQueueSize;
+				anyStatistics["MaxLoad"] = fMaxLoad;
+				anyStatistics["PutCount"] = static_cast<long>(fPutCount);
+				anyStatistics["GetCount"] = static_cast<long>(fGetCount);
+				anyStatistics["CurrentSize"] = IntGetSize();
 			}
-			anyStatistics["MaxLoad"] = fMaxLoad;
-			anyStatistics["PutCount"] = (long)fPutCount;
-			anyStatistics["GetCount"] = (long)fGetCount;
-			anyStatistics["CurrentSize"] = IntGetSize();
-			anyStatistics["StatisticTime"]["sec"] = lCurSec;
-			anyStatistics["StatisticTime"]["usec"] = lCurUSec;
-
-			long lSecDiff(lCurSec - anyStatistics["CreateTime"]["sec"].AsLong());
-			long lUSecDiff(lCurUSec - anyStatistics["CreateTime"]["usec"].AsLong());
-			if ( lUSecDiff < 0L ) {
-				--lSecDiff;
-				lUSecDiff += 1000000L;
-			}
-			anyStatistics["LifeTime"]["sec"] = lSecDiff;
-			anyStatistics["LifeTime"]["usec"] = lUSecDiff;
-
+			anyStatistics["CreateTime"]["sec"] = static_cast<long>(DiffTimer::Scale(fQueueStartTime.getRawStartTime(), DiffTimer::eSeconds));
+			anyStatistics["StatisticTime"]["sec"] = static_cast<long>(DiffTimer::Scale(DiffTimer::getCurrentRawTime(), DiffTimer::eSeconds));
+			DiffTimer::tTimeType elapsedTimeSinceStart = fQueueStartTime.RawDiff();
+			long secondsSinceStart = static_cast<long>(DiffTimer::Scale(elapsedTimeSinceStart, DiffTimer::eSeconds));
+			anyStatistics["LifeTime"]["sec"] = secondsSinceStart;
+			anyStatistics["LifeTime"]["usec"] = static_cast<long>(DiffTimer::Scale(elapsedTimeSinceStart, DiffTimer::eMicroseconds)-(secondsSinceStart*DiffTimer::eMicroseconds));
 			TraceAny(anyStatistics, "statistics");
 		}
 	}
@@ -305,17 +294,22 @@ public:
 		return NULL;
 	}
 
+	String typeName() const {
+		return Coast::Utility::demangle<String>(typeid(ListStorageType).name()).Append('[').Append(Coast::Utility::demangle<String>(typeid(ElementType).name())).Append(']');
+	}
+
 protected:
-	//! Internal method to put an element of type ElementTypeRef into queue
+	//! Internal method to put an element of type ConstElementTypeRef into queue
 	/*! At this level, it is guaranteed that we can put an element because the caller was able to acquire the semaphore.
 		The element will get pushed into the underlying container.
 		\param anyElement element to put into queue
 		\return depending on internal state, a corresponding code will be returned */
-	StatusCode DoPut(ElementTypeRef anyElement) {
+	StatusCode DoPut(ConstElementTypeRef anyElement) {
 		StartTrace(Queue.DoPut);
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(ePutSide) ) {
 			LockUnlockEntry me(fQueueLock);
+			Coast::Threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
 			fContainer.push_back(anyElement);
 			++fPutCount;
 			fMaxLoad = std::max( fMaxLoad, (long)fContainer.size() );
@@ -335,6 +329,7 @@ protected:
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(eGetSide) ) {
 			LockUnlockEntry me(fQueueLock);
+			Coast::Threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
 			if ( fContainer.size() ) {
 				anyElement = fContainer.front();	//! \todo change here so that it's not restricted only for Anything's - use any_cast
 				fContainer.pop_front();
@@ -428,6 +423,7 @@ protected:
 
 	String		fName;
 	Allocator	*fAllocator;
+	size_type	fQueueSize;
 	Semaphore	fSemaFullSlots, fSemaEmptySlots;
 	ul_long		fPutCount, fGetCount;
 	long		fMaxLoad, fBlockingPutCount, fBlockingGetCount;
@@ -438,7 +434,7 @@ protected:
 	SimpleMutex fBlockingPutLock, fBlockingGetLock;
 	SimpleMutex::ConditionType fBlockingPutCond, fBlockingGetCond;
 	ListStorageType fContainer;
-	Anything	fAnyStatistics;
+	DiffTimer	fQueueStartTime;
 };
 
 //! Stl-container based queue
@@ -456,8 +452,9 @@ public:
 	typedef ListStorageType &ListStorageTypeRef;
 	typedef QueueBase<ElementType, ListStorageType> BaseType;
 	typedef Queue<ElementType, ListStorageType> ThisType;
+	typedef typename BaseType::size_type size_type;
 
-	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
+	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
 		StatTrace(Queue.Queue, "generic", Coast::Storage::Current());
 	}
@@ -477,8 +474,9 @@ public:
 	typedef ListStorageType &ListStorageTypeRef;
 	typedef QueueBase<ElementType, ListStorageType> BaseType;
 	typedef Queue<ElementType, ListStorageType> ThisType;
+	typedef typename BaseType::size_type size_type;
 
-	Queue(const char *name, long lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
+	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
 		StatTrace(Queue.Queue, "Anything", Coast::Storage::Current());
 		this->fContainer.SetAllocator(pAlloc);

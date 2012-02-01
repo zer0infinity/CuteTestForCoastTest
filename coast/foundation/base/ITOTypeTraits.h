@@ -138,4 +138,29 @@ namespace Coast
 	}
 }//lint !e19
 
+#ifdef __GNUG__
+#include <cxxabi.h> // __cxa_demangle
+#include <cstdlib> // ::free()
+#endif
+namespace Coast {
+	namespace Utility {
+#ifdef __GNUG__
+		template<typename ResultType>
+		inline ResultType demangle(char const *name){
+			if (!name) return "unknown";
+			char *toBeFreed = abi::__cxa_demangle(name,0,0,0);
+			ResultType result(toBeFreed?toBeFreed:name);
+			::free(toBeFreed);
+			return result;
+		}
+#else
+		// this default works reasonably well for others
+		template<typename ResultType>
+		inline ResultType demangle(char const *name){
+			return ResultType(name?name:"unknown");
+		}
+#endif
+	}
+}
+
 #endif

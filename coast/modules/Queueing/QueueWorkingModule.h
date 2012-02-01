@@ -14,7 +14,7 @@
 #include "Queue.h"
 #include "AppLog.h"
 #include "StringStream.h"
-#include "MT_Storage.h"
+#include <memory>	// for auto_ptr
 
 //---- QueueWorkingModule ----------------------------------------------------------
 //! Queue based module for message passing systems
@@ -45,25 +45,26 @@ class ElementType,
 class QueueWorkingModule : public WDModule
 {
 	friend class QueueWorkingModuleTest;
-	friend class ValueOutputtingModuleTest;
-	friend class CalculationsModuleTest;
 public:
 	typedef ElementType &ElementTypeRef;
+	typedef ElementType const& ConstElementTypeRef;
 	typedef Queue<ElementType, ListStorageType> QueueType;
-	typedef typename QueueType::ListStorageTypeRef ListStorageTypeRef;
-	typedef QueueType &AnyQueueTypeRef;
-	typedef QueueType *AnyQueueTypePtr;
+	typedef std::auto_ptr<QueueType> QueueTypePtr;
+	typedef std::auto_ptr<Context> ContextPtr;
 	typedef typename QueueType::StatusCode StatusCode;
 	typedef typename QueueType::BlockingSide BlockingSide;
 
 	//--- constructors
 	QueueWorkingModule(const char *name)
 		: WDModule(name)
-		, fpQueue(NULL)
-		, fpQAllocator(NULL)
-		, fpContext(NULL)
-		, fContextLock("QueueWorkingModuleContextLock")
-		, fAlive(0UL) {
+		, fConfig(Coast::Storage::Global())
+		, fQueue()
+		, fFailedPutbackMessages()
+		, fpQAllocator(0)
+		, fContext()
+		, fContextLock("QueueWorkingModuleContextLock", Coast::Storage::Global())
+		, fAlive(0UL)
+	{
 		StartTrace(QueueWorkingModule.QueueWorkingModule);
 	}
 
@@ -82,7 +83,7 @@ public:
 			const char *pServerName = GetNamedConfig("Logging")["Servername"].AsCharPtr("Server");
 			Server *pServer = Server::FindServer(pServerName);
 			Anything dummy;
-			fpContext = new Context(fConfig, dummy, pServer, 0, 0);
+			fContext = ContextPtr(new Context(fConfig, dummy, pServer, 0, 0));
 			IntInitQueue(GetConfig());
 			fAlive = 0xf007f007;
 			return true;
@@ -99,7 +100,7 @@ public:
 		Anything anyStat;
 		if ( GetQueueStatistics(anyStat) ) {
 			StringStream aStream;
-			aStream << "Statistics for [" << GetName() << "]\n";
+			aStream << "Statistics for [" << GetName() << "] (" << typeName() << ")\n";
 			anyStat.PrintOn(aStream, true) << "\n" << std::flush;
 			SystemLog::WriteToStderr(aStream.str());
 		}
@@ -109,8 +110,7 @@ public:
 
 		{
 			LockUnlockEntry me(fContextLock);
-			delete fpContext;
-			fpContext = NULL;
+			fContext.reset();
 		}
 
 		return true;
@@ -137,33 +137,33 @@ public:
 	bool IsBlocked(BlockingSide aSide = QueueType::eBothSides) {
 		StartTrace(QueueWorkingModule.IsBlocked);
 		bool bRet = false;
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-			bRet = fpQueue->IsBlocked(aSide);
+		if ( fQueue.get() && fQueue->IsAlive() && IsAlive() ) {
+			bRet = fQueue->IsBlocked(aSide);
 		}
 		return bRet;
 	}
 
 	void Block(BlockingSide aSide) {
 		StartTrace(QueueWorkingModule.Block);
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-			fpQueue->Block(aSide);
+		if ( fQueue.get() && fQueue->IsAlive() && IsAlive() ) {
+			fQueue->Block(aSide);
 		}
 	}
 
 	void UnBlock(BlockingSide aSide) {
 		StartTrace(QueueWorkingModule.UnBlock);
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-			fpQueue->UnBlock(aSide);
+		if ( fQueue.get() && fQueue->IsAlive() && IsAlive() ) {
+			fQueue->UnBlock(aSide);
 		}
 	}
 
 	/*! main accessor functions to work with the queue */
-	StatusCode PutElement(ElementTypeRef anyELement, bool bTryLock = false) {
+	StatusCode PutElement(ConstElementTypeRef anyELement, bool bTryLock = false) {
 		StartTrace(QueueWorkingModule.PutElement);
 		StatusCode eRet = QueueType::eDead;
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-			eRet = fpQueue->Put(anyELement, bTryLock);
-			if ( eRet != QueueType::eSuccess ) {
+		if (fQueue.get() && fQueue->IsAlive() && IsAlive()) {
+			eRet = fQueue->Put(anyELement, bTryLock);
+			if (eRet != QueueType::eSuccess) {
 				SYSWARNING("Queue->Put failed, QueueType::StatusCode:" << eRet << " !");
 			}
 		}
@@ -173,18 +173,14 @@ public:
 	StatusCode GetElement(ElementTypeRef anyValues, bool bTryLock = false) {
 		StartTrace(QueueWorkingModule.GetElement);
 		StatusCode eRet = QueueType::eDead;
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
+		if (fQueue.get() && fQueue->IsAlive() && IsAlive()) {
 			Trace("Queue still alive");
 			// try to get a failed message first
-			if ( fFailedPutbackMessages.size() > 0 ) {
-				Trace("getting failed message 1 of " << (long)fFailedPutbackMessages.size() );
-				anyValues = fFailedPutbackMessages.front();
-				fFailedPutbackMessages.pop_front();
-				eRet = QueueType::eSuccess;
-			} else {
+			eRet = fFailedPutbackMessages->Get(anyValues, true);
+			if (eRet == QueueType::eEmpty) {
 				// Default is blocking get to save cpu time
-				eRet = fpQueue->Get(anyValues, bTryLock);
-				if ( ( eRet != QueueType::eSuccess ) && ( eRet != QueueType::eEmpty ) ) {
+				eRet = fQueue->Get(anyValues, bTryLock);
+				if ((eRet != QueueType::eSuccess) && (eRet != QueueType::eEmpty)) {
 					SYSWARNING("Queue->Get failed, QueueType::StatusCode:" << eRet << " !");
 				}
 			}
@@ -192,14 +188,14 @@ public:
 		return eRet;
 	}
 
-	void PutBackElement(ElementTypeRef anyValues) {
+	void PutBackElement(ConstElementTypeRef anyValues) {
 		StartTrace(QueueWorkingModule.PutBackElement);
 		// put message back to the queue (Appends!) if possible
 		// take care not to lock ourselves up here, thus we MUST use a trylock here!
 		StatusCode eRet = PutElement(anyValues, true);
-		if ( eRet != QueueType::eSuccess && ( eRet & QueueType::eFull ) ) {
-			// no more room in Queue, need to store this message internally for later put back
-			fFailedPutbackMessages.push_back(anyValues);
+		if (eRet != QueueType::eSuccess && (eRet & QueueType::eFull)) {
+			// no more room in regular Queue, need to store this message internally for later put back
+			fFailedPutbackMessages->Put(anyValues, true);
 		}
 	}
 
@@ -210,28 +206,35 @@ public:
 	long FlushQueue(DestListType &anyElements) {
 		StartTrace(QueueWorkingModule.FlushQueue);
 		long lElements = 0L;
-		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-			fpQueue->EmptyQueue(anyElements);
+		if (fQueue.get() && fQueue->IsAlive() && IsAlive()) {
+			// first we need to empty putback Q
+			fFailedPutbackMessages->EmptyQueue(anyElements);
+			fQueue->EmptyQueue(anyElements);
 			lElements = anyElements.size();
 			LogInfo(String(GetName()) << ": flushed " << lElements << " elements");
 		}
 		return lElements;
 	}
 
-	bool GetQueueStatistics(Anything &anyStat) {
-		StartTrace(QueueWorkingModule.GetQueueStatistics);
-		if ( fpQueue ) {
-			fpQueue->GetStatistics(anyStat);
+	virtual bool DoGetQueueStatistics(Anything &anyStat) {
+		StartTrace(QueueWorkingModule.DoGetQueueStatistics);
+		if ( fQueue.get() ) {
+			fQueue->GetStatistics(anyStat);
 			return true;
 		}
 		return false;
 	}
 
+	bool GetQueueStatistics(Anything &anyStat) {
+		StartTrace(QueueWorkingModule.GetQueueStatistics);
+		return DoGetQueueStatistics(anyStat);
+	}
+
 	long GetCurrentSize() {
 		StartTrace(QueueWorkingModule.GetCurrentSize);
 		long lSize = 0L;
-		if ( fpQueue ) {
-			lSize = fpQueue->GetSize();
+		if (fQueue.get()) {
+			lSize = fQueue->GetSize();
 		}
 		return lSize;
 	}
@@ -258,6 +261,13 @@ public:
 		Log(strMessage, fLogName, iLevel);
 	}
 
+	Context *GetContext() const { return fContext.get(); };
+	QueueType *GetQueue() const { return fQueue.get(); };
+
+	String typeName() const {
+		if ( fQueue.get() ) return fQueue->typeName();
+		return String("<queue not initialized>");
+	}
 protected:
 	ROAnything GetNamedConfig(const char *name) {
 		StartTrace(QueueWorkingModule.GetNamedConfig);
@@ -269,19 +279,14 @@ protected:
 		return ((ROAnything)fConfig);
 	}
 
-	Context *GetContext() {
-		return fpContext;
-	};
-
 	void IntCleanupQueue() {
 		StartTrace(QueueWorkingModule.IntCleanupQueue);
 		// we could do something here to persist the content of the queue and the putback message buffer
-		delete fpQueue;
-		fpQueue = NULL;
-		fFailedPutbackMessages.clear();
-		if ( fpQAllocator ) {
+		fQueue.reset();
+		fFailedPutbackMessages.reset();
+		if (fpQAllocator) {
 			MT_Storage::UnrefAllocator(fpQAllocator);
-			fpQAllocator = NULL;
+			fpQAllocator = 0;
 		}
 	}
 
@@ -292,11 +297,11 @@ protected:
 	void Log(String strMessage, const char *channel, AppLogModule::eLogLevel iLevel) {
 		StartTrace(QueueWorkingModule.Log);
 		Trace(strMessage);
-		if ( IsAlive() && fpContext ) {
+		if (IsAlive() && fContext.get()) {
 			LockUnlockEntry me(fContextLock);
-			if ( IsAlive() && fpContext ) {
-				fpContext->GetTmpStore()["LogMessage"] = strMessage;
-				AppLogModule::Log(*fpContext, channel, iLevel);
+			if (IsAlive() && fContext.get()) {
+				fContext->GetTmpStore()["LogMessage"] = strMessage;
+				AppLogModule::Log(*fContext, channel, iLevel);
 			}
 		}
 	}
@@ -304,11 +309,11 @@ protected:
 	void Log(Anything &anyStatus, const char *channel, AppLogModule::eLogLevel iLevel) {
 		StartTrace(QueueWorkingModule.Log);
 		TraceAny(anyStatus, "content to log");
-		if ( IsAlive() && fpContext ) {
+		if (IsAlive() && fContext.get()) {
 			LockUnlockEntry me(fContextLock);
-			if ( IsAlive() && fpContext ) {
-				fpContext->GetTmpStore()["QueueWorkingStatus"] = anyStatus;
-				AppLogModule::Log(*fpContext, channel, iLevel);
+			if (IsAlive() && fContext.get()) {
+				Context::PushPopEntry<ROAnything> statusEntry(*fContext, "Status", anyStatus, "QueueWorkingStatus");
+				AppLogModule::Log(*fContext, channel, iLevel);
 			}
 		}
 	}
@@ -319,11 +324,12 @@ private:
 		long lQueueSize = roaConfig["QueueSize"].AsLong(100L);
 		Allocator *pAlloc = Coast::Storage::Global();
 
-		if ( roaConfig["UsePoolStorage"].AsLong(0) == 1 ) {
+		if (roaConfig["UsePoolStorage"].AsLong(0) == 1) {
 			// create unique allocator id based on a pointer value
-			long lAllocatorId = (((long)this) & 0x00007FFF);
-			pAlloc = MT_Storage::MakePoolAllocator(roaConfig["PoolStorageSize"].AsLong(10240), roaConfig["NumOfPoolBucketSizes"].AsLong(10), lAllocatorId);
-			if ( pAlloc == NULL ) {
+			long lAllocatorId = (((long) this) & 0x00007FFF);
+			pAlloc = MT_Storage::MakePoolAllocator(roaConfig["PoolStorageSize"].AsLong(10240), roaConfig["NumOfPoolBucketSizes"].AsLong(10),
+					lAllocatorId);
+			if (pAlloc == 0) {
 				SYSERROR("was not able to create PoolAllocator with Id:" << lAllocatorId << " for [" << GetName() << "], check config!");
 			} else {
 				// store allocator pointer for later deletion
@@ -331,16 +337,15 @@ private:
 				fpQAllocator = pAlloc;
 			}
 		}
-		fpQueue = new (pAlloc) QueueType(GetName(), lQueueSize, pAlloc);
-		fFailedPutbackMessages.clear();
+		fQueue = QueueTypePtr(new (pAlloc) QueueType(GetName(), lQueueSize, pAlloc));
+		fFailedPutbackMessages = QueueTypePtr(new (pAlloc) QueueType(String(GetName()).Append("PutBack")));
 	}
 
 	Anything	fConfig;
-	AnyQueueTypePtr	fpQueue;
+	QueueTypePtr fQueue, fFailedPutbackMessages;
 	Allocator	*fpQAllocator;
-	Context		*fpContext;
-	Mutex		fContextLock;
-	ListStorageType	fFailedPutbackMessages;
+	ContextPtr fContext;
+	SimpleMutex fContextLock;
 	String		fErrorLogName, fWarningLogName, fInfoLogName, fLogName;
 	u_long		fAlive;
 };

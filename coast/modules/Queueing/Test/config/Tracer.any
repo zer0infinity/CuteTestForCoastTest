@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 
 	/LowerBound				0
@@ -51,6 +50,14 @@
 	}
 	/ConsumerTerminationThread {
 		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ConsumerThreadPool {
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/PoolConsumer {
+		/MainSwitch			10
 		/EnableAll			10
 	}
 	/CountEntry {
@@ -118,9 +125,9 @@
 		/EnableAll			10
 	}
 	/ThreadPoolManager {
-		/MainSwitch			0
-		/EnableAll			0
-		/Update				10
+		/MainSwitch			10
+		/EnableAll			10
+		/Update				-10
 		/Start				10
 		/Init				10
 	}

@@ -384,6 +384,9 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator) {
 bool MT_Storage::UnregisterThread() {
 	return MTStorageInitializerSingleton::instance().UnregisterThread();
 }
+THREADKEY MT_Storage::getAllocatorKey() {
+	return MTStorageInitializerSingleton::instance().getAllocatorKey();
+}
 
 Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoolBucketSizes, long lPoolId)
 {

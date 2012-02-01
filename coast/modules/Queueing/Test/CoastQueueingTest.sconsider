@@ -1,19 +1,26 @@
-import os, pdb
 import SConsider
 from stat import *
 
 Import('*')
 
+def setUp(target, source, env):
+    env['ENV']['COAST_LOGONCERR'] = '3'
+    env['ENV']['COAST_TRACE_STORAGE'] = '0'
+
+def tearDown(target, source, env):
+    pass
+
 buildSettings = {
     packagename : {
-        'includeSubdir'    : '',
         'linkDependencies' : ['CoastQueueing', 'testfwFoundation'],
         'requires'         : ['CoastRenderers', 'CoastAppLog'],
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [(SConsider.findFiles(['config'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'public' : {
-        }
+        'runConfig'        : {
+            'setUp'     : setUp,
+            'tearDown'     : tearDown,
+        },
     }
 }
 

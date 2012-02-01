@@ -764,6 +764,24 @@ private:
 #endif
 };
 
+namespace Coast {
+	namespace Threading {
+		template<typename ValueType>
+		struct TLSEntry {
+			typedef ValueType* ValueTypePtr;
+			TLSEntry(THREADKEY key, ValueTypePtr value) : fKey(key), fOldValue(ValueTypePtr()) {
+				GETTLSDATA(fKey, fOldValue, ValueType);
+				(void) SETTLSDATA(fKey, value);
+			}
+			~TLSEntry() {
+				(void) SETTLSDATA(fKey, fOldValue);
+			}
+			THREADKEY fKey;
+			ValueTypePtr fOldValue;
+		};
+	}
+};
+
 #include "Threads.ipp"
 
 #endif

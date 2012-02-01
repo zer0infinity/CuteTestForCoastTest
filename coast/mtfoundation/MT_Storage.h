@@ -60,6 +60,9 @@ public:
 
 	//!does ref counting for allocators with mutex protection; global mutex might be slightly inefficient
 	static void UnrefAllocator(Allocator *wdallocator);
+
+	//! retrieve TLS key for Thread specific Allocator entry
+	static THREADKEY getAllocatorKey();
 };
 
 #endif
