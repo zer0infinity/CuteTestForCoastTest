@@ -14,6 +14,8 @@
 #include <fcntl.h>
 #if defined(WIN32)
 #include <io.h>
+#else
+#include <unistd.h>
 #endif
 
 void TestRunner::usage(const char *progname) const {

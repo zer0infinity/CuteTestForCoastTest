@@ -186,6 +186,24 @@ namespace STLStorage
 	}
 
 	template < typename UserAllocator >
+	class pool_refcounted;
+
+	template <typename T>
+	inline void intrusive_ptr_add_ref(STLStorage::pool_refcounted<T>* p)
+	{
+		p->AddRef();
+	}
+
+	template <typename T>
+	inline void intrusive_ptr_release(STLStorage::pool_refcounted<T>* p)
+	{
+		if (p->Release()) {
+			p->STLStorage::pool_refcounted<T>::~pool_refcounted();
+			T::free( reinterpret_cast<char *>(p) );
+		}
+	}
+
+	template < typename UserAllocator >
 	class pool_refcounted
 	{
 		friend class STLStorageTest;
@@ -317,24 +335,6 @@ namespace STLStorage
 		pool_refcount_storer fOtherPools[nOthers];
 	};
 }
-
-namespace boost
-{
-	template <typename T>
-	inline void intrusive_ptr_add_ref(STLStorage::pool_refcounted<T>* p)
-	{
-		p->AddRef();
-	}
-
-	template <typename T>
-	inline void intrusive_ptr_release(STLStorage::pool_refcounted<T>* p)
-	{
-		if (p->Release()) {
-			p->STLStorage::pool_refcounted<T>::~pool_refcounted();
-			T::free( reinterpret_cast<char *>(p) );
-		}
-	}
-} // namespace boost
 
 #include "STL_pool_allocator.h"
 #include "STL_fast_pool_allocator.h"
