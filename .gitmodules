@@ -1,36 +1,3 @@
-[submodule "3rdparty/boost"]
-	path = 3rdparty/boost
-	url = ssh://gerrit.coast-project.org:29418/boost.git
-[submodule "3rdparty/loki"]
-	path = 3rdparty/loki
-	url = ssh://gerrit.coast-project.org:29418/loki.git
-[submodule "3rdparty/zlib"]
-	path = 3rdparty/zlib
-	url = ssh://gerrit.coast-project.org:29418/zlib.git
-[submodule "3rdparty/openssl"]
-	path = 3rdparty/openssl
-	url = ssh://gerrit.coast-project.org:29418/openssl.git
-[submodule "3rdparty/iplanet_ldap"]
-	path = 3rdparty/iplanet_ldap
-	url = ssh://gerrit.coast-project.org:29418/iplanet_ldap.git
-[submodule "3rdparty/mysql"]
-	path = 3rdparty/mysql
-	url = ssh://gerrit.coast-project.org:29418/mysql.git
-[submodule "3rdparty/sybase"]
-	path = 3rdparty/sybase
-	url = ssh://gerrit.coast-project.org:29418/sybase.git
-[submodule "3rdparty/cute"]
-	path = 3rdparty/cute
-	url = ssh://gerrit.coast-project.org:29418/cute.git
-[submodule "3rdparty/oracle"]
-	path = 3rdparty/oracle
-	url = ssh://gerrit.coast-project.org:29418/oracle.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://gerrit.coast-project.org:29418/sconsider.git
-[submodule "scripts"]
-	path = scripts
-	url = ssh://gerrit.coast-project.org:29418/wdscripts.git
-[submodule "helloworld"]
-	path = helloworld
-	url = ssh://gerrit.coast-project.org:29418/helloworld.git
