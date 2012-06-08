@@ -10,6 +10,94 @@
 		/ip		!Defaults.any?SSLHost
 		/port		!Defaults.any?SSLPort
 	}
+
+	/CipherListMismatchTest
+	{
+		/CiphersDoMatch
+		{
+			/Config
+			{
+				/Address !Defaults.any?SSLHost
+				/Port !Defaults.any?SSLPort
+#				/ClientCipherList "HIGH:-SSLv2:+SSLv3"
+				/ClientCipherList "HIGH:"
+				/ClientRSALength 2048
+				/ClientDHLength 1024
+			}
+			/Expected
+			{
+				/UseConnectorSouldFail 0
+				/ConnectShouldFail 0
+			}
+		}
+		/BackendRequiresHigherCipher
+		{
+			/Config
+			{
+				/Address !Defaults.any?SSLHighCipherHost
+				/Port !Defaults.any?SSLHighCipherPort
+				/ClientCipherList "LOW:"
+				/ClientRSALength 2048
+				/ClientDHLength 1024
+			}
+			/Expected
+			{
+				/UseConnectorSouldFail 	0
+				/ConnectShouldFail 1
+			}
+		}
+		/LowRSATmpKey
+		{
+			/Config
+			{
+				/Address !Defaults.any?SSLHost
+				/Port !Defaults.any?SSLPort
+#				/ClientCipherList "HIGH:-SSLv2:+SSLv3"
+				/ClientCipherList "HIGH:"
+				/ClientRSALength 512
+				/ClientDHLength 1024
+			}
+			/Expected
+			{
+				/UseConnectorSouldFail 	0
+				/ConnectShouldFail 0
+			}
+		}
+		/LowDHTmpKey
+		{
+			/Config
+			{
+				/Address !Defaults.any?SSLHost
+				/Port !Defaults.any?SSLPort
+#				/ClientCipherList "HIGH:-SSLv2:+SSLv3"
+				/ClientCipherList "HIGH:"
+				/ClientRSALength 2048
+				/ClientDHLength 512
+			}
+			/Expected
+			{
+				/UseConnectorSouldFail 	0
+				/ConnectShouldFail 0
+			}
+		}
+		/InvalidCipherList
+		{
+			/Config
+			{
+				/Address !Defaults.any?SSLHost
+				/Port !Defaults.any?SSLPort
+				/ClientCipherList "HIGHAlibaba:"
+				/ClientRSALength 2048
+				/ClientDHLength 1024
+			}
+			/Expected
+			{
+				/UseConnectorSouldFail 	0
+				/ConnectShouldFail 1
+			}
+		}
+	}
+
 	/RemoteSSLhost {
 		/name		!Defaults.any?RemoteSSLHost
 		/port		!Defaults.any?RemoteSSLPort

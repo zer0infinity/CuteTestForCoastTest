@@ -14,7 +14,7 @@
 	}
 	/AcceptorFactories {
 		/SSLAcceptorFactory {
-			/TCP5010 { TCP5012 TCP5013 TCP5014 TCP5015 TCP5016 TCP5017 TCP5018 TCP5019 TCP5020 }
+			/TCP5010 { TCP5012 TCP5013 TCP5014 TCP5015 TCP5016 TCP5017 TCP5018 TCP5019 TCP5020 TCP5021 TCP5022 TCP5023 }
 		}
 		# Not a SSL acceptor factory!
 		/AcceptorFactory {
@@ -112,6 +112,36 @@
 			/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
+		}
+		# SSL V3
+		/Connector5021 {
+			/Address !Defaults.any?HostName
+			/Port 5021
+			/ClientCipherList "HIGH:-SSLv2:+SSLv3"
+			/ClientRSALength 2048
+			/ClientDHLength 1024
+			/KeyFileClient	!Defaults.any?RootCAKeyFileRelative
+			/CertFileClient	!Defaults.any?RootCACertFileRelative
+		}
+		# Server listener has "HIGH:-SSLv2:+SSLv3"
+		/Connector5022 {
+			/Address !Defaults.any?HostName
+			/Port 5022
+			/ClientCipherList "HIGH:+SSLv2:-SSLv3"
+			/ClientRSALength 2048
+			/ClientDHLength 1024
+			/KeyFileClient	!Defaults.any?RootCAKeyFileRelative
+			/CertFileClient	!Defaults.any?RootCACertFileRelative
+		}
+		# Server listener has "HIGH:+SSLv2:-SSLv3"
+		/Connector5023 {
+			/Address !Defaults.any?HostName
+			/Port 5023
+			/ClientCipherList "HIGH:-SSLv2:+SSLv3"
+			/ClientRSALength 2048
+			/ClientDHLength 1024
+			/KeyFileClient	!Defaults.any?RootCAKeyFileRelative
+			/CertFileClient	!Defaults.any?RootCACertFileRelative
 		}
 	}
 	/SSLListenerPoolTest
@@ -365,6 +395,54 @@
 			/Data
 			{
 				/MessageToSend	"5019_timeout_0"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/DoSendReceiveWithFailure 0
+			/IOSGoodBeforeSend			0
+			/IOSGoodAfterSend			0
+			/SSLConnector		1
+			/ConnectorToUse		"Connector5021"
+			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
+			/Data
+			{
+				/MessageToSend	"5021_timeout_1000"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/DoSendReceiveWithFailure 1
+			/IOSGoodBeforeSend			0
+			/IOSGoodAfterSend			0
+			/SSLConnector		1
+			/ConnectorToUse		"Connector5022"
+			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
+			/Data
+			{
+				/MessageToSend	"5022_timeout_1000"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/DoSendReceiveWithFailure 1
+			/IOSGoodBeforeSend			0
+			/IOSGoodAfterSend			0
+			/SSLConnector		1
+			/ConnectorToUse		"Connector5023"
+			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
+			/Data
+			{
+				/MessageToSend	"5023_timeout_1000"
 				/ChecksToDo
 				{
 				}

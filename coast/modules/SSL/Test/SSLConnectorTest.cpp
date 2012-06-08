@@ -32,6 +32,8 @@ void SSLConnectorTest::setUp ()
 	StartTrace(SSLConnectorTest.setUp);
 	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
 	sslmodule->ResetInit(Anything());
+	sslmodule = WDModule::FindWDModule("SSLObjectManager");
+	sslmodule->ResetInit(Anything());
 }
 
 void SSLConnectorTest::tearDown ()
@@ -39,6 +41,8 @@ void SSLConnectorTest::tearDown ()
 	StartTrace(SSLConnectorTest.tearDown);
 	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
 	sslmodule->ResetFinis(Anything());
+	sslmodule = WDModule::FindWDModule("SSLObjectManager");
+	sslmodule->Finis();
 }
 
 void SSLConnectorTest::simpleConstructorTest()
@@ -51,8 +55,8 @@ void SSLConnectorTest::simpleConstructorTest()
 	assertEqual( GetConfig()["InternalSSLhost"]["port"].AsLong(), sslConnector.GetPort() );
 
 	// assert the functionality of the public api
-	t_assert( sslConnector.Use() != NULL );
-	t_assert( sslConnector.GetStream() != NULL );
+	t_assert( sslConnector.Use() != 0 );
+	t_assert( sslConnector.GetStream() != 0 );
 } // simpleConstructorTest
 
 void SSLConnectorTest::allocatorConstructorTest()
@@ -63,73 +67,76 @@ void SSLConnectorTest::allocatorConstructorTest()
 		TestStorageHooks tsh(&pa);
 
 		SSLConnector connector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 0L,
-				(SSL_CTX *) NULL, (const char *) NULL, 0L, true);
+				(SSL_CTX *) 0, (const char *) 0, 0L, true);
 		Socket *socket = connector.Use();
-		if (t_assert(socket != NULL) && t_assertm(&pa == socket->GetAllocator(), "allocator should match")) {
+		if (t_assert(socket != 0) && t_assertm(&pa == socket->GetAllocator(), "allocator should match")) {
 			long socketfd = socket->GetFd();
 			t_assert(socketfd > 0);
 			std::iostream *Ios = socket->GetStream();
-			t_assert(Ios != NULL);
+			t_assert(Ios != 0);
 		}
 	}
 	{
 		TestStorageHooks tsh(Coast::Storage::Global());
 		SSLConnector connector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 0L,
-				(SSL_CTX *) NULL, (const char *) NULL, 0L, false);
+				(SSL_CTX *) 0, (const char *) 0, 0L, false);
 		Socket *socket = connector.Use();
 
-		if (t_assert(socket != NULL) && t_assertm(Coast::Storage::Global() == socket->GetAllocator(), "allocator should match")) {
+		if (t_assert(socket != 0) && t_assertm(Coast::Storage::Global() == socket->GetAllocator(), "allocator should match")) {
 			long socketfd = socket->GetFd();
 			t_assert(socketfd > 0);
 			std::iostream *Ios = socket->GetStream();
-			t_assert(Ios != NULL);
+			t_assert(Ios != 0);
 		}
 	}
 }
 
-void SSLConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, bool shouldFail)
+void SSLConnectorTest::DoConnectAndAssert(SSLConnector &sslConnector, bool connectFails, bool getStreamFails, TString caseName)
+{
+	String assertMsg(sslConnector.GetAddress());
+	assertMsg << ":" << sslConnector.GetPort() << " with timeout: " << sslConnector.GetTimeout() << " at " << caseName;
+	TString msg(assertMsg);
+	if ( connectFails ) {
+		assertComparem(reinterpret_cast<Socket*>(0), equal_to, sslConnector.Use(), msg);
+		assertComparem(reinterpret_cast<std::iostream*>(0), equal_to, sslConnector.GetStream(), msg);
+	} else if ( getStreamFails ) {
+		assertComparem(reinterpret_cast<std::iostream*>(0), equal_to, sslConnector.GetStream(), msg);
+	} else {
+		assertComparem(reinterpret_cast<Socket*>(0), not_equal_to, sslConnector.Use(), msg);
+		assertComparem(reinterpret_cast<std::iostream*>(0), not_equal_to, sslConnector.GetStream(), msg);
+	}
+}
+
+void SSLConnectorTest::ConnectAndAssert(ROAnything config, bool connectFails, bool getStreamFails, TString caseName)
+{
+	SSLConnector sslConnector(config);
+	DoConnectAndAssert(sslConnector, connectFails, getStreamFails, caseName);
+}
+
+void SSLConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, bool connectFails, bool getStreamFails, TString caseName)
 {
 	SSLConnector sslConnector(host, port, timeout);
-
-	TString msg;
-	msg << "with " << host << ":" << port;
 	// assert the internal state of the sslConnector
 	assertEqual( Resolver::DNS2IPAddress(host), sslConnector.GetAddress() );
 	assertEqual( port, sslConnector.GetPort() );
 	assertEqual( timeout, sslConnector.GetTimeout() );
-
-	// assert the funtionality of the public api
-	String assertMsg(host);
-	assertMsg << ":" << port << " with timeout: " << timeout;
-	String realMsg(assertMsg);
-	realMsg << (( sslConnector.Use() ) ? " has not failed" : " has failed");
-	if ( shouldFail ) {
-		assertMsg << " has failed";
-		assertEqual(assertMsg, realMsg);
-		t_assertm(NULL == sslConnector.Use(), msg);
-		t_assertm(NULL == sslConnector.GetStream(), msg);
-	} else {
-		assertMsg << " has not failed";
-		assertEqual(assertMsg, realMsg);
-		t_assertm( sslConnector.Use() != NULL , msg);
-		t_assertm( sslConnector.GetStream() != NULL , msg);
-	}
+	DoConnectAndAssert(sslConnector, connectFails, getStreamFails, caseName);
 }
 
 void SSLConnectorTest::timeOutTest()
 {
-	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["port"].AsLong(), 1000L, false);
-	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["faultyport"].AsLong(), 100L, true);
+	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["port"].AsLong(), 1000L, false, false, name());
+	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["faultyport"].AsLong(), 100L, true, true, name());
 } // timeOutTest
 
 void SSLConnectorTest::faultyConstructorTest()
 {
-	SSLConnector sslConnector(NULL, -1);
+	SSLConnector sslConnector(0, -1);
 	assertEqual( "", sslConnector.GetAddress() );
 	assertEqual( -1, sslConnector.GetPort() );
 
-	assertEqual( (long)NULL, (long)sslConnector.Use() );
-	assertEqual( (long)NULL, (long)sslConnector.GetStream() );
+	assertEqual( (long)0, (long)sslConnector.Use() );
+	assertEqual( (long)0, (long)sslConnector.GetStream() );
 } // faultyConstructorTest
 
 void SSLConnectorTest::getStreamTest()
@@ -141,7 +148,7 @@ void SSLConnectorTest::getStreamTest()
 		std::iostream *s1 = sslConnector.GetStream();
 		TString markfailuretimeout("timeout = ");
 		markfailuretimeout << timeout;
-		t_assertm( s1 != NULL , markfailuretimeout);	// these fail without HTTPS Server
+		t_assertm( s1 != 0 , markfailuretimeout);	// these fail without HTTPS Server
 		if (!s1) {
 			continue;
 		}
@@ -191,6 +198,25 @@ void SSLConnectorTest::getSessionIDTest()
 //	assertEqual(session_id1, session_id2); // session reuse does not work yet
 }
 
+void SSLConnectorTest::CipherListMismatchTest()
+{
+	StartTrace(SSLConnectorTest.CipherListMismatchTest);
+
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["CipherListMismatchTest"]);
+	while ( aEntryIterator.Next(cConfig) ) {
+		setUp();
+		Anything result;
+		Trace("At: " << GetTestCaseConfig().SlotName(aEntryIterator.Index()));
+		// This is the only SSLConnector using SSLObjectManager because Config param is passed, see ctor SSLConnector
+		// Therefore, the SSLObjectManager must be Finished to be "new" for every test run in the loop
+		ConnectAndAssert(cConfig["Config"],
+						 cConfig["Expected"]["UseConnectorSouldFail"].AsBool(0),
+						 cConfig["Expected"]["ConnectShouldFail"].AsBool(0), name().Append('.').Append(GetTestCaseConfig().SlotName(aEntryIterator.Index())));
+		tearDown();
+	}
+}
+
 Test *SSLConnectorTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
@@ -200,5 +226,6 @@ Test *SSLConnectorTest::suite ()
 	ADD_CASE(testSuite, SSLConnectorTest, timeOutTest);
 	ADD_CASE(testSuite, SSLConnectorTest, allocatorConstructorTest);
 	ADD_CASE(testSuite, SSLConnectorTest, getSessionIDTest);
+	ADD_CASE(testSuite, SSLConnectorTest, CipherListMismatchTest);
 	return testSuite;
 }

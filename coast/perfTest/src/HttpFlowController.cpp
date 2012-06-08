@@ -829,7 +829,10 @@ void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx) {
 	sslModuleCfg["KeyFileClient"] = "";
 	sslModuleCfg["CertFileClient"] = "";
 	sslModuleCfg["NoCertAndPrivateKey"] = 1L;
-	sslModuleCfg["SSLClientSessionTimeout"] = 86400L; // one day
+	sslModuleCfg["SSLClientSessionTimeout"] = 86400L;	// one day
+	sslModuleCfg["ClientDHLength"] = 1024L;
+	sslModuleCfg["ClientRSALength"] = 2048L;
+	sslModuleCfg["ClientCipherList"] = "HIGH:-SSLv2:+SSLv3";
 }
 
 void HttpFlowController::PrepareConnector(Context &ctx) {

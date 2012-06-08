@@ -130,7 +130,8 @@ def setUp(target, source, env):
         searchReplace.append((r"##certdir_abs##",certOutDir));
         searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
         ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
-        threading.Thread(target=startServer, args=[defaults['HostName'], defaults['SSLPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+        threading.Thread(target=startServer, args=[defaults['SSLHost'], defaults['SSLPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+        threading.Thread(target=startServer, args=[defaults['SSLHighCipherHost'], defaults['SSLHighCipherPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt'), 'ciphers':defaults['SSLHighCipherList']}).start()
 
 def tearDown(target, source, env):
     for server in servers:

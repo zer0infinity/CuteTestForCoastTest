@@ -124,4 +124,40 @@
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		!Defaults.any?RootCACertFileSubject
 	}
+	/TCP5021 {
+		/Port	5021
+		/KeyFileServer	!Defaults.any?RootCAKeyFileRelative
+		/CertFileServer	!Defaults.any?RootCACertFileRelative
+		/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
+		/SSLVerifyDepth 1
+		/SSLVerifyPeerCert 0
+		/SSLVerifyFailIfNoPeerCert 1
+		/ServerCipherList "HIGH:-SSLv2:+SSLv3"
+		/ServerRSALength 2048
+		/ServerDHLength 1024
+	}
+	/TCP5022 {
+		/Port	5022
+		/KeyFileServer	!Defaults.any?RootCAKeyFileRelative
+		/CertFileServer	!Defaults.any?RootCACertFileRelative
+		/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
+		/SSLVerifyDepth 1
+		/SSLVerifyPeerCert 0
+		/SSLVerifyFailIfNoPeerCert 1
+		/ServerCipherList "HIGH:-SSLv2:+SSLv3"
+		/ServerRSALength 2048
+		/ServerDHLength 1024
+	}
+	/TCP5023 {
+		/Port	5023
+		/KeyFileServer	!Defaults.any?RootCAKeyFileRelative
+		/CertFileServer	!Defaults.any?RootCACertFileRelative
+		/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
+		/SSLVerifyDepth 1
+		/SSLVerifyPeerCert 0
+		/SSLVerifyFailIfNoPeerCert 1
+		/ServerCipherList "HIGH:+SSLv2:-SSLv3"
+		/ServerRSALength 2048
+		/ServerDHLength 1024
+	}
 }

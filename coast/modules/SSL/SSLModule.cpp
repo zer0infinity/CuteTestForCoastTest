@@ -19,25 +19,113 @@ using namespace Coast;
 static void thread_setup(void);
 static void thread_cleanup(void);
 
-static unsigned char dh512_p[] = { 0xDA, 0x58, 0x3C, 0x16, 0xD9, 0x85, 0x22, 0x89, 0xD0, 0xE4, 0xAF, 0x75, 0x6F, 0x4C, 0xCA, 0x92, 0xDD,
-		0x4B, 0xE5, 0x33, 0xB8, 0x04, 0xFB, 0x0F, 0xED, 0x94, 0xEF, 0x9C, 0x8A, 0x44, 0x03, 0xED, 0x57, 0x46, 0x50, 0xD3, 0x69, 0x99, 0xDB,
-		0x29, 0xD7, 0x76, 0x27, 0x6B, 0xA2, 0xD3, 0xD4, 0x12, 0xE2, 0x18, 0xF4, 0xDD, 0x1E, 0x08, 0x4C, 0xF6, 0xD8, 0x00, 0x3E, 0x7C, 0x47,
-		0x74, 0xE8, 0x33, };
-static unsigned char dh512_g[] = { 0x02, };
+//----- hack ------------------------------
+static unsigned char dh512_p[] = {
+	0xDA, 0x58, 0x3C, 0x16, 0xD9, 0x85, 0x22, 0x89, 0xD0, 0xE4, 0xAF, 0x75,
+	0x6F, 0x4C, 0xCA, 0x92, 0xDD, 0x4B, 0xE5, 0x33, 0xB8, 0x04, 0xFB, 0x0F,
+	0xED, 0x94, 0xEF, 0x9C, 0x8A, 0x44, 0x03, 0xED, 0x57, 0x46, 0x50, 0xD3,
+	0x69, 0x99, 0xDB, 0x29, 0xD7, 0x76, 0x27, 0x6B, 0xA2, 0xD3, 0xD4, 0x12,
+	0xE2, 0x18, 0xF4, 0xDD, 0x1E, 0x08, 0x4C, 0xF6, 0xD8, 0x00, 0x3E, 0x7C,
+	0x47, 0x74, 0xE8, 0x33,
+};
+static unsigned char dh512_g[] = {
+	0x02,
+};
 
-static DH *get_dh512() {
-	DH *dh = NULL;
+static DH *get_dh512()
+{
+	DH *dh = 0;
 
-	if ((dh = DH_new()) == NULL) {
-		return (NULL);
+	if ((dh = DH_new()) == 0) {
+		return(0);
 	}
-	dh->p = BN_bin2bn(dh512_p, sizeof(dh512_p), NULL);
-	dh->g = BN_bin2bn(dh512_g, sizeof(dh512_g), NULL);
-	if ((dh->p == NULL) || (dh->g == NULL)) {
-		return (NULL);
+	dh->p = BN_bin2bn(dh512_p, sizeof(dh512_p), 0);
+	dh->g = BN_bin2bn(dh512_g, sizeof(dh512_g), 0);
+	if ((dh->p == 0) || (dh->g == 0)) {
+		return(0);
 	}
-	return (dh);
+	return(dh);
 }
+
+// Generate with: dhparam -C -noout 1024
+static unsigned char dh1024_p[] = {
+	0xA6, 0xD9, 0x24, 0xC3, 0x0C, 0x6A, 0x2E, 0x84, 0x6C, 0xEC, 0x6A, 0x54,
+	0xEE, 0xE1, 0x28, 0x25, 0x20, 0xA6, 0x63, 0xD4, 0x2E, 0xC8, 0x2B, 0x99,
+	0x48, 0x1B, 0xB1, 0x98, 0xA4, 0x2B, 0x6F, 0xA7, 0x23, 0x00, 0x4C, 0xAD,
+	0x25, 0x57, 0xDC, 0x9B, 0x00, 0xB7, 0x8A, 0x7E, 0xB3, 0x83, 0xF3, 0xAB,
+	0x56, 0xF9, 0xF7, 0x29, 0x9F, 0x48, 0x88, 0xF7, 0xBC, 0x86, 0xD8, 0xCA,
+	0x4C, 0xD1, 0x13, 0xC5, 0x66, 0xE2, 0xC4, 0x50, 0xB2, 0x0E, 0xE8, 0xCE,
+	0xAC, 0x5C, 0x0D, 0xF9, 0x10, 0xA8, 0x34, 0x91, 0x2C, 0x39, 0xDA, 0x6E,
+	0xEB, 0xFB, 0xCC, 0x4E, 0x18, 0x4B, 0xAB, 0x74, 0x33, 0x8E, 0xA5, 0x1E,
+	0x16, 0x8A, 0xFE, 0x73, 0xE4, 0xEC, 0xEE, 0x44, 0x5D, 0xAD, 0x2F, 0xEF,
+	0x32, 0xFE, 0x5F, 0x45, 0x55, 0xD2, 0x57, 0xEE, 0x0B, 0x73, 0x92, 0xE3,
+	0x57, 0x31, 0x88, 0xF5, 0x9C, 0x26, 0x1C, 0x53,
+};
+static unsigned char dh1024_g[] = {
+	0x02,
+};
+
+DH *get_dh1024()
+{
+	DH *dh;
+
+	if ((dh = DH_new()) == 0) {
+		return(0);
+	}
+	dh->p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), 0);
+	dh->g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), 0);
+	if ((dh->p == 0) || (dh->g == 0)) {
+		DH_free(dh);
+		return(0);
+	}
+	return(dh);
+}
+
+// Generate with: dhparam -C -noout 2048
+static unsigned char dh2048_p[] = {
+	0xD1, 0x77, 0xFA, 0x96, 0x41, 0x88, 0x35, 0x34, 0x93, 0x70, 0xD8, 0x2B,
+	0x93, 0x82, 0x35, 0xC6, 0xA2, 0x2D, 0x45, 0x2B, 0x99, 0x03, 0x4F, 0x71,
+	0xE9, 0xD5, 0xF7, 0xE0, 0xEF, 0x83, 0x1B, 0x2F, 0xCF, 0x14, 0xBD, 0xCA,
+	0x36, 0x8C, 0xD4, 0x23, 0xD1, 0x24, 0xFF, 0x0C, 0x0B, 0x00, 0x21, 0xF0,
+	0xE0, 0xD9, 0x51, 0xE7, 0x37, 0xB8, 0xA4, 0x2C, 0x47, 0x50, 0x5E, 0x91,
+	0x92, 0xD4, 0xBA, 0x45, 0xFB, 0xEE, 0xB1, 0x0C, 0x2D, 0x39, 0x6C, 0x82,
+	0x91, 0x26, 0x43, 0xD4, 0xF8, 0x93, 0xFE, 0xE0, 0x20, 0x49, 0xC0, 0xDC,
+	0xF3, 0x19, 0xDD, 0xA2, 0x1D, 0x85, 0x28, 0x06, 0x33, 0x97, 0x97, 0xD6,
+	0x0D, 0x8B, 0xEB, 0xBC, 0x89, 0x26, 0x87, 0x4A, 0x93, 0x38, 0x03, 0x10,
+	0x98, 0x09, 0x36, 0x72, 0xA6, 0x51, 0xD5, 0x24, 0x17, 0x11, 0x24, 0xA6,
+	0xDE, 0xB8, 0x90, 0x67, 0x13, 0x4E, 0x1E, 0x2E, 0x55, 0x22, 0xEB, 0xF2,
+	0x0F, 0x49, 0xE0, 0x6C, 0x60, 0xEA, 0xBD, 0x4D, 0x02, 0x88, 0x3B, 0x8C,
+	0xB7, 0x93, 0x22, 0x0B, 0x52, 0x87, 0xCE, 0xC9, 0xCC, 0x80, 0x67, 0xB2,
+	0xB8, 0x1A, 0xDE, 0x66, 0xF2, 0x41, 0xFE, 0xF7, 0xAA, 0x07, 0x32, 0x63,
+	0xB0, 0xB8, 0xDD, 0x1A, 0xF7, 0x6E, 0x14, 0x01, 0xE1, 0xEC, 0xD0, 0x98,
+	0x4E, 0x33, 0x16, 0xE4, 0x8F, 0x97, 0x30, 0x86, 0xE1, 0x66, 0xEA, 0x33,
+	0xD0, 0x76, 0x8A, 0x45, 0x89, 0xD0, 0xB0, 0x89, 0x3D, 0x56, 0x3F, 0x93,
+	0x86, 0x3F, 0x84, 0x38, 0x9C, 0x9D, 0xC5, 0x82, 0x9D, 0xFE, 0x1D, 0x5C,
+	0x9F, 0x2E, 0x22, 0xC2, 0xA8, 0x72, 0x16, 0xF5, 0xBA, 0x54, 0x8C, 0x92,
+	0x24, 0x02, 0x67, 0xFA, 0x55, 0xCE, 0xB4, 0x7F, 0xA8, 0x27, 0xC6, 0x48,
+	0xA6, 0x1B, 0x76, 0x27, 0xCF, 0xAA, 0xEC, 0xDE, 0xF0, 0x96, 0x72, 0x3A,
+	0xC7, 0xE4, 0x61, 0x0B,
+};
+static unsigned char dh2048_g[] = {
+	0x02,
+};
+
+DH *get_dh2048()
+{
+	DH *dh = 0;
+
+	if ((dh = DH_new()) == 0) {
+		return(0);
+	}
+	dh->p = BN_bin2bn(dh2048_p, sizeof(dh2048_p), 0);
+	dh->g = BN_bin2bn(dh2048_g, sizeof(dh2048_g), 0);
+	if ((dh->p == 0) || (dh->g == 0)) {
+		DH_free(dh);
+		return(0);
+	}
+	return(dh);
+}
+
 RegisterModule(SSLModule);
 
 SSLModule::SSLModule(const char *name) :
@@ -96,15 +184,15 @@ static void thread_setup() {
 		Trace("allocating CRYPTO locks: " << fgNofCryptoMutexes);Assert(!fgCryptoMutexes);
 		fgCryptoMutexes = new RWLock*[fgNofCryptoMutexes];
 		Assert(fgCryptoMutexes);
-		ok = (fgCryptoMutexes != NULL);
+		ok = (fgCryptoMutexes != 0);
 		long i = 0;
 		for (; i < fgNofCryptoMutexes && ok; i++) {
 			fgCryptoMutexes[i] = 0;
 			String name("SSLMutex");
 			name.Append(i);
 			fgCryptoMutexes[i] = new RWLock(name);
-			ok = ok && (fgCryptoMutexes[i] != NULL);
-			Trace("allocated " << name << (fgCryptoMutexes[i] != NULL) ? "ok" : "ERROR");Assert(fgCryptoMutexes[i]);
+			ok = ok && (fgCryptoMutexes[i] != 0);
+			Trace("allocated " << name << (fgCryptoMutexes[i] != 0) ? "ok" : "ERROR");Assert(fgCryptoMutexes[i]);
 		}
 		if (ok) {
 			CRYPTO_set_locking_callback(sslLockingCallback);
@@ -161,7 +249,80 @@ SSL_CTX *SSLModule::GetSSLCtx(ConfNamedObject *object) {
 	}
 	return ctx;
 }
-SSL_CTX *SSLModule::PrepareServerContext(LookupInterface *object) {
+
+SSL_CTX *SSLModule::SetCipherList(SSL_CTX *ctx, LookupInterface *object, String lookupName, String defaultValue)
+{
+	StartTrace(SSLModule.SetCipherList);
+	// Here we load our cihper lists
+	String cipherList = object->Lookup(lookupName, defaultValue);
+	Trace("Lookup: [" << lookupName << "] Setting cipherList: [" << cipherList << "]." );
+	String logMsg;
+	if (1 != (SSL_CTX_set_cipher_list(ctx, cipherList))) {
+		logMsg << "Could not load cipher list: [" << cipherList << "] for config: [" << lookupName << "]";
+		SystemLog::Error(logMsg);
+	} else {
+		logMsg << "Loaded cipher list: [" << cipherList << "] for config: [" << lookupName << "]\n";
+		SystemLog::Info(logMsg);
+	}
+	return ctx;
+}
+
+SSL_CTX *SSLModule::SetRSAKeyLength(SSL_CTX *ctx, LookupInterface *object, String lookupName, long defaultLength)
+{
+	StartTrace(SSLModule.SetRSAKeyLength);
+
+	long rsaKeyLength = object->Lookup(lookupName, defaultLength);
+	// Don't allow 0 byte length
+	if ( rsaKeyLength == 0L ) {
+		rsaKeyLength = defaultLength;
+	}
+	Trace("Generating temp [" << rsaKeyLength << "] bit RSA key.");
+	String logMsg;
+	logMsg << "Generating RSA key with length: [" << rsaKeyLength << "] for config: [" << lookupName << "]\n";
+	SystemLog::Info(logMsg);
+	logMsg.Trim(0L);
+	// RSA_F4 -> Exponent 17
+	RSA *rsa = RSA_generate_key(rsaKeyLength, RSA_F4, 0, 0);
+	Assert(rsa);
+	long ret = 0;
+	if (1 != (ret = SSL_CTX_set_tmp_rsa(ctx, rsa))) {
+		SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
+		logMsg << "Could not generate tmp RSA key for length: [" << rsaKeyLength << "]";
+		SystemLog::Error(logMsg);
+	}
+	Trace("Generation succeeded");
+	RSA_free(rsa);
+	return ctx;
+}
+
+SSL_CTX *SSLModule::SetDiffieHellmannKey(SSL_CTX *ctx, LookupInterface *object, String lookupName, long defaultLength)
+{
+	StartTrace(SSLModule.SetDiffieHellmannKey);
+	long dhMethod = object->Lookup(lookupName, defaultLength);
+	DH *dh = 0;
+	String logMsg;
+	logMsg << "Generating DH key with length: [" << dhMethod << "] for config: [" << lookupName << "]\n";
+	SystemLog::Info(logMsg);
+	if (dhMethod == 512) {
+		dh = get_dh512();
+	} else {
+		dh = get_dh1024();
+	}
+	// Ephemeral key exchange initialization, inherited by all SSLCtx
+	// It is a bad idea to generate the keys on the fly
+	long ret = 0;
+	if (1 != (ret = SSL_CTX_set_tmp_dh(ctx, dh))) {
+		SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
+	  logMsg.Trim(0L);
+		logMsg << "Could not generate DH ephemeral key for length: [" << dhMethod << "]";
+		SystemLog::Error(logMsg);
+	}
+	DH_free(dh);
+	return ctx;
+}
+
+SSL_CTX *SSLModule::PrepareServerContext(LookupInterface *object)
+{
 	StartTrace(SSLModule.PrepareServerContext);
 	Trace("Creating SSL Context with method SSLv23");
 	SSL_CTX *ctx = SSL_CTX_new(SSLv23_server_method());
@@ -188,10 +349,14 @@ SSL_CTX *SSLModule::PrepareServerContext(LookupInterface *object) {
 SSL_CTX *SSLModule::PrepareClientContext(LookupInterface *object) {
 	StartTrace(SSLModule.PrepareClientContext);
 	Trace("Creating SSL client Context with method SSLv23");
-	SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());
-
+	SSL_CTX *ctx = SSL_CTX_new (SSLv23_client_method());
 	Assert(ctx); // we expect ssl context to be not null
-	int sslSessionCacheSize = (int) object->Lookup("SSLClientSessionCacheSize", (long) SSL_SESSION_CACHE_MAX_SIZE_DEFAULT); // default of openssl is 1024 * 20
+	SetCipherList(ctx, object, "ClientCipherList", "HIGH:-SSLv2:+SSLv3");
+	SetRSAKeyLength(ctx, object, "ClientRSALength", 2048L);
+	SetDiffieHellmannKey(ctx, object, "ClientDHLength", 1024L);
+	int sslSessionCacheSize = (int)object->Lookup(
+								  "SSLClientSessionCacheSize",
+								  (long)SSL_SESSION_CACHE_MAX_SIZE_DEFAULT);     // default of openssl is 1024 * 20
 	// By default, every 255th created session the cache is looked up for
 	// expired sessions.
 	long sslSessionTimeout = object->Lookup("SSLClientSessionTimeout", (long) 300); // default is 5 minutes
@@ -348,39 +513,18 @@ void SSLModule::SetSSLCtxVerifyParameters(SSL_CTX *ctx, LookupInterface *object)
 SSL_CTX *SSLModule::DoMakeServerContext(LookupInterface *object) {
 	StartTrace(SSLModule.DoMakeServerContext);
 	Assert(object); // we expect object to be not null
-	long ret;
 	SSL_CTX *ctx = 0;
 
 	if (object) { // we check it nevertheless for robustness
 		ctx = PrepareServerContext(object);
-
-		if (ctx) {
-			// Ephemeral key exchange initialization, inherited by all SSLCtx
-			// It is a bad idea to generate the keys on the fly
-			DH *dh = get_dh512();
-			SSL_CTX_set_tmp_dh(ctx, dh);
-			DH_free(dh);
-
+		if ( ctx ) {
+			SetDiffieHellmannKey(ctx, object, "ServerDHLength", 1024L);
 			ctx = SetOwnCertificateAndKey(ctx, object, SSLModule::eServer);
 			if (ctx) {
 				SetSSLCtxVerifyParameters(ctx, object);
 				SetSSLSetAcceptableClientCAs(ctx, object);
-
-				//			SSL_CTX_set_tmp_rsa_callback(ctx,tmp_rsa_cb);
-
-				// Here we could load our own cihper lists
-				//			Trace("Setting ciphers: " << NotNull(ciphers));
-				//			if (ciphers) SSL_CTX_set_cipher_list(ctx,ciphers);
-				Trace("Generating temp (512 bit) RSA key..." );
-				// RSA_F4 -> Exponent 17
-				RSA *rsa = RSA_generate_key(512, RSA_F4, NULL, NULL);
-				Assert(rsa);
-				if (1 != (ret = SSL_CTX_set_tmp_rsa(ctx, rsa))) {
-					SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
-					Trace("Generation failed");
-				}
-				Trace("Generation succeeded");
-				RSA_free(rsa);
+				SetCipherList(ctx, object, "ServerCipherList", "HIGH:-SSLv2:+SSLv3");
+				SetRSAKeyLength(ctx, object, "ServerRSALength", 2048L);
 			}
 		}
 	}

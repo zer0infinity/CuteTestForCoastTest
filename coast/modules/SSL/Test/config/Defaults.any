@@ -17,6 +17,10 @@
 	/RemoteSSLPort			%SSLPort
 	/FaultySSLPort			43013
 
+	/SSLHighCipherHost	"localhost"		# fqdn if available
+	/SSLHighCipherPort	43014
+	/SSLHighCipherList  "HIGH:"
+
 	/CertDirRelative		"##certdir_rel##"
 	/CertDirAbsolute		"##certdir_abs##"
 

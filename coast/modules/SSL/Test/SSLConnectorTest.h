@@ -59,10 +59,15 @@ public:
 	//!tests method GetSessionID
 	void getSessionIDTest();
 
+	//!tests cipher list mismatch
+	void CipherListMismatchTest();
+
 private:
 	// use careful, you inhibit subclass use
 	//--- private class api
-	void ConnectAndAssert(const char *host, long port, long timeout, bool shouldFail);
+	void ConnectAndAssert(ROAnything config, bool connectFails, bool getStreamFails, TString caseName);
+	void ConnectAndAssert(const char *host, long port, long timeout, bool connectFails, bool getStreamFails, TString caseName);
+	void DoConnectAndAssert(SSLConnector &sslConnecor, bool connectFails, bool getStreamFails, TString caseName);
 
 };
 

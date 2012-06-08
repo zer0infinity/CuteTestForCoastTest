@@ -37,6 +37,9 @@ protected:
 	static SSL_CTX *PrepareClientContext(LookupInterface *object);
 	static SSL_CTX *PrepareServerContext(LookupInterface *object);
 	static SSL_CTX *DoMakeServerContext(LookupInterface *object);
+	static SSL_CTX *SetCipherList(SSL_CTX *ctx, LookupInterface *object, String lookupName, String defaultValue);
+	static SSL_CTX *SetRSAKeyLength(SSL_CTX *ctx, LookupInterface *object, String lookupName, long defaultLength);
+	static SSL_CTX *SetDiffieHellmannKey(SSL_CTX *ctx, LookupInterface *object, String lookupName, long defaultLength);
 };
 
 class SSLAcceptorFactory: public AcceptorFactory {
