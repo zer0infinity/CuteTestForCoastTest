@@ -30,7 +30,8 @@ conveniently. The method of this class are called by Coast
 	/RotateSecond			long				optional, default 0, second in day when rotation takes place, takes precedence in case RotateTime is also given
 	/RotateTimeIsGmTime		bool				optional, default 0, use GMT time to determine log rotation time. Default is local time.
 	/RotateEveryNSecond		long				optional, default 0, rotates the logs every N seconds, if given, takes priority over /RotateSecond
-	/RotateEveryNSecondTime	long				optional, default "00:00:00", rotates the logs every N seconds, if given, takes priority over /RotateSecond
+	/RotateEveryNSecondTime	String				optional, default "00:00:00" (HH:MM:SS), rotates the logs every ((HH*60)+MM)*60+SS seconds, if given, takes priority over /RotateSecond
+	/FlushEveryNSeconds		long				optional, default 60, flushes buffered logs every N seconds
 	/Servers {				Anything			mandatory, list of registered servernames to have logging for, the ServersModule <b>must</b> be initialized before AppLogModule
 		/ServerName	{		Anything			mandatory, name of the registered server to create AppLogChannels for \note If the channel list is empty and the ServerName has a superclass Server with logging config, both servers will log into the same logfiles
 			/ChannelName {	Anything			optional (see above), name of the named AppLogChannel to create
@@ -94,7 +95,7 @@ public:
 
 protected:
 	static AppLogChannel *FindLogger(Context &ctx, const char *logChannel);
-	AppLogChannel *GetLogChannel(const char *servername, const char *logChannel, bool &canRotate);
+	AppLogChannel *GetLogChannel(const char *servername, const char *logChannel);
 
 	//!Opens the log streams for one server
 	bool MakeChannels(const char *servername, const Anything &config);
@@ -106,7 +107,11 @@ protected:
 	bool StartLogRotator(const char *rotateTime, long lRotateSecond, const char *lEveryNSecondsTime, long leveryNSeconds, bool isGmTime);
 	bool TerminateLogRotator();
 	bool DoRotateLogs();
+	bool StartLogFlusher(long leveryNSeconds);
+	bool TerminateLogFlusher();
+	bool DoFlushLogs();
 	static bool RotateLogs();
+	static bool FlushLogs();
 
 	Anything fLogConnections;
 	ROAnything fROLogConnections;
@@ -128,6 +133,14 @@ protected:
 	} *fRotator;
 	// gcc 2.95.x fix: friend declaration must be after nested class declaration
 	friend class LogRotator;
+	class LogFlusher : public Thread
+	{
+		long fEveryNSeconds;
+	public:
+		LogFlusher(long lEveryNSeconds = 60L) : Thread("LogFlusher"), fEveryNSeconds(lEveryNSeconds) {}
+	protected:
+		void Run();
+	} *fFlusher;
 
 	static AppLogModule *fgAppLogModule;
 };
@@ -183,6 +196,7 @@ public:
 	bool LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const ROAnything &config);
 
 	bool Rotate(bool overrideDoNotRotateLogs = false);
+	void FlushItems();
 	ROAnything GetChannelInfo() {
 		return fChannelInfo;
 	}
@@ -212,6 +226,9 @@ protected:
 	}
 
 private:
+	//! force flushing buffered items to logfile
+	void DoFlushItems();
+
 	//! stream where logs are written to
 	std::ostream *fLogStream;
 	//! information about the log stream
@@ -229,9 +246,9 @@ private:
 	Anything fFormat;
 	//! guard of stream
 	SimpleMutex fChannelMutex;
-	long fBufferItems;
+	long fItemsToBuffer;
 	String fBuffer;
-	long fItemsWritten;
+	long fItemsInBuffer;
 	AppLogModule::eLogLevel fSeverity;
 };
 
