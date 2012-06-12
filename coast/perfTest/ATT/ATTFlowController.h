@@ -18,7 +18,7 @@
 //---- ATTFlowController ----------------------------------------------------------
 //!FlowController for the acceptance test tool
 //! handles two data accesses to get the sample and the expected
-class EXPORTDECL_ATT ATTFlowController : public HttpFlowController
+class ATTFlowController : public HttpFlowController
 {
 public:
 	//--- constructors

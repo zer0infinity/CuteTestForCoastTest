@@ -23,7 +23,7 @@ void bases()
 }
 #endif
 
-void EXPORTDECL_ATT setupRunner(TestRunner &runner)
+void setupRunner(TestRunner &runner)
 {
 	ADD_SUITE(runner, InWorkScenariosTest);
 	ADD_SUITE(runner, DoneScenariosTest);
