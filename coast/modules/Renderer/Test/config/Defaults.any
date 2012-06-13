@@ -6,7 +6,10 @@
 # the license that is included with this library/application in the file license.txt.
 #--------------------------------------------------------------------
 {
-	/FullQualifiedDomainName	"localhost"
-	/HostName					"localhost"
-	/DomainName					""
+	/FullQualifiedDomainName	"##FQDN##"
+	/HostName					"##HOSTNAME##"
+	/HostNameIp					"##HOSTNAMEIP##"
+	/DomainName					"##DOMAINONLY##"
+	/LocalHostName				"##LOCALHOSTNAME##"
+	/LocalHostIp				"##LOCALHOSTIP##"
 }

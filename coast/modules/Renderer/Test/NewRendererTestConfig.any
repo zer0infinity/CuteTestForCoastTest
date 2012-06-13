@@ -2547,6 +2547,18 @@
 			}
 			/Expected       "&#60;bar&#62;bl&#195;&#182;d&#60;bar&#47;&#62;"
 		}
+		/GetThisHostNameRendererIPTest
+		{
+			/Renderer
+			{
+				/GetThisHostNameRenderer
+				{
+					/Representation "IPAddress"
+				}
+			}
+			/Expected       !Defaults.any?HostNameIp
+		}
+
 		/GetThisHostNameRendererFullTest
 		{
 			/Renderer

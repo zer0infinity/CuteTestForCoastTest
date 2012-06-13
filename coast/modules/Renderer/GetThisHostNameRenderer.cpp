@@ -17,20 +17,27 @@ void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const
 	String thisHostName;
 	if (Coast::System::HostName(thisHostName)) {
 		String thisHostIp(Resolver::DNS2IPAddress(thisHostName));
+		String what(config["Representation"].AsString("Full"));
+		if ( what.IsEqual("IPAddress") ) {
+			reply << thisHostIp << std::flush;
+			return;
+		}
 		String thisHostDns(Resolver::IPAddress2DNS(thisHostIp));
+		thisHostDns.ToLower();
 		Trace("hostname [" << thisHostName << "] ip [" << thisHostIp << "] dns [" << thisHostDns << "]");
 		StringTokenizer tokens(thisHostDns, '.');
 		String hostName, domain;
 		if (tokens.NextToken(hostName)) {
 			domain = tokens.GetRemainder(false);
-		}Trace("host [" << hostName << "] domain [" << domain << "]");
-		String what(config["Representation"].AsString("Full"));
-		if (what == "Full") {
+		}
+		Trace("host [" << hostName << "] domain [" << domain << "]");
+		if (what.IsEqual("Full")) {
 			reply << thisHostDns;
-		} else if (what == "HostOnly") {
+		} else if (what.IsEqual("HostOnly")) {
 			reply << hostName;
-		} else if (what == "DomainOnly") {
+		} else if (what.IsEqual("DomainOnly")) {
 			reply << domain;
 		}
+		reply << std::flush;
 	}
 }
