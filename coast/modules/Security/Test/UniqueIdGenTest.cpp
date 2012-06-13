@@ -12,28 +12,6 @@
 #include "Tracer.h"
 #include "Anything.h"
 
-//---- UniqueIdGenTest ----------------------------------------------------------------
-UniqueIdGenTest::UniqueIdGenTest(TString tstrName)
-	: TestCaseType(tstrName)
-{
-	StartTrace(UniqueIdGenTest.Ctor);
-}
-
-UniqueIdGenTest::~UniqueIdGenTest()
-{
-	StartTrace(UniqueIdGenTest.Dtor);
-}
-
-void UniqueIdGenTest::setUp ()
-{
-	StartTrace(UniqueIdGenTest.setUp);
-}
-
-void UniqueIdGenTest::tearDown ()
-{
-	StartTrace(UniqueIdGenTest.tearDown);
-}
-
 void UniqueIdGenTest::GetUniqueIdTest()
 {
 	StartTrace(UniqueIdGenTest.GetUniqueIdTest);
@@ -49,7 +27,7 @@ void UniqueIdGenTest::DoGetUniqueIdTest(long iterations, const String &additiona
 	Anything uniqueId, check;
 
 	for ( long l = 0; l < iterations; l++ ) {
-		uniqueId[l] = UniqueIdGen::GetUniqueId(additionalToken);
+		uniqueId[l] = Coast::Security::generateUniqueId(additionalToken);
 		Trace("uniqueId :[" << uniqueId[l].AsString() << "]");
 	}
 	for ( long l = 0; l < iterations; l++ ) {

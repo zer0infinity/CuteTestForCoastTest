@@ -13,28 +13,16 @@
 
 class String;
 
-//---- UniqueIdGenTest ----------------------------------------------------------
 class UniqueIdGenTest : public TestFramework::TestCase
 {
 public:
-	//--- constructors
-
 	/*! \param tstrName name of the test */
-	UniqueIdGenTest(TString tstrName);
-
-	//! destroys the test case
-	~UniqueIdGenTest();
-
-	//--- public api
+	UniqueIdGenTest(TString tstrName) :
+			TestCaseType(tstrName) {
+	}
 
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	//! describe this testcase
 	void GetUniqueIdTest();

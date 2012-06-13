@@ -11,10 +11,58 @@
 #include "SystemLog.h"
 #include "SystemFile.h"
 #include "DiffTimer.h"
-#include "Policy.h" /* for GetHRTIME() */
+#include "Policy.h"
+
 RegisterModule(SecurityModule);
 
 const char *SecurityItem::fgcLegacyMasterKey = ".u8&ey%2lv$skb?";
+
+#include "InitFinisManager.h"
+#include <boost/pool/detail/singleton.hpp>
+namespace {
+	class RandomNumberInitializer {
+	public:
+		RandomNumberInitializer() {
+#if !defined(WIN32)
+			srand48(DiffTimer::getCurrentRawTime());
+#else
+			srand(DiffTimer.getCurrentRawTime());
+#endif
+			InitFinisManager::IFMTrace("RandomNumber::Initialized\n");
+		}
+		~RandomNumberInitializer() {
+			InitFinisManager::IFMTrace("RandomNumber::Finalized\n");
+		}
+		unsigned long nextRandomNumber() const {
+#if !defined(WIN32)
+			return lrand48();
+#else
+			return rand();
+#endif
+		}
+	};
+    typedef boost::details::pool::singleton_default<RandomNumberInitializer> RandomNumberInitializerSingleton;
+}
+
+namespace Coast {
+	namespace Security {
+		unsigned long nextRandomNumber() {
+			return RandomNumberInitializerSingleton::instance().nextRandomNumber();
+		}
+		String generateRandomString(long length) {
+			StartTrace(Coast.Security.generateRandomString);
+			String result(length);
+			typedef unsigned long randNumberType;
+			std::size_t const randomBytes=sizeof(randNumberType);
+			while (result.Length() < length) {
+				randNumberType randNumber=nextRandomNumber();
+				result.AppendAsHex(reinterpret_cast<const unsigned char*>(&randNumber), randomBytes);
+			}
+			result.Trim(length);
+			return result;
+		}
+	}
+}
 
 #define FindSecurityItemWithDefault(var,name,Type)\
 	const Type *var = SafeCast(FindSecurityItem(name),Type);\
@@ -126,18 +174,6 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key) {
 	return false;
 }
 
-String SecurityItem::GenerateRandomString(long length) {
-	String result(length);
-	for (; length > 0; --length) {
-#if !defined(WIN32)
-		result.Append((char) lrand48());
-#else
-		result.Append((char)rand());
-#endif
-	}
-	return result;
-}
-
 String SecurityModule::fgScrambler(Coast::Storage::Global());
 String SecurityModule::fgEncoder(Coast::Storage::Global());
 String SecurityModule::fgSigner(Coast::Storage::Global());
@@ -148,11 +184,6 @@ bool SecurityModule::Init(const ROAnything config) {
 	bool result = true;
 	TraceAny(config, "Config");
 	SystemLog::WriteToStderr(String("\t") << fName << ". ");
-#if !defined(WIN32)
-	srand48((long) GetHRTIME());
-#else
-	srand((long)GetHRTIME());
-#endif
 	ROAnything moduleConfig(config[fName]);
 	TraceAny(moduleConfig, "ModuleConfig");
 

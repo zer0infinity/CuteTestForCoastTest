@@ -14,8 +14,15 @@
 
 class Anything;
 class Context;
-class TRXContext;
 class String;
+
+namespace Coast {
+	namespace Security {
+		unsigned long nextRandomNumber();
+		//! create a string of length random bytes
+		String generateRandomString(long length);
+	}
+}
 
 class SecurityItem: public HierarchConfNamed {
 	SecurityItem();
@@ -40,8 +47,6 @@ public:
 	// generic hooks for any item except Compressors
 	static void Encode(const char *itemtouse, String &encodedText, const String &cleartext);
 	static bool Decode(String &cleartext, const String &encodedText);
-	//! create a string of length random bytes
-	static String GenerateRandomString(long length);
 
 	// factor common code to retrieve the name of a security item from the encoded text
 	// returns position in encodedText to continue from. if 0 this means no name was found

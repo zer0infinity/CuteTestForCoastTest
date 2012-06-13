@@ -5,10 +5,9 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-	/LowerBound		0#310
-	/UpperBound		0#320
+	/LowerBound		00
+	/UpperBound		320
 	/DumpAnythings	1
 
 	/Base64 {
@@ -87,5 +86,10 @@
 	/UniqueIdGenTest {
 		/MainSwitch		300
 		/EnableAll		310
+	}
+	/DiffTimer {
+		/MainSwitch		0
+		/EnableAll		0
+		/TicksPerSecond	300
 	}
 }
