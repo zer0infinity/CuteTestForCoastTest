@@ -12,7 +12,6 @@
 #include "ConversionUtils.h"
 #include "SystemLog.h"
 #include <cstring>	// memset
-#include "gzio.h"	// DEF_MEM_LEVEL
 
 // following section copied out of zutil.h
 // DO NOT TRY TO INCLUDE IT DIRECTLY BECAUSE OF SOME REDEFINITIONS!

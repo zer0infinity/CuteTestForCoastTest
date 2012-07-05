@@ -9,7 +9,6 @@
 #include "ZipStreamTest.h"
 #include "TestSuite.h"
 #include "ZipStream.h"
-#include "gzio.h"
 
 //---- ZipStreamTest ----------------------------------------------------------------
 ZipStreamTest::ZipStreamTest(TString tstrName)
@@ -264,7 +263,7 @@ void ZipStreamTest::GzipZlibTest()
 	VerifyFile("master.gz");
 
 	// generate a zipped file
-	gzFile *outFile = (gzFile *)gzopen("tt.gz", "w");
+	gzFile outFile = gzopen("tt.gz", "w");
 	t_assert(outFile != NULL);
 	t_assert(gzwrite(outFile, (void *)(const char *)content, content.Length()) > 0L);
 	int err = gzclose(outFile);
@@ -610,7 +609,7 @@ void ZipStreamTest::StringEmptyFileGetlineTest()
 void ZipStreamTest::VerifyFile(const char *fileName)
 {
 	const long length = content.Length();
-	gzFile *inFile = (gzFile *)gzopen(fileName, "r");
+	gzFile inFile = gzopen(fileName, "r");
 	t_assertm(inFile != NULL, (const char *)(String("File '") << fileName << "' must exist!"));
 
 	char *buffer = new char[length];
