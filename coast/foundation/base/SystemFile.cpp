@@ -15,6 +15,7 @@
 #include <cstring>
 #include <climits>
 #include <fstream>
+#include <sys/stat.h>
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>
@@ -30,7 +31,7 @@ namespace {
 	const char cSep = '/';
 
 	//!defines maximal size of path
-	#if defined(_POSIX_)
+	#if defined(_POSIX_PATH_MAX)
 	const long cPATH_MAX = _POSIX_PATH_MAX;
 	#else
 	const long cPATH_MAX = PATH_MAX;
@@ -41,10 +42,6 @@ namespace {
 		String fgRootDir;
 		//!contains a search path list that is ':' delimited, it is used to search for files
 		String fgPathList;
-		void setCoastRoot(const char *root) {
-		}
-		void setCoastPath(const char *path) {
-		}
 	public:
 		PathInitializer() : fgRootDir(0L, Coast::Storage::Global()), fgPathList(0L, Coast::Storage::Global()) {
 			InitFinisManager::IFMTrace("PathInitializer::Initialized\n");
@@ -951,7 +948,7 @@ namespace Coast {
 
 			if ( (fp = opendir(dir)) ) {
 				// do not use Storage module to allocate memory here, since readdir_r wreaks havoc with our storage management
-				struct dirent *direntp = (dirent *)calloc(1, sizeof(dirent) + _POSIX_PATH_MAX);
+				struct dirent *direntp = (dirent *)calloc(1, sizeof(dirent) + cPATH_MAX);
 				struct dirent *direntpSave = direntp;
 				while ( (readdir_r( fp, direntp, &direntp ) == 0) && (direntp) )
 				{

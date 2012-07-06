@@ -10,7 +10,6 @@
 #include "TestSuite.h"
 #include "ITOTypeTraits.h"
 #include "Tracer.h"
-#include <typeinfo>
 
 using namespace std;
 

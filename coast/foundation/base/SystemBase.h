@@ -13,11 +13,7 @@ class String;
 class Anything;
 
 #include <time.h> //lint !e451//lint !e537// for LocalTime parameters struct tm
-#if defined(WIN32)
-	#include <sys/types.h>
-#endif
-#include <sys/stat.h>
-
+#include <sys/types.h>
 #if defined(WIN32)
 	typedef long uid_t;
 	// following values were taken from linux <bits/poll.h> file
@@ -34,8 +30,6 @@ class Anything;
 	#define	S_IXOTH		_S_IEXEC
 	#define	S_IWOTH		_S_IWRITE
 	#define	S_IROTH		_S_IREAD
-#else
-	#include <unistd.h>//lint !e537
 #endif
 
 namespace Coast {

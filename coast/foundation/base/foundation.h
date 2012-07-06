@@ -29,9 +29,6 @@ extern int syslog_assert(const char *, long, const char *);
 #define Assert(expr)
 #endif
 
-// general settings
-typedef unsigned long u_long;
-
 // handle l_long and ul_long as type
 // also define macros to correctly declare literals
 typedef long long l_long;

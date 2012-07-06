@@ -12,7 +12,6 @@
 #include "Tracer.h"
 #include "StringStream.h"
 #include <iomanip>
-#include <memory>
 
 AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)
 {

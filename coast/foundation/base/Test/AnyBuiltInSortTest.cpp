@@ -9,7 +9,6 @@
 #include "AnyBuiltInSortTest.h"
 #include "TestSuite.h"
 #include "FoundationTestTypes.h"
-#include "Tracer.h"//lint !e537
 #include "DiffTimer.h"
 #include <iostream>
 

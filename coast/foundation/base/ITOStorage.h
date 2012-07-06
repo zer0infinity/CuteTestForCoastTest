@@ -10,7 +10,6 @@
 #define _ITOStorage_H
 
 #include "foundation.h"			// for definition of own types
-#include <sys/types.h>
 #include <cstdlib>
 #include <vector>
 
@@ -428,7 +427,6 @@ protected:
 	virtual MemTracker *DoMakeMemTracker(const char *name, bool bThreadSafe) = 0;
 };
 
-#include <boost/shared_ptr.hpp>
 
 class FoundationStorageHooks: public StorageHooks {
 	typedef boost::shared_ptr<Allocator> AllocatorTypePtr;

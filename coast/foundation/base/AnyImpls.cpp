@@ -7,14 +7,13 @@
  */
 
 #include "AnyImpls.h"
-#include "StringStream.h"
 #include "AnyVisitor.h"
 #include "SystemLog.h"
 #include "Tracer.h"
-#include <algorithm>
 #include <iostream>
 #include <cstring>
-#include <cstddef>
+#include <cstdio>
+
 #if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define aimplStartTrace(trigger)					StartTrace(trigger)
@@ -837,7 +836,7 @@ void AnyArrayImpl::Expand(long newsize) {
 		fContents = reinterpret_cast<AnyKeyAssoc **>(MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *)));
 		if (fContents == 0) {
 			static const char crashmsg[] = "FATAL: AnyArrayImpl::Expand calloc failed (increasing pointer buffer). I will crash :-(\n";
-			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+			SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 
 			fContents = old;
 			fCapacity = oldCap;

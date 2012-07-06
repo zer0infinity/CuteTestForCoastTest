@@ -13,7 +13,6 @@
 #include <sys/mman.h>
 #include <cstdio>
 #include <iostream>
-#include <iomanip>
 
 //!helper class to manage dependencies between ios flags and c-api mmap flags
 class MmapMagicFlags
