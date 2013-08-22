@@ -35,6 +35,13 @@ void PersistentLDAPConnection::tsd_destruct(void *tsd)
 	StartTrace(PersistentLDAPConnection.tsd_destruct);
 	if ( tsd != (void *) NULL ) {
 		SystemLog::Info(String("PersistentLDAPConnection::tsd_destruct() Releasing thread specific data. Thread [") <<  Thread::MyId() << "]");
+		PersistentLDAPConnection::ldap_error *le = static_cast<PersistentLDAPConnection::ldap_error *>(tsd);
+		if ( le && le->le_matched != NULL ) {
+			ldap_memfree( le->le_matched );
+		}
+		if ( le && le->le_errmsg != NULL ) {
+			ldap_memfree( le->le_errmsg );
+		}
 		free(tsd);
 	}
 }
@@ -45,7 +52,9 @@ void PersistentLDAPConnection::set_ld_error( int err, char *matched, char *errms
 	StartTrace(PersistentLDAPConnection.set_ld_error);
 
 	PersistentLDAPConnection::ldap_error *le = NULL;
-	GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error);
+	if ( not GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error) || not le ) {
+		return;
+	}
 	le->le_errno = err;
 	if ( le->le_matched != NULL ) {
 		ldap_memfree( le->le_matched );
@@ -63,7 +72,9 @@ int PersistentLDAPConnection::get_ld_error( char **matched, char **errmsg, void 
 	StartTrace(PersistentLDAPConnection.get_ld_error);
 
 	PersistentLDAPConnection::ldap_error *le = NULL;
-	GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error);
+	if ( not GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error) || not le ) {
+		return LDAP_OTHER; // this return code should not interfere with usual ldap error codes
+	}
 	if ( matched != NULL ) {
 		*matched = le->le_matched;
 	}
