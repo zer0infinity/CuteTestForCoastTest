@@ -64,21 +64,21 @@ public:
 			return fMessage;
 		}
 	};
-	struct SizeExceededException: MIMEHeader::InvalidLineException {
+	struct SizeExceededException: InvalidLineException {
 		long fMaxSize, fActualSize;
 		SizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
-			MIMEHeader::InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
+			InvalidLineException(msg, line), fMaxSize(lMaxSize), fActualSize(lActualSize) {
 			fMessage.Append("; max: ").Append(fMaxSize).Append(" actual: ").Append(fActualSize);
 		}
 
 	};
-	struct LineSizeExceededException: MIMEHeader::SizeExceededException {
+	struct LineSizeExceededException: SizeExceededException {
 		LineSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			SizeExceededException(msg, line, lMaxSize, lActualSize) {
 		}
 
 	};
-	struct HeaderSizeExceededException: MIMEHeader::SizeExceededException {
+	struct HeaderSizeExceededException: SizeExceededException {
 		HeaderSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			SizeExceededException(msg, line, lMaxSize, lActualSize) {
 		}
