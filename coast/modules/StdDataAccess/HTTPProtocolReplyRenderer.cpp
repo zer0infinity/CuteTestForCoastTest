@@ -75,21 +75,21 @@ void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, con
 		realConfig = (config.IsNull() ? ctx.Lookup("HTTPStatus") : config);
 	}
 
-	String httpVersion = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::_httpProtocolVersionSlotname]);
+	String httpVersion = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::constants::protocolVersionSlotname]);
 	if (not httpVersion.Length()) {
 		httpVersion = "HTTP/1.1";
 	}
 	reply << httpVersion << ' ';
 
-	long status = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::_httpProtocolCodeSlotname]).AsLong(-1L);
+	long status = Renderer::RenderToString(ctx, realConfig[Coast::HTTP::constants::protocolCodeSlotname]).AsLong(-1L);
 	if ( status < 0L ) {
 		status = 200L;
 	}
 	Assert(status >= 100L && status < 600L);
 	reply << status << ' ';
 
-	if (realConfig.IsDefined(Coast::HTTP::_httpProtocolMsgSlotname)) {
-		Renderer::Render(reply, ctx, realConfig[Coast::HTTP::_httpProtocolMsgSlotname]);
+	if (realConfig.IsDefined(Coast::HTTP::constants::protocolMsgSlotname)) {
+		Renderer::Render(reply, ctx, realConfig[Coast::HTTP::constants::protocolMsgSlotname]);
 	} else {
 		Renderer::Render(reply, ctx, Anything(DefaultReasonPhrase(status)));
 	}
@@ -97,7 +97,7 @@ void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, con
 
 	//!@FIXME: side effects, remove!!
 	Anything anyStatus = status;
-	StorePutter::Operate(anyStatus, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
+	StorePutter::Operate(anyStatus, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname));
 	if (httpVersion.IsEqual("HTTP/1.1")) {
 		if (status >= 400 || realConfig["CloseConnection"].AsBool(false)) {
 			RequestProcessor::ForceConnectionClose(ctx);

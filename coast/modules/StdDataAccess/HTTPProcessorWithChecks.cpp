@@ -23,8 +23,8 @@ namespace {
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -117,7 +117,7 @@ void HTTPProcessorWithChecks::DoHandleVerifyError(std::ostream &reply, Context &
 //		if ( reject ) {
 //			if ( !!Ios ) {
 //				Anything anyErrCode = errcode;
-//				StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
+//				StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname));
 //				Error(Ios, msg, ctx);
 //				Ios << ENDL;
 //				Ios.flush();

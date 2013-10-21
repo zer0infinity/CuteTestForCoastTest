@@ -11,27 +11,20 @@
 #ifndef HTTPCONSTANTS_H_
 #define HTTPCONSTANTS_H_
 #include <iosfwd>
-#include "foundation.h"
+#include "foundation.h"		//!< for ENDL
 class ROAnything;
 class String;
 class Context;
 
 namespace Coast {
 	namespace HTTP {
-		static const char *_httpSplitFieldsRegularExpression = "^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)";
-		static const char *_httpProtocolVersionSlotname = "HTTPVersion";
-		static const char *_httpProtocolCodeSlotname = "ResponseCode";
-		static const char *_httpProtocolMsgSlotname = "ResponseMsg";
-		static const char *_COOKIE = "COOKIE";
-		static const char *_SET_COOKIE = "SET-COOKIE";
-		static char const *_CONTENTDISPOSITIONSLOTNAME = "CONTENT-DISPOSITION";
-		static char const *_newLine = ENDL;
-		static char const _headerNameDelimiter = ':';
-		static char const _headerArgumentsDelimiter = ',';
-		static char const _headerCookieArgumentsDelimiter = ';';
-		static char const _headerCookieValueDelimiter = '=';
-		static char const _whiteSpace = ' ';
-
+		namespace constants {
+			char const * const splitFieldsRegularExpression = "^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)";
+			char const * const protocolVersionSlotname = "HTTPVersion";
+			char const * const protocolCodeSlotname = "ResponseCode";
+			char const * const protocolMsgSlotname = "ResponseMsg";
+			char const * const newLine = ENDL;
+		}
 		void putValuesOnSameLine(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);
 		void putValuesOnMultipleLines(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);
 		void putHeaderFieldToStream(std::ostream &os, Context &ctx, String const &slotname, ROAnything const &values);

@@ -90,7 +90,7 @@ void AuthenticationService::ForwardToMainHandler(std::ostream &os, Context &ctx)
 void AuthenticationService::Produce401Response(std::ostream &os, Context &ctx) {
 	StartTrace(AuthenticationService.Produce401Response);
 	Anything anyStatus;
-	anyStatus[Coast::HTTP::_httpProtocolCodeSlotname] = 401L;
+	anyStatus[Coast::HTTP::constants::protocolCodeSlotname] = 401L;
 	Context::PushPopEntry<Anything> aEntry(ctx, "StatusInformation", anyStatus, "HTTPStatus");
 	Coast::HTTP::RenderHTTPProtocolStatus(os, ctx);
 	os << "WWW-Authenticate: Basic realm=\"";

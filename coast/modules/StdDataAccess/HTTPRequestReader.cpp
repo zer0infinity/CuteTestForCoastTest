@@ -19,8 +19,8 @@ namespace {
 		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
 		Anything anyMessage;
 		anyMessage["Component"] = "HTTPRequestReader";
-		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");

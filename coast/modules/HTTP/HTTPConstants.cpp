@@ -15,6 +15,17 @@
 
 namespace Coast {
 	namespace HTTP {
+		namespace constants {
+			char const headerNameDelimiter = ':';
+			char const headerArgumentsDelimiter = ',';
+			char const headerCookieArgumentsDelimiter = ';';
+			char const headerCookieValueDelimiter = '=';
+			char const space = ' ';
+			char const * const contentDispositionSlotname = "CONTENT-DISPOSITION";
+			char const * const cookieSlotname = "COOKIE";
+			char const * const setCookieSlotname = "SET-COOKIE";
+		}
+
 		void putValuesOnSameLine(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values) {
 			StartTrace(Coast.HTTP.putValuesOnSameLine);
 			TraceAny(values, "Header[" << slotname << "]");
@@ -22,18 +33,18 @@ namespace Coast {
 			ROAnything entry;
 			String valueSlotname;
 			bool first = true;
-			bool isCookie = (slotname == _COOKIE || slotname == _CONTENTDISPOSITIONSLOTNAME);
-			char const argumentsDelimiter = ( isCookie ? _headerCookieArgumentsDelimiter : _headerArgumentsDelimiter );
-			os << slotname << _headerNameDelimiter << _whiteSpace;
+			bool isCookie = (slotname == constants::cookieSlotname || slotname == constants::contentDispositionSlotname);
+			char const argumentsDelimiter = ( isCookie ? constants::headerCookieArgumentsDelimiter : constants::headerArgumentsDelimiter );
+			os << slotname << constants::headerNameDelimiter << constants::space;
 			while (entryIter.Next(entry)) {
-				if ( not first ) os << argumentsDelimiter << _whiteSpace;
+				if ( not first ) os << argumentsDelimiter << constants::space;
 				if (isCookie && entryIter.SlotName(valueSlotname)) {
-					os << valueSlotname << _headerCookieValueDelimiter;
+					os << valueSlotname << constants::headerCookieValueDelimiter;
 				}
 				Renderer::Render(os, ctx, entry);
 				first = false;
 			}
-			os << _newLine;
+			os << constants::newLine;
 		}
 		void putValuesOnMultipleLines(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values) {
 			StartTrace(Coast.HTTP.putValuesOnMultipleLines);
@@ -41,14 +52,14 @@ namespace Coast {
 			AnyExtensions::Iterator<ROAnything> entryIter(values);
 			ROAnything entry;
 			while (entryIter.Next(entry)) {
-				os << slotname << _headerNameDelimiter << _whiteSpace;
+				os << slotname << constants::headerNameDelimiter << constants::space;
 				Renderer::Render(os, ctx, entry);
-				os << _newLine;
+				os << constants::newLine;
 			}
 		}
 		void putHeaderFieldToStream(std::ostream &os, Context &ctx, String const &slotname, ROAnything const &values) {
-			RE multivalueRE(_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
-			if ( slotname.IsEqual(_COOKIE) || multivalueRE.ContainedIn(slotname) || slotname.IsEqual(_CONTENTDISPOSITIONSLOTNAME) ) {
+			RE multivalueRE(constants::splitFieldsRegularExpression, RE::MATCH_ICASE);
+			if ( slotname.IsEqual(constants::cookieSlotname) || multivalueRE.ContainedIn(slotname) || slotname.IsEqual(constants::contentDispositionSlotname) ) {
 				putValuesOnSameLine(os, ctx, slotname, values);
 			} else {
 				putValuesOnMultipleLines(os, ctx, slotname, values);

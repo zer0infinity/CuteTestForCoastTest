@@ -14,8 +14,10 @@
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
 namespace {
-	const char *gsGroupName = "HeaderMapperCache";
-	const char *gsSuppressName = "Suppress";
+	namespace constants {
+		const char * const groupName = "HeaderMapperCache";
+		const char * const suppressName = "Suppress";
+	}
 
 	void SuppressListToUpper(ROAnything suppressList, Anything &suppressListToUpper) {
 		const long size = suppressList.GetSize();
@@ -31,15 +33,15 @@ namespace {
 
 bool HTTPHeaderParameterMapper::DoInitialize() {
 	StartTrace1(HTTPHeaderParameterMapper.DoInitialize, "cat <" << fCategory << "> name <" << fName << ">");
-	ROAnything roaSuppressList(fConfig[gsSuppressName]);
+	ROAnything roaSuppressList(fConfig[constants::suppressName]);
 	Anything suppresslist;
 	SuppressListToUpper(roaSuppressList, suppresslist);
 	TraceAny(suppresslist, "suppress list to cache");
 	if (!suppresslist.IsNull()) {
 		Anything toCache = Anything(Anything::ArrayMarker());
-		toCache[gsSuppressName] = suppresslist;
+		toCache[constants::suppressName] = suppresslist;
 		AnythingLoaderPolicy loader(toCache);
-		ROAnything roaList = CacheHandler::instance().Load(gsGroupName, GetName(), &loader);
+		ROAnything roaList = CacheHandler::instance().Load(constants::groupName, GetName(), &loader);
 		TraceAny(roaList, "cached suppress list");
 	}
 	return true;
@@ -49,8 +51,8 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 	StartTrace1(HTTPHeaderParameterMapper.DoLookup, "fName <" << GetName() << ">");
 	// check first in cache with this object name as prefix
 	bool bValueFound = false;
-	if (String(key).StartsWith(gsSuppressName)) {
-		ROAnything roaCache = CacheHandler::instance().Get(gsGroupName, GetName());
+	if (String(key).StartsWith(constants::suppressName)) {
+		ROAnything roaCache = CacheHandler::instance().Get(constants::groupName, GetName());
 		TraceAny(roaCache, "result from cache for [" << GetName() << "]");
 		if (!roaCache.IsNull()) {
 			bValueFound = roaCache.LookupPath(result, key);
@@ -77,7 +79,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 		while (headerIterator.Next(roaValue)) {
 			if (headerIterator.SlotName(strFieldName)) {
 				strFieldName.ToUpper();
-				String strKey(gsSuppressName);
+				String strKey(constants::suppressName);
 				strKey.Append('.').Append(strFieldName);
 				Trace("trying to Lookup [" << strKey << "] in own or config");
 				// map non suppressed headerfields

@@ -13,7 +13,9 @@
 RegisterRenderer(HTTPHeaderRenderer);
 
 namespace {
-    const char *_HeaderSlot = "HeaderSlot";
+	namespace constants {
+		const char * const headerSlot = "HeaderSlot";
+	}
 
 	void RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config) {
 		StartTrace(HTTPHeaderRenderer.RenderHeader);
@@ -25,7 +27,7 @@ namespace {
 			if ( not headerStructureIter.SlotName(strSlotname) ) {
 				//! prepared "header: value" entry or a Renderer specification
 				Renderer::Render(reply, ctx, fieldValues);
-				reply << Coast::HTTP::_newLine;
+				reply << Coast::HTTP::constants::newLine;
 			} else {
 				Coast::HTTP::putHeaderFieldToStream(reply, ctx, strSlotname, fieldValues);
 			}
@@ -36,8 +38,8 @@ namespace {
 void HTTPHeaderRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(HTTPHeaderRenderer.RenderAll);
 	String slotname;
-	if (config.IsDefined(_HeaderSlot)) {
-		slotname = Renderer::RenderToString(ctx, config[_HeaderSlot]);
+	if (config.IsDefined(constants::headerSlot)) {
+		slotname = Renderer::RenderToString(ctx, config[constants::headerSlot]);
 	} else {
 		slotname = Renderer::RenderToString(ctx, config);
 	}

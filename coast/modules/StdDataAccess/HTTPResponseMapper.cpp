@@ -26,16 +26,16 @@ bool HTTPResponseMapper::DoPutStream(const char *key, std::istream &is, Context 
 	String version;
 	is >> version;
 	if (is.good()) {
-		response[Coast::HTTP::_httpProtocolVersionSlotname] = version;
+		response[Coast::HTTP::constants::protocolVersionSlotname] = version;
 		long code = 0;
 		is >> code;
 		if (is.good()) {
-			response[Coast::HTTP::_httpProtocolCodeSlotname] = code;
+			response[Coast::HTTP::constants::protocolCodeSlotname] = code;
 			String message;
 			getline(is, message);
 			if (is.good()) {
 				TrimMessage(message);
-				response[Coast::HTTP::_httpProtocolMsgSlotname] = message;
+				response[Coast::HTTP::constants::protocolMsgSlotname] = message;
 			}
 		}
 	}

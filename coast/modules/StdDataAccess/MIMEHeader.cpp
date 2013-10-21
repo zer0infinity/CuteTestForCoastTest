@@ -45,13 +45,13 @@ namespace {
 	char const headerArgumentsDelimiter = ',';
 	char const valueArgumentDelimiter = '=';
 
-//	Anything const headersREProgram = RECompiler().compile(Coast::HTTP::_httpSplitFieldsRegularExpression);
+//	Anything const headersREProgram = RECompiler().compile(Coast::HTTP::constants::splitFieldsRegularExpression);
 
 	void StoreKeyValue(Anything &headers, String const& strKey, String const &strValue)
 	{
 		StartTrace(MIMEHeader.StoreKeyValue);
 		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
-		RE multivalueRE(Coast::HTTP::_httpSplitFieldsRegularExpression, RE::MATCH_ICASE);
+		RE multivalueRE(Coast::HTTP::constants::splitFieldsRegularExpression, RE::MATCH_ICASE);
 		if ( multivalueRE.ContainedIn(strKey) ) {
 			Anything &anyValues = headers[strKey];
 			Coast::URLUtils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, Coast::URLUtils::eUpshift);

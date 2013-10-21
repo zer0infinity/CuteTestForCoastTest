@@ -22,9 +22,9 @@ void HTTPResponseMapperTest::TestParsedResponse() {
 	Context ctx;
 	t_assert(m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);
-	assertEqual(200L, result[Coast::HTTP::_httpProtocolCodeSlotname].AsLong(0));
-	assertEqual("Ok", result[Coast::HTTP::_httpProtocolMsgSlotname].AsCharPtr());
-	assertEqual("HTTP/1.1", result[Coast::HTTP::_httpProtocolVersionSlotname].AsCharPtr());
+	assertEqual(200L, result[Coast::HTTP::constants::protocolCodeSlotname].AsLong(0));
+	assertEqual("Ok", result[Coast::HTTP::constants::protocolMsgSlotname].AsCharPtr());
+	assertEqual("HTTP/1.1", result[Coast::HTTP::constants::protocolVersionSlotname].AsCharPtr());
 }
 void HTTPResponseMapperTest::TestBadResponseLine() {
 	StartTrace(HTTPResponseMapperTest.TestBadResponseLine);
@@ -35,9 +35,9 @@ void HTTPResponseMapperTest::TestBadResponseLine() {
 	Context ctx;
 	t_assert(!m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);
-	assertEqual(-1L, result[Coast::HTTP::_httpProtocolCodeSlotname].AsLong(-1));
-	assertEqual("undefined", result[Coast::HTTP::_httpProtocolMsgSlotname].AsCharPtr("undefined"));
-	assertEqual("HTTP/1.1", result[Coast::HTTP::_httpProtocolVersionSlotname].AsCharPtr());
+	assertEqual(-1L, result[Coast::HTTP::constants::protocolCodeSlotname].AsLong(-1));
+	assertEqual("undefined", result[Coast::HTTP::constants::protocolMsgSlotname].AsCharPtr("undefined"));
+	assertEqual("HTTP/1.1", result[Coast::HTTP::constants::protocolVersionSlotname].AsCharPtr());
 }
 
 Test *HTTPResponseMapperTest::suite() {

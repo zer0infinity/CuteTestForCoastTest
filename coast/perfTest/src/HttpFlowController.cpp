@@ -864,8 +864,8 @@ bool HttpFlowController::AnalyseReply(Context &ctx) {
 	TraceAny(tmpStore, "TempStore");
 
 	// check if the request was OK
-	long respCode = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::_httpProtocolCodeSlotname].AsLong(0);
-	String respMsg = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::_httpProtocolMsgSlotname].AsString("no message, possible timeout");
+	long respCode = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolCodeSlotname].AsLong(0);
+	String respMsg = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolMsgSlotname].AsString("no message, possible timeout");
 
 	if ((respCode != 200L) && (respCode != 302L)) {
 		String eMsg = "";
@@ -967,7 +967,7 @@ bool HttpFlowController::DoLocationRelocate(Context &ctx) {
 
 	// HTTP Response code must be 302
 	// Location header contains the whole refresh path
-	if ((tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::_httpProtocolCodeSlotname].AsLong(0L) == 302L) && (tmpStore.LookupPath(refresh,
+	if ((tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolCodeSlotname].AsLong(0L) == 302L) && (tmpStore.LookupPath(refresh,
 			"Mapper.HTTPHeader.location"))) {
 		{
 			String anyRes = "";

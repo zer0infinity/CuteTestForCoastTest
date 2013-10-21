@@ -27,8 +27,8 @@ namespace {
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage[Coast::HTTP::_httpProtocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::_httpProtocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -121,7 +121,7 @@ namespace Coast {
 namespace {
 	void ErrorReply(std::ostream &reply, const String &msg, Context &ctx) {
 		StartTrace1(HTTPProcessor.ErrorReply, "message [" << msg << "]");
-		long errorCode = ctx.Lookup(String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname), 400L);
+		long errorCode = ctx.Lookup(String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname), 400L);
 		String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
 		Coast::HTTP::RenderHTTPProtocolStatus(reply, ctx);
 		reply << "content-type: text/html" << ENDL << ENDL;
@@ -152,8 +152,8 @@ namespace {
 		if ( ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot","NonExistingSlotname"), roaErrorMessages) ) {
 			LogError(ctx);
 			//!@FIXME: maybe we should log all of them?
-			Anything anyErrCode = roaErrorMessages[0L][Coast::HTTP::_httpProtocolCodeSlotname].DeepClone();
-			StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::_httpProtocolCodeSlotname));
+			Anything anyErrCode = roaErrorMessages[0L][Coast::HTTP::constants::protocolCodeSlotname].DeepClone();
+			StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname));
 			ErrorReply(reply, roaErrorMessages[0L]["ErrorMessage"].AsString(), ctx);
 		}
 	}

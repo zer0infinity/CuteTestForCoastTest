@@ -13,12 +13,14 @@
 #include "StringStream.h"
 
 namespace {
-	const char * _Expressions = "Expressions";
-	const char * _Pattern = "Pattern";
-	const char * _SimplePattern = "SimplePattern";
-	const char * _Replacement = "Replacement";
-	const char * _MatchFlags = "MatchFlags";
-	const char * _ReplaceAll = "ReplaceAll";
+	namespace constants {
+		const char * const expressionsSlotName = "Expressions";
+		const char * const patternSlotName = "Pattern";
+		const char * const simplePatternSlotName = "SimplePattern";
+		const char * const replacementSlotName = "Replacement";
+		const char * const matchFlagsSlotName = "MatchFlags";
+		const char * const replaceAllSlotName = "ReplaceAll";
+	}
 
 	String getSimpleOrRenderedString(Context &ctx, ROAnything roaConfig) {
 		if (roaConfig.GetType() == AnyArrayType) {
@@ -41,23 +43,23 @@ namespace {
 			String sPattern;
 			ROAnything roaPattern, roaMatchFlags;
 			bool isSimplePattern = false;
-			if (roaEntry.LookupPath(roaPattern, _Pattern, '\000') || (isSimplePattern = roaEntry.LookupPath(roaPattern, _SimplePattern,
+			if (roaEntry.LookupPath(roaPattern, constants::patternSlotName, '\000') || (isSimplePattern = roaEntry.LookupPath(roaPattern, constants::simplePatternSlotName,
 					'\000'))) {
 				sPattern = getSimpleOrRenderedString(ctx, roaPattern);
 				if (isSimplePattern) {
 					sPattern = RE::SimplePatternToFullRegularExpression(sPattern);
 				}
 			}
-			String sReplacement = getSimpleOrRenderedString(ctx, roaEntry[_Replacement]);
-			RE aRE(sPattern, static_cast<RE::eMatchFlags> (roaEntry[_MatchFlags].AsLong(0L)));
+			String sReplacement = getSimpleOrRenderedString(ctx, roaEntry[constants::replacementSlotName]);
+			RE aRE(sPattern, static_cast<RE::eMatchFlags> (roaEntry[constants::matchFlagsSlotName].AsLong(0L)));
 			SubTrace(traceText, "original text [" << sText << "]");
 			Trace("applying pattern [" << sPattern << "]");
-			sText = aRE.Subst(sText, sReplacement, roaEntry[_ReplaceAll].AsBool(true));
+			sText = aRE.Subst(sText, sReplacement, roaEntry[constants::replaceAllSlotName].AsBool(true));
 		} while (expressionIterator.Next(roaEntry));
 		SubTrace(traceText, "replaced text [" << sText << "]");
 	}
 }
-//---- RegExpSearchReplaceResultMapper ----------------------------------------------------------------
+
 RegisterResultMapper(RegExpSearchReplaceResultMapper);
 
 bool RegExpSearchReplaceResultMapper::DoPutAny(const char *key, Anything &value, Context &ctx, ROAnything script) {
@@ -65,7 +67,7 @@ bool RegExpSearchReplaceResultMapper::DoPutAny(const char *key, Anything &value,
 	if (value.GetType() != AnyArrayType) {
 		String sText = value.AsString();
 		ROAnything roaExpressions;
-		if (Lookup(_Expressions, roaExpressions, '\000')) {
+		if (Lookup(constants::expressionsSlotName, roaExpressions, '\000')) {
 			searchReplaceExpressions(ctx, sText, roaExpressions);
 			value = sText;
 		}
