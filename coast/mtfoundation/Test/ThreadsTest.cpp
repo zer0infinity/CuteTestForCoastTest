@@ -180,7 +180,7 @@ void ThreadsTest::ThreadHookArgsTest() {
 	HookArgsTestThread t;
 	Anything anyStartArgs, anyTerminationArgs;
 	anyStartArgs["Start"] = "Go!";
-	t_assertm( t.Start(Coast::Storage::Global(), anyStartArgs), "expected thread start to succeed");
+	t_assertm( t.Start(coast::storage::Global(), anyStartArgs), "expected thread start to succeed");
 	anyTerminationArgs["Stop"] = "RIP";
 	t_assertm( t.Terminate(1, anyTerminationArgs), "expected termination request to succeed");
 	assertAnyEqual(anyStartArgs, t.fStartedArgs);

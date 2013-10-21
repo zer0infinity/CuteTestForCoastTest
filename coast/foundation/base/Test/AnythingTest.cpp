@@ -11,11 +11,11 @@
 #include "FoundationTestTypes.h"
 #include "IFAObject.h"
 
-using namespace Coast;
+using namespace coast;
 
 void AnythingTest::setUp() {
 	StartTrace(AnythingTest.setUp);
-	if (!System::LoadConfigFile(fConfig, "AnythingTest", "any")) {
+	if (!system::LoadConfigFile(fConfig, "AnythingTest", "any")) {
 		assertEqual( "'read AnythingTest.any'", "'could not read AnythingTest.any'" );
 	}
 	fQuery = fConfig["Queries"][name()];

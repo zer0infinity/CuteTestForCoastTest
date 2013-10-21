@@ -35,7 +35,7 @@ void SlotnameOutputMapperTest::BasicFunctionTest() {
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"].DeepClone(), ctx);
 	Anything anyFailureStrings;
-	Coast::TestFramework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), Coast::TestFramework::exists);
+	coast::testframework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), coast::testframework::exists);
 	for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}
@@ -51,7 +51,7 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest() {
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][0L].DeepClone(), ctx);
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][1L].DeepClone(), ctx);
 	Anything anyFailureStrings;
-	Coast::TestFramework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), Coast::TestFramework::exists);
+	coast::testframework::CheckStores(anyFailureStrings, GetTestCaseConfig()["Result"], ctx, name(), coast::testframework::exists);
 	for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
 		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}

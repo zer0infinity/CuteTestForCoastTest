@@ -14,7 +14,7 @@
 //---- HTTPDAImplTest ----------------------------------------------------------
 //!TestClass for for HTMLParser functionality
 
-class HTTPDAImplTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class HTTPDAImplTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 

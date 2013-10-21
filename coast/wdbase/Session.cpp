@@ -28,9 +28,9 @@ public:
 };
 
 Session::Session(const char *name) :
-	NotCloned(name), fMutex("Session"), fTerminated(false), fStore(Coast::Storage::Global()), fId(Coast::Storage::Global()),
-			fAddress(Coast::Storage::Global()), fAccessCounter(1), fAccessTime(time(NULL)), fRemoteAddr(Coast::Storage::Global()),
-			fBrowser(Coast::Storage::Global()), fRefCount(0L) {
+	NotCloned(name), fMutex("Session"), fTerminated(false), fStore(coast::storage::Global()), fId(coast::storage::Global()),
+			fAddress(coast::storage::Global()), fAccessCounter(1), fAccessTime(time(NULL)), fRemoteAddr(coast::storage::Global()),
+			fBrowser(coast::storage::Global()), fRefCount(0L) {
 	StartTrace(Session.Session);
 	fStore["RoleStore"] = Anything(Anything::ArrayMarker(), fStore.GetAllocator());
 }
@@ -203,7 +203,7 @@ void Session::Notify(ESessionEvt evt, Context &ctx) {
 }
 
 void Session::IntNotify(ESessionEvt evt, Context &ctx) {
-	StatTrace(Session.IntNotify, "virtual function not overridden!", Coast::Storage::Current());
+	StatTrace(Session.IntNotify, "virtual function not overridden!", coast::storage::Current());
 }
 
 //--- immutable context
@@ -504,7 +504,7 @@ void Session::SetInReauthenticate(Context &context) {
 	if (r) {
 		r->GetName(roleName);
 	}
-	StatTrace(Session.SetInReauthenticate, "Role [" << roleName << "]", Coast::Storage::Current());
+	StatTrace(Session.SetInReauthenticate, "Role [" << roleName << "]", coast::storage::Current());
 	tmpStore["InReauthenticate"] = roleName;
 }
 
@@ -513,7 +513,7 @@ void Session::prepareForcedLogin(Context &context, String &transition, String &c
 	transition = "Login";
 	// and start this transition from the /StartPage or HomePage
 	currentpage = context.Lookup("StartPage", "HomePage");
-	StatTrace(Session.prepareForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Coast::Storage::Current());
+	StatTrace(Session.prepareForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", coast::storage::Current());
 }
 
 bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage) {
@@ -524,7 +524,7 @@ bool Session::NeedsPageInsert(Context &context, String &transition, String &curr
 		// the role is insufficient
 		prepareForcedLogin(context, transition, currentpage);
 	}
-	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", Coast::Storage::Current());
+	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", coast::storage::Current());
 	return bNeedsInsert;
 }
 
@@ -542,7 +542,7 @@ bool Session::RequirePageInsert(Context &context, String &transition, String &cu
 //            return true;
 //        }
 //    }
-	StatTrace(Session.RequirePageInsert,"transition [" << transition << "] current page [" << currentpage << "] returning false", Coast::Storage::Current());
+	StatTrace(Session.RequirePageInsert,"transition [" << transition << "] current page [" << currentpage << "] returning false", coast::storage::Current());
 	return false;
 }
 

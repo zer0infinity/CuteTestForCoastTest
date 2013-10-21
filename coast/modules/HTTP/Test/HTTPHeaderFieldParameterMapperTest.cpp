@@ -36,11 +36,11 @@ namespace {
 		RegisterableObject::Terminate(ParameterMapper::gpcCategory, &at);
 	}
 	void setupContext(ROAnything caseConfig, Context &ctx) {
-		Coast::TestFramework::PutInStore(caseConfig["SessionStore"], ctx.GetSessionStore());
-		Coast::TestFramework::PutInStore(caseConfig["RoleStore"], ctx.GetRoleStoreGlobal());
-		Coast::TestFramework::PutInStore(caseConfig["TmpStore"], ctx.GetTmpStore());
-		Coast::TestFramework::PutInStore(caseConfig["Query"], ctx.GetQuery());
-		Coast::TestFramework::PutInStore(caseConfig["Env"], ctx.GetEnvStore());
+		coast::testframework::PutInStore(caseConfig["SessionStore"], ctx.GetSessionStore());
+		coast::testframework::PutInStore(caseConfig["RoleStore"], ctx.GetRoleStoreGlobal());
+		coast::testframework::PutInStore(caseConfig["TmpStore"], ctx.GetTmpStore());
+		coast::testframework::PutInStore(caseConfig["Query"], ctx.GetQuery());
+		coast::testframework::PutInStore(caseConfig["Env"], ctx.GetEnvStore());
 	}
 }
 

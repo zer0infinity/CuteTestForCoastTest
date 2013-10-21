@@ -14,7 +14,7 @@
 
 //---- ATTTest ----------------------------------------------------------
 //!ConfiguredTestCases description
-class ATTTest : public TestFramework::TestCaseWithConfig
+class ATTTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

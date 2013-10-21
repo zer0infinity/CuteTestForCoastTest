@@ -16,7 +16,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class AnyImplsTest : public TestFramework::TestCase
+class AnyImplsTest : public testframework::TestCase
 {
 public:
 	//--- constructors

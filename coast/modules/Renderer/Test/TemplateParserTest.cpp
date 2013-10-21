@@ -283,7 +283,7 @@ void TemplateParserTest::BuildFormWithConfiguredTransitionTokens() {
 	TraceAny(roaTestPage, "content of page");
 	if (t_assertm(!roaTestPage.IsNull(), "expected to get a valid reference to the page")) {
 		String configFilename("TemplateParserExtendedTestMaster");
-		std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
+		std::istream *ifp = coast::system::OpenStream(configFilename, "any");
 		if (t_assert(ifp != NULL)) {
 			Anything anyMaster;
 			anyMaster.Import(*ifp, configFilename);

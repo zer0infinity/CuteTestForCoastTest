@@ -17,7 +17,7 @@
 
 DWORD fgThreadPtrKey;
 Anything fgThreads;
-SimpleMutex fgThreadsMutex("fgThreadsMutex", Coast::Storage::Global());
+SimpleMutex fgThreadsMutex("fgThreadsMutex", coast::storage::Global());
 
 void TerminateKilledThreads()
 {

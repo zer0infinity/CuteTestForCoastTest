@@ -16,7 +16,7 @@
 
 RadioButtonRendererTest::RadioButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) RadioButtonRenderer("RadioButtonRenderer");
+	fFieldRenderer = new (coast::storage::Global()) RadioButtonRenderer("RadioButtonRenderer");
 };
 
 RadioButtonRendererTest::~RadioButtonRendererTest()

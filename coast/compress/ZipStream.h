@@ -146,7 +146,7 @@ class ZipIStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipIStreamBuf(std::istream &zis, std::istream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *alloc = Coast::Storage::Current());
+	ZipIStreamBuf(std::istream &zis, std::istream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *alloc = coast::storage::Current());
 	~ZipIStreamBuf();
 
 	void close();
@@ -192,7 +192,7 @@ class ZipOStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipOStreamBuf(std::ostream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *a = Coast::Storage::Current());
+	ZipOStreamBuf(std::ostream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *a = coast::storage::Current());
 	~ZipOStreamBuf();
 
 	//! not much to do when synchronizing, just insert string termination character

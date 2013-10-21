@@ -107,20 +107,20 @@ long String::allocCapacity(long newLength)
 
 String::String(Allocator *a)
 	: fStringImpl(0)
-	, fAllocator((a) ? a : Coast::Storage::Current())
+	, fAllocator((a) ? a : coast::storage::Current())
 {
 }
 
 String::String(long capacity, Allocator *a)
 	: fStringImpl(0)
-	, fAllocator((a) ? a : Coast::Storage::Current())
+	, fAllocator((a) ? a : coast::storage::Current())
 {
 	alloc(capacity);
 }
 
 String::String(const char *s, long l, Allocator *a)
 	: fStringImpl(0)
-	, fAllocator((a) ? a : Coast::Storage::Current())
+	, fAllocator((a) ? a : coast::storage::Current())
 {
 	if (s) {
 		long sLen = strlen(s);
@@ -130,7 +130,7 @@ String::String(const char *s, long l, Allocator *a)
 
 String::String(void const *s, long l, Allocator *a)
 	: fStringImpl(0)
-	, fAllocator((a) ? a : Coast::Storage::Current())
+	, fAllocator((a) ? a : coast::storage::Current())
 {
 	if (l > 0) { // should check l for sanity
 		if (s) {
@@ -329,7 +329,7 @@ String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
 {
 	String strResult(fAllocator);
 	if (Length() > 0) {
-		static String hexcode("0123456789ABCDEF", -1, Coast::Storage::Global());
+		static String hexcode("0123456789ABCDEF", -1, coast::storage::Global());
 		String outbuf(fAllocator);
 		long lTotalLen = (4L * dumpwidth + 1L);
 		long x = 0L;

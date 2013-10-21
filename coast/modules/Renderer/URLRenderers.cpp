@@ -205,11 +205,11 @@ void URLPrinter::AppendEncodedState(std::ostream &reply, Context &c, const Anyth
 	s.Append("=");
 	SecurityModule::ScrambleState(s, state);
 	Trace("scrambled state [" << s << "]");
-	if ( Coast::URLUtils::CheckUrlEncoding(s) ) {
+	if ( coast::urlutils::CheckUrlEncoding(s) ) {
 		reply << s;
 	} else {
 		// now we need to encode the string according to RFC1738/1808
-		String strEncoded = Coast::URLUtils::urlEncode(s);
+		String strEncoded = coast::urlutils::urlEncode(s);
 		Trace("state after additional encoding [" << strEncoded << "]");
 		reply << strEncoded;
 	}

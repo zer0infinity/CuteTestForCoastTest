@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 #include "WDBaseTestPolicies.h"
 
-class HTTPHeaderFieldParameterMapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class HTTPHeaderFieldParameterMapperTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

@@ -14,7 +14,7 @@
 class Context;
 class String;
 
-class CopyActionsTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class CopyActionsTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	CopyActionsTest(TString tname) :
 		TestCaseType(tname) {

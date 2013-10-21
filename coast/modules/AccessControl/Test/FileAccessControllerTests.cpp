@@ -73,7 +73,7 @@ void FileAccessControllerTests::FileUDACTest() {
 	assertAnyEqual(GetConfig()["FileContent"]["UDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	Coast::System::IO::unlink("config/FileTestUserDB.any");
+	coast::system::io::unlink("config/FileTestUserDB.any");
 }
 
 // -------------------- TDAC Tests ----------------------
@@ -118,7 +118,7 @@ void FileAccessControllerTests::FileTDACTest() {
 	assertAnyEqual(GetConfig()["FileContent"]["TDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	Coast::System::IO::unlink("config/FileTestActerDB.any");
+	coast::system::io::unlink("config/FileTestActerDB.any");
 }
 
 // -------------------- EDAC Tests ----------------------
@@ -186,7 +186,7 @@ void FileAccessControllerTests::FileEDACTest() {
 	assertAnyEqual(GetConfig()["FileContent"]["EDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	Coast::System::IO::unlink("config/FileTestRightsDB.any");
+	coast::system::io::unlink("config/FileTestRightsDB.any");
 }
 
 // ------------------------- suite ------------------------------

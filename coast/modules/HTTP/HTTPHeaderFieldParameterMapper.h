@@ -11,8 +11,8 @@
 
 #include "Mapper.h"
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		//! HTTP header field parameter mapping
 		/*!
 		 * This mapper will use DoGetAny(key,...) to get header field values and to either

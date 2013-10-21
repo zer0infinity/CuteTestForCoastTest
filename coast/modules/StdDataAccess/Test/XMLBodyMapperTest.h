@@ -14,7 +14,7 @@
 
 class Anything;
 
-class XMLBodyMapperTest: public TestFramework::TestCase {
+class XMLBodyMapperTest: public testframework::TestCase {
 public:
 	XMLBodyMapperTest(TString tstrName) :
 		TestCaseType(tstrName), fXMLBodyMapper("TestedMapper") {

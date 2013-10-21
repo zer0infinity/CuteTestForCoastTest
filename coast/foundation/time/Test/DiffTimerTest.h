@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class DiffTimerTest : public TestFramework::TestCase
+class DiffTimerTest : public testframework::TestCase
 {
 public:
 	//--- constructors

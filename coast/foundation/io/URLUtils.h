@@ -11,8 +11,8 @@
 
 #include "Anything.h"//lint !e537
 
-namespace Coast {
-	namespace URLUtils {
+namespace coast {
+	namespace urlutils {
 		enum NormalizeTag {
 			eUpshift, eDownshift, eUntouched,
 		};
@@ -30,13 +30,13 @@ namespace Coast {
 		//! sample:
 		//! buf: fooKey=fooVal, delim: '='  results in  /fooKey fooVal
 		//! if delim is not found buf will be appended to any
-		void Pair(const char *buf, char delim, Anything &any, Coast::URLUtils::NormalizeTag norm = Coast::URLUtils::eUntouched);
+		void Pair(const char *buf, char delim, Anything &any, coast::urlutils::NormalizeTag norm = coast::urlutils::eUntouched);
 
 		//! split a list of delimiter separated key value pairs and add them
 		//! to the Anything, the key value pairs are appended using Pair
 		//! PS: use char for delim2
-		void Split(const char *buf, char delim, Anything &out, char delim2 = '=', Coast::URLUtils::NormalizeTag norm =
-				Coast::URLUtils::eUntouched);
+		void Split(const char *buf, char delim, Anything &out, char delim2 = '=', coast::urlutils::NormalizeTag norm =
+				coast::urlutils::eUntouched);
 
 		//! encodes the given string by expanding problematic characters into %XX escapes
 		String MSUrlEncode(const String &str);
@@ -44,14 +44,14 @@ namespace Coast {
 		String urlEncode(const String &str, const String &exclusionSet = String());
 
 		//! URL decodes the given string, (\%xx, \%uxxxx) Only values <= xFF are valid
-		String urlDecode(const String &str, Coast::URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
+		String urlDecode(const String &str, coast::urlutils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
 		String urlDecode(const String &str, bool replacePlusByBlank = true);
 
 		//! HTML decodes the given string, (\&\#xffff - \&\#xf, \&\#dddd - \&\#d). Only values <= xFF are valid
 		String HTMLDecode(const String &str);
 
 		//! Decode URL until no more escape sequences are left
-		String ExhaustiveUrlDecode(const String &instr, Coast::URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
+		String ExhaustiveUrlDecode(const String &instr, coast::urlutils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
 		String ExhaustiveUrlDecode(const String &instr, bool replacePlusByBlank = true);
 
 		//! Decode HTML until no more escape sequences are left
@@ -94,10 +94,10 @@ namespace Coast {
 		void RemoveQuotes(String &myStr);
 
 		//!up or downshift str according to normKey in case of eUntouched it is a no op
-		void Normalize(String &str, Coast::URLUtils::NormalizeTag normKey);
+		void Normalize(String &str, coast::urlutils::NormalizeTag normKey);
 
 		//!up or downshift str according to normKey in case of eUntouched it is a no op
-		String Normalize(String const &str, Coast::URLUtils::NormalizeTag normKey);
+		String Normalize(String const &str, coast::urlutils::NormalizeTag normKey);
 
 		//!appends value to any under the tag key if key.Length>0; it appends to key if key already has a value
 		void AppendValueTo(Anything &any, const String &key, const char *value);

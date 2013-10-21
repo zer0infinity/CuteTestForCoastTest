@@ -13,7 +13,7 @@
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDAImplTest : public TestFramework::TestCaseWithConfig
+class SybCTnewDAImplTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

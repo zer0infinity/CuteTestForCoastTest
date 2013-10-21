@@ -16,13 +16,13 @@ void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine() {
 	StartTrace(HTTPProtocolReplyRendererTest.ReasonLessErrorReplyLine);
 	Context c;
 	Anything tmpStore(c.GetTmpStore());
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolCodeSlotname] = 500L;
+	tmpStore["HTTPStatus"][coast::http::constants::protocolCodeSlotname] = 500L;
 	OStringStream response;
 	Anything anyConfig;
 	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
 	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 500 Server Error\r\nConnection: close\r\n", response.str());
-	assertEqual(500L, c.Lookup(String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname), -1L));
+	assertEqual(500L, c.Lookup(String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname), -1L));
 }
 
 void HTTPProtocolReplyRendererTest::ReasonLessReplyLine() {
@@ -33,7 +33,7 @@ void HTTPProtocolReplyRendererTest::ReasonLessReplyLine() {
 	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
 	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\nConnection: close\r\n", response.str());
-	assertEqual(200L, c.Lookup(String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname), -1L));
+	assertEqual(200L, c.Lookup(String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname), -1L));
 }
 
 void HTTPProtocolReplyRendererTest::ConnectionCloseTest() {
@@ -57,17 +57,17 @@ void HTTPProtocolReplyRendererTest::RequestSuccessfulReplyLine() {
 	StartTrace(HTTPProtocolReplyRendererTest.RequestSuccessfulReplyLine);
 	Context c;
 	Anything tmpStore(c.GetTmpStore());
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolVersionSlotname] = "HTTP/1.1";
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolCodeSlotname] = 200L;
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolMsgSlotname] = "OK";
+	tmpStore["HTTPStatus"][coast::http::constants::protocolVersionSlotname] = "HTTP/1.1";
+	tmpStore["HTTPStatus"][coast::http::constants::protocolCodeSlotname] = 200L;
+	tmpStore["HTTPStatus"][coast::http::constants::protocolMsgSlotname] = "OK";
 	OStringStream response;
 	Anything anyConfig;
 	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
 	Renderer::Render(response, c, anyConfig);
 	assertEqual("HTTP/1.1 200 OK\r\nConnection: close\r\n", response.str());
 	OStringStream response2;
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolVersionSlotname] = "HTTP/1.0";
-	tmpStore["HTTPStatus"][Coast::HTTP::constants::protocolMsgSlotname] = "OKEYDOKEY";
+	tmpStore["HTTPStatus"][coast::http::constants::protocolVersionSlotname] = "HTTP/1.0";
+	tmpStore["HTTPStatus"][coast::http::constants::protocolMsgSlotname] = "OKEYDOKEY";
 	Renderer::Render(response2, c, anyConfig);
 	assertEqual("HTTP/1.0 200 OKEYDOKEY\r\n", response2.str());
 }

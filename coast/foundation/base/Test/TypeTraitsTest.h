@@ -10,7 +10,7 @@
 #define _TypeTraitsTest_H
 
 #include "TestCase.h"//lint !e537
-class TypeTraitsTest: public TestFramework::TestCase {
+class TypeTraitsTest: public testframework::TestCase {
 public:
 	TypeTraitsTest(TString tstrName) :
 		TestCaseType(tstrName) {

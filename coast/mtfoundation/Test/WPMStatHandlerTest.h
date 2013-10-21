@@ -13,7 +13,7 @@
 
 class WPMStatHandler;
 class Anything;
-class WPMStatHandlerTest: public TestFramework::TestCase {
+class WPMStatHandlerTest: public testframework::TestCase {
 public:
 	WPMStatHandlerTest(TString tname) :
 		TestCaseType(tname) {

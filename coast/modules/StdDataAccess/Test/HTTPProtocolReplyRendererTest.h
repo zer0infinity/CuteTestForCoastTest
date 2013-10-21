@@ -13,7 +13,7 @@
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------
 //! TestCases description
-class HTTPProtocolReplyRendererTest: public TestFramework::TestCase {
+class HTTPProtocolReplyRendererTest: public testframework::TestCase {
 public:
 	//! TestCase constructor
 	//! \param name name of the test

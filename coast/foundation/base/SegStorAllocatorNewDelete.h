@@ -11,7 +11,7 @@
 
 #include "ITOStorage.h"//lint !e537
 
-namespace Coast
+namespace coast
 {
 
 //! Segregated Storage Allocator for operator new/delete
@@ -27,7 +27,7 @@ classes can lead to space leaks because of a possible size differences.
 		}
 
 		static void *operator new( size_t t ) {
-			return operator new(t, Storage::Global());
+			return operator new(t, storage::Global());
 		}
 
 		static void operator delete( void *ptr, Allocator *a ) {
@@ -40,18 +40,18 @@ classes can lead to space leaks because of a possible size differences.
 
 		static void *operator new[]( size_t sz, Allocator *a ) {
 			if (a) {
-				void *ptr = a->Malloc(sz + Memory::AlignedSize<Allocator *>::value);
-				Memory::allocatorFor(ptr) = a; // remember address of responsible Allocator
-				return reinterpret_cast<char *>(ptr) + Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
+				void *ptr = a->Malloc(sz + memory::AlignedSize<Allocator *>::value);
+				memory::allocatorFor(ptr) = a; // remember address of responsible Allocator
+				return reinterpret_cast<char *>(ptr) + memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
 			}
 			return a;
 		}
 
 		static void operator delete[]( void *ptr ) {
-			void *realPtr = Memory::realPtrFor(ptr);
-			Allocator *a = Memory::allocatorFor(realPtr);
+			void *realPtr = memory::realPtrFor(ptr);
+			Allocator *a = memory::allocatorFor(realPtr);
 			if (a) {
-				Memory::safeFree(a, realPtr);
+				memory::safeFree(a, realPtr);
 			} else {
 				free(realPtr);
 			}

@@ -197,8 +197,8 @@ void Base64Test::EncodeDecodeTest()
 	t_assert( OriginalString == DecodedString );
 
 	// String::IntPrintOn:  01     -> \x01
-	// Coast::URLUtils::urlEncode: \x01   -> %5Cx01
-	// Coast::URLUtils::urlEncode: %5Cx01 -> %255Cx01
+	// coast::urlutils::urlEncode: \x01   -> %5Cx01
+	// coast::urlutils::urlEncode: %5Cx01 -> %255Cx01
 	assertCharPtrEqual( "AAECAwQFBgcICQ==", EncodedString );
 
 	// One Printable Char, unscrambled
@@ -228,8 +228,8 @@ void Base64Test::EncodeDecodeTest()
 	t_assert( OriginalString == DecodedString );
 
 	// String::IntPrintOn:  05     -> \x05
-	// Coast::URLUtils::urlEncode: \x05   -> %5Cx05
-	// Coast::URLUtils::urlEncode: %5Cx05 -> %255Cx05
+	// coast::urlutils::urlEncode: \x05   -> %5Cx05
+	// coast::urlutils::urlEncode: %5Cx05 -> %255Cx05
 	assertCharPtrEqual( "BQ==", EncodedString );
 
 	// Only Printable Chars, scrambled
@@ -269,8 +269,8 @@ void Base64Test::EncodeDecodeTest()
 	t_assert( OriginalString == DecodedString );
 
 	// String::IntPrintOn:  01     -> \x01
-	// Coast::URLUtils::urlEncode: \x01   -> %5Cx01
-	// Coast::URLUtils::urlEncode: %5Cx01 -> %255Cx01
+	// coast::urlutils::urlEncode: \x01   -> %5Cx01
+	// coast::urlutils::urlEncode: %5Cx01 -> %255Cx01
 
 	assertCharPtrEqual( "AAEC", EncodedString );
 

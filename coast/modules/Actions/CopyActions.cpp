@@ -30,7 +30,7 @@ bool CopyAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 	}
 
 	Anything data, anydestConfig;
-	anydestConfig = destConfig.DeepClone(Coast::Storage::Current());
+	anydestConfig = destConfig.DeepClone(coast::storage::Current());
 	if (config.IsDefined("Delim")) {
 		Trace("copying delim [" << config["Delim"].AsCharPtr(".")[0L] << "] to destination getter config");
 		anydestConfig["Delim"] = config["Delim"].AsCharPtr(".")[0L];

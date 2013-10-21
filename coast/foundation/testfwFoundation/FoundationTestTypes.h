@@ -13,7 +13,7 @@
 #include "AnythingConfigTestPolicy.h"
 #include "AnythingStatisticTestPolicy.h"
 
-namespace TestFramework
+namespace testframework
 {
 
 	typedef TestCaseT<AnythingConfigTestPolicy, NoStatisticPolicy, int> TestCaseWithConfig;
@@ -22,7 +22,7 @@ namespace TestFramework
 
 	typedef TestCaseT<AnythingConfigTestPolicy, AnythingStatisticTestPolicy, int> TestCaseWithConfigAndStatistics;
 
-} // end namespace TestFramework
+} // end namespace testframework
 
 #define assertAnyEqual(expected,actual)\
 {    bool tluseReht = true;\

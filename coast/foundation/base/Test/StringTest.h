@@ -12,7 +12,7 @@
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
 
-class StringTest : public TestFramework::TestCase
+class StringTest : public testframework::TestCase
 {
 protected:
 	String fShort;

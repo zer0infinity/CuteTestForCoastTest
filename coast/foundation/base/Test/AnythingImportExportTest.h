@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingImportExportTest: public TestFramework::TestCase {
+class AnythingImportExportTest: public testframework::TestCase {
 public:
 	AnythingImportExportTest(TString tname) :
 		TestCaseType(tname) {

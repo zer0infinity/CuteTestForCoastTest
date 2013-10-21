@@ -60,8 +60,8 @@ void CgiCallerTest::DoExecTest(Context &ctx) {
 
 	t_assertm(cgi.Exec(ctx, &mapin, &mout), "expected success of cgi call");
 
-	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname), 400L));
-	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname), "Not found"));
+	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolCodeSlotname), 400L));
+	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolMsgSlotname), "Not found"));
 	ROAnything abody = ctx.Lookup("Mapper.HTTPBody");
 	t_assertm(abody.GetType() == AnyCharPtrType, "body should be string");
 	String body = abody.AsString("");

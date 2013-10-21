@@ -3,7 +3,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingIteratorTest: public TestFramework::TestCase {
+class AnythingIteratorTest: public testframework::TestCase {
 protected:
 	Anything fAny5; // anything with 5 elements set-up in setUp
 public:

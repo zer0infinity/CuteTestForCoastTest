@@ -14,7 +14,7 @@
 
 //---- SybCTnewDATest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDATest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class SybCTnewDATest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

@@ -10,7 +10,7 @@
 #include "SystemFile.h"
 #include "Context.h"
 
-using namespace Coast;
+using namespace coast;
 
 RegisterParameterMapper(URI2FileNameMapper);
 
@@ -29,10 +29,10 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 		Get("DocumentRoot", documentRoot, ctx);
 		Trace("DocumentRoot: <" << documentRoot << ">");
 		String path = documentRoot;
-		if (!System::IsAbsolutePath(documentRoot)) {
+		if (!system::IsAbsolutePath(documentRoot)) {
 			// document root is not set or relative
 			// set path to COAST_ROOT
-			path = System::GetRootDir();
+			path = system::GetRootDir();
 			if (documentRoot.Length() > 0) {
 				// document root is given and seems to be a relative path
 				// check if we have to insert a '/' between path and documentRoot
@@ -47,7 +47,7 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 				// but changes to a specific drive we have to add some special logic here
 				// at this point we know that documentRoot is not absolute
 				char drive;
-				if ( System::GetDriveLetter(documentRoot, drive) ) {
+				if ( system::GetDriveLetter(documentRoot, drive) ) {
 					// now that we have a drive letter we can use documentRoot as new root
 					path = "";
 				}
@@ -71,9 +71,9 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 		val = value;
 		Trace("value :" << value);
 		Trace("path  :" << path);
-		if ( System::IsRegularFile(value) ) {
+		if ( system::IsRegularFile(value) ) {
 			// do nothing yet
-		} else if ( System::IsDirectory(value) ) {
+		} else if ( system::IsDirectory(value) ) {
 			if ( value[long(value.Length() - 1)] != '/' || uri.Length() == 0 ) {
 				Anything tmpStore(ctx.GetTmpStore());
 				if (uri.Length() == 0) {

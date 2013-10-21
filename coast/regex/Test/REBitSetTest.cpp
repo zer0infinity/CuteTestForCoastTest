@@ -130,7 +130,7 @@ void REBitSetTest::GeneratePosixSets()
 	// to be used by RECompiler to simplify charset handling for
 	// POSIX character sets and special escapes
 
-	std::ostream *os = Coast::System::OpenOStream("REPosixBitSets", "h");
+	std::ostream *os = coast::system::OpenOStream("REPosixBitSets", "h");
 	if (t_assertm(os != NULL, "cannot write File REPosixBitSets.h")) {
 		*os << "//(c) copyright ifs 2005, all rights reserved" << std::endl;
 		*os << "//automatically generatest by REBitSetTest::GeneratePosixSets" << std::endl;

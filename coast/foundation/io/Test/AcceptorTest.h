@@ -17,7 +17,7 @@ class Socket;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class AcceptorTest : public TestFramework::TestCaseWithConfig
+class AcceptorTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

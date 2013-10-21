@@ -21,7 +21,7 @@ public:
 };
 
 //---- FormRendererTest -----------------------------------------------------------
-class FormRendererTest : public TestFramework::TestCase
+class FormRendererTest : public testframework::TestCase
 {
 protected:
 

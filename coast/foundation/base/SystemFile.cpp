@@ -43,7 +43,7 @@ namespace {
 		//!contains a search path list that is ':' delimited, it is used to search for files
 		String fgPathList;
 	public:
-		PathInitializer() : fgRootDir(0L, Coast::Storage::Global()), fgPathList(0L, Coast::Storage::Global()) {
+		PathInitializer() : fgRootDir(0L, coast::storage::Global()), fgPathList(0L, coast::storage::Global()) {
 			InitFinisManager::IFMTrace("PathInitializer::Initialized\n");
 			initialize(0,0);
 		}
@@ -51,8 +51,8 @@ namespace {
 			InitFinisManager::IFMTrace("PathInitializer::Finalized\n");
 		}
 		void initialize(const char *root, const char *path) {
-			String tmpRoot((root) ? String(root) : Coast::System::EnvGet("COAST_ROOT"));
-			String tmpPath((path) ? String(path) : Coast::System::EnvGet("COAST_PATH"));
+			String tmpRoot((root) ? String(root) : coast::system::EnvGet("COAST_ROOT"));
+			String tmpPath((path) ? String(path) : coast::system::EnvGet("COAST_PATH"));
 			static bool once= false;
 			if (!once || tmpRoot.Length() > 0 || tmpPath.Length() > 0) {
 				once=true;
@@ -73,7 +73,7 @@ namespace {
 				String rPath(root);
 				// when a dot is supplied as root, ResolvePath would remove it and leave the path blank
 				if (rPath != ".") {
-					Coast::System::ResolvePath(rPath);
+					coast::system::ResolvePath(rPath);
 				}
 				if (print) {
 					SystemLog::WriteToStderr(String("Root Dir: <") << rPath << ">" << "\n");
@@ -117,7 +117,7 @@ namespace {
 #if defined(WIN32) //!@TODO: symlinks seem to be supported since vista
 		bIsSymbolicLink = false;
 #else
-		while ( !(result = (lstat64(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
+		while ( !(result = (lstat64(path, stbuf) == 0)) && coast::system::SyscallWasInterrupted() ) {
 			String msg("OOPS, lstat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
 			Trace(msg);
@@ -128,7 +128,7 @@ namespace {
 			Trace("mode field value of lstat: " << (long)stbuf->st_mode);
 		}
 #endif
-		while ( !(result = (stat64(path, stbuf) == 0)) && Coast::System::SyscallWasInterrupted() ) {
+		while ( !(result = (stat64(path, stbuf) == 0)) && coast::system::SyscallWasInterrupted() ) {
 			String msg("OOPS, stat failed with ");
 			msg << SystemLog::LastSysError() << " on " << path;
 			Trace(msg);
@@ -145,7 +145,7 @@ namespace {
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
-	std::iostream *DoOpenStream(const char *path, Coast::System::openmode mode, bool log = false)
+	std::iostream *DoOpenStream(const char *path, coast::system::openmode mode, bool log = false)
 	{
 		StartTrace1(System.DoOpenStream, "file [" << NotNull(path) << "]");
 		// adjust mode to output, append implies it
@@ -160,14 +160,14 @@ namespace {
 		}
 #endif
 
-		if ( Coast::System::IsRegularFile(path) || (mode & std::ios::out) ) {
+		if ( coast::system::IsRegularFile(path) || (mode & std::ios::out) ) {
 			// ios::ate is special, it should only work on existing files according to standard
 			// so must set the out flag here and not earlier
 			if ( mode & std::ios::ate ) {
 				mode |= std::ios::out;
 			}
 #if !defined(WIN32)
-			static bool bUseMmapStreams = ( Coast::System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
+			static bool bUseMmapStreams = ( coast::system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 			if ( bUseMmapStreams ) {
 				MmapStream *fp = new MmapStream(path, mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
@@ -177,7 +177,7 @@ namespace {
 				delete fp;
 			} else {
 #endif
-				std::fstream *fp = new std::fstream(path, (Coast::System::openmode)mode);
+				std::fstream *fp = new std::fstream(path, (coast::system::openmode)mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
 					return fp;
 				}
@@ -198,7 +198,7 @@ namespace {
 	/*! \param path the filepath, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 		\return an open iostream or NULL if the open fails */
-	std::iostream *IntOpenStream(const String &path, Coast::System::openmode mode)
+	std::iostream *IntOpenStream(const String &path, coast::system::openmode mode)
 	{
 		StartTrace(System.IntOpenStream);
 
@@ -209,9 +209,9 @@ namespace {
 			return 0;
 		}
 
-		Coast::System::ResolvePath(filepath);
+		coast::system::ResolvePath(filepath);
 
-		if (Coast::System::IsAbsolutePath(filepath)) {
+		if (coast::system::IsAbsolutePath(filepath)) {
 			Trace("file [" << filepath << "] is going to be opened absolute");
 		} else {
 			Trace("file [" << filepath << "] is going to be opened relative");
@@ -225,7 +225,7 @@ namespace {
 			Trace("can't open " << filepath);
 		}
 		if ( Ios == NULL ) {
-			Trace("couldn't open file [" << filepath << "] searched in [" << Coast::System::GetRootDir() << "] with pathlist: [" << Coast::System::GetPathList() << "]");
+			Trace("couldn't open file [" << filepath << "] searched in [" << coast::system::GetRootDir() << "] with pathlist: [" << coast::system::GetPathList() << "]");
 		}
 
 		return Ios;
@@ -242,11 +242,11 @@ namespace {
 		String dirpath, filepath;
 		// search over pathlist
 		while (st.NextToken(dirpath)) {
-			filepath.Append(Coast::System::GetRootDir()).Append(Coast::System::Sep()).Append(dirpath).Append(Coast::System::Sep()).Append(name);
-			Coast::System::ResolvePath(filepath);
+			filepath.Append(coast::system::GetRootDir()).Append(coast::system::Sep()).Append(dirpath).Append(coast::system::Sep()).Append(name);
+			coast::system::ResolvePath(filepath);
 			Trace("trying [" << filepath << "]");
 
-			if ( Coast::System::IsRegularFile(filepath) && Coast::System::IO::access(filepath, R_OK)==0 ) {
+			if ( coast::system::IsRegularFile(filepath) && coast::system::io::access(filepath, R_OK)==0 ) {
 				return filepath;
 			}
 			// reset filepath and try next path
@@ -267,19 +267,19 @@ namespace {
 	//! internal method to extend a directory with given permissions by creating 'extension' directories and softlinks
 	/*!	\param path relative or absolute path to create new directory
 		\param pmode permission of new directory, octal number
-		\return System::eSuccess if new directory was created */
-	Coast::System::DirStatusCode IntExtendDir(String &strOriginalDir, int pmode)
+		\return system::eSuccess if new directory was created */
+	coast::system::DirStatusCode IntExtendDir(String &strOriginalDir, int pmode)
 	{
 		StartTrace1(System.IntExtendDir, "dir to create [" << strOriginalDir << "]");
-		Coast::System::DirStatusCode aDirStatus(Coast::System::ePathIncomplete);
+		coast::system::DirStatusCode aDirStatus(coast::system::ePathIncomplete);
 		String strBasePath(strOriginalDir), strDirToExtend, strFinalDir, strExtensionDir;
-		long slPos = strBasePath.StrRChr( Coast::System::Sep() );
+		long slPos = strBasePath.StrRChr( coast::system::Sep() );
 		if ( slPos > 0L ) {
 			// find final segment
 			strFinalDir = strBasePath.SubString(slPos + 1);
 			strBasePath.Trim(slPos);
 			// find path to extend by other dir and link
-			slPos = strBasePath.StrRChr( Coast::System::Sep() );
+			slPos = strBasePath.StrRChr( coast::system::Sep() );
 			if ( slPos > 0L ) {
 				// find final segment
 				strDirToExtend = strBasePath.SubString(slPos + 1);
@@ -291,21 +291,21 @@ namespace {
 		while ( bContinue ) {
 			strExtensionDir = strBasePath;
 			if ( strExtensionDir.Length() > 0L ) {
-				strExtensionDir.Append(Coast::System::Sep());
+				strExtensionDir.Append(coast::system::Sep());
 			}
-			strExtensionDir.Append(strDirToExtend).Append("_ex").Append(lExt).Append(Coast::System::Sep()).Append(strFinalDir);
+			strExtensionDir.Append(strDirToExtend).Append("_ex").Append(lExt).Append(coast::system::Sep()).Append(strFinalDir);
 			Trace("trying extension directory [" << strExtensionDir << "]");
-			switch ( aDirStatus = Coast::System::MakeDirectory(strExtensionDir, pmode, true, false) ) {
-				case Coast::System::eNoMoreHardlinks: {
+			switch ( aDirStatus = coast::system::MakeDirectory(strExtensionDir, pmode, true, false) ) {
+				case coast::system::eNoMoreHardlinks: {
 					// no more room for creating a 'real' directory
 					// lets try the next extension number
 					break;
 				}
-				case Coast::System::eExists:
+				case coast::system::eExists:
 					// need to catch this, directory might exist already or someone else created it recently
-				case Coast::System::eSuccess: {
+				case coast::system::eSuccess: {
 					// create link into original directory (strOriginalDir)
-					aDirStatus = Coast::System::CreateSymbolicLink(strExtensionDir, strOriginalDir);
+					aDirStatus = coast::system::CreateSymbolicLink(strExtensionDir, strOriginalDir);
 				} /* fall through */
 				default: {
 					bContinue = false;
@@ -323,86 +323,86 @@ namespace {
 		\param pmode permission of new directory, octal number
 		\param bRecurse set to true if nonexisting parent directories should be created
 		\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name <dir>_ex[0-9]+ and link the newly created directory into the original location
-		\return System::eSuccess if new directory was created */
-	Coast::System::DirStatusCode IntMakeDirectory(String &path, int pmode, bool bRecurse, bool bExtendByLinks)
+		\return system::eSuccess if new directory was created */
+	coast::system::DirStatusCode IntMakeDirectory(String &path, int pmode, bool bRecurse, bool bExtendByLinks)
 	{
 		StartTrace1(System.IntMakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 		String strParentDir;
-		long slPos = path.StrRChr( Coast::System::Sep() );
+		long slPos = path.StrRChr( coast::system::Sep() );
 		if ( slPos > 0L ) {
 			// remove last segment and slash
 			strParentDir = path.SubString(0L, slPos);
 		}
 		Trace("parent path [" << strParentDir << "]");
 
-		Coast::System::DirStatusCode aDirStatus = Coast::System::ePathIncomplete;
+		coast::system::DirStatusCode aDirStatus = coast::system::ePathIncomplete;
 		if ( strParentDir.Length() ) {
-			if ( Coast::System::IsDirectory(strParentDir) ) {
-				aDirStatus = Coast::System::eSuccess;
+			if ( coast::system::IsDirectory(strParentDir) ) {
+				aDirStatus = coast::system::eSuccess;
 			} else {
 				if ( bRecurse ) {
 					// recurse to make parent directories
 					aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse, bExtendByLinks);
 				} else {
 					SYSERROR("parent directory does not exist [" << strParentDir << "]");
-					aDirStatus = Coast::System::eNotExists;
+					aDirStatus = coast::system::eNotExists;
 				}
 			}
 		} else {
 			// assume root level or relative
-			aDirStatus = Coast::System::eSuccess;
+			aDirStatus = coast::system::eSuccess;
 		}
 		// eExists might occur if someone created the parent directory in parallel
-		if ( aDirStatus == Coast::System::eSuccess || aDirStatus == Coast::System::eExists ) {
+		if ( aDirStatus == coast::system::eSuccess || aDirStatus == coast::system::eExists ) {
 			// make new directory
-			if ( Coast::System::IO::mkdir(path, pmode) != 0L ) {
+			if ( coast::system::io::mkdir(path, pmode) != 0L ) {
 				switch ( errno ) { // errno needs to be used in comparisons
 						// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
 					case EEXIST: {
 						SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
-						aDirStatus = Coast::System::eExists;
+						aDirStatus = coast::system::eExists;
 						break;
 					}
 #if !defined(WIN32)
 					case EDQUOT: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eQuotaExceeded;
+						aDirStatus = coast::system::eQuotaExceeded;
 						break;
 					}
 #endif
 					case ENOSPC: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] -> check for free inodes using $>df -F ufs -o i <FS>");
-						aDirStatus = Coast::System::eNoSpaceLeft;
+						aDirStatus = coast::system::eNoSpaceLeft;
 						break;
 					}
 					case EACCES: {
 						SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eNoPermission;
+						aDirStatus = coast::system::eNoPermission;
 						break;
 					}
 					case ENOENT: {
 						SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eNotExists;
+						aDirStatus = coast::system::eNotExists;
 						break;
 					}
 					case ENOTDIR: {
 						SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eNotDirectory;
+						aDirStatus = coast::system::eNotDirectory;
 						break;
 					}
 					case EIO: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eIOOperationFailed;
+						aDirStatus = coast::system::eIOOperationFailed;
 						break;
 					}
 					case EFAULT: {
 						SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::ePathIllegal;
+						aDirStatus = coast::system::ePathIllegal;
 						break;
 					}
 					case EMLINK: {
 						SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
-						aDirStatus = Coast::System::eNoMoreHardlinks;
+						aDirStatus = coast::system::eNoMoreHardlinks;
 #if !defined(WIN32)
 						if ( bExtendByLinks ) {
 							// if no more directories can be created, we use 'extension' links instead
@@ -413,7 +413,7 @@ namespace {
 					}
 					default: {
 						SYSERROR("mkdir of [" << path << "] failed with [" << SystemLog::LastSysError() << "]");
-						aDirStatus = Coast::System::eCreateDirFailed;
+						aDirStatus = coast::system::eCreateDirFailed;
 					}
 				}
 			}
@@ -428,21 +428,21 @@ namespace {
 	/*! \param path relative or absolute path of directory to be deleted
 		\param bRecurse true if relative directory should be deleted recusrively
 		\param bAbsDir if true we can not recurse to delete directories
-		\return System::eSuccess if directory was removed */
-	Coast::System::DirStatusCode IntRemoveDirectory(String &path, bool bRecurse, bool bAbsDir)
+		\return system::eSuccess if directory was removed */
+	coast::system::DirStatusCode IntRemoveDirectory(String &path, bool bRecurse, bool bAbsDir)
 	{
 		StartTrace1(System.IntRemoveDirectory, "dir to remove [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 
-		Coast::System::DirStatusCode aDirStatus = Coast::System::eNoSuchFileOrDir;
-		if ( ( Coast::System::IsDirectory(path) && Coast::System::IO::rmdir(path) == 0L ) || ( Coast::System::IsSymbolicLink(path) && Coast::System::IO::unlink(path) == 0L ) ) {
-			aDirStatus = Coast::System::eSuccess;
+		coast::system::DirStatusCode aDirStatus = coast::system::eNoSuchFileOrDir;
+		if ( ( coast::system::IsDirectory(path) && coast::system::io::rmdir(path) == 0L ) || ( coast::system::IsSymbolicLink(path) && coast::system::io::unlink(path) == 0L ) ) {
+			aDirStatus = coast::system::eSuccess;
 			if ( bRecurse && !bAbsDir ) {
-				long slPos = path.StrRChr( Coast::System::Sep() );
+				long slPos = path.StrRChr( coast::system::Sep() );
 				if ( slPos > 0L ) {
 					// remove parent dir
 					String strParent(path.SubString(0L, slPos));
 					aDirStatus = IntRemoveDirectory(strParent, bRecurse, bAbsDir);
-					if ( aDirStatus != Coast::System::eSuccess ) {
+					if ( aDirStatus != coast::system::eSuccess ) {
 						path = strParent;
 					}
 				}
@@ -452,10 +452,10 @@ namespace {
 			switch ( errno ) { // errno needs to be used in comparisons
 				case EEXIST:
 				case ENOTEMPTY:
-					aDirStatus = Coast::System::eExists;
+					aDirStatus = coast::system::eExists;
 					break;
 				case ENOENT:
-					aDirStatus = Coast::System::eNotExists;
+					aDirStatus = coast::system::eNotExists;
 					break;
 				default:
 					;
@@ -467,8 +467,8 @@ namespace {
 }
 
 
-namespace Coast {
-	namespace System {
+namespace coast {
+	namespace system {
 
 		char Sep() {
 			return cSep;
@@ -1097,7 +1097,7 @@ namespace Coast {
 			return LoadConfigFile(config, name, ext, dummy);
 		}
 
-		namespace IO {
+		namespace io {
 			int access(const char *path, int amode)
 			{
 				StartTrace(System.IO.access);

@@ -13,7 +13,7 @@
 
 class Allocator;
 
-class MTStorageTest2 : public TestFramework::TestCase
+class MTStorageTest2 : public testframework::TestCase
 {
 public:
 	//!constructors

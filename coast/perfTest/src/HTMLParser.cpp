@@ -703,14 +703,14 @@ void MyHTMLWriter::Put(Unicode c) {
 	}
 
 	if (fStoreTitle) {
-		StatTrace(MyHTMLWriter.Put, "storing title, unicode:" << c << " ->" << static_cast<char>(c) << "<-", Coast::Storage::Current());
+		StatTrace(MyHTMLWriter.Put, "storing title, unicode:" << c << " ->" << static_cast<char>(c) << "<-", coast::storage::Current());
 		fTitle.Append(static_cast<char> (c));
 		if (isalnum(c)) {
 			fAllStringsInPage.Append(static_cast<char> (c));
 		}
 	} else {
 		if (fNodeStack.GetSize() > 0) {
-			StatTrace(MyHTMLWriter.Put, "nodestack, unicode:" << c << " ->" << static_cast<char>(c) << "<-", Coast::Storage::Current());
+			StatTrace(MyHTMLWriter.Put, "nodestack, unicode:" << c << " ->" << static_cast<char>(c) << "<-", coast::storage::Current());
 			String myString(fNodeStack[fNodeStack.GetSize() - 1]["String"].AsCharPtr());
 			if (((c != ' ') && (c != '\n') && (c != '\t') && (c != '\r')) || ((myString.Length() > 0) && (c == ' '))) {
 				myString.Append(static_cast<char> (c));

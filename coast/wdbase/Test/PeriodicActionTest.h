@@ -15,7 +15,7 @@
 class Context;
 
 //!tests for PeriodicAction thread
-class PeriodicActionTest : public TestFramework::TestCase
+class PeriodicActionTest : public testframework::TestCase
 {
 public:
 	//--- constructors

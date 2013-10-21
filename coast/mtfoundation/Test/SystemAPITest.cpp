@@ -88,7 +88,7 @@ static bool AssertMessageIntoAny(Anything &resultany, bool condition, const char
 
 void TestSleep( int sleepTimeInMiliseconds )
 {
-	Coast::System::MicroSleep(1000L * sleepTimeInMiliseconds);
+	coast::system::MicroSleep(1000L * sleepTimeInMiliseconds);
 }
 
 void SystemAPITest::PrintResult(Anything result )

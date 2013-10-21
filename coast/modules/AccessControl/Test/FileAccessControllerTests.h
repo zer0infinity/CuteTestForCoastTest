@@ -25,7 +25,7 @@ public:
 
 //---- FileAccessControllerTests ----------------------------------------------------------
 //! <B>Tests functionality of FileAccessControllers (FileUDAC, FileTDAC, FileEDAC)
-class FileAccessControllerTests : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class FileAccessControllerTests : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

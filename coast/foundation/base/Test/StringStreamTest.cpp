@@ -12,7 +12,7 @@
 #include "SystemFile.h"
 #include "SystemLog.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <limits>
 
@@ -180,7 +180,7 @@ void StringStreamTest::ReadFromAndWriteToStringTest()
 void StringStreamTest::ReadFromAndWriteToAnythingTest()
 {
 	Anything a;
-	std::istream *ifp = System::OpenStream("Test", "any");
+	std::istream *ifp = system::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "can't open file Test.any");
@@ -202,7 +202,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest()
 void StringStreamTest::ReadFromAndWriteToAnythingTest2()
 {
 	Anything a;
-	std::istream *ifp = System::OpenStream("Test", "any");
+	std::istream *ifp = system::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "can't open file Test.any");

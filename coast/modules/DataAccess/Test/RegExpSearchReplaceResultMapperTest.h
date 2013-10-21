@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class RegExpSearchReplaceResultMapperTest: public TestFramework::TestCaseWithConfig {
+class RegExpSearchReplaceResultMapperTest: public testframework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

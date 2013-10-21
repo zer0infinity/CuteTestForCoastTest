@@ -14,7 +14,7 @@
 class ROAnything;
 class Context;
 class ResultMapper;
-class NameUsingOutputMapperTest: public TestFramework::TestCase {
+class NameUsingOutputMapperTest: public testframework::TestCase {
 public:
 	NameUsingOutputMapperTest(TString tstrName) :
 		TestCaseType(tstrName) {

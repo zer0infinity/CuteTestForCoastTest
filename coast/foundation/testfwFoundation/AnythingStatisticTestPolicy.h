@@ -19,7 +19,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-namespace TestFramework
+namespace testframework
 {
 
 	template
@@ -65,18 +65,18 @@ namespace TestFramework
 		void LoadData(TString strClassName, TString strTestName) {
 			StartTrace(AnythingStatisticTestPolicy.LoadData);
 			fTestName = strTestName;
-			Coast::System::LoadConfigFile(fStatistics, strClassName, "stat.any", fFilename);
+			coast::system::LoadConfigFile(fStatistics, strClassName, "stat.any", fFilename);
 			if ( !fFilename.Length() ) {
 				fFilename = strClassName;
 				fFilename << ".stat.any";
 			}
 			fDatetime = GenTimeStamp();
-			Coast::System::HostName(fHostName);
+			coast::system::HostName(fHostName);
 			// use path to anything as input for statistics output
-			long lLastIdx = fFilename.StrRChr(Coast::System::Sep());
+			long lLastIdx = fFilename.StrRChr(coast::system::Sep());
 			if ( lLastIdx >= 0 ) {
 				fStatClassName = fFilename.SubString(0, lLastIdx);
-				fStatClassName.Append(Coast::System::Sep());
+				fStatClassName.Append(coast::system::Sep());
 				Trace("path to csv file [" << fStatClassName << "]");
 			}
 			fStatClassName.Append(strClassName);
@@ -86,7 +86,7 @@ namespace TestFramework
 
 		void StoreData() {
 			StartTrace(AnythingStatisticTestPolicy.StoreData);
-			std::iostream *pStream = Coast::System::OpenOStream(fFilename, "");
+			std::iostream *pStream = coast::system::OpenOStream(fFilename, "");
 			if ( pStream != NULL ) {
 				long lLevel(0L);
 				RecurseSort(fStatistics, lLevel);
@@ -104,7 +104,7 @@ namespace TestFramework
 			RecurseExportCsvStatistics(anyCsv, fStatistics, lLevel);
 
 			TraceAny(anyCsv, "collected");
-			std::iostream *pStream = Coast::System::OpenOStream(fStatClassName, "csv");
+			std::iostream *pStream = coast::system::OpenOStream(fStatClassName, "csv");
 			if ( pStream != NULL ) {
 				long lRowIdx = anyCsv.GetSize();
 				if ( lRowIdx > 0 ) {
@@ -198,7 +198,7 @@ namespace TestFramework
 			const int dateSz = 40;
 			time_t now = time(0);
 			struct tm res, *tt;
-			tt = Coast::System::LocalTime(&now, &res);
+			tt = coast::system::LocalTime(&now, &res);
 
 			char date[dateSz];
 			strftime(date, dateSz, "%Y%m%d%H%M%S", tt);
@@ -206,6 +206,6 @@ namespace TestFramework
 		}
 	};
 
-}	// end namespace TestFramework
+}	// end namespace testframework
 
 #endif

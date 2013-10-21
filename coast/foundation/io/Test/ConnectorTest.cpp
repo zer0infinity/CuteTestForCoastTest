@@ -236,12 +236,12 @@ void ConnectorTest::allocatorConstructorTest()
 		delete socket;
 	}
 	{
-		TestStorageHooks tsh(Coast::Storage::Global());
+		TestStorageHooks tsh(coast::storage::Global());
 
 		Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), false);
 		Socket *socket = connector.MakeSocket();
 
-		if ( t_assert( socket != NULL ) && t_assertm(Coast::Storage::Global() == socket->fAllocator, "allocator should match") ) {
+		if ( t_assert( socket != NULL ) && t_assertm(coast::storage::Global() == socket->fAllocator, "allocator should match") ) {
 			long socketfd = socket->GetFd();
 			t_assert( socketfd > 0 );
 

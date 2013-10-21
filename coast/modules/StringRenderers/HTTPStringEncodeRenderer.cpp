@@ -16,5 +16,5 @@ void HTTPStringEncodeRenderer::RenderAll(std::ostream &reply, Context &ctx, cons
 	RenderOnString(str, ctx, config["String"]);
 	Trace("encoded String: <" << str << ">");
 	// use MSUrlEncode function because it converts almost all reserved characters
-	reply << Coast::URLUtils::MSUrlEncode(str);
+	reply << coast::urlutils::MSUrlEncode(str);
 }

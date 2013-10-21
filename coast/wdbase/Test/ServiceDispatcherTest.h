@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class ServiceDispatcherTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class ServiceDispatcherTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	ServiceDispatcherTest(TString tstrName);
 	~ServiceDispatcherTest();

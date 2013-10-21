@@ -50,8 +50,8 @@ void MIMEHeaderTest::ConfiguredTests() {
 		if (!aEntryIterator.SlotName(caseName)) {
 			caseName << "At index: " << aEntryIterator.Index();
 		}
-		Coast::URLUtils::NormalizeTag normalizeKey = (Coast::URLUtils::NormalizeTag) (caseConfig["NormalizeTag"].AsLong(
-				(long) Coast::URLUtils::eUpshift));
+		coast::urlutils::NormalizeTag normalizeKey = (coast::urlutils::NormalizeTag) (caseConfig["NormalizeTag"].AsLong(
+				(long) coast::urlutils::eUpshift));
 		MIMEHeader mh(normalizeKey);
 
 		String testinput = caseConfig["Input"].AsString();

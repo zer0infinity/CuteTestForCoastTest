@@ -17,16 +17,16 @@ bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, Resul
 	Anything statusSpec;
 
 	Anything verSpec;
-	verSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolVersionSlotname);
-	statusSpec[Coast::HTTP::constants::protocolVersionSlotname] = verSpec;
+	verSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolVersionSlotname);
+	statusSpec[coast::http::constants::protocolVersionSlotname] = verSpec;
 
 	Anything resCodeSpec;
-	resCodeSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname);
-	statusSpec[Coast::HTTP::constants::protocolCodeSlotname] = resCodeSpec;
+	resCodeSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolCodeSlotname);
+	statusSpec[coast::http::constants::protocolCodeSlotname] = resCodeSpec;
 
 	Anything resMsgSpec;
-	resMsgSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname);
-	statusSpec[Coast::HTTP::constants::protocolMsgSlotname] = resMsgSpec;
+	resMsgSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolMsgSlotname);
+	statusSpec[coast::http::constants::protocolMsgSlotname] = resMsgSpec;
 
 	return out->Put("HTTPStatus", statusSpec, context);
 }
@@ -67,7 +67,7 @@ bool HTTPFileLoader::Exec(Context &context, ParameterMapper *in, ResultMapper *o
 	SubTrace(FileName, "FileName:<" << filename << ">");
 
 	retVal = GenReplyHeader(context, in, out) && retVal;
-	retVal = out->Put(Coast::HTTP::constants::protocolVersionSlotname, String("HTTP/1.1"), context) && retVal; // PS Fix binary &
+	retVal = out->Put(coast::http::constants::protocolVersionSlotname, String("HTTP/1.1"), context) && retVal; // PS Fix binary &
 
 	if (retVal) {
 		retVal = ProcessFile(filename, context, in, out);
@@ -103,8 +103,8 @@ void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context,
 	Trace("errorCode :" << errorCode );
 	Trace("errorMsg :" << errormsg );
 
-	out->Put(Coast::HTTP::constants::protocolCodeSlotname, errorCode, context);
-	out->Put(Coast::HTTP::constants::protocolMsgSlotname, errormsg, context);
+	out->Put(coast::http::constants::protocolCodeSlotname, errorCode, context);
+	out->Put(coast::http::constants::protocolMsgSlotname, errormsg, context);
 	out->Put("content-type", String("text/html"), context);
 	IStringStream is(errorReply);
 	out->Put("HTTPBody", is, context);
@@ -118,11 +118,11 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 	bool retVal = true;
 	std::iostream *Ios = 0;
 	String ext;
-	Ios = Coast::System::OpenStream(filename, ext, std::ios::in | std::ios::binary);
+	Ios = coast::system::OpenStream(filename, ext, std::ios::in | std::ios::binary);
 	if (Ios) {
 		Trace("Stream opened ok");
-		retVal = out->Put(Coast::HTTP::constants::protocolCodeSlotname, 200L, context) && retVal;
-		retVal = out->Put(Coast::HTTP::constants::protocolMsgSlotname, String("Ok"), context) && retVal;
+		retVal = out->Put(coast::http::constants::protocolCodeSlotname, 200L, context) && retVal;
+		retVal = out->Put(coast::http::constants::protocolMsgSlotname, String("Ok"), context) && retVal;
 
 		long posDot = filename.StrRChr('.');
 		if (posDot != -1) {
@@ -133,7 +133,7 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 		retVal = out->Put("content-type", String(context.Lookup(ctquery, "text/plain")), context) && retVal;
 
 		ul_long ulFileSize = 0ULL;
-		if (Coast::System::GetFileSize(filename, ulFileSize)) {
+		if (coast::system::GetFileSize(filename, ulFileSize)) {
 			Trace("file [" << filename << "] has size (stat): " << (l_long)ulFileSize);
 			retVal = out->Put("content-length", (long) ulFileSize, context) && retVal;
 		}

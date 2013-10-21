@@ -31,7 +31,7 @@ void TerminateMeTestThread::Run()
 Thread *TestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	StartTrace(TestThreadPool.DoAllocThread);
-	return new (Coast::Storage::Global()) TestThread;
+	return new (coast::storage::Global()) TestThread;
 }
 
 bool TestThreadPool::AllThreadsStarted()
@@ -54,7 +54,7 @@ bool TestThreadPool::AllThreadsTerminated()
 
 Thread *TerminateTestThreadPool::DoAllocThread(long i, ROAnything args)
 {
-	return new (Coast::Storage::Global()) TerminateMeTestThread;
+	return new (coast::storage::Global()) TerminateMeTestThread;
 }
 
 TestWorker::TestWorker(const char *name)

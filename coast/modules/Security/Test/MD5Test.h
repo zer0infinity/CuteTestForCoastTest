@@ -19,7 +19,7 @@
 
 //---- MD5Test -----------------------------------------------------------
 
-class MD5Test : public TestFramework::TestCase
+class MD5Test : public testframework::TestCase
 {
 public:
 	MD5Test(TString tstrName);

@@ -21,7 +21,7 @@ namespace {
 		} catch (utf8::invalid_utf8& e) {
 			len = str.Length();
 		}
-		StatTrace(StringLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
+		StatTrace(StringLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", coast::storage::Current());
 		return len;
 	}
 }

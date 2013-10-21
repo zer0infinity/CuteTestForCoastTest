@@ -11,8 +11,8 @@
 
 #include "ITOString.h"
 
-namespace Coast {
-	namespace Security {
+namespace coast {
+	namespace security {
 		//! Generate a Unique ID
 		/*!
 		 Returns a String containing a unique id.

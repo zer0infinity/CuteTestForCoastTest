@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class HTMLParserTest: public TestFramework::TestCase {
+class HTMLParserTest: public testframework::TestCase {
 public:
 	HTMLParserTest(TString tstrName) :
 		TestCaseType(tstrName) {

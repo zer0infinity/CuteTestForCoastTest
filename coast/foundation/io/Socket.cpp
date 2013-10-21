@@ -14,7 +14,7 @@
 #include "Tracer.h"
 #include "InitFinisManager.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <cstring>
 #if defined (WIN32)
@@ -105,7 +105,7 @@ Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long time
 	, fClientInfo(clientInfo)
 	, fTimeout(timeout)
 	, fHadTimeout(false)
-	, fAllocator((a) ? a : Coast::Storage::Global())
+	, fAllocator((a) ? a : coast::storage::Global())
 {
 	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << reinterpret_cast<long>(fAllocator) << "]");
 	TraceAny(fClientInfo, "clientInfo");
@@ -167,7 +167,7 @@ bool Socket::IsReady(long fd, short event, long timeout, long &retCode)
 	fHadTimeout = false;
 	if ( fd >= 0 ) {
 		bool bRead = (event & POLLIN) > 0, bWrite = (event & POLLOUT) > 0;
-		retCode = System::DoSingleSelect(fd, timeout, bRead, bWrite);
+		retCode = system::DoSingleSelect(fd, timeout, bRead, bWrite);
 		Trace("testing fd:" << fd << " for " << (bRead ? "reading" : "") << (bRead && bWrite ? "&" : "") << (bWrite ? "writing" : "") << " returned:" << retCode);
 		if (retCode > 0) {
 			return true;
@@ -206,7 +206,7 @@ bool Socket::IsReady(bool forreading)
 {
 	StartTrace1(Socket.IsReady, "fd:" << GetFd() << (forreading ? " for reading" : " for writing"));
 	bool bRet = false;
-	int res = System::DoSingleSelect(GetFd(), GetTimeout(), forreading, !forreading);
+	int res = system::DoSingleSelect(GetFd(), GetTimeout(), forreading, !forreading);
 	fHadTimeout = (0 == res);
 	if (res < 0) {
 		LogError(GetFd(), "select() failed", res);
@@ -310,7 +310,7 @@ void Socket::LogError(int socketfd, const char *contextmessage, long lRetCode)
 	StartTrace1(Socket.LogError, "fd:" << socketfd);
 	String logMsg(contextmessage);
 	logMsg << " of socket fd=" << socketfd
-		   << " failed with function retCode:" << lRetCode << " (#" << (long)System::GetSystemError() << ") " << SystemLog::LastSysError();
+		   << " failed with function retCode:" << lRetCode << " (#" << (long)system::GetSystemError() << ") " << SystemLog::LastSysError();
 	Trace(logMsg);
 	SystemLog::Error(logMsg);
 }
@@ -428,7 +428,7 @@ void EndPoint::LogError(const char *contextmessage, int sockerrno)
 	String logMsg(contextmessage);
 	logMsg << " of socket " << (long)GetFd()
 		   << " with address: " << fIPAddress << " port: " << fPort
-		   << " failed (#" << (long)System::GetSystemError() << ") " << SystemLog::LastSysError();
+		   << " failed (#" << (long)system::GetSystemError() << ") " << SystemLog::LastSysError();
 	if (sockerrno!=0) {
 		logMsg << ", last error [" << SystemLog::SysErrorMsg(sockerrno) << "]";
 	}
@@ -537,7 +537,7 @@ bool EndPoint::PrepareSockAddrInet(struct sockaddr_in &socketaddr, unsigned long
 
 Allocator *EndPoint::GetSocketAllocator()
 {
-	return fThreadLocal ? Coast::Storage::Current() : Coast::Storage::Global();
+	return fThreadLocal ? coast::storage::Current() : coast::storage::Global();
 }
 
 Socket *EndPoint::DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose)
@@ -546,7 +546,7 @@ Socket *EndPoint::DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose)
 	clientInfo["HTTPS"] = false;
 	Allocator *a = GetSocketAllocator();
 
-	Trace("allocating with Coast::Storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << reinterpret_cast<long>(a) << "]");
+	Trace("allocating with coast::storage::" << (fThreadLocal ? "Current" : "Global") << "(): [" << reinterpret_cast<long>(a) << "]");
 	return new (a) Socket(socketfd, clientInfo, doClose, GetDefaultSocketTimeout(), a);
 }
 
@@ -617,9 +617,9 @@ long ConnectorArgs::ConnectTimeout()
 }
 
 Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPAdr, long srcPort, bool threadLocal) :
-	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()), port),
+	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? coast::storage::Current() : coast::storage::Global()), port),
 	fConnectTimeout(connectTimeout),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? coast::storage::Current() : coast::storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);
@@ -630,9 +630,9 @@ Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPA
 }
 
 Connector::Connector(ConnectorArgs &connectorArgs, String srcIPAdr, long srcPort, bool threadLocal) :
-	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()), connectorArgs.Port()),
+	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, threadLocal ? coast::storage::Current() : coast::storage::Global()), connectorArgs.Port()),
 	fConnectTimeout(connectorArgs.ConnectTimeout()),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Coast::Storage::Current() : Coast::Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? coast::storage::Current() : coast::storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);
@@ -658,7 +658,7 @@ Socket *Connector::MakeSocket(bool doClose)
 			Anything clientInfo;
 			clientInfo["REMOTE_ADDR"] = fIPAddress;
 			clientInfo["REMOTE_PORT"] = fPort;
-			System::SetCloseOnExec(GetFd());
+			system::SetCloseOnExec(GetFd());
 			s = DoMakeSocket(GetFd(), clientInfo, doClose);
 		}
 		if (GetFd() >= 0 && ! s) {
@@ -735,7 +735,7 @@ bool Connector::DoConnect()
 		Trace("connecting to: " << fIPAddress << ":" << fPort );
 		if ( (connect(GetFd(), (struct sockaddr *) &serv_addr, sizeof(serv_addr)) >= 0)
 			 || ( ConnectWouldBlock() &&
-				  System::IsReadyForWriting(GetFd(), fConnectTimeout) &&
+				  system::IsReadyForWriting(GetFd(), fConnectTimeout) &&
 				  !SockOptGetError() ) ) {
 			Trace("connect successfully done")
 			return true;

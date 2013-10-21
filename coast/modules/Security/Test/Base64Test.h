@@ -16,7 +16,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class Base64Test : public TestFramework::TestCase
+class Base64Test : public testframework::TestCase
 {
 public:
 	//--- constructors

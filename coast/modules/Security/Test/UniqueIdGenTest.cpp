@@ -27,7 +27,7 @@ void UniqueIdGenTest::DoGetUniqueIdTest(long iterations, const String &additiona
 	Anything uniqueId, check;
 
 	for ( long l = 0; l < iterations; l++ ) {
-		uniqueId[l] = Coast::Security::generateUniqueId(additionalToken);
+		uniqueId[l] = coast::security::generateUniqueId(additionalToken);
 		Trace("uniqueId :[" << uniqueId[l].AsString() << "]");
 	}
 	for ( long l = 0; l < iterations; l++ ) {

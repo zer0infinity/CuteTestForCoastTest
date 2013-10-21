@@ -76,7 +76,7 @@ void LFListenerPoolTest::NoFactoryTest()
 {
 	StartTrace(LFListenerPoolTest.NoFactoryTest);
 	const long cNumOfThreads = 2;
-	LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+	LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 	Anything lfpConfig;
 	lfpConfig.Append("TCP4343");
@@ -90,7 +90,7 @@ void LFListenerPoolTest::InvalidAcceptorTest()
 {
 	StartTrace(LFListenerPoolTest.InvalidAcceptorTest);
 	const long cNumOfThreads = 2;
-	LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+	LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 	Anything lfpConfig;
 	lfpConfig.Append("Fake");
@@ -118,7 +118,7 @@ void LFListenerPoolTest::OneAcceptorTest()
 {
 	StartTrace(LFListenerPoolTest.OneAcceptorTest);
 	const long cNumOfThreads = 2;
-	LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+	LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 	Anything lfpConfig;
 	lfpConfig.Append("TCP5010");
@@ -135,7 +135,7 @@ void LFListenerPoolTest::TwoAcceptorsTest()
 {
 	StartTrace(LFListenerPoolTest.TwoAcceptorsTest);
 	const long cNumOfThreads = 3;
-	LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+	LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 	Anything lfpConfig;
 	lfpConfig.Append("TCP5010");
@@ -154,7 +154,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 	StartTrace(LeaderFollowerPoolTest.ManyAcceptorsTest);
 	{
 		const long cNumOfThreads = 0;
-		LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+		LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 		Anything lfpConfig;
 		lfpConfig.Append("TCP5010");
@@ -169,7 +169,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 	}
 	{
 		const long cNumOfThreads = 1;
-		LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+		LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 		Anything lfpConfig;
 		lfpConfig.Append("TCP5010");
@@ -186,7 +186,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 	}
 	{
 		const long cNumOfThreads = 2;
-		LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+		LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 		Anything lfpConfig;
 		lfpConfig.Append("TCP5010");
@@ -203,7 +203,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 	}
 	{
 		const long cNumOfThreads = 3;
-		LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+		LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 		Anything lfpConfig;
 		lfpConfig.Append("TCP5010");
@@ -220,7 +220,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 	}
 	{
 		const long cNumOfThreads = 4;
-		LFListenerPool lfp(new RequestReactor(new (Coast::Storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
+		LFListenerPool lfp(new RequestReactor(new (coast::storage::Global()) TestProcessor(this), new WPMStatHandler(cNumOfThreads)));
 
 		Anything lfpConfig;
 		lfpConfig.Append("TCP5010");

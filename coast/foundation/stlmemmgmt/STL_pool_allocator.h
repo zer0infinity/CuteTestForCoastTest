@@ -11,12 +11,12 @@
 
 #include "STLStorage.h"//lint !e537
 
-namespace STLStorage
+namespace stlstorage
 {
 	// use pool_allocator type for std::list container types which allocate elements one by one
 	template <
 	typename T,
-			 typename UserAllocator = ITOStorage::BoostPoolUserAllocatorGlobal,
+			 typename UserAllocator = itostorage::BoostPoolUserAllocatorGlobal,
 			 unsigned NextSize = 32 >
 	class pool_allocator
 	{
@@ -77,7 +77,7 @@ namespace STLStorage
 		}
 
 		~pool_allocator() {
-			_StatTrace(pool_allocator.~pool_allocator, "this:" << static_cast<long>(this) << " IntPool:" << (long)fpIntPool.get(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.~pool_allocator, "this:" << static_cast<long>(this) << " IntPool:" << (long)fpIntPool.get(), coast::storage::Current());
 		}
 
 		static pointer address(reference r) {
@@ -106,18 +106,18 @@ namespace STLStorage
 
 		pointer allocate(const size_type n) throw(std::bad_alloc) {
 			const pointer ptr = static_cast<pointer>( fpIntPool->ordered_malloc(n) );
-			_StatTrace(pool_allocator.allocate_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.allocate_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_malloc " << " fpIntPool:" << (long)fpIntPool.operator->(), coast::storage::Current());
 			if (ptr == 0) {
 				throw std::bad_alloc();
 			}
 			return ptr;
 		}
 		pointer allocate(const size_type n, const void *const) throw(std::bad_alloc) {
-			_StatTrace(pool_allocator.allocate_n_void, "this:" << static_cast<long>(this) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " void*", Coast::Storage::Current());
+			_StatTrace(pool_allocator.allocate_n_void, "this:" << static_cast<long>(this) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " void*", coast::storage::Current());
 			return allocate(n);
 		}
 		void deallocate(const pointer ptr, const size_type n) {
-			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), Coast::Storage::Current());
+			_StatTrace(pool_allocator.deallocate_ptr_n, "this:" << static_cast<long>(this) << " ptr:" << static_cast<long>(ptr) << " size:" << static_cast<long>(n) << '*' << sizeof(T) << " calling ordered_free " << " fpIntPool:" << (long)fpIntPool.operator->(), coast::storage::Current());
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
 			if (ptr == 0 || n == 0) {
 				return;
@@ -127,8 +127,8 @@ namespace STLStorage
 		}
 		int_pool_instance_type fpIntPool;
 	};
-	template < typename T > struct pool_allocator_global : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorGlobal, 32 > {};
-	template < typename T > struct pool_allocator_current : public STLStorage::pool_allocator<T, ITOStorage::BoostPoolUserAllocatorCurrent, 32 > {};
+	template < typename T > struct pool_allocator_global : public stlstorage::pool_allocator<T, itostorage::BoostPoolUserAllocatorGlobal, 32 > {};
+	template < typename T > struct pool_allocator_current : public stlstorage::pool_allocator<T, itostorage::BoostPoolUserAllocatorCurrent, 32 > {};
 }
 
 #endif

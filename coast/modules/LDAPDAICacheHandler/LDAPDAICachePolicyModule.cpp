@@ -105,7 +105,7 @@ LDAPDAIDataAcccessLoader::~LDAPDAIDataAcccessLoader() { }
 Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 {
 	StartTrace1(LDAPDAIDataAcccessLoader.Load, "da name to execute [" << NotNull(ldapDa) << "]");
-	Anything theResult(Coast::Storage::Global());
+	Anything theResult(coast::storage::Global());
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "LdapLoader", fConfig);
 
@@ -135,7 +135,7 @@ LDAPDAIActionLoader::~LDAPDAIActionLoader() { }
 Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 {
 	StartTrace(LDAPDAIActionLoader.Load);
-	Anything theResult(Coast::Storage::Global());
+	Anything theResult(coast::storage::Global());
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "LdapLoader", fConfig);
 	if ( String(ldapDaAction).Length() ) {

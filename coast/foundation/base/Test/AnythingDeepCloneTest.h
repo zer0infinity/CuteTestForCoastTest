@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingDeepCloneTest: public TestFramework::TestCase {
+class AnythingDeepCloneTest: public testframework::TestCase {
 public:
 	AnythingDeepCloneTest(TString tname) :
 		TestCaseType(tname) {

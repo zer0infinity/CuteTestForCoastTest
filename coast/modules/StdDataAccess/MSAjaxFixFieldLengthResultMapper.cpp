@@ -33,7 +33,7 @@ namespace {
 			it=itStart+valueFieldLength;
 		}
 		String valueString(itStart,it);
-		StatTrace(MSAjaxFixFieldLengthResultMapper.getSubString, "len: " << valueFieldLength << " bytelen: " << (long)(it-itStart) << " str [" << valueString << "]", Coast::Storage::Current());
+		StatTrace(MSAjaxFixFieldLengthResultMapper.getSubString, "len: " << valueFieldLength << " bytelen: " << (long)(it-itStart) << " str [" << valueString << "]", coast::storage::Current());
 		return valueString;
 	}
 	Anything getEntryFromString(String &sText, char const delim, long const nFields, ROAnything roaFieldList) {
@@ -60,7 +60,7 @@ namespace {
 		} catch (utf8::invalid_utf8& e) {
 			len = str.Length();
 		}
-		StatTrace(MSAjaxFixFieldLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
+		StatTrace(MSAjaxFixFieldLengthResultMapper.getStringLength, "len: " << len << " str [" << str << "]", coast::storage::Current());
 		return len;
 	}
 	void adjustLengthField(Anything &anyEntry, ROAnything roaFieldList) {

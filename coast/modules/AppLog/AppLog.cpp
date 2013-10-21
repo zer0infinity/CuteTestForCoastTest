@@ -14,7 +14,7 @@
 #include "SystemFile.h"
 #include <errno.h>
 #include <cstdio>
-using namespace Coast;
+using namespace coast;
 
 //---- AppLogModule -----------------------------------------------------------
 RegisterModule(AppLogModule);
@@ -43,7 +43,7 @@ bool AppLogModule::Init(const ROAnything config)
 		String strLogDir, strRotateDir;
 		strLogDir = appLogConfig["LogDir"].AsCharPtr("log");
 		strRotateDir = strLogDir;
-		strRotateDir << System::Sep() << "rotate";
+		strRotateDir << system::Sep() << "rotate";
 		if ( appLogConfig.IsDefined("RotateDir") ) {
 			strRotateDir = appLogConfig["RotateDir"].AsCharPtr();
 		}
@@ -134,7 +134,7 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 				}
 				AppLogChannel *pChannel = NULL, *pCloneChannel = AppLogChannel::FindAppLogChannel(channel["ChannelClass"].AsString("AppLogChannel"));
 				if ( pCloneChannel ) {
-					pChannel = SafeCast(pCloneChannel->Clone(Coast::Storage::Global()), AppLogChannel);
+					pChannel = SafeCast(pCloneChannel->Clone(coast::storage::Global()), AppLogChannel);
 					if ( pChannel ) {
 						pChannel->InitClone(strChannelName, channel);
 					}
@@ -238,7 +238,7 @@ bool AppLogModule::DoRotateLogs()
 
 bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond,  const char *everyNSecondsTime, long lEveryNSeconds, bool isGmTime)
 {
-	fRotator = new (Coast::Storage::Global()) LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
+	fRotator = new (coast::storage::Global()) LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
 	if (fRotator) {
 		return fRotator->Start();
 	}
@@ -258,7 +258,7 @@ bool AppLogModule::TerminateLogRotator()
 
 bool AppLogModule::StartLogFlusher(long lEveryNSeconds)
 {
-	fFlusher = new (Coast::Storage::Global()) LogFlusher(lEveryNSeconds);
+	fFlusher = new (coast::storage::Global()) LogFlusher(lEveryNSeconds);
 	if (fFlusher) {
 		return fFlusher->Start();
 	}
@@ -411,16 +411,16 @@ RegCacheImpl(AppLogChannel);
 AppLogChannel::AppLogChannel(const char *name)
 	: RegisterableObject(name)
 	, fLogStream(NULL)
-	, fChannelInfo( Coast::Storage::Global() )
+	, fChannelInfo( coast::storage::Global() )
 	, fSuppressEmptyLines(false)
 	, fRendering(true)
 	, fLogMsgSizeHint(128L)
 	, fDoNotRotate(false)
 	, fNoLogItemsWrite(false)
-	, fFormat( Coast::Storage::Global() )
-	, fChannelMutex(name, Coast::Storage::Global())
+	, fFormat( coast::storage::Global() )
+	, fChannelMutex(name, coast::storage::Global())
 	, fItemsToBuffer(1L)
-	, fBuffer( Coast::Storage::Global() )
+	, fBuffer( coast::storage::Global() )
 	, fItemsInBuffer(0L)
 	, fSeverity(AppLogModule::eINFO)
 {
@@ -548,25 +548,25 @@ bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String
 	logdir = channel["LogDir"].AsCharPtr();
 	rotatedir = channel["RotateDir"].AsCharPtr();
 
-	if ( !System::IsAbsolutePath(logdir) ) {
+	if ( !system::IsAbsolutePath(logdir) ) {
 		Trace("log path is non-absolute [" << logdir << "]");
-		logdir = System::GetRootDir();
-		logdir << System::Sep() << channel["LogDir"].AsCharPtr();
+		logdir = system::GetRootDir();
+		logdir << system::Sep() << channel["LogDir"].AsCharPtr();
 	}
 	Trace("current logfile-path [" << logdir << "]");
 
-	if ( !System::IsAbsolutePath(rotatedir) ) {
+	if ( !system::IsAbsolutePath(rotatedir) ) {
 		Trace("rotate path is non-absolute [" << rotatedir << "]");
-		rotatedir = System::GetRootDir();
-		rotatedir << System::Sep() << channel["RotateDir"].AsCharPtr();
+		rotatedir = system::GetRootDir();
+		rotatedir << system::Sep() << channel["RotateDir"].AsCharPtr();
 	}
 	Trace("current rotate-path [" << rotatedir << "]");
 	bool bGoAhead = true;
-	if ( !System::IsDirectory(logdir) ) {
+	if ( !system::IsDirectory(logdir) ) {
 		SYSERROR("log directory [" << logdir << "] does not exist! please create it first");
 		bGoAhead = false;
 	}
-	if ( !System::IsDirectory(rotatedir) ) {
+	if ( !system::IsDirectory(rotatedir) ) {
 		SYSERROR("rotate directory [" << rotatedir << "] does not exist! please create it first");
 		bGoAhead = false;
 	}
@@ -586,7 +586,7 @@ std::ostream *AppLogChannel::OpenLogStream(ROAnything channel, String &logfileNa
 	Trace("rotating [" << logfileName << "]");
 	std::ostream *os = NULL;
 	if ( bGoAhead && RotateLog(logdir, rotatedir, logfileName) ) {
-		os = System::OpenOStream(logfileName, NULL, std::ios::app, true);
+		os = system::OpenOStream(logfileName, NULL, std::ios::app, true);
 	}
 	Trace(((os) ? " succeeded" : " failed"));
 	return os;
@@ -598,28 +598,28 @@ bool AppLogChannel::RotateLog(const String &logdirName, const String &rotatedirN
 	Trace("LogFileName [" << logfileName << "]");
 
 	String oldLogFileName(logdirName);
-	oldLogFileName << System::Sep() << logfileName;
+	oldLogFileName << system::Sep() << logfileName;
 	String newLogFileName(rotatedirName);
-	newLogFileName << System::Sep();
+	newLogFileName << system::Sep();
 
 	String stampedLogFileName(logfileName);
 	stampedLogFileName << "." << GenTimeStamp("%Y%m%d%H%M%S");
 	Trace("rotate LogFileName [" << stampedLogFileName << "]");
 	newLogFileName << stampedLogFileName;
 
-	System::ResolvePath(oldLogFileName);
-	System::ResolvePath(newLogFileName);
+	system::ResolvePath(oldLogFileName);
+	system::ResolvePath(newLogFileName);
 	Trace("old [" << oldLogFileName << "]");
 	Trace("new [" << newLogFileName << "]");
 
 	int retCode = 0;
 	Trace("testing if old logfile exists and must be rotated");
-	if ( System::IsRegularFile(oldLogFileName) ) {
+	if ( system::IsRegularFile(oldLogFileName) ) {
 		Trace("testing uniqueness of rotate FileName");
 		long lNum = 1;
 		String strLastRot(newLogFileName);
 		// assume not more than 10 rotates of same file per second...
-		while ( System::IsRegularFile(newLogFileName) && lNum < 10 ) {
+		while ( system::IsRegularFile(newLogFileName) && lNum < 10 ) {
 			Trace("not unique! [" << newLogFileName << "]");
 			newLogFileName = strLastRot << '.' << lNum++;
 			Trace("New name to test [" << newLogFileName << "]");
@@ -691,7 +691,7 @@ String AppLogChannel::GenTimeStamp(const String &format)
 	const int dateSz = 40;
 	time_t now = time(0);
 	struct tm res, *tt;
-	tt = System::LocalTime(&now, &res);
+	tt = system::LocalTime(&now, &res);
 
 	// NOTICE: array is limited to gcMaxDateArraySize chars
 	char date[dateSz];
@@ -752,8 +752,8 @@ long AppLogModule::LogRotator::GetSecondsToWait()
 		time_t now = time(0);
 
 		struct tm res, *tt;
-		tt = ((fIsGmTime == false) ? (System::LocalTime(&now, &res)) :
-			  (System::GmTime(&now, &res)));
+		tt = ((fIsGmTime == false) ? (system::LocalTime(&now, &res)) :
+			  (system::GmTime(&now, &res)));
 
 		long lCurrentSecondInDay = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec ) % 86400;
 		Trace("fRotateSecond: [" << fRotateSecond << "] lCurrentSecondInDay: [" <<

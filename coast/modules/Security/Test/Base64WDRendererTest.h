@@ -18,7 +18,7 @@ further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
 
-class Base64WDRendererTest : public TestFramework::TestCase
+class Base64WDRendererTest : public testframework::TestCase
 {
 public:
 	//--- constructors

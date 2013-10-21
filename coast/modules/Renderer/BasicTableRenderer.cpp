@@ -16,7 +16,7 @@
 // utility class used by BasicTableRenderer to cache the renderers/configuration data
 // used for the creation of table rows
 
-class RowAccessor : public Coast::AllocatorNewDelete
+class RowAccessor : public coast::AllocatorNewDelete
 {
 	// CAUTION: objects of this class are used as a better struct..
 	// they are not initialized properly (using a constructor),
@@ -325,7 +325,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 
 	(*rowSize) = rowMeta.GetSize();
 
-	Allocator *wdallocator = Coast::Storage::Global();
+	Allocator *wdallocator = coast::storage::Global();
 	RowAccessor *accessors = new (wdallocator) RowAccessor[(*rowSize)];
 
 	for (long i = 0; i < (*rowSize); ++i) {

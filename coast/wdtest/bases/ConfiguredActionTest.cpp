@@ -83,9 +83,9 @@ void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, C
 	DoTestWithContext(testCase, testCaseName, ctx);
 	// do existence tests
 	Anything anyFailureStrings;
-	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["Result"], ctx, testCaseName, Coast::TestFramework::exists);
+	coast::testframework::CheckStores(anyFailureStrings, testCase["Result"], ctx, testCaseName, coast::testframework::exists);
 	// non-existence tests
-	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["NotResult"], ctx, testCaseName, Coast::TestFramework::notExists);
+	coast::testframework::CheckStores(anyFailureStrings, testCase["NotResult"], ctx, testCaseName, coast::testframework::notExists);
 	for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}
@@ -101,13 +101,13 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 	TraceAny(testCase, "Config of " << testCaseName);
 
 	AlterTestStoreHook(testCase);
-	Coast::TestFramework::PutInStore(testCase["SessionStore"], ctx.GetSessionStore());
-	Coast::TestFramework::PutInStore(testCase["RoleStore"], ctx.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(testCase["SessionStore"], ctx.GetSessionStore());
+	coast::testframework::PutInStore(testCase["RoleStore"], ctx.GetRoleStoreGlobal());
 	// Can not use real Session Store because Lookup does not find it ! - fix me
 	TraceAny(ctx.GetRoleStoreGlobal(), "SessionStore");
-	Coast::TestFramework::PutInStore(testCase["TmpStore"], ctx.GetTmpStore());
-	Coast::TestFramework::PutInStore(testCase["Query"], ctx.GetQuery());
-	Coast::TestFramework::PutInStore(testCase["Env"], ctx.GetEnvStore());
+	coast::testframework::PutInStore(testCase["TmpStore"], ctx.GetTmpStore());
+	coast::testframework::PutInStore(testCase["Query"], ctx.GetQuery());
+	coast::testframework::PutInStore(testCase["Env"], ctx.GetEnvStore());
 
 	if (!testCase.IsDefined("Server") && GetConfig().IsDefined("Server")) {
 		testCase["Server"] = GetConfig()["Server"].DeepClone();

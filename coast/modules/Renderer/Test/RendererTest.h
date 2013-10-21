@@ -13,7 +13,7 @@
 #include "Context.h"
 #include "StringStream.h"
 
-class RendererTest: public TestFramework::TestCase {
+class RendererTest: public testframework::TestCase {
 public:
 	RendererTest(TString tstrName);
 	void setUp();

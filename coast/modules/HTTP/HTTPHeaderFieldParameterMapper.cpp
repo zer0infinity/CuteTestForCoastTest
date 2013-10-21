@@ -10,8 +10,8 @@
 #include "HTTPConstants.h"
 #include "StringStream.h"
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		bool HTTPHeaderFieldParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info) {
 			StartTrace1(HTTPHeaderFieldParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
 			Anything fieldValues;
@@ -22,7 +22,7 @@ namespace Coast {
 			String headerFieldName = potentiallyCombinedKey.SubString(potentiallyCombinedKey.StrRChr(getDelim()) + 1).ToUpper();
 			Trace("field name only [" << headerFieldName << "]");
 			if (!fieldValues.IsNull()) {
-				Coast::HTTP::putHeaderFieldToStream(os, ctx, headerFieldName, fieldValues);
+				coast::http::putHeaderFieldToStream(os, ctx, headerFieldName, fieldValues);
 			}
 			return true;
 		}

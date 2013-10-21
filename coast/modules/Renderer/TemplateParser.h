@@ -34,7 +34,7 @@ class TemplateParser
 public:
 	TemplateParser() {}
 	virtual ~TemplateParser() {}
-	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Coast::Storage::Current(), const ROAnything roaParserConfig = ROAnything());
+	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = coast::storage::Current(), const ROAnything roaParserConfig = ROAnything());
 
 protected:
 	virtual void DoParse();

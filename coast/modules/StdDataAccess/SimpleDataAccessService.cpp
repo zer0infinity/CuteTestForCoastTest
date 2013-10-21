@@ -30,9 +30,9 @@ bool SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 		} else {
 			Trace("error something wrong with service:" << service);
 			Anything mapinfo = tmpStore["Mapper"];
-			if (!(mapinfo.IsDefined("HTTPStatus") && mapinfo["HTTPStatus"].IsDefined(Coast::HTTP::constants::protocolCodeSlotname))) {
-				mapinfo[Coast::HTTP::constants::protocolCodeSlotname] = 500L;
-				mapinfo[Coast::HTTP::constants::protocolMsgSlotname] = "internal server error";
+			if (!(mapinfo.IsDefined("HTTPStatus") && mapinfo["HTTPStatus"].IsDefined(coast::http::constants::protocolCodeSlotname))) {
+				mapinfo[coast::http::constants::protocolCodeSlotname] = 500L;
+				mapinfo[coast::http::constants::protocolMsgSlotname] = "internal server error";
 
 				mapinfo["HTTPBody"] = "SimpleDataAccessService::DoHandleService some error occured";
 			}

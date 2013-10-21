@@ -11,7 +11,7 @@
 #include "SystemBase.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 //#define STREAM_TRACE
 
@@ -195,7 +195,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 		if ( fSocket->IsReadyForWriting() ) {//lint !e613
 			do {
 				nout = send(fSocket->GetFd(), (char *)buf + bytesSent, len - bytesSent, 0);//lint !e1773//lint !e613
-			} while (nout < 0 && System::SyscallWasInterrupted());
+			} while (nout < 0 && system::SyscallWasInterrupted());
 			if (nout > 0) {
 				bytesSent += nout;
 				continue;
@@ -233,7 +233,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 		if (fSocket->IsReadyForReading() ) {
 			do {
 				bytesRead = recv(fSocket->GetFd(), buf, len, 0);
-			} while (bytesRead < 0 && System::SyscallWasInterrupted());
+			} while (bytesRead < 0 && system::SyscallWasInterrupted());
 
 			if ( bytesRead < 0 ) {
 				String msg("Socket Error: <");

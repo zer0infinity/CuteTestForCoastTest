@@ -41,7 +41,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-namespace STLStorage
+namespace stlstorage
 {
 
 	template <class T>
@@ -93,7 +93,7 @@ namespace STLStorage
 		/* constructors and destructor
 		* - initialize fAllocator to requested storage
 		*/
-		STLAllocator(Allocator *pAlloc = Coast::Storage::Current()) throw(fAllocatorNotInitialized)
+		STLAllocator(Allocator *pAlloc = coast::storage::Current()) throw(fAllocatorNotInitialized)
 			: fAllocator(pAlloc) {
 			_StartTrace(STLAllocator.STLAllocator);
 			if ( !fAllocator ) {
@@ -131,7 +131,7 @@ namespace STLStorage
 		size_type max_size () const throw() {
 			//XXX in case of PoolAllocators, we could determine the max number somewhow
 			size_type tSz = std::numeric_limits<std::size_t>::max() / sizeof(T);
-			_StatTrace(STLAllocator.max_size, "maximal size:" << static_cast<long>(tSz), Coast::Storage::Current());
+			_StatTrace(STLAllocator.max_size, "maximal size:" << static_cast<long>(tSz), coast::storage::Current());
 			return tSz;
 		}
 
@@ -189,16 +189,16 @@ namespace STLStorage
 	class pool_refcounted;
 
 	template <typename T>
-	inline void intrusive_ptr_add_ref(STLStorage::pool_refcounted<T>* p)
+	inline void intrusive_ptr_add_ref(stlstorage::pool_refcounted<T>* p)
 	{
 		p->AddRef();
 	}
 
 	template <typename T>
-	inline void intrusive_ptr_release(STLStorage::pool_refcounted<T>* p)
+	inline void intrusive_ptr_release(stlstorage::pool_refcounted<T>* p)
 	{
 		if (p->Release()) {
-			p->STLStorage::pool_refcounted<T>::~pool_refcounted();
+			p->stlstorage::pool_refcounted<T>::~pool_refcounted();
 			T::free( reinterpret_cast<char *>(p) );
 		}
 	}
@@ -228,7 +228,7 @@ namespace STLStorage
 			, fNextSz(nnext_size)
 			, fpPool(0)
 			, fOtherPools() {
-			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << sizeof(int_pool_type) << " @" << static_cast<long>(this), Coast::Storage::Current());
+			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << sizeof(int_pool_type) << " @" << static_cast<long>(this), coast::storage::Current());
 			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
 			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
 		}
@@ -294,12 +294,12 @@ namespace STLStorage
 
 		void AddRef() {
 			++fRefcount;
-			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), Coast::Storage::Current());
+			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), coast::storage::Current());
 		}
 
 		bool Release() {
 			--fRefcount;
-			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), Coast::Storage::Current());
+			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << static_cast<long>(this), coast::storage::Current());
 			return ( fRefcount <= 0 );
 		}
 
@@ -340,8 +340,8 @@ namespace STLStorage
 #include "STL_fast_pool_allocator.h"
 
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-#define DefaultAllocatorGlobalType STLStorage::fast_pool_allocator_global
-#define DefaultAllocatorCurrentType STLStorage::fast_pool_allocator_current
+#define DefaultAllocatorGlobalType stlstorage::fast_pool_allocator_global
+#define DefaultAllocatorCurrentType stlstorage::fast_pool_allocator_current
 #else
 #define DefaultAllocatorGlobalType std::allocator
 #define DefaultAllocatorCurrentType std::allocator

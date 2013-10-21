@@ -19,7 +19,7 @@ class OracleStatement;
 /*!
  * This class serves as abstraction for all the OCI calls which need to be done to establish a connection to an oracle back end.
  * The OracleConnection itself will be created when calling OracleEnvironment::createConnection. All this is done from within
- * OraclePooledConnection which will be tracked by Coast::Oracle::ConnectionPool.
+ * OraclePooledConnection which will be tracked by coast::oracle::ConnectionPool.
  * The main functions this class serves for is to OracleConnection::Open and OracleConnection::Close the connection
  * to the back end and to let OracleConnection::createStatement give us an OracleStatement. The statement is used to
  * execute any type of valid oracle queries.

@@ -11,7 +11,7 @@
 #include "LocalizationUtilsTest.h"
 #include "SystemFile.h"
 
-using namespace Coast;
+using namespace coast;
 
 LocalizationUtilsTest::LocalizationUtilsTest (TString tname)
 	: TestCaseType(tname)
@@ -21,7 +21,7 @@ LocalizationUtilsTest::LocalizationUtilsTest (TString tname)
 
 void LocalizationUtilsTest::setUp ()
 {
-	System::SetRootDir("."); // Root is usually local
+	system::SetRootDir("."); // Root is usually local
 
 	Anything Languages;
 	Languages.Append("Deutsch");
@@ -480,7 +480,7 @@ void LocalizationUtilsTest::LangKeyDoNotUseBrowserLang()
 void LocalizationUtilsTest::OpenStreamLangD()
 // Language D, Root directory relativ
 {
-	assertEqual(".", System::GetRootDir());
+	assertEqual(".", system::GetRootDir());
 
 	String absoluteFileName;
 	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
@@ -505,11 +505,11 @@ void LocalizationUtilsTest::OpenStreamLangD()
 void LocalizationUtilsTest::PrepareRootDir()
 {
 	String cwd;
-	System::GetCWD(cwd);
-	System::ResolvePath(cwd);
-	System::SetRootDir(cwd);
-	String grd(System::GetRootDir());
-	System::ResolvePath(grd);
+	system::GetCWD(cwd);
+	system::ResolvePath(cwd);
+	system::SetRootDir(cwd);
+	String grd(system::GetRootDir());
+	system::ResolvePath(grd);
 	assertEqual(cwd, grd);
 }
 void LocalizationUtilsTest::OpenStreamLangDAbsolut()
@@ -587,7 +587,7 @@ void LocalizationUtilsTest::OpenStreamLangDDefaultAbsolut()
 // Language I not found, Root dir absolut, take the default language
 {
 	PrepareRootDir();
-	String expectedPath = System::GetRootDir();
+	String expectedPath = system::GetRootDir();
 	expectedPath.Append("/TestDir1/Test");
 
 	// only works in automatic test environment
@@ -597,7 +597,7 @@ void LocalizationUtilsTest::OpenStreamLangDDefaultAbsolut()
 
 	String absoluteFileName;
 	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
-//	System::ResolvePath(absoluteFileName);
+//	system::ResolvePath(absoluteFileName);
 	assertEqual(expectedPath, absoluteFileName);
 	t_assert( is != 0 );
 	// these will fail if daily build did not check out correctly

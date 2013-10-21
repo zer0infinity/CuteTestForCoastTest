@@ -29,7 +29,7 @@ void RegistryTest::InstallAliases() {
 	StartTrace(RegistryTest.InstallAliases);
 	{
 		// Insert regular objects into the registry
-		NotCloned *a = new (Coast::Storage::Global()) NotCloned(""), *b = new (Coast::Storage::Global()) NotCloned("");
+		NotCloned *a = new (coast::storage::Global()) NotCloned(""), *b = new (coast::storage::Global()) NotCloned("");
 		// these must be on the heap, implicit assumption of Registry
 		fRegistry->RegisterRegisterableObject("A", a);
 		fRegistry->RegisterRegisterableObject("B", b);
@@ -58,7 +58,7 @@ void RegistryTest::InstallAliases() {
 	}
 	{
 		// Insert regular objects into the registry
-		NotCloned *a = new (Coast::Storage::Global()) NotCloned(""), *b = new (Coast::Storage::Global()) NotCloned("");
+		NotCloned *a = new (coast::storage::Global()) NotCloned(""), *b = new (coast::storage::Global()) NotCloned("");
 		// these must be on the heap, implicit assumption of Registry
 		fRegistry->RegisterRegisterableObject("A", a);
 		fRegistry->RegisterRegisterableObject("B", b);
@@ -92,7 +92,7 @@ void RegistryTest::InstallAliases() {
 void RegistryTest::InstallErroneousAliases() {
 	StartTrace(RegistryTest.InstallErroneousAliases);
 	// Insert regular objects into the registry
-	NotCloned *a = new (Coast::Storage::Global()) NotCloned(""), *b = new (Coast::Storage::Global()) NotCloned("");
+	NotCloned *a = new (coast::storage::Global()) NotCloned(""), *b = new (coast::storage::Global()) NotCloned("");
 	// these must be on the heap, implicit assumption of Registry
 	fRegistry->RegisterRegisterableObject("A", a);
 	fRegistry->RegisterRegisterableObject("B", b);
@@ -129,9 +129,9 @@ void RegistryTest::InstallErroneousAliases() {
 void RegistryTest::InstallHierarchy() {
 	StartTrace(RegistryTest.InstallHierarchy);
 	// Insert regular objects into the registry
-	Page *a = new (Coast::Storage::Global()) Page("A"), *b = new (Coast::Storage::Global()) Page("B"), *c =
-			new (Coast::Storage::Global()) Page("C");
-	Page *d = new (Coast::Storage::Global()) Page("D");
+	Page *a = new (coast::storage::Global()) Page("A"), *b = new (coast::storage::Global()) Page("B"), *c =
+			new (coast::storage::Global()) Page("C");
+	Page *d = new (coast::storage::Global()) Page("D");
 
 	fRegistry->RegisterRegisterableObject("A", a);
 	fRegistry->RegisterRegisterableObject("B", b);
@@ -211,7 +211,7 @@ void RegistryTest::TerminateTest() {
 	StartTrace(RegistryTest.TerminateTest);
 	NotCloned a("terminate1");
 	a.MarkStatic();
-	NotCloned *b = new (Coast::Storage::Global()) NotCloned("terminate2");
+	NotCloned *b = new (coast::storage::Global()) NotCloned("terminate2");
 
 	Registry *r = MetaRegistry::instance().GetRegistry("TerminateTest");
 	t_assert(r != 0);
@@ -251,8 +251,8 @@ void RegistryTest::InstallHierarchyConfig() {
 	Registry *registry = MetaRegistry::instance().GetRegistry("InstallerResetTest");
 
 	// generate test pages which are initially there
-	Page *a = new (Coast::Storage::Global()) Page("Page");
-	Page *b = new (Coast::Storage::Global()) TestPage("TestPage");
+	Page *a = new (coast::storage::Global()) Page("Page");
+	Page *b = new (coast::storage::Global()) TestPage("TestPage");
 
 	// initially registered pages
 	registry->RegisterRegisterableObject("Page", a);

@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class RendererDispatcherTest : public TestFramework::TestCase
+class RendererDispatcherTest : public testframework::TestCase
 {
 public:
 	//--- constructors

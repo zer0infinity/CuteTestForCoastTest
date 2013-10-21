@@ -15,9 +15,9 @@
 //! Module to initialize Oracle Data Access
 /*!
  * OracleModule is the module needed to initialize when wanting to access Oracle database server back ends. The
- * configuration needed is the configuration for Coast::Oracle::ConnectionPool which is best looked up there. Main
+ * configuration needed is the configuration for coast::oracle::ConnectionPool which is best looked up there. Main
  * purpose of this module is to provide proper WDModule::Init and WDModule::Finis code to setup and cleanup all
- * the needed parts. In this case, initialization is delegated to Coast::Oracle::ConnectionPool which sets up its
+ * the needed parts. In this case, initialization is delegated to coast::oracle::ConnectionPool which sets up its
  * connection pool to fulfill OracleDAImpl requests.
  * @section oms1 OracleModule configuration
  @code
@@ -31,7 +31,7 @@
  */
 class OracleModule: public WDModule
 {
-	typedef std::auto_ptr<Coast::Oracle::ConnectionPool> ConnectionPoolPtr;
+	typedef std::auto_ptr<coast::oracle::ConnectionPool> ConnectionPoolPtr;
 	ConnectionPoolPtr fpConnectionPool;
 public:
 	/*! Name using ctor to register OracleModule in the Registry using the correct name
@@ -41,10 +41,10 @@ public:
 	/*! terminates oracle services */
 	~OracleModule();
 
-	/*! Currently the only way to gain access to the associated Coast::Oracle::ConnectionPool instance
-	 * @return pointer to the Coast::Oracle::ConnectionPool
+	/*! Currently the only way to gain access to the associated coast::oracle::ConnectionPool instance
+	 * @return pointer to the coast::oracle::ConnectionPool
 	 */
-	Coast::Oracle::ConnectionPool *GetConnectionPool();
+	coast::oracle::ConnectionPool *GetConnectionPool();
 protected:
 	/*! Initialization method called when servers boots up
 	 * @param config Global server configuration to be used for initialization

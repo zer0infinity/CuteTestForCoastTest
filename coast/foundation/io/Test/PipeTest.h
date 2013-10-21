@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class PipeTest: public TestFramework::TestCase {
+class PipeTest: public testframework::TestCase {
 public:
 	PipeTest(TString tstrName) :
 		TestCaseType(tstrName) {

@@ -43,10 +43,10 @@ STLStorageTest::~STLStorageTest()
 void STLStorageTest::GlobalStorageTest()
 {
 	StartTrace(STLStorageTest.GlobalStorageTest);
-	// create a vector, using STLAllocator<> as allocator using Coast::Storage::Global()
-	MemChecker aChecker("STLStorageTest.GlobalStorageTest", Coast::Storage::Global());
+	// create a vector, using STLAllocator<> as allocator using coast::storage::Global()
+	MemChecker aChecker("STLStorageTest.GlobalStorageTest", coast::storage::Global());
 	{
-		std::vector<int, STLStorage::STLAllocator<int> > v;
+		std::vector<int, stlstorage::STLAllocator<int> > v;
 
 		// insert elements
 		// - causes reallocations
@@ -67,10 +67,10 @@ void STLStorageTest::PoolStorageTest()
 	// create a vector, using MyAlloc<> as allocator
 	PoolAllocator pa(1, 1024, 12);
 	pa.PrintStatistic(3L);
-	MemChecker aChecker("STLStorageTest.PoolStorageTest", Coast::Storage::Global());
+	MemChecker aChecker("STLStorageTest.PoolStorageTest", coast::storage::Global());
 	{
-		STLStorage::STLAllocator<int> stlalloc(&pa);
-		std::vector<int, STLStorage::STLAllocator<int> > v(stlalloc);
+		stlstorage::STLAllocator<int> stlalloc(&pa);
+		std::vector<int, stlstorage::STLAllocator<int> > v(stlalloc);
 
 		// insert elements
 		// - causes reallocations
@@ -86,8 +86,8 @@ void STLStorageTest::PoolStorageTest()
 	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
 	pa.PrintStatistic(3L);
 	{
-		STLStorage::STLAllocator<int> stlalloc(&pa);
-		std::list<int, STLStorage::STLAllocator<int> > v(stlalloc);
+		stlstorage::STLAllocator<int> stlalloc(&pa);
+		std::list<int, stlstorage::STLAllocator<int> > v(stlalloc);
 
 		// insert elements
 		// - causes reallocations
@@ -103,8 +103,8 @@ void STLStorageTest::PoolStorageTest()
 	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
 	pa.PrintStatistic(3L);
 	{
-		STLStorage::STLAllocator<int> stlalloc(&pa);
-		std::deque<int, STLStorage::STLAllocator<int> > v(stlalloc);
+		stlstorage::STLAllocator<int> stlalloc(&pa);
+		std::deque<int, stlstorage::STLAllocator<int> > v(stlalloc);
 
 		// insert elements
 		// - causes reallocations
@@ -130,10 +130,10 @@ void STLStorageTest::AllocatorUsingSMartPtrTest()
 {
 	StartTrace(STLStorageTest.AllocatorUsingSMartPtrTest);
 	typedef something listType;
-//	typedef TestStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorCurrent> blaType;
-//	typedef STLStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
-	typedef STLStorage::fast_pool_allocator<listType, ITOStorage::BoostPoolUserAllocatorGlobal> blaType;
-	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", Coast::Storage::Current());
+//	typedef Teststorage::pool_allocator<listType, stlstorage::BoostPoolUserAllocatorCurrent> blaType;
+//	typedef stlstorage::pool_allocator<listType, stlstorage::BoostPoolUserAllocatorGlobal> blaType;
+	typedef stlstorage::fast_pool_allocator<listType, itostorage::BoostPoolUserAllocatorGlobal> blaType;
+	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", coast::storage::Current());
 	{
 		blaType pool1;
 	}

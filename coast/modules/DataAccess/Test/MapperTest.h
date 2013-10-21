@@ -13,7 +13,7 @@
 
 class Context;
 
-class MapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class MapperTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	MapperTest(TString tstrName) :
 		TestCaseType(tstrName) {

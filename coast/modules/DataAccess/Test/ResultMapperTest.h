@@ -35,7 +35,7 @@ protected:
  To understand the results of those tests, you should additionally
  consult "OutputMapperMeta.any"
  */
-class ResultMapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class ResultMapperTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	ResultMapperTest(TString tstrName) :
 		TestCaseType(tstrName) {

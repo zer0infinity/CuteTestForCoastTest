@@ -13,7 +13,7 @@
 #include "ITOString.h"//lint !e537
 
 //!some special tests for String
-class StringSTLTest: public TestFramework::TestCase {
+class StringSTLTest: public testframework::TestCase {
 	String fStr5; // string with 5 elements set-up in setUp
 public:
 	StringSTLTest(TString tstrName) :

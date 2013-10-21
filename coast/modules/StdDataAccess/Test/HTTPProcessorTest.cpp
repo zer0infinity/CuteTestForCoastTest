@@ -93,7 +93,7 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	{
 		Anything tmpStore;
 		OStringStream os;
-		tmpStore[Coast::HTTP::constants::protocolCodeSlotname] = 599L;
+		tmpStore[coast::http::constants::protocolCodeSlotname] = 599L;
 		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
 		httpProcessor->RenderProtocolStatus(os, ctx);
 		assertCharPtrEqual( "HTTP/1.1 599 Unknown Error" ENDL "Connection: close" ENDL, os.str() );
@@ -101,8 +101,8 @@ void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus() {
 	{
 		OStringStream os;
 		Anything tmpStore;
-		tmpStore[Coast::HTTP::constants::protocolCodeSlotname] = 413L;
-		tmpStore[Coast::HTTP::constants::protocolMsgSlotname] = "BlaBla";
+		tmpStore[coast::http::constants::protocolCodeSlotname] = 413L;
+		tmpStore[coast::http::constants::protocolMsgSlotname] = "BlaBla";
 		Context::PushPopEntry<Anything> aEntry(ctx, "blub", tmpStore, "HTTPStatus");
 		httpProcessor->RenderProtocolStatus(os, ctx);
 		assertCharPtrEqual( "HTTP/1.1 413 BlaBla" ENDL "Connection: close" ENDL, os.str() );

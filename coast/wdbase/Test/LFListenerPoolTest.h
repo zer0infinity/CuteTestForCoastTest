@@ -13,7 +13,7 @@
 
 class Socket;
 
-class LFListenerPoolTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class LFListenerPoolTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

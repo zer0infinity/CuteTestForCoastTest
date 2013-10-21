@@ -13,7 +13,7 @@
 
 class String;
 
-class UniqueIdGenTest : public TestFramework::TestCase
+class UniqueIdGenTest : public testframework::TestCase
 {
 public:
 	/*! \param tstrName name of the test */

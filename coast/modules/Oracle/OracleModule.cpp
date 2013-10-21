@@ -27,7 +27,7 @@ bool OracleModule::Init(const ROAnything config) {
 		TraceAny(myCfg, "OracleModuleConfig");
 		// initialize ConnectionPool
 		if (!fpConnectionPool.get()) {
-			fpConnectionPool = ConnectionPoolPtr(new Coast::Oracle::ConnectionPool("OracleConnectionPool"));
+			fpConnectionPool = ConnectionPoolPtr(new coast::oracle::ConnectionPool("OracleConnectionPool"));
 		}
 		ROAnything roaPoolConfig(myCfg["ConnectionPool"]);
 		TraceAny(roaPoolConfig, "initializing ConnectionPool with config");
@@ -36,8 +36,8 @@ bool OracleModule::Init(const ROAnything config) {
 	return true;
 }
 
-Coast::Oracle::ConnectionPool *OracleModule::GetConnectionPool() {
-	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Coast::Storage::Current());
+coast::oracle::ConnectionPool *OracleModule::GetConnectionPool() {
+	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), coast::storage::Current());
 	return fpConnectionPool.get();
 }
 

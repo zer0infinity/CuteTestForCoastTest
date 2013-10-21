@@ -14,9 +14,9 @@
 #include <string.h>	// for strlen
 
 namespace {
-	Anything fDescriptionCache( Anything::ArrayMarker(), Coast::Storage::Global() );
+	Anything fDescriptionCache( Anything::ArrayMarker(), coast::storage::Global() );
 	ROAnything fDescriptionCacheRO( fDescriptionCache );
-	RWLock fDescriptionLock( "OracleDescriptorLock", Coast::Storage::Global() );
+	RWLock fDescriptionLock( "OracleDescriptorLock", coast::storage::Global() );
 }
 
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
@@ -137,7 +137,7 @@ bool OracleConnection::checkError( sword status )
 	if ( status == OCI_SUCCESS || status == OCI_NO_DATA ) {
 		bRet = false;
 	}
-	StatTrace(OracleConnection.checkError, "status: " << (long) status << " retcode: " << (bRet ? "true" : "false"), Coast::Storage::Current());
+	StatTrace(OracleConnection.checkError, "status: " << (long) status << " retcode: " << (bRet ? "true" : "false"), coast::storage::Current());
 	return bRet;
 }
 
@@ -146,7 +146,7 @@ bool OracleConnection::checkError( sword status, String &message )
 	bool bError( checkError( status ) );
 	if ( bError ) {
 		message = errorMessage( status );
-		StatTrace(OracleConnection.checkError, "status: " << (long) status << " message [" << message << "]", Coast::Storage::Current());
+		StatTrace(OracleConnection.checkError, "status: " << (long) status << " message [" << message << "]", coast::storage::Current());
 	}
 	return bError;
 }
@@ -209,7 +209,7 @@ OracleStatementPtr OracleConnection::createStatement( String strStatement, long 
 			throw ex;
 		}
 	}
-	OracleStatementPtr pStmt( new (Coast::Storage::Current()) OracleStatement( this, strStatement ) );
+	OracleStatementPtr pStmt( new (coast::storage::Current()) OracleStatement( this, strStatement ) );
 	if ( pStmt.get() ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
 		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
@@ -303,7 +303,7 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 	String strErr( "ReadSPDescriptionFromDB: " );
 
 	MemChecker aCheckerLocal( "OracleConnection.ReadSPDescriptionFromDB", getEnvironment().getAllocator() );
-	MemChecker aCheckerGlobal( "OracleConnection.ReadSPDescriptionFromDB", Coast::Storage::Global());
+	MemChecker aCheckerGlobal( "OracleConnection.ReadSPDescriptionFromDB", coast::storage::Global());
 
 	sword attrStat;
 	DscHandleType aDschp;
@@ -312,7 +312,7 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 		throw OracleException( *this, attrStat );
 	}
 	Trace("after HandleAlloc, local allocator:" << reinterpret_cast<long>(getEnvironment().getAllocator()));
-	Trace("after HandleAlloc, global allocator:" << reinterpret_cast<long>(Coast::Storage::Global()));
+	Trace("after HandleAlloc, global allocator:" << reinterpret_cast<long>(coast::storage::Global()));
 
 	OCIParam *parmh( 0 );
 	ObjectType aStmtType = DescribeObjectByName(command, aDschp, parmh);
@@ -443,7 +443,7 @@ String OracleConnection::ConstructSPStr( String const &command, bool pIsFunction
 		strParams.Append( ':' ).Append( roaEntry["Name"].AsString() );
 	}
 	plsql << command << "(" << strParams << "); END;";
-	StatTrace(OracleConnection.ConstructSPStr, "SP string [" << plsql << "]", Coast::Storage::Current());
+	StatTrace(OracleConnection.ConstructSPStr, "SP string [" << plsql << "]", coast::storage::Current());
 	return plsql;
 }
 

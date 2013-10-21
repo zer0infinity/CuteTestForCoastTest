@@ -11,7 +11,7 @@
 
 #include "ITOStorage.h"//lint !e537
 
-namespace Coast
+namespace coast
 {
 	class AllocatorNewDelete
 	{

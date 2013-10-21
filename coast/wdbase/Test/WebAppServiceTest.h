@@ -16,7 +16,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class WebAppServiceTest : public TestFramework::TestCaseWithConfig
+class WebAppServiceTest : public testframework::TestCaseWithConfig
 {
 public:
 	//! ConfiguredTestCase constructor

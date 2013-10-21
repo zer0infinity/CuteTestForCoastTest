@@ -13,7 +13,7 @@
 
 class ROAnything;
 
-class StressAppTest: public TestFramework::TestCase {
+class StressAppTest: public testframework::TestCase {
 public:
 	StressAppTest(TString tstrName) :
 		TestCaseType(tstrName) {

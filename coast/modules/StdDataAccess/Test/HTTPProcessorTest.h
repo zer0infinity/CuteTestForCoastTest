@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class HTTPProcessorTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class HTTPProcessorTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	HTTPProcessorTest(TString tname) :
 		TestCaseType(tname) {

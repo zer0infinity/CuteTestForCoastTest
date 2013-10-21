@@ -360,9 +360,9 @@ void BlowfishTest::cbcCrossPlatform()
 //		result[index] = bfcbcBase64Encoded;
 //	}
 //	TraceAny(result,"result");
-//	String resolvedFileName =  Coast::System::GetFilePath("CBCResult.any", (const char *)0);
+//	String resolvedFileName =  coast::system::GetFilePath("CBCResult.any", (const char *)0);
 //	Trace("resolved FileName: " << resolvedFileName);
-//	ostream *os0 = Coast::System::OpenOStream(resolvedFileName,"", ios::out);
+//	ostream *os0 = coast::system::OpenOStream(resolvedFileName,"", ios::out);
 //	if ( os0 )
 //	{
 //		result.Export( *os0, 0 );
@@ -376,7 +376,7 @@ void BlowfishTest::cbcCrossPlatform()
 	// End cbcResult generation code
 
 	Anything cbcResult;
-	t_assert(Coast::System::LoadConfigFile(cbcResult, "CBCResult", "any"));
+	t_assert(coast::system::LoadConfigFile(cbcResult, "CBCResult", "any"));
 	t_assert(!cbcResult.IsNull());
 	for ( index = highbound; index >= lowbound; index-- ) {
 		reference.Append((char) index);

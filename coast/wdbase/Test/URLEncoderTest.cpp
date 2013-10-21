@@ -156,8 +156,8 @@ void URLEncoderTest::EncodeDecodeTest()
 	t_assert( OriginalString == DecodedString );
 
 	// String::IntPrintOn:  05     -> \x05
-	// Coast::URLUtils::urlEncode: \x05   -> %5Cx05
-	// Coast::URLUtils::urlEncode: %5Cx05 -> %255Cx05
+	// coast::urlutils::urlEncode: \x05   -> %5Cx05
+	// coast::urlutils::urlEncode: %5Cx05 -> %255Cx05
 	assertCharPtrEqual( "%05", EncodedString );
 
 	// Only Printable Chars, scrambled

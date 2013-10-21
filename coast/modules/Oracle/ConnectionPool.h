@@ -14,9 +14,9 @@
 class OraclePooledConnection;
 class PeriodicAction;
 
-namespace Coast
+namespace coast
 {
-	namespace Oracle
+	namespace oracle
 	{
 		typedef std::auto_ptr<WPMStatHandler> StatEvtHandlerPtrType;
 
@@ -173,7 +173,7 @@ namespace Coast
 			ConnectionPool &operator=( const ConnectionPool & );
 		};
 
-	} // end namespace Oracle
-} // end namespace Coast
+	} // end namespace oracle
+} // end namespace coast
 
 #endif /* CONNECTIONPOOL_H_ */

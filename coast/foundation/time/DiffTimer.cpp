@@ -76,7 +76,7 @@ DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, DiffTimer::eResolution 
 			scaled = static_cast<DiffTimer::tTimeType>(static_cast<double>(rawDiff)*(static_cast<double>(resolution)/static_cast<double>(TicksPerSecond())));
 		}
 	}
-	StatTrace(DiffTimer.Scale, "TicksPerSecond(): " << TicksPerSecond() << " resolution: " << resolution << " rawDiff: " << rawDiff << " scaled: " << scaled, Coast::Storage::Current());
+	StatTrace(DiffTimer.Scale, "TicksPerSecond(): " << TicksPerSecond() << " resolution: " << resolution << " rawDiff: " << rawDiff << " scaled: " << scaled, coast::storage::Current());
 	return scaled;
 }
 
@@ -96,14 +96,14 @@ DiffTimer::tTimeType DiffTimer::Diff(tTimeType simulatedValue)
 void DiffTimer::Start()
 {
 	fStart = GetHRTIME();
-	StatTrace(DiffTimer.Start, "now: " << fStart, Coast::Storage::Current());
+	StatTrace(DiffTimer.Start, "now: " << fStart, coast::storage::Current());
 }
 
 DiffTimer::tTimeType DiffTimer::Reset()
 {
 	tTimeType delta = Diff();
 	Start();
-	StatTrace(DiffTimer.Reset, "delta: " << delta, Coast::Storage::Current());
+	StatTrace(DiffTimer.Reset, "delta: " << delta, coast::storage::Current());
 	return delta;
 }
 
@@ -123,6 +123,6 @@ DiffTimer::tTimeType DiffTimer::TicksPerSecond()
 		tps = sysconf(_SC_CLK_TCK);
 	}
 #endif
-	StatTrace(DiffTimer.TicksPerSecond, "tps: " << tps, Coast::Storage::Current());
+	StatTrace(DiffTimer.TicksPerSecond, "tps: " << tps, coast::storage::Current());
 	return tps;
 }

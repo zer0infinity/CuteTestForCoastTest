@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class ROAnyLookupAdapterTest: public TestFramework::TestCase {
+class ROAnyLookupAdapterTest: public testframework::TestCase {
 public:
 	ROAnyLookupAdapterTest(TString tstrName) :
 		TestCaseType(tstrName) {

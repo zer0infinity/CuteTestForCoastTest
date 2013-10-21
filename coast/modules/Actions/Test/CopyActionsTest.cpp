@@ -16,9 +16,9 @@ void CopyActionsTest::CopyActionTest() {
 	StartTrace(CopyActionsTest.CopyActionTest);
 	// Set up
 	Context c;
-	Coast::TestFramework::PutInStore(GetConfig()["RoleStore"].DeepClone(), c.GetRoleStoreGlobal());
-	Coast::TestFramework::PutInStore(GetConfig()["Query"].DeepClone(), c.GetQuery());
-	Coast::TestFramework::PutInStore(GetConfig()["TempStore"].DeepClone(), c.GetTmpStore());
+	coast::testframework::PutInStore(GetConfig()["RoleStore"].DeepClone(), c.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(GetConfig()["Query"].DeepClone(), c.GetQuery());
+	coast::testframework::PutInStore(GetConfig()["TempStore"].DeepClone(), c.GetTmpStore());
 
 	// Process
 	String ret1 = ExecAction("Copy1", c, true);

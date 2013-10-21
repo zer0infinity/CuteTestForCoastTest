@@ -21,7 +21,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-namespace TestFramework
+namespace testframework
 {
 
 	template
@@ -104,6 +104,6 @@ namespace TestFramework
 
 	typedef TestCaseT<AnythingConfigWithCaseDllAndModuleLoadingTestPolicy, NoStatisticPolicy, int> TestCaseWithCaseConfigDllAndModuleLoading;
 
-}	// end namespace TestFramework
+}	// end namespace testframework
 
 #endif

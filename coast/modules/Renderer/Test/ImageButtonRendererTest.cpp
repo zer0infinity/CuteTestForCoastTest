@@ -16,7 +16,7 @@
 
 ImageButtonRendererTest::ImageButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) ImageButtonRenderer("ImageButtonRenderer");
+	fFieldRenderer = new (coast::storage::Global()) ImageButtonRenderer("ImageButtonRenderer");
 };
 
 ImageButtonRendererTest::~ImageButtonRendererTest()

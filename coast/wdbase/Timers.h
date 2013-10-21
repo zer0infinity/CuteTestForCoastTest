@@ -55,7 +55,7 @@ public:
 };
 
 //!helper class to log timing information
-class TimeLogger : public Coast::AllocatorNewDelete
+class TimeLogger : public coast::AllocatorNewDelete
 {
 	friend class TimeLoggerEntry;
 public:

@@ -10,7 +10,7 @@
 #define _StrSpecialTest_h_
 
 #include "TestCase.h"//lint !e537
-class StrSpecialTest: public TestFramework::TestCase {
+class StrSpecialTest: public testframework::TestCase {
 public:
 	StrSpecialTest(TString tname) :
 		TestCaseType(tname) {

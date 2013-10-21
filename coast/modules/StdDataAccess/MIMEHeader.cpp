@@ -14,8 +14,8 @@
 #include <cstdio>	// for EOF
 #include <cstring>  // for strlen
 
-namespace Coast {
-	namespace StreamUtils {
+namespace coast {
+	namespace streamutils {
 		void getLineFromStream(std::istream &in, String &line, long const maxlinelen) {
 			StartTrace(MIMEHeader.getLineFromStream);
 			if ( !in.good() ) throw MIMEHeader::StreamNotGoodException();
@@ -38,36 +38,36 @@ namespace {
 	char const *contentLengthSlotname = "CONTENT-LENGTH";
 	char const *contentDispositionSlotname = "CONTENT-DISPOSITION";
 	char const *contentTypeSlotname = "CONTENT-TYPE";
-	String const boundaryToken("boundary=", -1, Coast::Storage::Global());
+	String const boundaryToken("boundary=", -1, coast::storage::Global());
 	char const headerNamedDelimiter = ':';
 
 	char const contentDispositionDelimiter = ';';
 	char const headerArgumentsDelimiter = ',';
 	char const valueArgumentDelimiter = '=';
 
-//	Anything const headersREProgram = RECompiler().compile(Coast::HTTP::constants::splitFieldsRegularExpression);
+//	Anything const headersREProgram = RECompiler().compile(coast::http::constants::splitFieldsRegularExpression);
 
 	void StoreKeyValue(Anything &headers, String const& strKey, String const &strValue)
 	{
 		StartTrace(MIMEHeader.StoreKeyValue);
 		//!@FIXME: use precompiled RE-Program as soon as RE's ctor takes an ROAnything as program
-		RE multivalueRE(Coast::HTTP::constants::splitFieldsRegularExpression, RE::MATCH_ICASE);
+		RE multivalueRE(coast::http::constants::splitFieldsRegularExpression, RE::MATCH_ICASE);
 		if ( multivalueRE.ContainedIn(strKey) ) {
 			Anything &anyValues = headers[strKey];
-			Coast::URLUtils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, Coast::URLUtils::eUpshift);
+			coast::urlutils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, coast::urlutils::eUpshift);
 		} else if ( strKey.IsEqual(contentDispositionSlotname)) {
 			Anything &anyValues = headers[strKey];
-			Coast::URLUtils::Split(strValue, contentDispositionDelimiter, anyValues, valueArgumentDelimiter, Coast::URLUtils::eUpshift);
+			coast::urlutils::Split(strValue, contentDispositionDelimiter, anyValues, valueArgumentDelimiter, coast::urlutils::eUpshift);
 		} else {
-			Coast::URLUtils::AppendValueTo(headers, strKey, strValue);
+			coast::urlutils::AppendValueTo(headers, strKey, strValue);
 		}
 	}
 
-	String shiftedHeaderKey(String const &key, Coast::URLUtils::NormalizeTag const shiftFlag) {
-		return Coast::URLUtils::Normalize(key, shiftFlag);
+	String shiftedHeaderKey(String const &key, coast::urlutils::NormalizeTag const shiftFlag) {
+		return coast::urlutils::Normalize(key, shiftFlag);
 	}
 
-	void CheckMultipartBoundary(String const &contenttype, Anything &header, Coast::URLUtils::NormalizeTag const shiftFlag) {
+	void CheckMultipartBoundary(String const &contenttype, Anything &header, coast::urlutils::NormalizeTag const shiftFlag) {
 		StartTrace1(MIMEHeader.CheckMultipartBoundary, "Content-type: <" << contenttype << ">");
 		if ((contenttype.Length() >= 9) && (contenttype.Contains("multipart") != -1)) {
 			long index = contenttype.Contains(boundaryToken.cstr());
@@ -79,7 +79,7 @@ namespace {
 		}
 	}
 
-	long GetNormalizedFieldName(String const &line, String &fieldname, Coast::URLUtils::NormalizeTag const normTag) {
+	long GetNormalizedFieldName(String const &line, String &fieldname, coast::urlutils::NormalizeTag const normTag) {
 		StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
 		// following headerfield specification of HTTP/1.1 RFC 2068
 		long pos = line.StrChr(headerNamedDelimiter);
@@ -89,7 +89,7 @@ namespace {
 		return pos;
 	}
 
-	void SplitAndAddHeaderLine(Anything &headers, String const &line, Coast::URLUtils::NormalizeTag const normTag) {
+	void SplitAndAddHeaderLine(Anything &headers, String const &line, coast::urlutils::NormalizeTag const normTag) {
 		StartTrace1(MIMEHeader.SplitAndAddHeaderLine, "Line: <<<" << line << ">>>");
 		// following headerfield specification of HTTP/1.1 RFC 2616 (obsoletes 2068)
 		String fieldname;
@@ -99,7 +99,7 @@ namespace {
 		}
 		String fieldvalue = line.SubString(pos + 1);
 		if (fieldvalue.Length()) {
-			Coast::URLUtils::TrimBlanks(fieldvalue);
+			coast::urlutils::TrimBlanks(fieldvalue);
 			StoreKeyValue(headers, fieldname, fieldvalue);
 		}
 		if (fieldname.IsEqual(shiftedHeaderKey(contentTypeSlotname, normTag))) {
@@ -114,10 +114,10 @@ bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long cons
 	String line(maxlinelen);
 	long headerlength = 0;
 	while ( true ) {
-		Coast::StreamUtils::getLineFromStream(in, line, maxlinelen);
+		coast::streamutils::getLineFromStream(in, line, maxlinelen);
 		headerlength += line.Length();
 		Trace("headerlength: " << headerlength << ", maxheaderlen: " << maxheaderlen);
-		if (not Coast::URLUtils::TrimENDL(line).Length()) {
+		if (not coast::urlutils::TrimENDL(line).Length()) {
 			return true;	//!< successful header termination with empty line
 		}
 		if (headerlength > maxheaderlen) throw MIMEHeader::HeaderSizeExceededException("Header size exceeded", line, maxheaderlen, headerlength);
@@ -136,13 +136,13 @@ bool MIMEHeader::IsMultiPart() const {
 
 String MIMEHeader::GetBoundary() const {
 	String boundary = Lookup(boundarySlotname).AsString();
-	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, Coast::Storage::Current());
+	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, coast::storage::Current());
 	return boundary;
 }
 
 long MIMEHeader::GetContentLength() const {
 	long contentLength = Lookup(contentLengthSlotname).AsLong(-1L);
-	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, Coast::Storage::Current());
+	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, coast::storage::Current());
 	return contentLength;
 }
 

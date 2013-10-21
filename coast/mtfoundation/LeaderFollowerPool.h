@@ -82,7 +82,7 @@ class HandleSet {
 	HandleSet &operator=(const HandleSet &);
 public:
 	HandleSet() :
-		fMutex("HandleSet", Coast::Storage::Global()), fLastAcceptorUsedIndex(0) {
+		fMutex("HandleSet", coast::storage::Global()), fLastAcceptorUsedIndex(0) {
 	}
 	virtual ~HandleSet();
 

@@ -47,7 +47,7 @@ template <
 class TElementType,
 	  class TListStorageType
 	  >
-class QueueBase : public IFAObject, public Coast::AllocatorNewDelete
+class QueueBase : public IFAObject, public coast::AllocatorNewDelete
 {
 	friend class QueueTest;
 public:
@@ -59,8 +59,8 @@ public:
 	typedef QueueBase<ElementType, ListStorageType> ThisType;
 	typedef long size_type;
 
-	QueueBase(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
-		: fName(name, -1, Coast::Storage::Global())
+	QueueBase(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = coast::storage::Global())
+		: fName(name, -1, coast::storage::Global())
 		, fAllocator(pAlloc)
 		, fQueueSize(lQueueSize)
 		, fSemaFullSlots(0L)
@@ -72,10 +72,10 @@ public:
 		, fBlockingGetCount(0L)
 		, fAlive(0xf007f007)
 		, feBlocked(eBothSides)
-		, fQueueLock("QueueMutex", Coast::Storage::Global())
-		, fBlockedLock("BlockedLock", Coast::Storage::Global())
-		, fBlockingPutLock("BlockingPutLock", Coast::Storage::Global())
-		, fBlockingGetLock("BlockingGetLock", Coast::Storage::Global())
+		, fQueueLock("QueueMutex", coast::storage::Global())
+		, fBlockedLock("BlockedLock", coast::storage::Global())
+		, fBlockingPutLock("BlockingPutLock", coast::storage::Global())
+		, fBlockingGetLock("BlockingGetLock", coast::storage::Global())
 		, fContainer()
 		, fQueueStartTime(DiffTimer::eMicroseconds) {
 		StartTrace1(Queue.Queue, "queue size:" << lQueueSize);
@@ -295,7 +295,7 @@ public:
 	}
 
 	String typeName() const {
-		return Coast::Utility::demangle<String>(typeid(ListStorageType).name()).Append('[').Append(Coast::Utility::demangle<String>(typeid(ElementType).name())).Append(']');
+		return coast::utility::demangle<String>(typeid(ListStorageType).name()).Append('[').Append(coast::utility::demangle<String>(typeid(ElementType).name())).Append(']');
 	}
 
 protected:
@@ -309,7 +309,7 @@ protected:
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(ePutSide) ) {
 			LockUnlockEntry me(fQueueLock);
-			Coast::Threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
+			coast::threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
 			fContainer.push_back(anyElement);
 			++fPutCount;
 			fMaxLoad = std::max( fMaxLoad, (long)fContainer.size() );
@@ -329,7 +329,7 @@ protected:
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(eGetSide) ) {
 			LockUnlockEntry me(fQueueLock);
-			Coast::Threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
+			coast::threading::TLSEntry<Allocator> forceGlobalStorage(MT_Storage::getAllocatorKey(), fAllocator);
 			if ( fContainer.size() ) {
 				anyElement = fContainer.front();	//! \todo change here so that it's not restricted only for Anything's - use any_cast
 				fContainer.pop_front();
@@ -454,9 +454,9 @@ public:
 	typedef Queue<ElementType, ListStorageType> ThisType;
 	typedef typename BaseType::size_type size_type;
 
-	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
+	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = coast::storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
-		StatTrace(Queue.Queue, "generic", Coast::Storage::Current());
+		StatTrace(Queue.Queue, "generic", coast::storage::Current());
 	}
 };
 
@@ -476,9 +476,9 @@ public:
 	typedef Queue<ElementType, ListStorageType> ThisType;
 	typedef typename BaseType::size_type size_type;
 
-	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = Coast::Storage::Global())
+	Queue(const char *name, size_type lQueueSize = std::numeric_limits<long>::max(), Allocator *pAlloc = coast::storage::Global())
 		: BaseType(name, lQueueSize, pAlloc) {
-		StatTrace(Queue.Queue, "Anything", Coast::Storage::Current());
+		StatTrace(Queue.Queue, "Anything", coast::storage::Current());
 		this->fContainer.SetAllocator(pAlloc);
 	}
 };

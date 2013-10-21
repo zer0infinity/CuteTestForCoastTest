@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 
 //---- MIMEHeaderTest ----------------------------------------------------------
-class MIMEHeaderTest: public TestFramework::TestCaseWithConfig {
+class MIMEHeaderTest: public testframework::TestCaseWithConfig {
 public:
 	//!TestCase constructor
 	//! \param name name of the test

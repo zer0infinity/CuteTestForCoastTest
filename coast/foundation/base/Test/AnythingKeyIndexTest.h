@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingKeyIndexTest: public TestFramework::TestCase {
+class AnythingKeyIndexTest: public testframework::TestCase {
 	Anything fArray;
 	Anything fSequence;
 public:

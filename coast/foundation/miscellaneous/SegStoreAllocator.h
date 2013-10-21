@@ -15,7 +15,7 @@
 #include <map>
 
 class SegStoreAllocator : public Allocator {
-	typedef boost::pool<ITOStorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
+	typedef boost::pool<itostorage::BoostPoolUserAllocatorGlobal> CurrentPoolType;
 	typedef boost::shared_ptr<CurrentPoolType> CurrentPoolTypePtr;
 	typedef std::map<size_t, CurrentPoolTypePtr> AllocPoolMapping;
 

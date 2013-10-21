@@ -71,7 +71,7 @@ void RequestBlockerTest::QueryRB(bool compare, bool checkIt, TString tname)
 	} else {
 		RequestBlocker::RB()->IsBlocked();
 	}
-	Coast::System::MicroSleep(1); // slow down runner should ensure no false positives for 5,6
+	coast::system::MicroSleep(1); // slow down runner should ensure no false positives for 5,6
 }
 
 void RequestBlockerTest::RBTest()

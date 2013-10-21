@@ -13,7 +13,7 @@
 #include "Tracer.h"
 #include "Socket.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <errno.h>
 #if defined(WIN32)
@@ -177,7 +177,7 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 			do {
 				nout = Socket::write(wfd, (char *)bufPtr + bytesSent, bytes2Send - bytesSent);
 				Trace("bytes written:" << nout);
-			} while (nout < 0 && System::SyscallWasInterrupted() && fPipe->IsReadyForWriting());//lint !e613
+			} while (nout < 0 && system::SyscallWasInterrupted() && fPipe->IsReadyForWriting());//lint !e613
 			if (nout > 0) {
 				bytesSent += nout;
 				Trace("sent:" << bytesSent << " bytes");
@@ -210,7 +210,7 @@ long PipeStreamBuf::DoRead(char *buf, long len) const
 			do {
 				bytesRead = Socket::read(fPipe->GetReadFd(), buf, len);
 				Trace("bytes read:" << bytesRead);
-			} while (bytesRead < 0 && System::SyscallWasInterrupted());
+			} while (bytesRead < 0 && system::SyscallWasInterrupted());
 
 			if ( bytesRead < 0 ) {
 				ioStream->clear(std::ios::badbit);

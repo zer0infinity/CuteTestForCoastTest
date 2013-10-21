@@ -44,8 +44,8 @@ namespace {
     typedef boost::details::pool::singleton_default<RandomNumberInitializer> RandomNumberInitializerSingleton;
 }
 
-namespace Coast {
-	namespace Security {
+namespace coast {
+	namespace security {
 		unsigned long nextRandomNumber() {
 			return RandomNumberInitializerSingleton::instance().nextRandomNumber();
 		}
@@ -157,8 +157,8 @@ bool SecurityItem::Init(ROAnything config) {
 
 bool SecurityItem::DoLoadKeyFile(const char *name, String &key) {
 	StartTrace1(SecurityItem.DoLoadKeyFile, name);
-	String resolvedFileName = Coast::System::GetFilePath(name, (const char *) 0);
-	std::iostream *Ios = Coast::System::OpenIStream(resolvedFileName, "");
+	String resolvedFileName = coast::system::GetFilePath(name, (const char *) 0);
+	std::iostream *Ios = coast::system::OpenIStream(resolvedFileName, "");
 	if (Ios) {
 		String sBuf(4096);
 		char *buf = (char *) (const char *) sBuf;
@@ -174,10 +174,10 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key) {
 	return false;
 }
 
-String SecurityModule::fgScrambler(Coast::Storage::Global());
-String SecurityModule::fgEncoder(Coast::Storage::Global());
-String SecurityModule::fgSigner(Coast::Storage::Global());
-String SecurityModule::fgCompressor(Coast::Storage::Global());
+String SecurityModule::fgScrambler(coast::storage::Global());
+String SecurityModule::fgEncoder(coast::storage::Global());
+String SecurityModule::fgSigner(coast::storage::Global());
+String SecurityModule::fgCompressor(coast::storage::Global());
 
 bool SecurityModule::Init(const ROAnything config) {
 	StartTrace( SecurityModule.Init );

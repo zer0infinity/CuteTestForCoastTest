@@ -24,7 +24,7 @@ static class ThreadSpecificNestingLevelCleaner : public CleanupHandler
 protected:
 	//:destruct nesting level
 	virtual bool DoCleanup() {
-		StatTrace(ThreadSpecificNestingLevelCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Coast::Storage::Global());
+		StatTrace(ThreadSpecificNestingLevelCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), coast::storage::Global());
 		long *pLevel = 0;
 		if (GETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pLevel, long)) {
 			delete pLevel;
@@ -96,7 +96,7 @@ TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String 
 	: fpLogger(0)
 {
 	if ( TimeLoggingModule::fgDoTiming ) {
-		fpLogger = TimeLoggerPtr(new (Coast::Storage::Current()) TimeLogger( pSection, pKey, msg, ctx, aResolution ));
+		fpLogger = TimeLoggerPtr(new (coast::storage::Current()) TimeLogger( pSection, pKey, msg, ctx, aResolution ));
 	}
 }
 
@@ -146,9 +146,9 @@ TimeLogger::~TimeLogger()
 		data[eMsg] = fMsgStr;
 		data[eUnit] = fpcUnit;
 		data[eNestingLevel] = lNestingLevel;
-		StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", Coast::Storage::Current());
+		StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", coast::storage::Current());
 		StorePutter::Operate(data, fContext, "", TimeLoggingModule::fgpLogEntryBasePath, true);
 	} else {
-		StatTrace(TimeLogger.~TimeLogger, "DISABLED Section <" << fpSection << "> Key <" << fpKey << ">", Coast::Storage::Current());
+		StatTrace(TimeLogger.~TimeLogger, "DISABLED Section <" << fpSection << "> Key <" << fpKey << ">", coast::storage::Current());
 	}
 }

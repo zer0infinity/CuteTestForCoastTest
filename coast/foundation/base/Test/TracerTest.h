@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 
-class TracerTest : public TestFramework::TestCase
+class TracerTest : public testframework::TestCase
 {
 public:
 	//!constructors

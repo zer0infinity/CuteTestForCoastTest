@@ -686,7 +686,7 @@ void BlowfishCBCScrambler::PadToBlockSize(String &result, const String &cleartex
 	long pads = (length / BF_BLOCK + 1) * BF_BLOCK - length; // number of padding chars
 	result.Trim(0);
 	result.Reserve(length + pads);
-	result.Append(Coast::Security::generateRandomString(pads));          // should use random pad chars
+	result.Append(coast::security::generateRandomString(pads));          // should use random pad chars
 	result.PutAt(0L, (char)((result[0L] & 0xf0) | (pads & 0x0f)));
 	result.Append(cleartext);
 	Assert(!(result.Length() % BF_BLOCK));

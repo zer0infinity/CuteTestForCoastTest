@@ -14,7 +14,7 @@
 //! Periodic action to check for timed out connections
 /*!
  * The action will get called from within a PeriodicAction through its registered name.
- * The setup of the PeriodicAction is done in Coast::Oracle::ConnectionPool::Init.
+ * The setup of the PeriodicAction is done in coast::oracle::ConnectionPool::Init.
  */
 class OracleCheckCloseOpenedConnectionsAction : public Action
 {

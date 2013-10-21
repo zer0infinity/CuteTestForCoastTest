@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class SystemBaseTest : public TestFramework::TestCase
+class SystemBaseTest : public testframework::TestCase
 {
 public:
 	//!constructors

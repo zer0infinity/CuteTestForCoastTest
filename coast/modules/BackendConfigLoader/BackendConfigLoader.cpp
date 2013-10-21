@@ -15,11 +15,11 @@
 #include "Page.h"
 #include "Role.h"
 
-using namespace Coast;
+using namespace coast;
 
 RegisterModule(BackendConfigLoaderModule);
 
-Anything BackendConfigLoaderModule::backendConfigurations = Anything(Anything::ArrayMarker(),Storage::Global());
+Anything BackendConfigLoaderModule::backendConfigurations = Anything(Anything::ArrayMarker(),storage::Global());
 
 bool BackendConfigLoaderModule::Init(const ROAnything config) {
 	StartTrace(BackendConfigLoaderModule.Init);
@@ -30,12 +30,12 @@ bool BackendConfigLoaderModule::Init(const ROAnything config) {
 		TraceAny(roaModuleConfig, "BackendConfigLoaderConfig:");
 		SystemLog::WriteToStderr("\tReading Backend Configuration Files");
 		String path(roaConfigDir.AsString());
-		if (!System::IsAbsolutePath(path)) {
-			String cwd(System::GetRootDir());
+		if (!system::IsAbsolutePath(path)) {
+			String cwd(system::GetRootDir());
 			path = cwd << "/" << path;
-			System::ResolvePath(path);
+			system::ResolvePath(path);
 		}
-		Anything dirlist = System::DirFileList(path, "any");
+		Anything dirlist = system::DirFileList(path, "any");
 		String backendName;
 		ROAnything roaBackend;
 		AnyExtensions::Iterator<ROAnything> backendIterator(dirlist);
@@ -44,7 +44,7 @@ bool BackendConfigLoaderModule::Init(const ROAnything config) {
 			backendName = roaBackend.AsString();
 			Trace("processing backend [" << backendName << "]");
 			Anything backendConfig;
-			if (!System::LoadConfigFile(backendConfig, backendName)) {
+			if (!system::LoadConfigFile(backendConfig, backendName)) {
 				retCode = false;
 			}
 			backendConfigurations[backendName] = backendConfig;

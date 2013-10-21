@@ -27,7 +27,7 @@ GetEnvRendererTest::~GetEnvRendererTest()
 void GetEnvRendererTest::EnvTest()
 {
 	StartTrace(GetEnvRendererTest.EnvTest);
-	String user = Coast::System::EnvGet("USER");
+	String user = coast::system::EnvGet("USER");
 	Context ctx;
 	Anything config;
 	config["GetEnvRenderer"] = "USER";

@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Threads.h"
 
-class MTStorageTest: public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer {
+class MTStorageTest: public testframework::TestCase, public Observable<Thread, ROAnything>::Observer {
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;
 	typedef tBaseClass::tArgsRef tArgsRef;

@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class PoolAllocatorTest : public TestFramework::TestCaseWithConfig	/* TestCaseWithStatistics | TestCaseWithConfigAndStatistics */
+class PoolAllocatorTest : public testframework::TestCaseWithConfig	/* TestCaseWithStatistics | TestCaseWithConfigAndStatistics */
 {
 public:
 	//--- constructors

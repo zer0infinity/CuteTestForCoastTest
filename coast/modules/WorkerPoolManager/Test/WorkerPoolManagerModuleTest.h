@@ -18,7 +18,7 @@ class WorkerPoolManagerModule;
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class WorkerPoolManagerModuleTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
+class WorkerPoolManagerModuleTest : public testframework::TestCaseWithCaseConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

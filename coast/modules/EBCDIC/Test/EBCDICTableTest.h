@@ -15,7 +15,7 @@
 #include "TestCase.h"
 
 //---- EBCDICTableTest ---------------------------------------------------------
-class EBCDICTableTest : public TestFramework::TestCase
+class EBCDICTableTest : public testframework::TestCase
 {
 public:
 	EBCDICTableTest(TString tstrName);

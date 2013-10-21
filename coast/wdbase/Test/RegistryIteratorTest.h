@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class RegistryIteratorTest : public TestFramework::TestCase
+class RegistryIteratorTest : public testframework::TestCase
 {
 public:
 	//--- constructors

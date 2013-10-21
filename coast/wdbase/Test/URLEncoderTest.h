@@ -15,7 +15,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class URLEncoderTest : public TestFramework::TestCase
+class URLEncoderTest : public testframework::TestCase
 {
 public:
 	//--- constructors

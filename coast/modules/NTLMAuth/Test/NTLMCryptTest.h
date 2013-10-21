@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class NTLMCryptTest: public TestFramework::TestCase {
+class NTLMCryptTest: public testframework::TestCase {
 public:
 	NTLMCryptTest(TString tstrName) :
 			TestCaseType(tstrName) {

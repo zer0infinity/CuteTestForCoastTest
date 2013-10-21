@@ -10,7 +10,7 @@
 #include "SystemBase.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <cstdlib>
 #include <time.h>
@@ -79,14 +79,14 @@ void DateRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything
 	char date[gcMaxDateArraySize];
 	if ( gmt ) {
 		// %Z would return local timezone, which is not what we want
-		tt = System::GmTime(&now, &res);
+		tt = system::GmTime(&now, &res);
 		strftime(date, gcMaxDateArraySize, "%a, %d %b %Y %T GMT", tt);
 	} else {
 		// perform localization of time values
 		if ( config["UseLocalTime"].AsBool(true) ) {
-			tt = System::LocalTime(&now, &res);
+			tt = system::LocalTime(&now, &res);
 		} else {
-			tt = System::GmTime(&now, &res);
+			tt = system::GmTime(&now, &res);
 		}
 		strftime(date, gcMaxDateArraySize, (const char *)formatStr, tt);
 	}

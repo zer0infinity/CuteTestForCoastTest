@@ -16,7 +16,7 @@
 
 TextFieldRendererTest::TextFieldRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) TextFieldRenderer("TextFieldRenderer");
+	fFieldRenderer = new (coast::storage::Global()) TextFieldRenderer("TextFieldRenderer");
 };
 
 TextFieldRendererTest::~TextFieldRendererTest()

@@ -30,8 +30,8 @@ extern char **environ;
 #endif
 #endif
 
-namespace Coast {
-	namespace System {
+namespace coast {
+	namespace system {
 
 		// avoid that fd is shared by forked processes
 		void SetCloseOnExec(int fd)
@@ -397,7 +397,7 @@ namespace Coast {
 	}
 }
 
-void Coast::System::GetProcessEnvironment(Anything &anyEnv)
+void coast::system::GetProcessEnvironment(Anything &anyEnv)
 {
 	StartTrace(System.GetProcessEnvironment);
 	char **envp =

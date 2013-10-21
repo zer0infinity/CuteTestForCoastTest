@@ -14,8 +14,8 @@
 #include "StringStreamBuf.h"
 #include "Context.h"
 
-namespace Coast {
-	namespace TestFramework {
+namespace coast {
+	namespace testframework {
 		//! helper method to generate a list of paths out of an anything
 		void GeneratePathList(Anything &pathList, ROAnything &input, String const &pathSoFar, char delimSlot) {
 			StartTrace(ConfiguredTestHelper.GeneratePathList);
@@ -35,9 +35,9 @@ namespace Coast {
 		}
 
 		//! Really compare the store using AnyUtils::AnyCompareEqual
-		void CheckStoreContents(Anything &anyFailures, ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot, char delimIdx, Coast::TestFramework::eResultCheckType rct) {
+		void CheckStoreContents(Anything &anyFailures, ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot, char delimIdx, coast::testframework::eResultCheckType rct) {
 			StartTrace(ConfiguredTestHelper.CheckStoreContents);
-			if (rct == Coast::TestFramework::exists) {
+			if (rct == coast::testframework::exists) {
 				String strTestPath = storeName;
 				strTestPath << "." << testCaseName;
 				OStringStream s;
@@ -47,7 +47,7 @@ namespace Coast {
 					strfail << "\n" << s.str();
 					anyFailures.Append(strfail);
 				}
-			} else if (rct == Coast::TestFramework::notExists) {
+			} else if (rct == coast::testframework::notExists) {
 				// anyInput == ctxToBeChecked
 				// anyMaster == notExpected
 				// ------------------------------------------------------------
@@ -57,7 +57,7 @@ namespace Coast {
 
 				// generate list of paths and check for existence
 				Anything pathList;
-				Coast::TestFramework::GeneratePathList(pathList, anyMaster, "", delimSlot);
+				coast::testframework::GeneratePathList(pathList, anyMaster, "", delimSlot);
 				TraceAny(anyInput, "Store to be checked (" << storeName << "):");
 				TraceAny(pathList, "List of paths to check for non-existence:");
 				ROAnything luResult;
@@ -89,7 +89,7 @@ namespace Coast {
 			\param ctxToCheck contexts that supplies the SessionStore and TmpStore to be checked
 			\param testCaseName String that is printed with failure messages
 			\param rct result check type, either eResultCheckType::exists or eResultCheckType::notExists */
-		void CheckStores(Anything &anyFailures, ROAnything expected, Context &ctxToCheck, const char *testCaseName, Coast::TestFramework::eResultCheckType rct) {
+		void CheckStores(Anything &anyFailures, ROAnything expected, Context &ctxToCheck, const char *testCaseName, coast::testframework::eResultCheckType rct) {
 			StartTrace(ConfiguredTestHelper.CheckStores);
 			char delimSlot, delimIdx;
 			delimSlot = expected["Delim"].AsCharPtr(".")[0L];

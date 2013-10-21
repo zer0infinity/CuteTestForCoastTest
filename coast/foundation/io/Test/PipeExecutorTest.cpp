@@ -10,7 +10,7 @@
 #include "TestSuite.h"
 #include "PipeExecutor.h"
 
-using namespace Coast;
+using namespace coast;
 
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)
@@ -30,7 +30,7 @@ void PipeExecutorTest::EchoEnvTest()
 	env["HALLO"] = "Peter";
 	String fullname;
 #if defined(WIN32)
-	System::FindFile(fullname, "env.exe");
+	system::FindFile(fullname, "env.exe");
 #else
 	fullname << "/usr/bin/env";
 #endif
@@ -80,7 +80,7 @@ void PipeExecutorTest::CatGugusErrTest()
 	Anything env;
 	String fullname;
 #if defined(WIN32)
-	System::FindFile(fullname, "cat.exe");
+	system::FindFile(fullname, "cat.exe");
 #else
 	fullname << "/bin/cat";
 #endif
@@ -108,8 +108,8 @@ void PipeExecutorTest::CatWorkingDirTest()
 	String filename(wd);
 	const char *fileName = "PipeExecutorTest.txt";
 	String msg( "Hello_world!" );
-	filename << System::Sep() << fileName;
-	std::ostream *os = System::OpenOStream(filename, 0);
+	filename << system::Sep() << fileName;
+	std::ostream *os = system::OpenOStream(filename, 0);
 	t_assertm(os && !!(*os), "opening test file for writing failed");
 	if (os) {
 		(*os) << msg << std::flush;
@@ -117,7 +117,7 @@ void PipeExecutorTest::CatWorkingDirTest()
 	}
 	String cmd;
 #if defined(WIN32)
-	System::FindFile(cmd, "cat.exe");
+	system::FindFile(cmd, "cat.exe");
 #else
 	cmd << "/bin/cat";
 #endif
@@ -144,7 +144,7 @@ void PipeExecutorTest::EchoCatTest()
 	Anything env;
 	String fullname;
 #if defined(WIN32)
-	System::FindFile(fullname, "cat.exe");
+	system::FindFile(fullname, "cat.exe");
 #else
 	fullname << "/bin/cat";
 #endif
@@ -175,7 +175,7 @@ void PipeExecutorTest::KillTest()
 	Anything env;
 	String fullname;
 #if defined(WIN32)
-	System::FindFile(fullname, "cat.exe");
+	system::FindFile(fullname, "cat.exe");
 #else
 	fullname << "/bin/cat";
 #endif
@@ -225,7 +225,7 @@ void PipeExecutorTest::PrepareParamTest()
 	PipeExecutor Execute;
 	Anything pm;
 	Execute.ParseParam("/bin/cat /etc/passwd", pm);
-	PipeExecutor::CgiParam cgiParams(pm, Coast::Storage::Current());
+	PipeExecutor::CgiParam cgiParams(pm, coast::storage::Current());
 	char **p = cgiParams.GetParams();
 	assertCharPtrEqual("/bin/cat", p[0]);
 	assertCharPtrEqual("/etc/passwd", p[1]);
@@ -239,7 +239,7 @@ void PipeExecutorTest::PrepareEnvTest()
 	Anything pm;
 	pm["Hallo"] = "Peter";
 	pm["Servus"] = "Marcel";
-	PipeExecutor::CgiEnv cgiEnv(pm, Coast::Storage::Current());
+	PipeExecutor::CgiEnv cgiEnv(pm, coast::storage::Current());
 #if defined(WIN32)
 	String expected("Hallo=Peter");
 	expected.Append('\0').Append("Servus=Marcel").Append('\0').Append('\0');
@@ -276,7 +276,7 @@ void PipeExecutorTest::ShellInvocationTest()
 		Anything env;
 		if ( roaParams.IsDefined("Env") ) {
 			if ( roaParams["Env"].IsNull() ) {
-				System::GetProcessEnvironment(env);
+				system::GetProcessEnvironment(env);
 			} else {
 				env = roaParams["Env"].DeepClone();
 			}
@@ -284,7 +284,7 @@ void PipeExecutorTest::ShellInvocationTest()
 		TraceAny(env, "environment to use:");
 		String fullname;
 #if defined(WIN32)
-		System::FindFile(fullname, roaParams["ExecutableWin"].AsString());
+		system::FindFile(fullname, roaParams["ExecutableWin"].AsString());
 #else
 		fullname << roaParams["Executable"].AsString();
 #endif

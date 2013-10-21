@@ -26,11 +26,11 @@ bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.ParseBody);
 	ROAnything contenttype;
-	if (fHeader.Lookup("CONTENT-TYPE", contenttype) && contenttype.AsString().Contains(Coast::HTTP::contentTypeAnything) != -1) {
+	if (fHeader.Lookup("CONTENT-TYPE", contenttype) && contenttype.AsString().Contains(coast::http::contentTypeAnything) != -1) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
 		if (not a.Import(input) || a.IsNull()) {
-			Trace("" << Coast::HTTP::contentTypeAnything << " - syntax error");
+			Trace("" << coast::http::contentTypeAnything << " - syntax error");
 			return false;
 		}
 		TraceAny(a, "Content-type: " << contenttype.AsString());
@@ -68,8 +68,8 @@ bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 
 void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
 	StartTrace(HTTPPostRequestBodyParser.Decode);
-	Coast::URLUtils::Split(Coast::URLUtils::TrimENDL(str), '&', result);
-	Coast::URLUtils::DecodeAll(result);
+	coast::urlutils::Split(coast::urlutils::TrimENDL(str), '&', result);
+	coast::urlutils::DecodeAll(result);
 }
 
 bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String &bound, String &body) {
@@ -81,9 +81,9 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 		bool newLineFoundThisLine = false;
 
 		String line;
-		line.Append(input, 4096L, Coast::StreamUtils::LF);
+		line.Append(input, 4096L, coast::streamutils::LF);
 		fUnparsedContent.Append(line);
-		if (Coast::StreamUtils::LF == input.peek() && input.get(c).good()) {
+		if (coast::streamutils::LF == input.peek() && input.get(c).good()) {
 			fUnparsedContent.Append(c);
 			newLineFoundThisLine = true;
 		}
@@ -99,14 +99,14 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 					boundaryseen = true;
 					if (body.Length() > 0L) {
 						nextDoubleDash = line.StrChr('-', nextDoubleDash + bound.Length() + 2L);
-						Coast::URLUtils::TrimENDL(body);
+						coast::urlutils::TrimENDL(body);
 
 						Trace("Body in Multipart: <" << body << ">");
 						return ((nextDoubleDash != -1L) && (line[(long) (nextDoubleDash + 1L)] == '-'));
 					}
 				}
 				if (boundPos <= nextDoubleDash - bound.Length()) {
-					Coast::URLUtils::TrimENDL(body);
+					coast::urlutils::TrimENDL(body);
 					Trace("Body in Multipart: <" << body << ">");
 					return true;
 				}
@@ -114,7 +114,7 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 		}
 		if (!boundaryseen) {
 			if (newLineFoundLastLine && body.Length()) {
-				body << Coast::StreamUtils::LF; //!@FIXME could be wrong, if last line > 4k
+				body << coast::streamutils::LF; //!@FIXME could be wrong, if last line > 4k
 			}
 			body << line;
 		}

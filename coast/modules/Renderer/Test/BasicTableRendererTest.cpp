@@ -11,7 +11,7 @@
 #include "BasicTableRendererTest.h"
 #include "SystemFile.h"
 
-using namespace Coast;
+using namespace coast;
 
 BasicTableRendererTest::BasicTableRendererTest (TString tname) : RendererTest(tname) {}
 
@@ -23,7 +23,7 @@ BasicTableRendererTest::~BasicTableRendererTest() {}
 
 Context *BasicTableRendererTest::CreateContext(const char *demodata)
 {
-	std::iostream *is = System::OpenStream(demodata, "any");
+	std::iostream *is = system::OpenStream(demodata, "any");
 
 	if (is) {
 		Anything testData;
@@ -102,7 +102,7 @@ void BasicTableRendererTest::FullFledged()
 	if (c) {
 		OStringStream reply;
 		// create Renderer output
-		std::iostream *is1 = System::OpenStream("BasicTableRendererConfig", "any");
+		std::iostream *is1 = system::OpenStream("BasicTableRendererConfig", "any");
 		if (is1) {
 
 			Anything config;
@@ -117,12 +117,12 @@ void BasicTableRendererTest::FullFledged()
 			t_assert(is1 != 0);
 		}
 		// to create the referenceTabelOutput File
-//	std::iostream *my = System::OpenOStream("ReferenceTableOutput", "html");
+//	std::iostream *my = system::OpenOStream("ReferenceTableOutput", "html");
 //	(*my) << reply.str();
 //	delete( my );
 
 		// get reference output
-		std::iostream *is2 = System::OpenStream("ReferenceTableOutput", "html");
+		std::iostream *is2 = system::OpenStream("ReferenceTableOutput", "html");
 		String ref;
 		if (is2) {
 			int ch;

@@ -13,7 +13,7 @@
 
 //---- HTTPPostRequestBodyParserTest ----------------------------------------------------------
 //!TestCases description
-class HTTPPostRequestBodyParserTest : public TestFramework::TestCaseWithConfig
+class HTTPPostRequestBodyParserTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

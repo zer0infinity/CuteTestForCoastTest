@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class HTTPHeaderRendererTest: public TestFramework::TestCase {
+class HTTPHeaderRendererTest: public testframework::TestCase {
 public:
 	HTTPHeaderRendererTest(TString tname) :
 		TestCaseType(tname) {

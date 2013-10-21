@@ -51,8 +51,8 @@ void NewRendererTest::TestCases() {
 				}
 				Context c(GetConfig()["EnvForAllCases"].DeepClone(), roaCaseConfig["Env"].DeepClone(), theServer, &theSession, theRole,
 						thePage);
-				Coast::TestFramework::PutInStore(roaCaseConfig["TmpStore"], c.GetTmpStore());
-				Coast::TestFramework::PutInStore(roaCaseConfig["SessionStore"], c.GetSessionStore());
+				coast::testframework::PutInStore(roaCaseConfig["TmpStore"], c.GetTmpStore());
+				coast::testframework::PutInStore(roaCaseConfig["SessionStore"], c.GetSessionStore());
 				TraceAny(roaCaseConfig["Renderer"], "running renderer at [" << slotToCheck << "]");
 				String result("[");
 				String expected("[");

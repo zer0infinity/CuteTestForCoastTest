@@ -20,7 +20,7 @@
  * are needed to store the columns of a row. It is possible that some common parts of result row processing will
  * move into this class.
  */
-class OracleResultset : public Coast::AllocatorNewDelete
+class OracleResultset : public coast::AllocatorNewDelete
 {
 public:
 	/*! Status is used for internal state transition */

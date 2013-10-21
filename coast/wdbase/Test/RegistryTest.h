@@ -13,7 +13,7 @@
 
 class Registry;
 
-class RegistryTest : public TestFramework::TestCase
+class RegistryTest : public testframework::TestCase
 {
 public:
 	//--- constructors

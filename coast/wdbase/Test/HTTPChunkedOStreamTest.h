@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class HTTPChunkedOStreamTest : public TestFramework::TestCase
+class HTTPChunkedOStreamTest : public testframework::TestCase
 {
 public:
 	//--- constructors

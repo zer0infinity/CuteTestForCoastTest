@@ -32,19 +32,19 @@ void HTMLCacheLoaderTest::LoadEmptyCacheTest()
 	HTMLTemplateCacheLoader htcl(&tp);
 	Anything result = htcl.Load("nonexistentfile");
 	t_assert(result.IsNull());
-	t_assert(Coast::Storage::Global() == result.GetAllocator());
+	t_assert(coast::storage::Global() == result.GetAllocator());
 	//-- now the same with an existing but empty file
 	const char *const TESTFILE = "HTMLCacheLoaderTestEmpty";
-	std::ostream *os = Coast::System::OpenOStream(TESTFILE, "html");
+	std::ostream *os = coast::system::OpenOStream(TESTFILE, "html");
 	if (t_assertm((os != NULL), "assumed to be able to write file")) {
 		delete os;
 		result = htcl.Load(TESTFILE);
 		t_assert(result.IsNull());
-		t_assert(Coast::Storage::Global() == result.GetAllocator());
+		t_assert(coast::storage::Global() == result.GetAllocator());
 	}
 	String filename(TESTFILE);
 	filename.Append(".html");
-	t_assert(0 == Coast::System::IO::unlink(filename));
+	t_assert(0 == coast::system::io::unlink(filename));
 }
 
 void HTMLCacheLoaderTest::SimpleBuildCacheTest()

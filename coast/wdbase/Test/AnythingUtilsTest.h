@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class AnythingUtilsTest: public TestFramework::TestCaseWithConfig {
+class AnythingUtilsTest: public testframework::TestCaseWithConfig {
 public:
 	AnythingUtilsTest(TString tname) :
 		TestCaseType(tname) {

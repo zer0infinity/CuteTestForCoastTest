@@ -15,8 +15,8 @@
 #include "Anything.h"
 #include "Action.h"
 
-namespace Coast {
-	namespace TestFramework {
+namespace coast {
+	namespace testframework {
 		//! type switch for store checks
 		enum eResultCheckType { exists, notExists };
 
@@ -24,7 +24,7 @@ namespace Coast {
 		void GeneratePathList(Anything &pathList, ROAnything &input, String const &pathSoFar, char delimSlot);
 
 		//! Really compare the store using AnyUtils::AnyCompareEqual
-		void CheckStoreContents(Anything &anyFailures, ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', Coast::TestFramework::eResultCheckType rct = Coast::TestFramework::exists);
+		void CheckStoreContents(Anything &anyFailures, ROAnything anyInput, ROAnything anyMaster, const char *storeName, const char *testCaseName, char delimSlot = '.', char delimIdx = ':', coast::testframework::eResultCheckType rct = coast::testframework::exists);
 
 		/*!	utility method to perform Checks in ctx stores
 			expected has the format
@@ -41,7 +41,7 @@ namespace Coast {
 			\param ctxToCheck contexts that supplies the SessionStore and TmpStore to be checked
 			\param testCaseName String that is printed with failure messages
 			\param rct result check type, either eResultCheckType::exists or eResultCheckType::notExists */
-		void CheckStores(Anything &anyFailures, ROAnything expected, Context &ctxToCheck, const char *testCaseName, Coast::TestFramework::eResultCheckType rct = Coast::TestFramework::exists);
+		void CheckStores(Anything &anyFailures, ROAnything expected, Context &ctxToCheck, const char *testCaseName, coast::testframework::eResultCheckType rct = coast::testframework::exists);
 	}
 }
 

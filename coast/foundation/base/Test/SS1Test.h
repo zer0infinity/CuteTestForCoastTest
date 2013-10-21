@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class SS1Test : public TestFramework::TestCase
+class SS1Test : public testframework::TestCase
 {
 public:
 	SS1Test(TString tstrName);

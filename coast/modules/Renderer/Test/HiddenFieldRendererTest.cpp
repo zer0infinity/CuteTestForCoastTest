@@ -16,7 +16,7 @@
 
 HiddenFieldRendererTest::HiddenFieldRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) HiddenFieldRenderer("HiddenFieldRendererTest");
+	fFieldRenderer = new (coast::storage::Global()) HiddenFieldRenderer("HiddenFieldRendererTest");
 };
 
 HiddenFieldRendererTest::~HiddenFieldRendererTest()

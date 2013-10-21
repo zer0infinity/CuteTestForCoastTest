@@ -16,7 +16,7 @@
 #include "TestTimer.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 //---- RegexTest ----------------------------------------------------------------
 RegexTest::RegexTest(TString tstrName) : TestCaseType(tstrName)
@@ -217,7 +217,7 @@ void RegexTest::LargeLiteralTest()
 	RE literal(gLiteralExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	std::istream *pStream = System::OpenStream("LargeLiteralData", "h");
+	std::istream *pStream = system::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -238,7 +238,7 @@ void RegexTest::LargeDotStarTest()
 	RE literal(gDotStarExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	std::istream *pStream = System::OpenStream("LargeLiteralData", "h");
+	std::istream *pStream = system::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -300,7 +300,7 @@ void RegexTest::MatchConfig()
 {
 	StartTrace(RegexTest.MatchConfig);
 
-	std::istream *is = System::OpenStream("RegexTest", "any");
+	std::istream *is = system::OpenStream("RegexTest", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -372,7 +372,7 @@ void RegexTest::GrepTest()
 {
 	StartTrace(RegexTest.GrepTest);
 
-	std::istream *is = System::OpenStream("Tracer", "any");
+	std::istream *is = system::OpenStream("Tracer", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -393,7 +393,7 @@ void RegexTest::GrepSlotNamesTest()
 {
 	StartTrace(RegexTest.GrepSlotNamesTest);
 
-	std::istream *is = System::OpenStream("Tracer", "any");
+	std::istream *is = system::OpenStream("Tracer", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;

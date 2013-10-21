@@ -12,7 +12,7 @@
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
 
-class StringTokenizer2Test : public TestFramework::TestCase
+class StringTokenizer2Test : public testframework::TestCase
 {
 protected:
 	String fShort;

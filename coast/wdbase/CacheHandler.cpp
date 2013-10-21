@@ -14,8 +14,8 @@
 
 Anything SimpleAnyLoader::Load(const char *key) {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
-	Anything toLoad(Coast::Storage::Global());
-	std::istream *ifp = Coast::System::OpenStream(key, "any");
+	Anything toLoad(coast::storage::Global());
+	std::istream *ifp = coast::system::OpenStream(key, "any");
 
 	if (ifp) {
 		// found
@@ -28,7 +28,7 @@ Anything SimpleAnyLoader::Load(const char *key) {
 }
 
 CacheHandlerImpl::CacheHandlerImpl() :
-		NotCloned("CacheHandler"), fCache(Anything::ArrayMarker(), Coast::Storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", Coast::Storage::Global()) {
+		NotCloned("CacheHandler"), fCache(Anything::ArrayMarker(), coast::storage::Global()), fCacheHandlerMutex("CacheHandlerMutex", coast::storage::Global()) {
 	InitFinisManager::IFMTrace("CacheHandler::Initialized\n");
 }
 

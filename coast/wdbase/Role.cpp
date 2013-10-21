@@ -40,16 +40,16 @@ bool RolesModule::Finis() {
 }
 
 bool Role::Init(Context &) {
-	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Coast::Storage::Current());
+	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", coast::storage::Current());
 	return true;
 }
 
 void Role::Finis(Session &, Role *) {
-	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Coast::Storage::Current());
+	StatTrace(Role.Finis, fName << ": abstract - nothing to do", coast::storage::Current());
 }
 
 bool Role::Synchronize(Context &) const {
-	StatTrace(Role.Synchronize, fName << ": abstract returning true", Coast::Storage::Current());
+	StatTrace(Role.Synchronize, fName << ": abstract returning true", coast::storage::Current());
 	return true;
 }
 
@@ -260,7 +260,7 @@ bool Role::Verify(Context &ctx, String &transition, String &pagename) const {
 }
 
 bool Role::DoVerify(Context &, String &, String &) const {
-	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", Coast::Storage::Current());
+	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", coast::storage::Current());
 	return true;
 }
 
@@ -302,10 +302,10 @@ String Role::DoGetRequestRoleName(Context & ctx, String const &transition) const
 	Anything query = ctx.GetQuery();
 	if (query.IsDefined("role")) {
 		name = query["role"].AsString(name);
-		StatTrace(Role.DoGetRequestRoleName, "got query role <" << name << ">", Coast::Storage::Current());
+		StatTrace(Role.DoGetRequestRoleName, "got query role <" << name << ">", coast::storage::Current());
 	} else {
 		name = GetDefaultRoleName(ctx);
-		StatTrace(Role.DoGetRequestRoleName, "got default role <" << name << ">", Coast::Storage::Current());
+		StatTrace(Role.DoGetRequestRoleName, "got default role <" << name << ">", coast::storage::Current());
 	}
 	return name;
 }

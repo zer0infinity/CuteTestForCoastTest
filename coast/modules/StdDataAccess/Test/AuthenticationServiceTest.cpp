@@ -102,7 +102,7 @@ void AuthenticationServiceTest::NoConfigTest() {
 	DoTest(ash, ctx, expectedMsg);
 
 	// but can also find config data elsewhere in context
-	Coast::TestFramework::PutInStore(GetTestCaseConfig()["TmpStore"].DeepClone(), ctx.GetTmpStore());
+	coast::testframework::PutInStore(GetTestCaseConfig()["TmpStore"].DeepClone(), ctx.GetTmpStore());
 
 	String errorMsg;
 	ConnCloseMessage(errorMsg, "AuthTest", "AuthTest");

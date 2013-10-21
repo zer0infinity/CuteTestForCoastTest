@@ -13,7 +13,7 @@
 
 //---- LdapCachePolicyTest ----------------------------------------------------------
 //:TestCases description
-class LdapCachePolicyTest: public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading {
+class LdapCachePolicyTest: public testframework::TestCaseWithCaseConfigDllAndModuleLoading {
 public:
 	LdapCachePolicyTest(TString tstrName) :
 		TestCaseType(tstrName) {

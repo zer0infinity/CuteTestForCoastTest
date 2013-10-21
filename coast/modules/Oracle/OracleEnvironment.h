@@ -21,7 +21,7 @@ typedef std::auto_ptr<Allocator> AllocatorPtr;
 /*!
  * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
  */
-class OracleEnvironment : public Coast::AllocatorNewDelete
+class OracleEnvironment : public coast::AllocatorNewDelete
 {
 private:
 	//! OCI environment handle

@@ -21,17 +21,17 @@ template
 <
 typename BufferType
 >
-class IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eIn> > , public std::istream
+class IStringStreamTmpl : public StringStreambase< typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, coast::typetraits::Int2Type<NSStringStream::eIn> > , public std::istream
 {
 public:
 	typedef IStringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
-	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eIn> IoDirType;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
+	typedef typename coast::typetraits::Int2Type<NSStringStream::eIn> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
-	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::PlainType PlainType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainType ConstPlainType;
+	typedef typename coast::typetraits::fooTypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<IntBufType>::PlainType PlainType;
+	typedef typename coast::typetraits::fooTypeTraits<IntBufType>::ConstPlainType ConstPlainType;
 
 public:
 	/*! ctor, take String pointed to by s to read the input direct input taken from string
@@ -87,15 +87,15 @@ template
 <
 typename BufferType
 >
-class OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eOut> > , public std::ostream
+class OStringStreamTmpl : public StringStreambase< typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr, coast::typetraits::Int2Type<NSStringStream::eOut> > , public std::ostream
 {
 public:
 	typedef OStringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename coast::typetraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 
 public:
 	//! ctor, allocate new string object internally for output
@@ -139,17 +139,17 @@ template
 typename BufferType
 >
 class StringStreamTmpl
-	: public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> >
+	: public StringStreambase< typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr, typename coast::typetraits::Int2Type<NSStringStream::eOut> >
 	, public std::iostream
 {
 public:
 	typedef StringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename coast::typetraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 public:
 	//! ctor, allocate new string object internally for in/output
 	explicit StringStreamTmpl(int mode = std::ios::out | std::ios::in)

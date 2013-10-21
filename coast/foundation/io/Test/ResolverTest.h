@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-class ResolverTest: public TestFramework::TestCaseWithConfig
+class ResolverTest: public testframework::TestCaseWithConfig
 {
 public:
 	//!TestCases for the Resolver class

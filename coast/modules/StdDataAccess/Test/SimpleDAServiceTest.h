@@ -12,7 +12,7 @@
 #include "WDBaseTestPolicies.h"
 
 //!TestCases description
-class SimpleDAServiceTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class SimpleDAServiceTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	SimpleDAServiceTest(TString tname) :
 		TestCaseType(tname) {

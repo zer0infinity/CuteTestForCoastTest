@@ -92,7 +92,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, C
 					} else {
 						rvalue = value;
 					}
-					Coast::HTTP::putHeaderFieldToStream(os, ctx, strFieldName, rvalue);
+					coast::http::putHeaderFieldToStream(os, ctx, strFieldName, rvalue);
 				}
 			}
 		}

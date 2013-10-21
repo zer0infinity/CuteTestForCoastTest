@@ -16,7 +16,7 @@ class TokenDataAccessController;
 
 //---- OTPListTest ----------------------------------------------------------
 //! Tests OTPList implementations.
-class OTPListTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class OTPListTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

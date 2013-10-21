@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnyBuiltInSortTest: public TestFramework::TestCase {
+class AnyBuiltInSortTest: public testframework::TestCase {
 public:
 	AnyBuiltInSortTest(TString tstrName) :
 		TestCaseType(tstrName) {

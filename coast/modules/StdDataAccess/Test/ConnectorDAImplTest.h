@@ -21,7 +21,7 @@ class AcceptorThread;
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ConnectorDAImplTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class ConnectorDAImplTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

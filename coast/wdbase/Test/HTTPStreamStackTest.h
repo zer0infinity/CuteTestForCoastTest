@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class HTTPStreamStackTest : public TestFramework::TestCase
+class HTTPStreamStackTest : public testframework::TestCase
 {
 public:
 	//--- constructors

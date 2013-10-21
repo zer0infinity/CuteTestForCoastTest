@@ -24,12 +24,12 @@ URLEncoder::~URLEncoder()
 void URLEncoder::DoEncode(String &encStr, const String &str) const
 {
 	StartTrace(URLEncoder.DoEncode);
-	encStr << Coast::URLUtils::urlEncode(str);
+	encStr << coast::urlutils::urlEncode(str);
 }
 
 bool URLEncoder::DoDecode(String &str, const String &encStr) const
 {
 	StartTrace(URLEncoder.DoDecode);
-	str = Coast::URLUtils::urlDecode(encStr);
+	str = coast::urlutils::urlDecode(encStr);
 	return true;
 }

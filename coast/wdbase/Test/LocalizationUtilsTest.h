@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Context.h"
 
-class LocalizationUtilsTest : public TestFramework::TestCase
+class LocalizationUtilsTest : public testframework::TestCase
 {
 public:
 	LocalizationUtilsTest(TString tstrName);

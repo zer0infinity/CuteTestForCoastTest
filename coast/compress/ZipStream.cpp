@@ -195,7 +195,7 @@ ZipStreamBuf::ZipStreamBuf(ZipStream::eStreamMode aMode, Allocator *alloc)
 
 //---- ZipOStreamBuf ----------------------------------------------------------------
 ZipOStreamBuf::ZipOStreamBuf(std::ostream &os, ZipStream::eStreamMode aMode, Allocator *alloc)
-	: ZipStreamBuf(aMode, ( alloc ? alloc : Coast::Storage::Current() ) )
+	: ZipStreamBuf(aMode, ( alloc ? alloc : coast::storage::Current() ) )
 	, fOs(&os)
 	, fCompLevel(Z_BEST_COMPRESSION)
 	, fCompStrategy(Z_DEFAULT_STRATEGY)
@@ -477,7 +477,7 @@ void ZipOStreamBuf::zipinit()
 }
 
 ZipIStreamBuf::ZipIStreamBuf(std::istream &zis, std::istream &is, ZipStream::eStreamMode aMode, Allocator *alloc)
-	: ZipStreamBuf(aMode, ( alloc ? alloc : Coast::Storage::Current() ) )
+	: ZipStreamBuf(aMode, ( alloc ? alloc : coast::storage::Current() ) )
 	, fZis(zis)
 	, fIs(&is)
 	, fZipErr(Z_OK)

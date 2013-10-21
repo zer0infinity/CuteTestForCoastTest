@@ -19,7 +19,7 @@ class StresserThread: public Thread {
 	StresserThread &operator=(const StresserThread &);
 public:
 	StresserThread() :
-		Thread("StresserThread"), fCond(0), fMutex(0), fMyId(-1), fResult(Coast::Storage::Global()) {
+		Thread("StresserThread"), fCond(0), fMutex(0), fMyId(-1), fResult(coast::storage::Global()) {
 	}
 	//! Initializing routine
 	//! Typical clients want to construct vast arrays of StresserThreads

@@ -23,8 +23,8 @@
 //! }</PRE>
 //! There is also a Toplevel slot <B>/EnvForAllCases</B> specifing an Anything that serves
 //! as Context for all TestCases
-//class NewRendererTest : public TestFramework::TestCaseWithConfig
-class NewRendererTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+//class NewRendererTest : public testframework::TestCaseWithConfig
+class NewRendererTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	NewRendererTest(TString tstrName) :
 		TestCaseType(tstrName) {

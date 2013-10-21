@@ -229,7 +229,7 @@ namespace {
 		} catch (utf8::invalid_utf8& e) {
 			len = str.Length();
 		}
-		StatTrace(HTTPDAImpl.getStringLength, "len: " << len << " str [" << str << "]", Coast::Storage::Current());
+		StatTrace(HTTPDAImpl.getStringLength, "len: " << len << " str [" << str << "]", coast::storage::Current());
 		return len;
 	}
 }

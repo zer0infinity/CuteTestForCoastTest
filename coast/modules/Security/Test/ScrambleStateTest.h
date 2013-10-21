@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-class ScrambleStateTest: public TestFramework::TestCase {
+class ScrambleStateTest: public testframework::TestCase {
 public:
 	ScrambleStateTest(TString tstrName) :
 		TestCaseType(tstrName) {

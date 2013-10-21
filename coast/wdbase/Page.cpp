@@ -97,7 +97,7 @@ bool Page::ProcessToken(String &transitionToken, Context &context) {
 }
 
 void Page::Preprocess(Context &c) {
-	StatTrace(Page.Preprocess, fName << ":", Coast::Storage::Current());
+	StatTrace(Page.Preprocess, fName << ":", coast::storage::Current());
 }
 
 void Page::Render(std::ostream &reply, Context &ctx) {

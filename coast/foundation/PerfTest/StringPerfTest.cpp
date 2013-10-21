@@ -44,13 +44,13 @@ void StringPerfTest::referenceTest() {
 	// short sample
 	RunLoop(sample, iterations);
 	RunPreallocLoop(sample, iterations);
-	Coast::System::MicroSleep(1000L);
+	coast::system::MicroSleep(1000L);
 	RunPoolAllocLoop(sample, iterations);
 
 	// long sample
 	RunLoop(sample1, iterations);
 	RunPreallocLoop(sample1, iterations);
-	Coast::System::MicroSleep(1000L);
+	coast::system::MicroSleep(1000L);
 	RunPoolAllocLoop(sample1, iterations);
 	t_assertm(true, "dummy assertion to generate summary output");
 }

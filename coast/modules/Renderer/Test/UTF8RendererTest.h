@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class UTF8RendererTest: public TestFramework::TestCase {
+class UTF8RendererTest: public testframework::TestCase {
 public:
 	UTF8RendererTest(TString tname) :
 		TestCaseType(tname) {

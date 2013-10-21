@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class LogTimerTest: public TestFramework::TestCase {
+class LogTimerTest: public testframework::TestCase {
 public:
 	LogTimerTest(TString tstrName) :
 		TestCaseType(tstrName) {

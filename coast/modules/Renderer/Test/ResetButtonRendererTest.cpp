@@ -16,7 +16,7 @@
 
 ResetButtonRendererTest::ResetButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) ResetButtonRenderer("ResetButtonRenderer");
+	fFieldRenderer = new (coast::storage::Global()) ResetButtonRenderer("ResetButtonRenderer");
 };
 
 ResetButtonRendererTest::~ResetButtonRendererTest()

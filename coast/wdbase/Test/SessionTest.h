@@ -14,7 +14,7 @@
 
 class STTestSession;
 
-class SessionTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class SessionTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	SessionTest(TString tstrName) :
 		TestCaseType(tstrName) {

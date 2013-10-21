@@ -13,7 +13,7 @@
 
 //---- LDAPDAICachePolicyTest ----------------------------------------------------------
 //:TestCases description
-class LDAPDAICachePolicyTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
+class LDAPDAICachePolicyTest : public testframework::TestCaseWithCaseConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

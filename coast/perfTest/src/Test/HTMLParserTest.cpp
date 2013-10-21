@@ -14,8 +14,8 @@
 void HTMLParserTest::ParseFileTest() {
 	StartTrace(HTMLParserTest.ParseFileTest);
 
-	std::iostream *input = Coast::System::OpenIStream("eSport", "html");
-	std::iostream *expectedResultInput = Coast::System::OpenStream("eSportResult", "any");
+	std::iostream *input = coast::system::OpenIStream("eSport", "html");
+	std::iostream *expectedResultInput = coast::system::OpenStream("eSportResult", "any");
 
 	if (t_assertm(input != NULL, "expected eSport.html to be there")
 			&& t_assertm(expectedResultInput != NULL, "expected eSportResult.any to be there")) {

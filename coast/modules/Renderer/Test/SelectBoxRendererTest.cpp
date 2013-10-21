@@ -13,7 +13,7 @@
 SelectBoxRendererTest::SelectBoxRendererTest (TString tname)
 	: FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) SelectBoxRenderer("SelectBoxRenderer");
+	fFieldRenderer = new (coast::storage::Global()) SelectBoxRenderer("SelectBoxRenderer");
 }
 
 SelectBoxRendererTest::~SelectBoxRendererTest()

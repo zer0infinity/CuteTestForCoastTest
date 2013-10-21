@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class AccessManagerModuleTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class AccessManagerModuleTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

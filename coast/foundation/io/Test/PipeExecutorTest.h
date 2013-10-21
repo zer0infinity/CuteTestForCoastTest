@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 
 //!
-class PipeExecutorTest : public TestFramework::TestCaseWithConfig
+class PipeExecutorTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

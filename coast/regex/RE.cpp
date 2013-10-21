@@ -81,22 +81,22 @@ String RE::GetMatch(long const which) const
 
 long RE::GetStartRegister(long const which) const
 {
-	StatTrace(RE.GetStartRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][0L].AsLong(-1), Coast::Storage::Current());
+	StatTrace(RE.GetStartRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][0L].AsLong(-1), coast::storage::Current());
 	return ROAnything(fRegisters)[which][0L].AsLong(-1);
 }
 long RE::GetEndRegister(long const which) const
 {
-	StatTrace(RE.GetEndRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][1L].AsLong(-1), Coast::Storage::Current());
+	StatTrace(RE.GetEndRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][1L].AsLong(-1), coast::storage::Current());
 	return ROAnything(fRegisters)[which][1L].AsLong(-1);
 }
 void RE::SetStartRegister(long const which, long const i)
 {
-	StatTrace(RE.SetStartRegister, "match#" << which << " pos:" << i, Coast::Storage::Current());
+	StatTrace(RE.SetStartRegister, "match#" << which << " pos:" << i, coast::storage::Current());
 	fRegisters[which][0L] = i;
 }
 void RE::SetEndRegister(long const which, long const i)
 {
-	StatTrace(RE.SetEndRegister, "match#" << which << " pos:" << i, Coast::Storage::Current());
+	StatTrace(RE.SetEndRegister, "match#" << which << " pos:" << i, coast::storage::Current());
 	fRegisters[which][1L] = i;
 }
 long RE::MatchNodes(long firstNode, long lastNode, long idxStart)

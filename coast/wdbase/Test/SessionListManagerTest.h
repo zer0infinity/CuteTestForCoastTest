@@ -12,7 +12,7 @@
 #include "WDBaseTestPolicies.h"
 #include "Session.h"
 
-class SessionListManagerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class SessionListManagerTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	SessionListManagerTest(TString tstrName) :
 		TestCaseType(tstrName) {

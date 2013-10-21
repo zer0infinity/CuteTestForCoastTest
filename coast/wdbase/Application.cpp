@@ -17,7 +17,7 @@
 #endif
 
 // initializing static variables
-Anything Application::fgConfig(Coast::Storage::Global());
+Anything Application::fgConfig(coast::storage::Global());
 Mutex Application::fgConfigMutex("ApplicationConfig");
 
 RegisterApplication(Application);

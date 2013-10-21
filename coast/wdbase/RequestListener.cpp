@@ -196,5 +196,5 @@ Thread *ListenerPool::DoAllocThread(long i, ROAnything args) {
 	if (!fCallBackFactory) {
 		return 0;
 	}
-	return new (Coast::Storage::Global()) ListenerThread(fCallBackFactory->MakeCallBack());
+	return new (coast::storage::Global()) ListenerThread(fCallBackFactory->MakeCallBack());
 }

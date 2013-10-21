@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class URLFilterTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class URLFilterTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

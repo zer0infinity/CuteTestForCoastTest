@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 
-class ROSimpleAnythingTest : public TestFramework::TestCase
+class ROSimpleAnythingTest : public testframework::TestCase
 {
 public:
 	//--- constructors

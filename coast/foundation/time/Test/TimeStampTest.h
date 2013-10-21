@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class TimeStampTest: public TestFramework::TestCaseWithConfigAndStatistics {
+class TimeStampTest: public testframework::TestCaseWithConfigAndStatistics {
 public:
 	TimeStampTest(TString tstrName) :
 		TestCaseType(tstrName) {

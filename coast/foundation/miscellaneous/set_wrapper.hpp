@@ -125,7 +125,7 @@ public:
 	typedef typename Type::const_reverse_iterator ConstReverseIteratorType;
 
 	set_wrapper(const char *pName = "set_wrapper_lock") :
-		fpList(NULL), fLock(pName, Coast::Storage::Global()) {
+		fpList(NULL), fLock(pName, coast::storage::Global()) {
 	}
 
 	~set_wrapper() {
@@ -325,19 +325,19 @@ public:
 protected:
 	bool IntHasList() const {
 		const Type *pList( fpList );
-		swStatTrace(set_wrapper.IntHasList, "ptr is:" << (long)pList, Coast::Storage::Current());
+		swStatTrace(set_wrapper.IntHasList, "ptr is:" << (long)pList, coast::storage::Current());
 		return ( pList != NULL );
 	}
 
 	Type *IntGetListPtr() {
 		Type *pList( fpList );
-		swStatTrace(set_wrapper.IntGetListPtr, "ptr is:" << (long)pList, Coast::Storage::Current());
+		swStatTrace(set_wrapper.IntGetListPtr, "ptr is:" << (long)pList, coast::storage::Current());
 		return pList;
 	}
 
 	const Type *IntGetConstListPtr() const {
 		const Type *pList( fpList );
-		swStatTrace(set_wrapper.IntGetConstListPtr, "ptr is:" << (long)pList, Coast::Storage::Current());
+		swStatTrace(set_wrapper.IntGetConstListPtr, "ptr is:" << (long)pList, coast::storage::Current());
 		return pList;
 	}
 
@@ -402,7 +402,7 @@ protected:
 
 	bool IntAddItem(const ItemType &aItem) {
 		InsertResultType aRetCode( IntGetCreateListPtr()->insert(aItem) );
-		swStatTrace(set_wrapper.IntAddItem, "Item [" << aItem.AsString() << "] was " << (aRetCode.second ? "" : "not " ) << "successful", Coast::Storage::Current());
+		swStatTrace(set_wrapper.IntAddItem, "Item [" << aItem.AsString() << "] was " << (aRetCode.second ? "" : "not " ) << "successful", coast::storage::Current());
 		// success means it was a new entry, otherwise there is already an item present
 		return aRetCode.second;
 	}

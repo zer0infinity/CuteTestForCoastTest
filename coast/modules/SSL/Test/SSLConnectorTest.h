@@ -19,7 +19,7 @@ class SSLConnector;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class SSLConnectorTest : public TestFramework::TestCaseWithConfig
+class SSLConnectorTest : public testframework::TestCaseWithConfig
 {
 public:
 

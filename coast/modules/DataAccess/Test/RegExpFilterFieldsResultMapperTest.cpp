@@ -36,11 +36,11 @@ namespace {
 		RegisterableObject::Terminate(ResultMapper::gpcCategory, &at);
 	}
 	void setupContext(ROAnything caseConfig, Context &ctx) {
-		Coast::TestFramework::PutInStore(caseConfig["SessionStore"], ctx.GetSessionStore());
-		Coast::TestFramework::PutInStore(caseConfig["RoleStore"], ctx.GetRoleStoreGlobal());
-		Coast::TestFramework::PutInStore(caseConfig["TmpStore"], ctx.GetTmpStore());
-		Coast::TestFramework::PutInStore(caseConfig["Query"], ctx.GetQuery());
-		Coast::TestFramework::PutInStore(caseConfig["Env"], ctx.GetEnvStore());
+		coast::testframework::PutInStore(caseConfig["SessionStore"], ctx.GetSessionStore());
+		coast::testframework::PutInStore(caseConfig["RoleStore"], ctx.GetRoleStoreGlobal());
+		coast::testframework::PutInStore(caseConfig["TmpStore"], ctx.GetTmpStore());
+		coast::testframework::PutInStore(caseConfig["Query"], ctx.GetQuery());
+		coast::testframework::PutInStore(caseConfig["Env"], ctx.GetEnvStore());
 	}
 }
 
@@ -74,10 +74,10 @@ void RegExpFilterFieldsResultMapperTest::ConfiguredTests() {
 					continue;
 				}
 				Anything anyFailureStrings;
-				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["Result"], ctx, caseName, Coast::TestFramework::exists);
+				coast::testframework::CheckStores(anyFailureStrings, caseConfig["Result"], ctx, caseName, coast::testframework::exists);
 				// non-existence tests
-				Coast::TestFramework::CheckStores(anyFailureStrings, caseConfig["NotResult"], ctx, caseName,
-						Coast::TestFramework::notExists);
+				coast::testframework::CheckStores(anyFailureStrings, caseConfig["NotResult"], ctx, caseName,
+						coast::testframework::notExists);
 				for (long sz = anyFailureStrings.GetSize(), i = 0; i < sz; ++i) {
 					t_assertm(false, anyFailureStrings[i].AsString().cstr());
 				}

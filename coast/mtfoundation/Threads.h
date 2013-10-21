@@ -133,7 +133,7 @@ public:
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
-	Mutex(const char *name, Allocator *a = Coast::Storage::Global());
+	Mutex(const char *name, Allocator *a = coast::storage::Global());
 	~Mutex();
 
 	/*! tries to acquire the mutex for this thread, blocks the caller if already locked (by another thread)
@@ -282,7 +282,7 @@ public:
 	/*! creates system dependent read/write lock
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
-	RWLock(const char *name, Allocator *a = Coast::Storage::Global());
+	RWLock(const char *name, Allocator *a = coast::storage::Global());
 	//!deletes system dependent read/write lock
 	~RWLock();
 	//!locks system dependent lock for reading or writing according to the reading flag
@@ -314,13 +314,13 @@ private:
 //!syntactic sugar to ease acquiring and releasing a mutex in one scope
 class LockUnlockEntry
 {
-	struct WrapperBase : public Coast::AllocatorNewDelete {
+	struct WrapperBase : public coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
-			StatTrace(LockUnlockEntry.WrapperBase, "", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.WrapperBase, "", coast::storage::Current());
 		}
 		virtual ~WrapperBase() {
-			StatTrace(LockUnlockEntry.~WrapperBase, "", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.~WrapperBase, "", coast::storage::Current());
 		}
 		Allocator *fAllocator;
 	};
@@ -331,11 +331,11 @@ class LockUnlockEntry
 		explicit LockUnlockEntryWrapper(LockType &m, Allocator *pAlloc)
 			: WrapperBase(pAlloc)
 			, fLock(m) {
-			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "Mutex", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "Mutex", coast::storage::Current());
 			this->fLock.Lock();
 		}
 		~LockUnlockEntryWrapper() {
-			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "Mutex", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "Mutex", coast::storage::Current());
 			this->fLock.Unlock();
 		}
 		LockType &fLock;
@@ -348,11 +348,11 @@ class LockUnlockEntry
 			: WrapperBase(pAlloc)
 			, fLock(m)
 			, fMode(mode) {
-			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "RWLock", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "RWLock", coast::storage::Current());
 			this->fLock.Lock(fMode);
 		}
 		~LockUnlockEntryWrapper() {
-			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "RWLock", Coast::Storage::Current());
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "RWLock", coast::storage::Current());
 			this->fLock.Unlock(fMode);
 		}
 		LockType &fLock;
@@ -366,25 +366,25 @@ class LockUnlockEntry
 public:
 	//!acquires the mutex in the constructor
 	template < typename TMutex >
-	explicit LockUnlockEntry(TMutex &m, Allocator *pAlloc = Coast::Storage::Current() )
+	explicit LockUnlockEntry(TMutex &m, Allocator *pAlloc = coast::storage::Current() )
 		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<TMutex, bool>(m, pAlloc))
 	{}
 
 	template < typename LockType >
-	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode, Allocator *pAlloc = Coast::Storage::Current() )
+	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode, Allocator *pAlloc = coast::storage::Current() )
 		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<LockType, bool>(m, mode, pAlloc))
 	{}
 };
 
 class LockedValueIncrementDecrementEntry
 {
-	struct WrapperBase : public Coast::AllocatorNewDelete {
+	struct WrapperBase : public coast::AllocatorNewDelete {
 		WrapperBase(Allocator *pAlloc)
 			: fAllocator(pAlloc) {
-			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Coast::Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", coast::storage::Current());
 		}
 		virtual ~WrapperBase() {
-			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Coast::Storage::Current());
+			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", coast::storage::Current());
 		}
 
 		Allocator *fAllocator;
@@ -422,7 +422,7 @@ class LockedValueIncrementDecrementEntry
 	LockedValueIncrementDecrementEntry &operator=(const LockedValueIncrementDecrementEntry &);
 public:
 	template < typename MutexType >
-	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue, Allocator *pAlloc = Coast::Storage::Current())
+	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue, Allocator *pAlloc = coast::storage::Current())
 		: fWrapper(new (pAlloc) LockedValueIncrementDecrementEntryWrapper<MutexType>(aMutex, aCondition, lValue, pAlloc))
 	{}
 };
@@ -463,7 +463,7 @@ protected:
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
 With this means it is possible to reliably control starting and stopping of a thread */
-class Thread : public NamedObject, public Observable<Thread, ROAnything>, public Coast::AllocatorNewDelete
+class Thread : public NamedObject, public Observable<Thread, ROAnything>, public coast::AllocatorNewDelete
 {
 	typedef Observable<Thread, ROAnything> tObservableBase;
 public:
@@ -538,7 +538,7 @@ public:
 		\param wdallocator the storage allocator used in the thread to be started
 		\param args the arguments given to the DoStartRequestedHook
 		\return true if the thread is about to start and fState == eStarted; false if DoStartRequestedHook returns false and fState == eTerminated */
-	bool Start(Allocator *wdallocator = Coast::Storage::Global(), ROAnything args = ROAnything());
+	bool Start(Allocator *wdallocator = coast::storage::Global(), ROAnything args = ROAnything());
 
 	/*! blocks the caller until thread has reached the requested state
 		\param state EThreadState to check if the thread has reached it
@@ -764,8 +764,8 @@ private:
 #endif
 };
 
-namespace Coast {
-	namespace Threading {
+namespace coast {
+	namespace threading {
 		template<typename ValueType>
 		struct TLSEntry {
 			typedef ValueType* ValueTypePtr;

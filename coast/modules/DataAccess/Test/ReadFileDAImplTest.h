@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class ReadFileDAImplTest: public TestFramework::TestCase {
+class ReadFileDAImplTest: public testframework::TestCase {
 public:
 	ReadFileDAImplTest(TString tstrName) :
 		TestCaseType(tstrName) {

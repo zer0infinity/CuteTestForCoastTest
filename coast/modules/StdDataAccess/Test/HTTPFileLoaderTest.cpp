@@ -32,16 +32,16 @@ void HTTPFileLoaderTest::ReplyHeaderTest() {
 	Anything statusSpec;
 
 	Anything verSpec;
-	verSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolVersionSlotname);
-	statusSpec[Coast::HTTP::constants::protocolVersionSlotname] = verSpec;
+	verSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolVersionSlotname);
+	statusSpec[coast::http::constants::protocolVersionSlotname] = verSpec;
 
 	Anything resCodeSpec;
-	resCodeSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname);
-	statusSpec[Coast::HTTP::constants::protocolCodeSlotname] = resCodeSpec;
+	resCodeSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolCodeSlotname);
+	statusSpec[coast::http::constants::protocolCodeSlotname] = resCodeSpec;
 
 	Anything resMsgSpec;
-	resMsgSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname);
-	statusSpec[Coast::HTTP::constants::protocolMsgSlotname] = resMsgSpec;
+	resMsgSpec[0L]["ContextLookupRenderer"] = String("Mapper.").Append(coast::http::constants::protocolMsgSlotname);
+	statusSpec[coast::http::constants::protocolMsgSlotname] = resMsgSpec;
 	// PS: no longer render endl here: statusSpec[5L]= ENDL;
 	SubTraceAny(HTTPStatus, statusSpec, "HTTPStatus:");
 	Anything httpStatus;
@@ -88,8 +88,8 @@ void HTTPFileLoaderTest::ExecTest() {
 	t_assertm(hfl.Exec(ctx, &mapin, &mout), "expected success of file loading");
 
 	t_assertm(tmpStore.LookupPath(httpHeader, "Mapper.HTTPHeader"), "expected Mapper.HTTPHeader field in tmpStore");
-	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname), 400L));
-	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname), "Not found"));
+	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolCodeSlotname), 400L));
+	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolMsgSlotname), "Not found"));
 	assertEqual("<html>\n<h1>Test</h1>\nsome html test data\n</html>\n", ctx.Lookup("Mapper.HTTPBody", "Not found"));
 
 	tmpStore.Remove("Mapper");
@@ -98,16 +98,16 @@ void HTTPFileLoaderTest::ExecTest() {
 	String body(ctx.Lookup("Mapper.HTTPBody", "<"));
 	t_assertm(body.Contains(_QUOTE_(<p>The requested URL <b>/config/NotThere<script>alert("gugus")</script></b> is invalid.</p>)) >= 0, "No tainted content expected.");
 
-	assertEqual(404, ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname), 200L));
-	assertEqual("Not Found", ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname), "Ok"));
+	assertEqual(404, ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolCodeSlotname), 200L));
+	assertEqual("Not Found", ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolMsgSlotname), "Ok"));
 
 #if !defined(WIN32)
 	tmpStore.Remove("Mapper");
 	tmpStore["REQUEST_URI"] = "/config/NotReadable";
 	t_assertm(!hfl.Exec(ctx, &mapin, &mout), "expected failure of file loading");
 
-	assertEqualm(403, ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname), 200L), "Make sure the file config/NotReadable is not readable");
-	assertEqualm("Forbidden", ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname), "Ok"), "Make sure the file config/NotReadable is not readable");
+	assertEqualm(403, ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolCodeSlotname), 200L), "Make sure the file config/NotReadable is not readable");
+	assertEqualm("Forbidden", ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolMsgSlotname), "Ok"), "Make sure the file config/NotReadable is not readable");
 	assertEqualm("<html><head>\n<title>403 Forbidden</title>\n</head><body>\n<h1>Forbidden</h1>\n<p>The requested URL <b>/config/NotReadable</b> is invalid.</p>\n<hr />\n<address>Coast 2.0 Server</address>\n</body></html>\n", ctx.Lookup("Mapper.HTTPBody", "Ok"), "Wrong error message supplied!");
 #else
 	cerr << "\nFIXME: file hiding on WIN32" << endl;
@@ -120,8 +120,8 @@ void HTTPFileLoaderTest::ExecTest() {
 	t_assertm(hfl.Exec(ctx, &mapin, &mout), "expected success of file loading");
 
 	t_assertm(tmpStore.LookupPath(httpHeader, "Mapper.HTTPBody"), "expected Mapper.HTTPHeader field in tmpStore");
-	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolCodeSlotname), 400L));
-	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(Coast::HTTP::constants::protocolMsgSlotname), "Not found"));
+	assertEqual(200L, ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolCodeSlotname), 400L));
+	assertEqual("Ok", ctx.Lookup(String("Mapper.").Append(coast::http::constants::protocolMsgSlotname), "Not found"));
 	assertEqual("image/gif", ctx.Lookup("Mapper.content-type", "Not found"));
 }
 

@@ -12,8 +12,8 @@
 #include "Tracer.h"
 #include <cstring>
 
-namespace Coast {
-	namespace URLUtils {
+namespace coast {
+	namespace urlutils {
 		// replace '+' characters in-place into ' '
 		void Convert(String &str) {
 			if (str.Length() > 0) {
@@ -310,7 +310,7 @@ namespace Coast {
 
 		void AppendValueTo(Anything &any, const String &key, const char *value)
 		{
-			StatTrace(URLUtils.AppendValueTo, "key [" << key << "] value [" << NotNull(value) << "]", Coast::Storage::Current());
+			StatTrace(URLUtils.AppendValueTo, "key [" << key << "] value [" << NotNull(value) << "]", coast::storage::Current());
 			if (key.Length() > 0) {
 				if (value == 0) {
 					any[key] = Anything();
@@ -629,7 +629,7 @@ namespace Coast {
 
 		void RemoveQuotes(String &str)
 		{
-			StatTrace(URLUtils.RemoveQuotes, "[" << str << "]", Coast::Storage::Current());
+			StatTrace(URLUtils.RemoveQuotes, "[" << str << "]", coast::storage::Current());
 			// casts below needed for ANSI (VC++) conformance
 			if ( ( str[0L] == '\'' ) && ( str[(long)( str.Length() -1)] == '\'' )  ) {
 				TrimChars(str, true, '\'');
@@ -818,7 +818,7 @@ namespace Coast {
 		{
 			StartTrace(URLUtils.CleanUpUriPath);
 			Trace("URLPath before: " << name);
-			Coast::System::ResolvePath(name);
+			coast::system::ResolvePath(name);
 			Trace("URLPath after: " << name);
 			return name;
 		}

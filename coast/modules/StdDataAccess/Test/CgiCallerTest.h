@@ -13,7 +13,7 @@
 class Context;
 //---- CgiCallerTest ----------------------------------------------------------
 //!Tests the cgi caller
-class CgiCallerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class CgiCallerTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	CgiCallerTest(TString tstrName) :
 		TestCaseType(tstrName) {

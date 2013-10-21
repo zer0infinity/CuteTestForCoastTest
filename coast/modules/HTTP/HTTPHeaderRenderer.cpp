@@ -27,9 +27,9 @@ namespace {
 			if ( not headerStructureIter.SlotName(strSlotname) ) {
 				//! prepared "header: value" entry or a Renderer specification
 				Renderer::Render(reply, ctx, fieldValues);
-				reply << Coast::HTTP::constants::newLine;
+				reply << coast::http::constants::newLine;
 			} else {
-				Coast::HTTP::putHeaderFieldToStream(reply, ctx, strSlotname, fieldValues);
+				coast::http::putHeaderFieldToStream(reply, ctx, strSlotname, fieldValues);
 			}
 		}
 	}

@@ -187,7 +187,7 @@ protected:
 		}
 	}
 	virtual Allocator *DoGlobal() {
-		return Coast::Storage::DoGlobal();
+		return coast::storage::DoGlobal();
 	}
 	virtual Allocator *DoCurrent();
 
@@ -200,7 +200,7 @@ protected:
 		if (bThreadSafe) {
 			pTracker = new MT_MemTracker(name, 55667788);
 		} else {
-			pTracker = Coast::Storage::DoMakeMemTracker(name);
+			pTracker = coast::storage::DoMakeMemTracker(name);
 		}
 		return pTracker;
 	}
@@ -216,33 +216,33 @@ namespace {
 	};
 	class MTStorageInitializer {
 		typedef boost::shared_ptr<SimpleMutex> SimpleMutexPtr;
-		typedef Coast::Storage::StorageHooksPtr StorageHooksPtr;
+		typedef coast::storage::StorageHooksPtr StorageHooksPtr;
 		SimpleMutexPtr fAllocatorInit;
 		THREADKEY fAllocatorKey;
 		Allocator::MemTrackerPtr fOldTracker;
 		StorageHooksPtr fMTHooks;
 		AllocList *fPoolAllocatorList;
 		void Initialize() {
-			StatTrace(MT_Storage.Initialize, "entering", Coast::Storage::Global());
+			StatTrace(MT_Storage.Initialize, "entering", coast::storage::Global());
 			// must be called before threading is activated
 			fMTHooks = StorageHooksPtr(new MTStorageHooks());
-			Coast::Storage::registerHooks(fMTHooks);
+			coast::storage::registerHooks(fMTHooks);
 			// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
-			Allocator *a = Coast::Storage::Global();
-			if (a && Coast::Storage::GetStatisticLevel() >= 1) {
-				fOldTracker = a->ReplaceMemTracker(Allocator::MemTrackerPtr(Coast::Storage::MakeMemTracker("MTGlobalAllocator", true)));
+			Allocator *a = coast::storage::Global();
+			if (a && coast::storage::GetStatisticLevel() >= 1) {
+				fOldTracker = a->ReplaceMemTracker(Allocator::MemTrackerPtr(coast::storage::MakeMemTracker("MTGlobalAllocator", true)));
 			}
-			StatTrace(MT_Storage.Initialize, "leaving", Coast::Storage::Global());
+			StatTrace(MT_Storage.Initialize, "leaving", coast::storage::Global());
 		}
 		void Finalize()
 		{
-			StatTrace(MT_Storage.Finalize, "entering", Coast::Storage::Global());
+			StatTrace(MT_Storage.Finalize, "entering", coast::storage::Global());
 			// terminate pool allocators
 			{
 				LockUnlockEntry me(*fAllocatorInit);
 				while (fPoolAllocatorList) {
 					AllocList *elmt = fPoolAllocatorList;
-					if ( elmt->wdallocator->GetId() != Coast::Storage::DoGlobal()->GetId() ) {
+					if ( elmt->wdallocator->GetId() != coast::storage::DoGlobal()->GetId() ) {
 						SYSERROR("unfreed allocator found id: " << elmt->wdallocator->GetId());
 						delete elmt->wdallocator;
 					}
@@ -250,37 +250,37 @@ namespace {
 					::free(elmt);
 				}
 			}
-			Allocator *a = Coast::Storage::Global();
+			Allocator *a = coast::storage::Global();
 			if ( a ) {
 				if ( fOldTracker ) {
 					Allocator::MemTrackerPtr tmpTracker = a->ReplaceMemTracker(fOldTracker);
-					StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( tmpTracker ? tmpTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Coast::Storage::Global());
-					if ( tmpTracker && Coast::Storage::GetStatisticLevel() >= 1 ) {
+					StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( tmpTracker ? tmpTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", coast::storage::Global());
+					if ( tmpTracker && coast::storage::GetStatisticLevel() >= 1 ) {
 						tmpTracker->PrintStatistic(2);
 					}
 					fOldTracker.reset();
 				}
 			}
-			Coast::Storage::StorageHooksPtr pOldHook = Coast::Storage::unregisterHooks();
+			coast::storage::StorageHooksPtr pOldHook = coast::storage::unregisterHooks();
 			if ( pOldHook != fMTHooks ) {
 				SYSERROR("unregistered different hooks, oops");
 			}
-			StatTrace(MT_Storage.Finalize, "leaving", Coast::Storage::Global());
+			StatTrace(MT_Storage.Finalize, "leaving", coast::storage::Global());
 		}
 	public:
-		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", Coast::Storage::Global())), fAllocatorKey(0), fOldTracker(), fMTHooks(), fPoolAllocatorList(0) {
+		MTStorageInitializer() : fAllocatorInit(new SimpleMutex("AllocatorInit", coast::storage::Global())), fAllocatorKey(0), fOldTracker(), fMTHooks(), fPoolAllocatorList(0) {
 			if (THRKEYCREATE(fAllocatorKey, 0)) {
 				SystemLog::Error("TlsAlloc of fAllocatorKey failed");
 			}
 			Initialize();
-			InitFinisManager::IFMTrace("MTStorage::Initialized\n");
+			InitFinisManager::IFMTrace("MTstorage::Initialized\n");
 		}
 		~MTStorageInitializer() {
 			Finalize();
 			if (THRKEYDELETE(fAllocatorKey) != 0) {
 				SystemLog::Error("TlsFree of fAllocatorKey failed" );
 			}
-			InitFinisManager::IFMTrace("MTStorage::Finalized\n");
+			InitFinisManager::IFMTrace("MTstorage::Finalized\n");
 		}
 		void RefAllocator(Allocator *wdallocator) {
 			StartTrace1(MT_Storage.RefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
@@ -306,11 +306,11 @@ namespace {
 		void UnrefAllocator(Allocator *wdallocator) {
 			const long allocId = wdallocator ? wdallocator->GetId() : -1L;
 			(void)allocId;  // to prevent unused compiler warning occurring when trace is disabled
-			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", Coast::Storage::Global());
+			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- entering ---", coast::storage::Global());
 			if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
 				LockUnlockEntry me(*fAllocatorInit);
 				wdallocator->Unref();
-				StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), Coast::Storage::Global());
+				StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), coast::storage::Global());
 				if ( wdallocator->RefCnt() <= 0 ) {
 					AllocList *elmt = fPoolAllocatorList;
 					AllocList *prev = fPoolAllocatorList;
@@ -329,7 +329,7 @@ namespace {
 					}
 				}
 			}
-			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- leaving ---", Coast::Storage::Global());
+			StatTrace(MT_Storage.UnrefAllocator, "Id:" << allocId << " --- leaving ---", coast::storage::Global());
 		}
 		bool RegisterThread(Allocator *wdallocator) {
 			// can only be used once for the same thread
@@ -338,7 +338,7 @@ namespace {
 			GETTLSDATA(getAllocatorKey(), oldAllocator, Allocator);
 			if (oldAllocator == NULL) {
 				StatTrace(MT_Storage.RegisterThread, "setting Allocator:" << (long)wdallocator << " to ThreadLocalStorage",
-						Coast::Storage::Global());
+						coast::storage::Global());
 				return !SETTLSDATA(getAllocatorKey(), wdallocator);
 			}
 			return false;
@@ -349,7 +349,7 @@ namespace {
 			GETTLSDATA(getAllocatorKey(), oldAllocator, Allocator);
 			if (oldAllocator) {
 				StatTrace(MT_Storage.UnregisterThread, "removing Allocator:" << (long)oldAllocator << " of ThreadLocalStorage",
-						Coast::Storage::Global());
+						coast::storage::Global());
 				return !SETTLSDATA(getAllocatorKey(), 0);
 			}
 			return false;

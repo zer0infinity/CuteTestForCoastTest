@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 #include "boost/function.hpp"
-class SystemFileTest: public TestFramework::TestCaseWithConfig {
+class SystemFileTest: public testframework::TestCaseWithConfig {
 	void testGetFilePath(boost::function<String()> func, const String& notFoundResult);
 public:
 	SystemFileTest(TString tname) :

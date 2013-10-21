@@ -13,7 +13,7 @@
 
 //---- ZipStreamTest ----------------------------------------------------------
 //! TestCases description
-class ZipStreamTest : public TestFramework::TestCaseWithConfig
+class ZipStreamTest : public testframework::TestCaseWithConfig
 {
 public:
 	//!TestCase constructor

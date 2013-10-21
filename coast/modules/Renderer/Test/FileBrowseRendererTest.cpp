@@ -19,7 +19,7 @@ FileBrowseRendererTest::FileBrowseRendererTest(TString tname) : TextFieldRendere
 	if (fFieldRenderer) {
 		delete fFieldRenderer;    // base class already initialized this !
 	}
-	fFieldRenderer = new (Coast::Storage::Global()) FileBrowseRenderer("FileBrowseRenderer");
+	fFieldRenderer = new (coast::storage::Global()) FileBrowseRenderer("FileBrowseRenderer");
 }
 
 FileBrowseRendererTest::~FileBrowseRendererTest()

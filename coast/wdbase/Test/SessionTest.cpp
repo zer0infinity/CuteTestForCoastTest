@@ -232,7 +232,7 @@ void SessionTest::UseSessionStoreTest() {
 		Context ctx;
 
 		Anything local;
-		Anything global(Coast::Storage::Global());
+		Anything global(coast::storage::Global());
 		ctx.Push(&s);
 
 		//--- manipulate session store trough context

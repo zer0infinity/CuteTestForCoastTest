@@ -77,7 +77,7 @@ void RendererMapperTest::GetOnAnyTest()
 
 void RendererMapperTest::setUp ()
 {
-	std::iostream *Ios = Coast::System::OpenStream("StdContext", "any");
+	std::iostream *Ios = coast::system::OpenStream("StdContext", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

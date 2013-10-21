@@ -25,17 +25,17 @@ RegisterDataAccessImpl( OracleDAImpl);
 OracleDAImpl::OracleDAImpl( const char *name ) :
 	DataAccessImpl( name )
 {
-	StatTrace(OracleDAImpl.OracleDAImpl, name, Coast::Storage::Current());
+	StatTrace(OracleDAImpl.OracleDAImpl, name, coast::storage::Current());
 }
 
 OracleDAImpl::~OracleDAImpl()
 {
-	StatTrace(OracleDAImpl.~OracleDAImpl, "nothing to do", Coast::Storage::Current());
+	StatTrace(OracleDAImpl.~OracleDAImpl, "nothing to do", coast::storage::Current());
 }
 
 IFAObject *OracleDAImpl::Clone(Allocator *a) const
 {
-	StatTrace(OracleDAImpl.Clone, fName, Coast::Storage::Current());
+	StatTrace(OracleDAImpl.Clone, fName, coast::storage::Current());
 	return new (a) OracleDAImpl( fName );
 }
 
@@ -250,7 +250,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 	bool bRet( false );
 	DAAccessTimer( OracleDAImpl.Exec, fName, ctx );
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
-	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
+	coast::oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
 		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;

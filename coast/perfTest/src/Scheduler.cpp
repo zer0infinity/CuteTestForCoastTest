@@ -6,7 +6,7 @@
 #include "SystemBase.h"
 #include "ITOString.h"
 
-using namespace Coast;
+using namespace coast;
 
 Scheduler::Scheduler() {
 }
@@ -24,8 +24,8 @@ String Scheduler::currTimeInDayHourMin() {
 	time(&now);
 	struct tm time;
 	String timeDate;
-	System::LocalTime(&now, &time);
-	System::AscTime(&time, timeDate);
+	system::LocalTime(&now, &time);
+	system::AscTime(&time, timeDate);
 
 	String result = timeDate.SubString(0, 3); // Day of week
 	result.Append(" ");
@@ -109,8 +109,8 @@ String Scheduler::CurrTimeDateInDecimal() {
 	time(&now);
 	struct tm result;
 	String cTimeDate;
-	System::LocalTime(&now, &result);
-	System::AscTime(&result, cTimeDate);
+	system::LocalTime(&now, &result);
+	system::AscTime(&result, cTimeDate);
 
 	bool statusOk = true;
 	String value;

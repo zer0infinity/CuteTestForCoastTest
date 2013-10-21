@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class ActionCoreTest: public TestFramework::TestCase {
+class ActionCoreTest: public testframework::TestCase {
 public:
 	ActionCoreTest(TString tstrName);
 	~ActionCoreTest();

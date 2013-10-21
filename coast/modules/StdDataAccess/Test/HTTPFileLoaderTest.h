@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class HTTPFileLoaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class HTTPFileLoaderTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	HTTPFileLoaderTest(TString tname) :
 		TestCaseType(tname) {

@@ -14,7 +14,7 @@
 #include "CacheHandler.h"
 
 Registry::Registry(const char *category) :
-		NotCloned(category), fTable(Anything::ArrayMarker(), Coast::Storage::Global()) {
+		NotCloned(category), fTable(Anything::ArrayMarker(), coast::storage::Global()) {
 }
 
 Registry::~Registry() {
@@ -57,7 +57,7 @@ RegisterableObject *Registry::Find(const char *name)
 
 void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *o)
 {
-	StatTrace(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]", Coast::Storage::Current());
+	StatTrace(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]", coast::storage::Current());
 	Assert(name && o);
 	// make it robust
 	if ( name && o ) {
@@ -98,7 +98,7 @@ Anything &Registry::GetTable() {
 }
 
 MetaRegistryImpl::MetaRegistryImpl() :
-		fRegistryArray(Anything::ArrayMarker(), Coast::Storage::Global()) {
+		fRegistryArray(Anything::ArrayMarker(), coast::storage::Global()) {
 	// force initializing cache handler before us
 	CacheHandler::instance();
 	InitFinisManager::IFMTrace("MetaRegistry::Initialized\n");
@@ -114,7 +114,7 @@ Anything &MetaRegistryImpl::GetRegTable() {
 }
 
 Registry *MetaRegistryImpl::GetRegistry(const char *category) {
-	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
+	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", coast::storage::Current());
 	Registry *r = dynamic_cast<Registry *>(ROAnything(fRegistryArray)[category].AsIFAObject(0));
 	if (not r) {
 		r = MakeRegistry(category);
@@ -123,12 +123,12 @@ Registry *MetaRegistryImpl::GetRegistry(const char *category) {
 }
 
 Registry *MetaRegistryImpl::MakeRegistry(const char *category) {
-	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Coast::Storage::Current());
+	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", coast::storage::Current());
 	String msg("Creating Registry for: <");
 	msg.Append(NotNull(category)).Append('>');
 	SystemLog::Info(msg);
-	Registry *r = new (Coast::Storage::Global()) Registry(category);
-	GetRegTable()[category] = Anything(r, Coast::Storage::Global()); // r stored as pointer to IFAObject (AB)
+	Registry *r = new (coast::storage::Global()) Registry(category);
+	GetRegTable()[category] = Anything(r, coast::storage::Global()); // r stored as pointer to IFAObject (AB)
 	return r;
 }
 

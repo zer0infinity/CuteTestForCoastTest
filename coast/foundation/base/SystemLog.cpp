@@ -43,7 +43,7 @@ protected:
 };
 #endif
 
-using namespace Coast;
+using namespace coast;
 
 namespace {
 	class SystemLogInitializer {
@@ -67,12 +67,12 @@ namespace {
 			} else {
 				appId = "Coast";
 			}
-			String strValue = System::EnvGet("COAST_DOLOG");
+			String strValue = system::EnvGet("COAST_DOLOG");
 			int iValue = static_cast<int>(strValue.AsLong(SystemLog::eNone));
 			if ((SystemLog::eNone < iValue) && (iValue < SystemLog::eLast)) {
 				fDoSystemLevelLog = static_cast<SystemLog::eLogLevel>(iValue);
 			}
-			strValue = System::EnvGet("COAST_LOGONCERR");
+			strValue = system::EnvGet("COAST_LOGONCERR");
 			iValue = static_cast<int>(strValue.AsLong(SystemLog::eNone));
 			if ((SystemLog::eNone < iValue) && (iValue < SystemLog::eLast)) {
 				fDoLogOnCerr = static_cast<SystemLog::eLogLevel>(iValue);
@@ -192,7 +192,7 @@ String SystemLog::SysErrorMsg(long errnum) {
 }
 
 String SystemLog::LastSysError() {
-	int iError(System::GetSystemError());
+	int iError(system::GetSystemError());
 	if (iError != 0) {
 		return SysErrorMsg(iError);
 	}
@@ -262,7 +262,7 @@ void SystemLog::DoLog(eLogLevel level, const char *msg) {
 }
 
 void SystemLog::DoTraceLevel(const char *level, const char *msg) {
-	String finalMessage(level, strlen(level), Coast::Storage::Global());
+	String finalMessage(level, strlen(level), coast::storage::Global());
 	finalMessage.Append(msg);
 	finalMessage.Append('\n');
 	SystemLog::WriteToStderr(finalMessage, finalMessage.Length());

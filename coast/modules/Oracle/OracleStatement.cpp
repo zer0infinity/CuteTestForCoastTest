@@ -102,7 +102,7 @@ OracleStatement::Status OracleStatement::execute( ExecMode mode, long lIteration
 
 sword OracleStatement::Fetch( ub4 numRows )
 {
-	StatTrace(OracleStatement.Fetch, "fetching " << (long)numRows << " rows", Coast::Storage::Current());
+	StatTrace(OracleStatement.Fetch, "fetching " << (long)numRows << " rows", coast::storage::Current());
 	// fetch another row
 	return OCIStmtFetch2( getHandle(), fpConnection->ErrorHandle(), numRows, OCI_FETCH_NEXT, 0, OCI_DEFAULT );
 }
@@ -111,7 +111,7 @@ unsigned long OracleStatement::getUpdateCount() const
 {
 	ub4 count( 0 );
 	OCIAttrGet( getHandle(), OCI_HTYPE_STMT, (dvoid *) &count, 0, OCI_ATTR_ROW_COUNT, fpConnection->ErrorHandle() );
-	StatTrace(OracleStatement.getUpdateCount, "update count " << (long)count, Coast::Storage::Current());
+	StatTrace(OracleStatement.getUpdateCount, "update count " << (long)count, coast::storage::Current());
 	return count;
 }
 
@@ -121,7 +121,7 @@ unsigned long OracleStatement::getErrorCount() const
 	ErrHandleType aHandlePtr;
 	if ( fpConnection->AllocateHandle( aHandlePtr ) ) {
 		OCIAttrGet( getHandle(), OCI_HTYPE_STMT, (dvoid *) &count, 0, OCI_ATTR_NUM_DML_ERRORS, aHandlePtr.getHandle() );
-		StatTrace(OracleStatement.getErrorCount, "error count " << (long)count, Coast::Storage::Current());
+		StatTrace(OracleStatement.getErrorCount, "error count " << (long)count, coast::storage::Current());
 	}
 	return count;
 }
@@ -167,7 +167,7 @@ OracleResultsetPtr OracleStatement::getResultset()
 	StartTrace(OracleStatement.getResultset);
 	OracleResultsetPtr pResult;
 	if ( fStatus == RESULT_SET_AVAILABLE ) {
-		pResult = OracleResultsetPtr( new ( Coast::Storage::Current() ) OracleResultset( *this ) );
+		pResult = OracleResultsetPtr( new ( coast::storage::Current() ) OracleResultset( *this ) );
 	} else {
 		String strMessage( "Error - getResultset failed, no resultset available, current status is " );
 		strMessage << (long) fStatus;
@@ -193,9 +193,9 @@ OracleResultsetPtr OracleStatement::getCursor( long lColumnIndex, long lRowIdx )
 				OCIStmt *phStmt = * ( (OCIStmt **) aDescEl.getRawBufferPtr( lRowIdx ) );
 				Trace("retrieved statement handle pointer &" << (long)phStmt);
 				if ( phStmt ) {
-					OracleStatement *pStmt = new ( Coast::Storage::Current() ) OracleStatement( fpConnection, phStmt );
+					OracleStatement *pStmt = new ( coast::storage::Current() ) OracleStatement( fpConnection, phStmt );
 					fSubStatements.Append( pStmt );
-					pResult = OracleResultsetPtr( new ( Coast::Storage::Current() ) OracleResultset( *pStmt ) );
+					pResult = OracleResultsetPtr( new ( coast::storage::Current() ) OracleResultset( *pStmt ) );
 				}
 				break;
 			}
@@ -495,7 +495,7 @@ namespace {
 					  Anything &buf )
 	{
 		char *pC = const_cast<char *> ( aDescEl[pcWhere].AsCharPtr() );
-		StatTrace(OracleStatement.fillRowColValue, "adjust for row in buffer, before:" << (long)pC << " after:" << (long)(pC + (len * lRowIndex)), Coast::Storage::Current());
+		StatTrace(OracleStatement.fillRowColValue, "adjust for row in buffer, before:" << (long)pC << " after:" << (long)(pC + (len * lRowIndex)), coast::storage::Current());
 		pC += ( len * lRowIndex );
 		String strBuf( buf.AsString() );
 		void *pDest = static_cast<void *> ( pC );

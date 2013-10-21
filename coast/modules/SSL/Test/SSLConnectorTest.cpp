@@ -77,12 +77,12 @@ void SSLConnectorTest::allocatorConstructorTest()
 		}
 	}
 	{
-		TestStorageHooks tsh(Coast::Storage::Global());
+		TestStorageHooks tsh(coast::storage::Global());
 		SSLConnector connector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 0L,
 				(SSL_CTX *) 0, (const char *) 0, 0L, false);
 		Socket *socket = connector.Use();
 
-		if (t_assert(socket != 0) && t_assertm(Coast::Storage::Global() == socket->GetAllocator(), "allocator should match")) {
+		if (t_assert(socket != 0) && t_assertm(coast::storage::Global() == socket->GetAllocator(), "allocator should match")) {
 			long socketfd = socket->GetFd();
 			t_assert(socketfd > 0);
 			std::iostream *Ios = socket->GetStream();

@@ -13,7 +13,7 @@
 
 //---- PageRelatedRendererTest ----------------------------------------------------------
 //!Test driver for tracing facility
-class PageRelatedRendererTest : public TestFramework::TestCase
+class PageRelatedRendererTest : public testframework::TestCase
 {
 public:
 	//!constructors

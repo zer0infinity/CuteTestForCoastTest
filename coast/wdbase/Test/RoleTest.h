@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class RoleTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class RoleTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

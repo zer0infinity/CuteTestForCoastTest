@@ -14,7 +14,7 @@
 #include "AnyVisitor.h"
 #include "AnyComparers.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <cstring>
 #include <algorithm>
@@ -32,7 +32,7 @@ using namespace Coast;
 #define anyTraceAny(any, msg)
 #endif
 
-static const String fgStrEmpty(Coast::Storage::Global()); //avoid temporary
+static const String fgStrEmpty(coast::storage::Global()); //avoid temporary
 
 //--- auxiliary calculating hash value and the length of the key
 long IFAHash(const char *key, long &len, char stop1, char stop2)
@@ -743,43 +743,43 @@ Anything::Anything(Allocator *a) 		: fAnyImp(0)
 }
 Anything::Anything(AnyImpl *ai) 			: fAnyImp(ai)
 {
-	SetAllocator(ai ? ai->MyAllocator() : Coast::Storage::Current());
+	SetAllocator(ai ? ai->MyAllocator() : coast::storage::Current());
 }
-Anything::Anything(int i, Allocator *a) 			: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(i, a))
+Anything::Anything(int i, Allocator *a) 			: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyLongImpl(i, a))
 {
 	SetAllocator(a);
 }
 #if !defined(BOOL_NOT_SUPPORTED)
-Anything::Anything(bool b, Allocator *a) 		: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(b, a))
+Anything::Anything(bool b, Allocator *a) 		: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyLongImpl(b, a))
 {
 	SetAllocator(a);
 }
 #endif
-Anything::Anything(long i, Allocator *a) 			: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyLongImpl(i, a))
+Anything::Anything(long i, Allocator *a) 			: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyLongImpl(i, a))
 {
 	SetAllocator(a);
 }
-Anything::Anything(float f, Allocator *a)  			: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyDoubleImpl(f, a))
+Anything::Anything(float f, Allocator *a)  			: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyDoubleImpl(f, a))
 {
 	SetAllocator(a);
 }
-Anything::Anything(double d, Allocator *a) 			: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyDoubleImpl(d, a))
+Anything::Anything(double d, Allocator *a) 			: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyDoubleImpl(d, a))
 {
 	SetAllocator(a);
 }
-Anything::Anything(IFAObject *o, Allocator *a) 				: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyObjectImpl(o, a))
+Anything::Anything(IFAObject *o, Allocator *a) 				: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyObjectImpl(o, a))
 {
 	SetAllocator(a);   // PS: Only for transient pointers NO checking!!
 }
-Anything::Anything(const String &s, Allocator *a) 			: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyStringImpl(s, a))
+Anything::Anything(const String &s, Allocator *a) 			: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyStringImpl(s, a))
 {
 	SetAllocator(a);
 }
-Anything::Anything(const char *s, long len, Allocator *a)	: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyStringImpl(s, len, a))
+Anything::Anything(const char *s, long len, Allocator *a)	: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyStringImpl(s, len, a))
 {
 	SetAllocator(a);
 }
-Anything::Anything(void *buf, long len, Allocator *a)		: fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyBinaryBufImpl(buf, len, a))
+Anything::Anything(void *buf, long len, Allocator *a)		: fAnyImp(new ((a) ? a : coast::storage::Current()) AnyBinaryBufImpl(buf, len, a))
 {
 	SetAllocator(a);
 }
@@ -804,7 +804,7 @@ Anything::Anything(const Anything &any, Allocator *a) : fAnyImp(0)
 		SetAllocator(a);    // remember allocator or make it sane in case of errors
 	}
 }
-Anything::Anything(ArrayMarker m, Allocator *a):fAnyImp(new ((a) ? a : Coast::Storage::Current()) AnyArrayImpl(a))
+Anything::Anything(ArrayMarker m, Allocator *a):fAnyImp(new ((a) ? a : coast::storage::Current()) AnyArrayImpl(a))
 {
 	SetAllocator(a);
 }
@@ -925,7 +925,7 @@ void Anything::Expand()
 	if (GetType() != AnyArrayType) {
 		Allocator *al = this->GetAllocator();
 		Assert(al != 0);
-		AnyArrayImpl *a = new ((al) ? al : Coast::Storage::Current()) AnyArrayImpl(al);
+		AnyArrayImpl *a = new ((al) ? al : coast::storage::Current()) AnyArrayImpl(al);
 		if ( a && GetType() != AnyNullType ) {
 			a->At(0L) = *this; // this semantic is different from the Java version
 		}
@@ -1484,7 +1484,7 @@ Allocator *Anything::GetAllocator() const
 bool Anything::SetAllocator(Allocator *a)
 {
 	if ( !GetImpl() || !fAlloc ) {
-		fAlloc = (a) ? a : Coast::Storage::Current();
+		fAlloc = (a) ? a : coast::storage::Current();
 		bits |= 0x01;
 		return (a != 0);
 	}
@@ -1987,7 +1987,7 @@ bool AnythingParser::DoParse(Anything &any)
 	anyStartTrace(AnythingParser.DoParse);
 	// free old impl
 	Allocator *a = any.GetAllocator();
-	any = Anything((a) ? a : Coast::Storage::Current()); // assignment should be OK, but we keep it safe
+	any = Anything((a) ? a : coast::storage::Current()); // assignment should be OK, but we keep it safe
 
 	ParserXrefHandler xrefs;
 	AnythingToken tok(fContext);
@@ -2013,7 +2013,7 @@ bool AnythingParser::DoParse(Anything &any)
 bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 {
 	anyStartTrace(AnythingParser.DoParseSequence);
-	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : Coast::Storage::Current();
+	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : coast::storage::Current();
 	bool ok = true;
 	// we need to make it an array
 	any = Anything(Anything::ArrayMarker(),a);
@@ -2129,7 +2129,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 // sets a.fAnyImp according to tok for simple values
 bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 {
-	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : Coast::Storage::Current();
+	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : coast::storage::Current();
 	Assert(a != 0);
 	switch ( tok.Token() ) {
 		case '*' :
@@ -2210,7 +2210,7 @@ void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 			fileName.TrimFront(3);
 		}
 
-		std::iostream *pStream = System::OpenStream(fileName, "");
+		std::iostream *pStream = system::OpenStream(fileName, "");
 		if (pStream) {
 			if ( element.Import(*pStream, fileName) && queryString.Length() > 0 ) {
 				Anything anyLevel = escapedQueryStringToAny(queryString);

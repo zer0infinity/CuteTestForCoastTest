@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "RequestProcessor.h"
 
-class RequestProcessorTest: public TestFramework::TestCase {
+class RequestProcessorTest: public testframework::TestCase {
 public:
 	RequestProcessorTest(TString tstrName) :
 		TestCaseType(tstrName) {

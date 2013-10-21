@@ -14,7 +14,7 @@
 #if defined(sun) && OS_RELMAJOR == 5 && OS_RELMINOR <= 8
 #include "DiffTimer.h"
 #endif
-using namespace Coast;
+using namespace coast;
 
 static void thread_setup(void);
 static void thread_cleanup(void);
@@ -408,7 +408,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 	String certFileName = (char *) object->Lookup(certLookup, certDefault);
 
 	// Key must be loaded first, will be used in SSL_CTX_use_certificate_chain_file
-	keyFileName = System::GetFilePath(keyFileName, (const char *) 0);
+	keyFileName = system::GetFilePath(keyFileName, (const char *) 0);
 	Trace("Loading key file: " << keyFileName);
 	long ret = SSL_CTX_use_PrivateKey_file(ctx, keyFileName, SSL_FILETYPE_PEM);
 	SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
@@ -420,7 +420,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 		SSL_CTX_free(ctx);
 		return 0;
 	}
-	certFileName = System::GetFilePath(certFileName, (const char *) 0);
+	certFileName = system::GetFilePath(certFileName, (const char *) 0);
 	Trace("Loading cert file: " << certFileName);
 	// First certificate must be the server's cert. (Otherwise you get
 	// a key verification error)
@@ -466,7 +466,7 @@ void SSLModule::SetSSLSetAcceptableClientCAs(SSL_CTX *ctx, LookupInterface *obje
 	StartTrace(SSLModule.SetSSLSetAcceptableClientCAs);
 	String peerCAFileName(object->Lookup("SSLPeerCAFile", "")); // used for verify location and client CA list
 	if (peerCAFileName.Length()) {
-		peerCAFileName = System::GetFilePath(peerCAFileName, "");
+		peerCAFileName = system::GetFilePath(peerCAFileName, "");
 	}
 	if (peerCAFileName.Length()) {
 		Trace("using client CA list from \n" << peerCAFileName << "\n");
@@ -478,7 +478,7 @@ void SSLModule::SetSSLCtxVerifyParameters(SSL_CTX *ctx, LookupInterface *object)
 	long ret;
 	String peerCAFileName(object->Lookup("SSLPeerCAFile", "")); // used for verify location and client CA list
 	if (peerCAFileName.Length()) {
-		peerCAFileName = System::GetFilePath(peerCAFileName, "");
+		peerCAFileName = system::GetFilePath(peerCAFileName, "");
 	}
 	long sslVerifyPeerCert = object->Lookup("SSLVerifyPeerCert", (long) 0); // default client
 

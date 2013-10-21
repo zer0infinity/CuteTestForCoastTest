@@ -40,7 +40,7 @@ void SybCTnewDAImplTest::tearDown()
 	// set initialized state back here
 	if ( fbWasInitialized ) {
 		Anything anyConfig;
-		if ( t_assert(Coast::System::LoadConfigFile(anyConfig, "Config")) ) {
+		if ( t_assert(coast::system::LoadConfigFile(anyConfig, "Config")) ) {
 			t_assert(SybCTnewDAImpl::Init(anyConfig));
 		}
 	}

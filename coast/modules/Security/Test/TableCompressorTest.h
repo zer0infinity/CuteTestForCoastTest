@@ -13,7 +13,7 @@
 
 class TableCompressor;
 
-class TableCompressorTest: public TestFramework::TestCase {
+class TableCompressorTest: public testframework::TestCase {
 public:
 	TableCompressorTest(TString tstrName) :
 		TestCaseType(tstrName) {

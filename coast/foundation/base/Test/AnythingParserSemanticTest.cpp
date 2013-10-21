@@ -10,7 +10,7 @@
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "TestSuite.h"
-using namespace Coast;
+using namespace coast;
 
 void AnythingParserSemanticTest::setUp() {
 	Anything undefAny;
@@ -90,7 +90,7 @@ void AnythingParserSemanticTest::checkImportExport(Anything any, String fileName
 }
 
 void AnythingParserSemanticTest::writeResult(String *input, long nrOfElt, char *path, char *ext) {
-	std::ostream *os = System::OpenOStream(path, ext, std::ios::trunc);
+	std::ostream *os = system::OpenOStream(path, ext, std::ios::trunc);
 	if (os) {
 		Anything emptyAny1, anyTest, anyTests;
 

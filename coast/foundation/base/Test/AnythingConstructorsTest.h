@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-class AnythingConstructorsTest: public TestFramework::TestCase {
+class AnythingConstructorsTest: public testframework::TestCase {
 protected:
 	Anything fString;
 	Anything fLong;

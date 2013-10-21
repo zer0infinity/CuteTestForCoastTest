@@ -25,7 +25,7 @@ int closeSocket(int sd);
 //! it is a <B>communication end point</B> for read/write sockets.
 //! it has an api that allows the manipulation of the socket and
 //! the generation of an iostream which is a SocketStream.
-class Socket : public Coast::AllocatorNewDelete
+class Socket : public coast::AllocatorNewDelete
 {
 public:
 	//! constructor sets the variables
@@ -36,7 +36,7 @@ public:
 	//! \param a Allocator to use for allocation
 	//! \pre  socket is a valid connected socket file descriptor
 	//! \post  a usable socket object which allocates the stream on demand
-	Socket(int socket, const Anything &clientInfo = Anything(), bool doClose = true, long timeout = 300L * 1000L /* 5 minutes */, Allocator *a = Coast::Storage::Global());
+	Socket(int socket, const Anything &clientInfo = Anything(), bool doClose = true, long timeout = 300L * 1000L /* 5 minutes */, Allocator *a = coast::storage::Global());
 
 	//! destructor
 	//! \pre  socket contains a valid connected socket file descriptor and potentially a stream object
@@ -185,7 +185,7 @@ protected:
 	//! DoMakeStream allocates a socket iostream, overwrite these method if you need something specific
 	virtual std::iostream *DoMakeStream();
 
-	//! IsReady bottleneck routine that calls System::DoSingleSelect
+	//! IsReady bottleneck routine that calls system::DoSingleSelect
 	virtual bool IsReady(bool forreading);
 
 //@{
@@ -253,7 +253,7 @@ public:
 	//! \param ipAdr defines the ip adress of the other endpoint in dot notation like 127.0.0.1
 	//! \param port defines the port number of the connection: a 16-bit integer
 	EndPoint(const String &ipAdr, long port)
-		: fIPAddress(ipAdr, Coast::Storage::Global()), fPort(port), fSockFd(-1), fThreadLocal(false) {}
+		: fIPAddress(ipAdr, coast::storage::Global()), fPort(port), fSockFd(-1), fThreadLocal(false) {}
 
 	//! deletes the internal socket object if allocated
 	virtual ~EndPoint() {}

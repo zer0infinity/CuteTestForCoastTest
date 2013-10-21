@@ -14,7 +14,7 @@
 //---- StreamingAnythingMapperTest ----------------------------------------------------------
 //!TestClass for StreamingAnythingMapper functionality
 //! this mapper should handle Anythings exported and imported to client streams properly
-class StreamingAnythingMapperTest : public TestFramework::TestCase
+class StreamingAnythingMapperTest : public testframework::TestCase
 {
 public:
 

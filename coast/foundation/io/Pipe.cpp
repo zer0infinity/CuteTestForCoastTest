@@ -12,7 +12,7 @@
 #include "Tracer.h"
 #include "Socket.h"
 
-using namespace Coast;
+using namespace coast;
 
 #if !defined (WIN32)
 #include <errno.h> /* PS wg. SUNCC5 */
@@ -109,13 +109,13 @@ bool Pipe::IsReady(bool forreading, long timeout)
 	}
 	fHadTimeout = false;
 	Trace("testing fd:" << fd << " with timeout:" << timeout);
-	long res = System::DoSingleSelect(fd, timeout, forreading, !forreading);
+	long res = system::DoSingleSelect(fd, timeout, forreading, !forreading);
 	Trace("DoSingleSelect result:" << res << (res == 0 ? " was timeout" : ""));
 	fHadTimeout = (0 == res);
 	if (res < 0) {
 		String logMsg;
 		SystemLog::Error(logMsg
-						 << "Pipe, select failed, error number: " << System::GetSystemError()
+						 << "Pipe, select failed, error number: " << system::GetSystemError()
 						 << " <" << SystemLog::LastSysError()
 						 << "> return code " << res);
 	}

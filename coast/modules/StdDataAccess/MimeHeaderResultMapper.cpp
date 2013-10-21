@@ -17,7 +17,7 @@ namespace {
 
 bool MimeHeaderResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {
 	StartTrace1(MimeHeaderResultMapper.DoPutStream, "key [" << NotNull(key) << "]");
-	Coast::URLUtils::NormalizeTag shift = static_cast<Coast::URLUtils::NormalizeTag>(Lookup(normalizeKey, static_cast<long>(Coast::URLUtils::eUpshift)));
+	coast::urlutils::NormalizeTag shift = static_cast<coast::urlutils::NormalizeTag>(Lookup(normalizeKey, static_cast<long>(coast::urlutils::eUpshift)));
 	MIMEHeader mh(shift);
 	try {
 		if (mh.ParseHeaders(is) && is.good()) {

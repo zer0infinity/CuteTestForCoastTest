@@ -17,7 +17,7 @@ bool OracleCheckCloseOpenedConnectionsAction::DoExecAction(String &transitionTok
 {
 	StartTrace(OracleCheckCloseOpenedConnectionsAction.DoExecAction);
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
-	Coast::Oracle::ConnectionPool *pConnectionPool(0);
+	coast::oracle::ConnectionPool *pConnectionPool(0);
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool()) ) {
 		return pConnectionPool->CheckCloseOpenedConnections(ctx.Lookup("PeriodicActionTimeout", 60L));
 	}

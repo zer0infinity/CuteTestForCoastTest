@@ -11,7 +11,7 @@
 
 template<class WorkerParamType>
 bool Thread::SetWorking(WorkerParamType workerArgs) {
-	StatTrace(Thread.SetWorking, "ThrdId: " << GetId() << " CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.SetWorking, "ThrdId: " << GetId() << " CallId: " << MyId(), coast::storage::Current());
 	return SetRunningState(eWorking, workerArgs);
 }
 
@@ -19,9 +19,9 @@ template<class WorkerParamType>
 bool Thread::SetRunningState(ERunningState state, WorkerParamType args) {
 	LockUnlockEntry me(fStateMutex);
 
-	// allocate things used before and after call to CallRunningStateHooks() on Coast::Storage::Global() because Allocator could be refreshed during call
+	// allocate things used before and after call to CallRunningStateHooks() on coast::storage::Global() because Allocator could be refreshed during call
 
-	StatTrace(Thread.SetRunningState, "-- entering -- CallId: " << MyId(), Coast::Storage::Current());
+	StatTrace(Thread.SetRunningState, "-- entering -- CallId: " << MyId(), coast::storage::Current());
 
 	if (fState != eRunning || fRunningState == state) {
 		return false;
@@ -42,7 +42,7 @@ bool Thread::SetRunningState(ERunningState state, WorkerParamType args) {
 		}
 		BroadCastEvent(anyEvt);
 	}
-	StatTrace(Thread.SetRunningState, "-- leaving --", Coast::Storage::Current());
+	StatTrace(Thread.SetRunningState, "-- leaving --", coast::storage::Current());
 	return true;
 }
 

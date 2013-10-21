@@ -11,9 +11,9 @@
 
 #include "Anything.h"
 
-namespace Coast {
-	namespace HTTP {
-		String const contentTypeAnything("application/x-coast-anything", Coast::Storage::Global());
+namespace coast {
+	namespace http {
+		String const contentTypeAnything("application/x-coast-anything", coast::storage::Global());
 	}
 }
 

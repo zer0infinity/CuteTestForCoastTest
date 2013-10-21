@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class MultiThreadedTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class MultiThreadedTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	MultiThreadedTest(TString tstrName) :
 		TestCaseType(tstrName) {

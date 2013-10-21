@@ -15,7 +15,7 @@
 {\
 	TraceMemDelta1("before allocation");\
 	const long lCount=200;\
-	MemChecker mc("ObjectList_rTest.CtorTest", Coast::Storage::Global());\
+	MemChecker mc("ObjectList_rTest.CtorTest", coast::storage::Global());\
 	{\
 		Trace(_QUOTE_( testing listtype##allocatortype ));\
 		ObjectList_r<String*, listtype, allocatortype> aStringList(_QUOTE_( listtype##allocatortype ));\
@@ -63,18 +63,18 @@
 
 void ObjectList_rTest::CtorTest()
 {
-	Allocator::MemTrackerPtr tmpTracker( Coast::Storage::MakeMemTracker("GlobalAllocator", false) );
-	tmpTracker = Coast::Storage::Global()->ReplaceMemTracker( tmpTracker );
+	Allocator::MemTrackerPtr tmpTracker( coast::storage::MakeMemTracker("GlobalAllocator", false) );
+	tmpTracker = coast::storage::Global()->ReplaceMemTracker( tmpTracker );
 
 	StartTrace(ObjectList_rTest.CtorTest);
-	StartTraceMem1(ObjectList_rTest.CtorTest, Coast::Storage::Global());
+	StartTraceMem1(ObjectList_rTest.CtorTest, coast::storage::Global());
 	{
 		// Allocate several tester objects.  Delete two.
 		Trace("with deque. . .");
-		MemChecker mc("deque-test", Coast::Storage::Global());
+		MemChecker mc("deque-test", coast::storage::Global());
 		{
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-			std::deque<String *, STLStorage::fast_pool_allocator_global<String *> > l;
+			std::deque<String *, stlstorage::fast_pool_allocator_global<String *> > l;
 #else
 			std::deque<String *, std::allocator<String *> > l;
 #endif
@@ -107,10 +107,10 @@ void ObjectList_rTest::CtorTest()
 	{
 		// Allocate several tester objects.  Delete two.
 		Trace("with list. . .");
-		MemChecker mc("list-test", Coast::Storage::Global());
+		MemChecker mc("list-test", coast::storage::Global());
 		{
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-			std::list<String *, STLStorage::fast_pool_allocator_global<String *> > l;
+			std::list<String *, stlstorage::fast_pool_allocator_global<String *> > l;
 #else
 			std::list<String *, std::allocator<String *> > l;
 #endif
@@ -141,17 +141,17 @@ void ObjectList_rTest::CtorTest()
 		assertCompare(0LL, equal_to, mc.CheckDelta());
 	}
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-	OBJECTLISTMACRO(std::list, STLStorage::pool_allocator_global);
-	OBJECTLISTMACRO(std::list, STLStorage::fast_pool_allocator_global);
+	OBJECTLISTMACRO(std::list, stlstorage::pool_allocator_global);
+	OBJECTLISTMACRO(std::list, stlstorage::fast_pool_allocator_global);
 	Trace("continuing ObjectList_rTests");
-	OBJECTLISTMACRO(std::deque, STLStorage::pool_allocator_global);
-	OBJECTLISTMACRO(std::deque, STLStorage::fast_pool_allocator_global);
+	OBJECTLISTMACRO(std::deque, stlstorage::pool_allocator_global);
+	OBJECTLISTMACRO(std::deque, stlstorage::fast_pool_allocator_global);
 #else
 	OBJECTLISTMACRO(std::list, std::allocator);
 #endif
 	TraceMemDelta1("before terminating");
 
-	Coast::Storage::Global()->ReplaceMemTracker( tmpTracker );
+	coast::storage::Global()->ReplaceMemTracker( tmpTracker );
 }
 
 // builds up a suite of testcases, add a line for each testmethod

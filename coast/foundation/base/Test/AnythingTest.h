@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingTest: public TestFramework::TestCase {
+class AnythingTest: public testframework::TestCase {
 protected:
 	Anything fQuery;
 	Anything fConfig;

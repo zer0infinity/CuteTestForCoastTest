@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class ThreadPoolTest: public TestFramework::TestCase {
+class ThreadPoolTest: public testframework::TestCase {
 public:
 	ThreadPoolTest(TString tname) :
 		TestCaseType(tname) {

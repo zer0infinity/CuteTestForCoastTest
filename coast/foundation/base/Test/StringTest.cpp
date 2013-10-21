@@ -12,7 +12,7 @@
 #include "StringStream.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <limits>
 
@@ -1131,7 +1131,7 @@ void StringTest::appendsFile()
 		t_assert ( str2.Capacity() >= str2.Length() );
 	}
 
-	std::istream *is3 = System::OpenStream("len5", "tst");
+	std::istream *is3 = system::OpenStream("len5", "tst");
 	t_assert( is3 != NULL );
 	if ( is3 ) {
 		String  str3;
@@ -1145,7 +1145,7 @@ void StringTest::appendsFile()
 		assertEqual("'read file len5.tst'", "'could not read len5.tst'");
 	}
 
-	std::istream *is4 = System::OpenStream("len5", "tst");
+	std::istream *is4 = system::OpenStream("len5", "tst");
 	t_assert( is4 != NULL );
 	if (is4) {
 		String  str4;
@@ -1958,11 +1958,11 @@ void StringTest::intPrintOn0()
 	}
 
 	// With proper Read/Write-Methods
-	std::ostream *os = System::OpenOStream("tmp/fileprnt1", "tst");
+	std::ostream *os = system::OpenOStream("tmp/fileprnt1", "tst");
 	if ( os ) {
 		str.IntPrintOn( *os, '\"');
 		delete os;
-		std::istream *is = System::OpenIStream("tmp/fileprnt1", "tst");
+		std::istream *is = system::OpenIStream("tmp/fileprnt1", "tst");
 		if ( is ) {
 			String	str1;
 			str1.IntReadFrom( *is, '\"');
@@ -1971,11 +1971,11 @@ void StringTest::intPrintOn0()
 			delete is;
 
 			// With normal Read/Write-Methods
-			std::ostream *os1 = System::OpenOStream("tmp/fileprnt", "tst");
+			std::ostream *os1 = system::OpenOStream("tmp/fileprnt", "tst");
 			if ( os1 ) {
 				*os1 << str;
 				delete os1;
-				std::istream *is1 = System::OpenIStream("tmp/fileprnt", "tst");
+				std::istream *is1 = system::OpenIStream("tmp/fileprnt", "tst");
 				if ( is1 ) {
 					*is1 >> str1;
 					delete is1;
@@ -2031,11 +2031,11 @@ void StringTest::intPrintOn1()
 		}
 	}
 
-	std::ostream *os = System::OpenOStream("tmp/filenoprnt", "tst");
+	std::ostream *os = system::OpenOStream("tmp/filenoprnt", "tst");
 	if ( os ) {
 		str.IntPrintOn( *os, '\"');
 		delete os;
-		std::istream *is = System::OpenIStream("tmp/filenoprnt", "tst");
+		std::istream *is = system::OpenIStream("tmp/filenoprnt", "tst");
 		if ( is ) {
 			String str1;
 			str1.IntReadFrom( *is, '\"');
@@ -2906,12 +2906,12 @@ void StringTest::OptimizedConstructorOrAssignment()
 void StringTest::EmptyAllocatorTest()
 {
 	String str(0L);
-	t_assert(str.GetAllocator() == Coast::Storage::Current());
+	t_assert(str.GetAllocator() == coast::storage::Current());
 	str = "foo";
 	assertEqual("foo", str);
 
 	String str1((Allocator *)0);
-	t_assert(str1.GetAllocator() == Coast::Storage::Current());
+	t_assert(str1.GetAllocator() == coast::storage::Current());
 	t_assert(str1.GetAllocator() != 0);
 	str1 = "bah";
 	assertEqual("bah", str1);

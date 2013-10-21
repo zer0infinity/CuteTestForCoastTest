@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class HTTPResponseMapperTest : public TestFramework::TestCase
+class HTTPResponseMapperTest : public testframework::TestCase
 {
 public:
 	//--- constructors

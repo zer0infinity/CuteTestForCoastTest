@@ -70,7 +70,7 @@ bool CgiParams::ResolveInvalidFile(String &path, String &uri, String &value, Con
 	if (ixslash >= 1) {
 		String pgm = path;
 		pgm << uri.SubString(0, ixslash - 1);
-		if (Coast::System::IsRegularFile(pgm)) {
+		if (coast::system::IsRegularFile(pgm)) {
 			value = pgm;
 			// should store additional arguments in query....here?
 			return true;

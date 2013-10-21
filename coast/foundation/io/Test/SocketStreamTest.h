@@ -13,7 +13,7 @@
 
 class Connector;
 
-class SocketStreamTest : public TestFramework::TestCaseWithConfig
+class SocketStreamTest : public testframework::TestCaseWithConfig
 {
 public:
 	SocketStreamTest(TString tstrName);

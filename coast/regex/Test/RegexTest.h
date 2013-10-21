@@ -13,7 +13,7 @@
 
 //---- RegexTest ----------------------------------------------------------
 //!TestCases description
-class RegexTest: public TestFramework::TestCase {
+class RegexTest: public testframework::TestCase {
 public:
 	//--- constructors
 

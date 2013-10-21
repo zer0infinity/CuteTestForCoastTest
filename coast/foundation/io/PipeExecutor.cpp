@@ -26,7 +26,7 @@
 #include <signal.h>	/* for kill() */
 #endif
 
-using namespace Coast;
+using namespace coast;
 PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long lExecTimeout, bool bOpenStreamForStderr)
 	: fPipe(0)
 	, fChildPid(0)
@@ -141,7 +141,7 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 			}
 		}
 		// give some time to react, 50ms
-		System::MicroSleep(50000);
+		system::MicroSleep(50000);
 	}
 	return -1; // something went wrong
 }
@@ -269,7 +269,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 		return false; // we can do it only once
 	}
 	// check if executable can be found and is accessible
-	if ( System::IO::access(parm[0L].AsCharPtr(), X_OK) == 0 ) {
+	if ( system::io::access(parm[0L].AsCharPtr(), X_OK) == 0 ) {
 		// should implement search path here? better within CGI module
 		Pipe inp(fTimeout);
 		Pipe outp(fTimeout);
@@ -279,7 +279,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				fStderr = new Pipe(fTimeout);
 			}
 
-			Allocator *alloc = Coast::Storage::Current();
+			Allocator *alloc = coast::storage::Current();
 			TraceAny(env, "env");
 			CgiEnv cgiEnv(env, alloc);
 			TraceAny(parm, "parm");
@@ -288,11 +288,11 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 #if !defined(WIN32)
 			// now fork, and clean up
 			String strTime( TimeStamp::Now().AsStringWithZ() );
-			if (0 == (fChildPid = System::Fork())) {
+			if (0 == (fChildPid = system::Fork())) {
 				// I am the child
 				// careful - only fork-safe stuff allowed here
 				// Tracing is probably not fork-safe
-				if (SetupChildPipes(inp, outp) && System::ChangeDir(fWorkingDir)) {
+				if (SetupChildPipes(inp, outp) && system::ChangeDir(fWorkingDir)) {
 					// do all allocation from parent so that we can use vfork
 					// on platforms where it is desirable
 					char **p = cgiParams.GetParams();
@@ -302,7 +302,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				}
 				// oops we failed. terminate the process
 				// don't use strings - allocators not fork-safe
-				int iError( System::GetSystemError() );
+				int iError( system::GetSystemError() );
 				char buff[1024];
 				int len = snprintf(buff, sizeof(buff),
 								   "%s exec of program %s in dir %s failed with code %d: %s\n",
@@ -370,7 +370,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 					fChildPid = (int)aProcessInformation.hProcess;
 				} else {
 					SystemLog::Error(String("PipeExecutor failed, error number: ")
-									 << System::GetSystemError()
+									 << system::GetSystemError()
 									 << " <" << SystemLog::LastSysError()
 									 << "> return code " << fRet);
 				}

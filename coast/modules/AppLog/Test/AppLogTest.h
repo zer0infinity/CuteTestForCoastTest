@@ -12,7 +12,7 @@
 #include "WDBaseTestPolicies.h"
 class Context;
 
-class AppLogTest: public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading {
+class AppLogTest: public testframework::TestCaseWithCaseConfigDllAndModuleLoading {
 public:
 	AppLogTest(TString tstrName) :
 		TestCaseType(tstrName) {

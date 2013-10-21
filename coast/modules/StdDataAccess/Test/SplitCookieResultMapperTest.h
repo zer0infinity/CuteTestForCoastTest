@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class SplitCookieResultMapperTest: public TestFramework::TestCaseWithConfig {
+class SplitCookieResultMapperTest: public testframework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

@@ -80,7 +80,7 @@ SessionListManager::SessionListManager(const char *name)
 	long pid = GetCurrentProcessId();
 #else
 	long hostid = ::gethostid();
-	long pid = Coast::System::getpid();
+	long pid = coast::system::getpid();
 #endif
 	ss << std::hex << hostid << "!" << std::dec << (unsigned long) abs(pid);
 }
@@ -142,7 +142,7 @@ bool SessionListManager::ResetInit(const ROAnything config)
 		m << "\tLaunching new session cleaner";
 		SystemLog::WriteToStderr(m);
 		// periodically clean up sessions
-		fSessionCleaner = new (Coast::Storage::Global()) PeriodicAction(cleanerAction, cleanerWait);
+		fSessionCleaner = new (coast::storage::Global()) PeriodicAction(cleanerAction, cleanerWait);
 		fSessionCleaner->Start();
 		m = "";
 		m << " done" << "\n";
@@ -159,7 +159,7 @@ Session *SessionListManager::DoMakeSession(Context &ctx) {
 	if (fSessionFactory) {
 		return fSessionFactory->DoMakeSession(ctx);
 	}
-	return new (Coast::Storage::Global()) Session("Session");
+	return new (coast::storage::Global()) Session("Session");
 }
 
 Session *SessionListManager::MakeSession(Context &ctx) {
@@ -263,7 +263,7 @@ void SessionListManager::AddSession(const String &id, Session *session, Context 
 		if (fSessions.IsDefined(id)) {
 			fDisabledSessions.Append(fSessions[id]);
 		}
-		fSessions[id] = Anything(session, Coast::Storage::Global());
+		fSessions[id] = Anything(session, coast::storage::Global());
 		String msg("Session created; Sessions in use: ");
 		msg << fSessions.GetSize();
 		SystemLog::Info(msg);
@@ -330,7 +330,7 @@ void SessionListManager::GetNextId(String &s, Context &ctx)
 }
 
 String SessionListManager::GetUniqueInstanceId() {
-	return String(fUniqueInstanceId, Coast::Storage::Current());
+	return String(fUniqueInstanceId, coast::storage::Current());
 }
 
 bool SessionListManager::SessionIsBusy(Session *session, bool &isBusy, Context &ctx)
@@ -715,7 +715,7 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 Session *SessionFactory::DoMakeSession(Context &ctx) {
 	StartTrace(SessionFactory.DoMakeSession);
 	Trace("fName: " << fName);
-	return new (Coast::Storage::Global()) Session(fName);
+	return new (coast::storage::Global()) Session(fName);
 }
 
 Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy) {

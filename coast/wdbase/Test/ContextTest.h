@@ -13,7 +13,7 @@
 
 class Registry;
 
-class ContextTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class ContextTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	ContextTest(TString tstrName) :
 		TestCaseType(tstrName) {

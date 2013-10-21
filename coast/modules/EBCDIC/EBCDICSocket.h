@@ -20,7 +20,7 @@ class EBCDICSocket : public Socket
 	// opens a client side socket connection
 	// and closes it in destructor
 public:
-	EBCDICSocket(int socket, const Anything &clientInfo, bool doClose = true, Allocator *a = Coast::Storage::Global());
+	EBCDICSocket(int socket, const Anything &clientInfo, bool doClose = true, Allocator *a = coast::storage::Global());
 	// use socket descriptor
 
 protected:

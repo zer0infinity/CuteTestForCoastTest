@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class PageNameRendererTest : public TestFramework::TestCase
+class PageNameRendererTest : public testframework::TestCase
 {
 public:
 	//--- constructors

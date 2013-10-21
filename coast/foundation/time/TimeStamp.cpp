@@ -315,7 +315,7 @@ bool TimeStamp::intTimeRep::IsValidDate() const
 		( (4 == cData[eMonth] || 6 == cData[eMonth] || 9 == cData[eMonth] || 11 == cData[eMonth]) && cData[eDay] > 30) ) {
 		bRet = false;
 	}
-	StatTrace(TimeStamp.IsValidDate, "Date is " << (bRet ? "" : "not ") << "OK " << (bRet ? "" : (const char *)TraceIntValues()), Coast::Storage::Current());
+	StatTrace(TimeStamp.IsValidDate, "Date is " << (bRet ? "" : "not ") << "OK " << (bRet ? "" : (const char *)TraceIntValues()), coast::storage::Current());
 	return bRet;
 }
 
@@ -342,7 +342,7 @@ String TimeStamp::intTimeRep::AsString() const
 	ZFNUM(result, cData[eHour]);
 	ZFNUM(result, cData[eMin]);
 	ZFNUM(result, cData[eSec]);
-	StatTrace(TimeStamp.AsString, "intTimeRep [" << TraceIntValues() << "] result [" << result << "]", Coast::Storage::Current());
+	StatTrace(TimeStamp.AsString, "intTimeRep [" << TraceIntValues() << "] result [" << result << "]", coast::storage::Current());
 	return result;
 }
 

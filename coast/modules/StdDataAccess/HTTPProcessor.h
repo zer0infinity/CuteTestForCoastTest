@@ -14,8 +14,8 @@
 class Context;
 class MIMEHeader;
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx);
 	}
 }

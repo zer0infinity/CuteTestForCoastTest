@@ -24,11 +24,11 @@ RemoteStresserTest::~RemoteStresserTest() {
 void RemoteStresserTest::setUp() {
 	StressAppTest::setUp();
 	if (!fStressServer) {
-		fStressServer = new (Coast::Storage::Global()) Server("StressServer");
+		fStressServer = new (coast::storage::Global()) Server("StressServer");
 		fStressServer->GetConfig();
 		fStressServer->Initialize("Server");
 
-		fServerRunner = new (Coast::Storage::Global()) ServerThread(fStressServer);
+		fServerRunner = new (coast::storage::Global()) ServerThread(fStressServer);
 		if (fStressServer && fServerRunner) {
 			bool bSuccess = fServerRunner->Start();
 			fServerRunner->CheckState(Thread::eStarted);

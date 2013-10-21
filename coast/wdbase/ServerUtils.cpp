@@ -156,11 +156,11 @@ void InterruptHandler::Run()
 
 	// the just wait for the signal to happen
 	Trace("Thread: " << Thread::MyId());
-	Trace("Pid: " << (long)Coast::System::getpid());
+	Trace("Pid: " << (long)coast::system::getpid());
 	Trace("Server [" << (fServer ? (const char *)(fServer->fName) : "no-name") << "]");
 
 	if ( fServer ) {
-		fServer->WritePIDFile(Coast::System::getpid());
+		fServer->WritePIDFile(coast::system::getpid());
 	}
 
 	sigset_t set;

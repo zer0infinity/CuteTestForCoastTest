@@ -73,8 +73,8 @@ bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterM
 			// if something large is passed, we do not check for now.
 			in->Get("stdin", *(std::ostream *) ioStream, context); // provide cgi's stdin
 			cgi.ShutDownWriting();
-			retVal = out->Put(Coast::HTTP::constants::protocolCodeSlotname, 200L, context) && retVal;
-			retVal = out->Put(Coast::HTTP::constants::protocolMsgSlotname, String("Ok"), context) && retVal;
+			retVal = out->Put(coast::http::constants::protocolCodeSlotname, 200L, context) && retVal;
+			retVal = out->Put(coast::http::constants::protocolMsgSlotname, String("Ok"), context) && retVal;
 			// call HTTPHeader rendering ?
 			retVal = out->Put("HTTPBody", *(std::istream *) ioStream, context) && retVal; // return cgi's output
 			long exitStatus = (long) cgi.TerminateChild();

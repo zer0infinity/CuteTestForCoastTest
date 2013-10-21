@@ -32,8 +32,8 @@ class Anything;
 	#define	S_IROTH		_S_IREAD
 #endif
 
-namespace Coast {
-	namespace System {
+namespace coast {
+	namespace system {
 		//! access errno in a portable way, wraps WSAxxerror on windows instead
 		/*! \return error code which should not be used to compare with error constants
 		            because on windows the values from errno and GetLastError are overlapping. */
@@ -105,7 +105,7 @@ namespace Coast {
 #if !defined(WIN32)
 		//! Get the state of the lock file.
 		/*! \param lockFileName file name to get lock state of
-			\return false=not locked, true=locked. If there was an error, the file is considered to be locked! You must remove the lockfile with Coast::System::unlink(lockFileName) after you're done. */
+			\return false=not locked, true=locked. If there was an error, the file is considered to be locked! You must remove the lockfile with coast::system::unlink(lockFileName) after you're done. */
 		bool GetLockFileState(const char *lockFileName);
 #endif
 	}

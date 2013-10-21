@@ -11,7 +11,7 @@
 #include "TestSuite.h"
 #include "SystemBase.h"
 
-using namespace Coast;
+using namespace coast;
 
 DateRendererTest::DateRendererTest (TString tname)
 	: RendererTest(tname)
@@ -34,7 +34,7 @@ void DateRendererTest::CompareHelper(const char *format, long offset)
 	struct tm *tt, res;
 	time(&now);
 	now += offset * 86400;
-	tt = System::LocalTime(&now, &res);
+	tt = system::LocalTime(&now, &res);
 	const int maxsize(100);
 	char date[maxsize];
 
@@ -136,7 +136,7 @@ void DateRendererTest::AbsolutTimeFormat()
 	dateRenderer.RenderAll(fReply, fContext, roConfig);
 
 	struct tm *tt, res;
-	tt = System::LocalTime(&absolut, &res);
+	tt = system::LocalTime(&absolut, &res);
 	char date[maxsize];
 
 	strftime(date, maxsize, format, tt);
@@ -160,7 +160,7 @@ void DateRendererTest::GMTTime()
 	time_t now;
 	time(&now);						// use current time
 	struct tm *tt, res;
-	tt = System::GmTime(&now, &res);
+	tt = system::GmTime(&now, &res);
 	char date[maxsize];
 
 	strftime(date, maxsize, format, tt);
@@ -186,7 +186,7 @@ void DateRendererTest::emptyConfig1()
 		time_t now;
 		struct tm *tt, res;
 		time(&now);						// use current time
-		tt = System::LocalTime(&now, &res);
+		tt = system::LocalTime(&now, &res);
 		char date[maxsize];
 
 #if defined(WIN32)
@@ -220,7 +220,7 @@ void DateRendererTest::emptyConfig2()
 		time_t now;
 		struct tm *tt, res;
 		time(&now);						// use current time
-		tt = System::LocalTime(&now, &res);
+		tt = system::LocalTime(&now, &res);
 		char date[maxsize];
 
 #if defined(WIN32)

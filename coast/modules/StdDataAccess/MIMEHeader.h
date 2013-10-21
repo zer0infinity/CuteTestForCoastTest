@@ -28,11 +28,11 @@ static const long cDefaultMaxLineSz = 1024;
 class MIMEHeader: public LookupInterface {
 	//!contains the request/reply header
 	Anything fHeader;
-	Coast::URLUtils::NormalizeTag fNormalizeKey;
+	coast::urlutils::NormalizeTag fNormalizeKey;
 	MIMEHeader(const MIMEHeader &);
 public:
 	//! represent a mime header
-	MIMEHeader(Coast::URLUtils::NormalizeTag normalizeKey = Coast::URLUtils::eUpshift) :
+	MIMEHeader(coast::urlutils::NormalizeTag normalizeKey = coast::urlutils::eUpshift) :
 		fNormalizeKey(normalizeKey) {
 	}
 	//! read the MIME header from is
@@ -95,8 +95,8 @@ protected:
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 };
 
-namespace Coast {
-	namespace StreamUtils {
+namespace coast {
+	namespace streamutils {
 		char const LF = '\n';
 		char const CR = '\r';
 		void getLineFromStream(std::istream &in, String &line, long const maxlinelen);

@@ -13,7 +13,7 @@
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------
 //:TestCases description
-class HTMLCacheLoaderTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class HTMLCacheLoaderTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

@@ -13,7 +13,7 @@
 
 class String;
 
-class StringStreamTest : public TestFramework::TestCase
+class StringStreamTest : public testframework::TestCase
 {
 public:
 	StringStreamTest(TString tstrName);

@@ -4,7 +4,7 @@
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
 
-class StringReverseIteratorTest: public TestFramework::TestCase {
+class StringReverseIteratorTest: public testframework::TestCase {
 protected:
 	String fStr5; // string with 5 elements set-up in setUp
 	virtual void setUp();

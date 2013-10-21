@@ -141,9 +141,9 @@ Socket *ConnectorDAImpl::RecreateSocket(Anything &anyParams, Context &context, P
 			// recreate socket using the params
 			in->Get("UseSSL", bUseSSL, context);
 			if ( roaParams["HTTPS"].AsBool() || bUseSSL ) {
-				s = new (Coast::Storage::Global()) SSLClientSocket((SSL_CTX *)context.Lookup("SSLContext").AsIFAObject(0), socketFd, anyParams, true);
+				s = new (coast::storage::Global()) SSLClientSocket((SSL_CTX *)context.Lookup("SSLContext").AsIFAObject(0), socketFd, anyParams, true);
 			} else {
-				s = new (Coast::Storage::Global()) Socket(socketFd, anyParams, true);
+				s = new (coast::storage::Global()) Socket(socketFd, anyParams, true);
 			}
 
 			Trace("socket recreated");

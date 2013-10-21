@@ -404,7 +404,7 @@ SSLClientSocket::~SSLClientSocket()
 int SSLClientSocket::PrepareSocket(SSL *ssl)
 {
 	int res = SSL_connect( ssl );
-	StatTrace(SSLClientSocket.PrepareSocket, "res:" << (long)res, Coast::Storage::Current());
+	StatTrace(SSLClientSocket.PrepareSocket, "res:" << (long)res, coast::storage::Current());
 	return res;
 }
 
@@ -626,7 +626,7 @@ Socket *SSLConnector::MakeSocket(bool doClose)
 			Anything clientInfo;
 			clientInfo["REMOTE_ADDR"] = fIPAddress;
 			clientInfo["REMOTE_PORT"] = fPort;
-			Coast::System::SetCloseOnExec(GetFd());
+			coast::system::SetCloseOnExec(GetFd());
 			s = DoMakeSocket(fSSLSocketArgs, GetFd(), clientInfo, doClose);
 		}
 		if (GetFd() >= 0 && ! s) {

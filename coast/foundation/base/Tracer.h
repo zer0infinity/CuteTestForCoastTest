@@ -183,14 +183,14 @@ Will print out following messages
 	Server.Load: server in command [SomeServer] --- leaving ---
 \endcode */
 #define StartTrace1(trigger, msg) \
-	String gsMrotcurtsnoCrecart(Coast::Storage::Current()); \
+	String gsMrotcurtsnoCrecart(coast::storage::Current()); \
 	Tracer recart(_QUOTE_(trigger), gsMrotcurtsnoCrecart << msg); recart.Use()
 
 /*! Macro to print out a \em msg when surrounding StartTrace() trigger is enabled
 	\param msg message to print out  */
 #define Trace(msg) \
 { \
-	String gsMecart(Coast::Storage::Current()); \
+	String gsMecart(coast::storage::Current()); \
 	recart.WDDebug(gsMecart << msg); \
 }
 
@@ -199,7 +199,7 @@ Will print out following messages
 	\param sz size of buffer */
 #define TraceBuf(buf, sz) \
 { \
-	String gsMecart("\n\n<",-1, Coast::Storage::Current()); \
+	String gsMecart("\n\n<",-1, coast::storage::Current()); \
 	gsMecart.Append((const void*)buf, sz).Append(">\n\n"); \
 	recart.WDDebug(gsMecart); \
 }
@@ -209,7 +209,7 @@ Will print out following messages
 	\param msg message to additionally print out */
 #define TraceAny(any, msg) \
 { \
-	String gsMecart(Coast::Storage::Current()); \
+	String gsMecart(coast::storage::Current()); \
 	recart.AnyWDDebug(any, gsMecart << msg); \
 }
 
@@ -218,7 +218,7 @@ Will print out following messages
 	\param msg message to print out */
 #define SubTrace(subtrigger, msg) \
 { \
-	String gsMecart(Coast::Storage::Current()); \
+	String gsMecart(coast::storage::Current()); \
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart << msg); \
 }
 
@@ -228,7 +228,7 @@ Will print out following messages
 	\param sz size of buffer */
 #define SubTraceBuf(subtrigger, buf, sz) \
 { \
-	String gsMecart("\n\n<",-1, Coast::Storage::Current()); \
+	String gsMecart("\n\n<",-1, coast::storage::Current()); \
 	gsMecart.Append((const void*)buf, sz).Append(">\n\n"); \
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart); \
 }
@@ -239,7 +239,7 @@ Will print out following messages
 	\param msg message to additionally print out */
 #define SubTraceAny(subtrigger, any, msg) \
 { \
-	String gsMecart(Coast::Storage::Current()); \
+	String gsMecart(coast::storage::Current()); \
 	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg); \
 }
 

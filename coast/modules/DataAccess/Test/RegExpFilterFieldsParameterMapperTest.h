@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class RegExpFilterFieldsParameterMapperTest: public TestFramework::TestCaseWithConfig {
+class RegExpFilterFieldsParameterMapperTest: public testframework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

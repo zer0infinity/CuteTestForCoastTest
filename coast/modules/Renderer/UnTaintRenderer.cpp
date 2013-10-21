@@ -20,11 +20,11 @@ void UnTaintRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnyth
 	String badChars(RenderToString(ctx, config["BadChars"]));
 	badChars.Append("&%<>");
 	Trace("badChars: " << badChars);
-	String result(Coast::URLUtils::ExhaustiveUrlDecode(toRender, false));
+	String result(coast::urlutils::ExhaustiveUrlDecode(toRender, false));
 	Trace("result ExhaustiveUrlDecode: " << result);
-	result = Coast::URLUtils::ExhaustiveHTMLDecode(result);
+	result = coast::urlutils::ExhaustiveHTMLDecode(result);
 	Trace("result ExhaustiveHTMLDecode: " << result);
-	result = Coast::URLUtils::RemoveUnwantedChars(result, badChars);
+	result = coast::urlutils::RemoveUnwantedChars(result, badChars);
 	Trace("result CleanupArguments: " << result);
 	reply << result;
 }

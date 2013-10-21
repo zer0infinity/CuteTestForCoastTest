@@ -13,7 +13,7 @@
 #include "Threads.h"
 #include "DiffTimer.h"
 
-class ThreadsTest: public TestFramework::TestCase {
+class ThreadsTest: public testframework::TestCase {
 public:
 	ThreadsTest(TString tname) :
 		TestCaseType(tname), fMutex(tname) {

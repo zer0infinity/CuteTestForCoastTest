@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingParserTest : public TestFramework::TestCase
+class AnythingParserTest : public testframework::TestCase
 {
 protected:
 	Anything	emptyAny, anyTemp0, anyTemp1,

@@ -34,12 +34,12 @@
 #define EX_GET_COLUMN_VALUE(coldata, row, col, colfmt) \
 	(coldata[col].value + ((row) * (colfmt[col].maxlength)))
 
-class SybCTnewDA : public IFAObject, public Coast::AllocatorNewDelete
+class SybCTnewDA : public IFAObject, public coast::AllocatorNewDelete
 {
 	// Define structure where row data is bound.
 	// Allow for column arrays - for array binding.
-	typedef struct ColumnData : public Coast::AllocatorNewDelete {
-		ColumnData(Allocator *a = Coast::Storage::Current());
+	typedef struct ColumnData : public coast::AllocatorNewDelete {
+		ColumnData(Allocator *a = coast::storage::Current());
 		~ColumnData();
 		CS_SMALLINT	*indicator;
 		CS_CHAR		*value;

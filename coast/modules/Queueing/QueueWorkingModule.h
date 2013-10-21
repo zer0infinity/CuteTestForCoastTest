@@ -57,12 +57,12 @@ public:
 	//--- constructors
 	QueueWorkingModule(const char *name)
 		: WDModule(name)
-		, fConfig(Coast::Storage::Global())
+		, fConfig(coast::storage::Global())
 		, fQueue()
 		, fFailedPutbackMessages()
 		, fpQAllocator(0)
 		, fContext()
-		, fContextLock("QueueWorkingModuleContextLock", Coast::Storage::Global())
+		, fContextLock("QueueWorkingModuleContextLock", coast::storage::Global())
 		, fAlive(0UL)
 	{
 		StartTrace(QueueWorkingModule.QueueWorkingModule);
@@ -322,7 +322,7 @@ private:
 	void IntInitQueue(const ROAnything roaConfig) {
 		StartTrace(QueueWorkingModule.IntInitQueue);
 		long lQueueSize = roaConfig["QueueSize"].AsLong(100L);
-		Allocator *pAlloc = Coast::Storage::Global();
+		Allocator *pAlloc = coast::storage::Global();
 
 		if (roaConfig["UsePoolStorage"].AsLong(0) == 1) {
 			// create unique allocator id based on a pointer value

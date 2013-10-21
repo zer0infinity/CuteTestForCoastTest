@@ -17,7 +17,7 @@ RegisterAliasSecurityItem(tc, TableCompressor);
 
 TableCompressor::TableCompressor(const char *name)
 	: Compressor(name)
-	, fMap(Coast::Storage::Global())
+	, fMap(coast::storage::Global())
 {
 	StartTrace1(TableCompressor.Ctor, "Name: <" << NotNull(name) << ">");
 }
@@ -38,7 +38,7 @@ bool TableCompressor::Init(ROAnything config)
 		MakeReverseTable(fMap["Key2UriMap"], "Key2UriMap", "Uri2KeyMap");
 		MakeTable(tableCompressorConfig["Val2UriMap"], "Val2UriMap", config);
 		MakeReverseTable(fMap["Val2UriMap"], "Val2UriMap", "Uri2ValMap");
-		fMap["ValMapTags"] = tableCompressorConfig["ValMapTags"].DeepClone(Coast::Storage::Global());
+		fMap["ValMapTags"] = tableCompressorConfig["ValMapTags"].DeepClone(coast::storage::Global());
 		return true;
 	}
 	return false;

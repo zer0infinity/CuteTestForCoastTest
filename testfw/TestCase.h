@@ -25,7 +25,7 @@
  can be no side effects among test runs.
  Here is an example:
 <PRE>
- class MathTest : public TestFramework::TestCase {
+ class MathTest : public testframework::TestCase {
      protected: int m_value1;
      protected: int m_value2;
      public: MathTest (TString tstrName)
@@ -78,7 +78,7 @@
  *
  */
 
-namespace TestFramework
+namespace testframework
 {
 
 	template
@@ -219,6 +219,6 @@ namespace TestFramework
 
 #define NEW_CASE(TESTCASE,CASEMEMBER)	(TESTCASE *)(((new TESTCASE(#CASEMEMBER))->setTheTest( (TESTCASE::CaseMemberPtr)&TESTCASE::CASEMEMBER) )->setClassName(#TESTCASE))
 
-}	// end namespace TestFramework
+}	// end namespace testframework
 
 #endif

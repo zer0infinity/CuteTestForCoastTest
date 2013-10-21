@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class HTTPRequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class HTTPRequestReaderTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	HTTPRequestReaderTest(TString tstrName) :
 		TestCaseType(tstrName) {

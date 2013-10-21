@@ -22,9 +22,9 @@
 \endcode
  *
  * @par \c Normalize
- * Optional, default 0 (Coast::URLUtils::eUpshift)\n
+ * Optional, default 0 (coast::urlutils::eUpshift)\n
  * Specify if and how header field names should be handled, default is to convert all field names to upper case.\n
- * Check \ref Coast::URLUtils::NormalizeTag for valid values
+ * Check \ref coast::urlutils::NormalizeTag for valid values
  *
  */
 class MimeHeaderResultMapper: public ResultMapper {

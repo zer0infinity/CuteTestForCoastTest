@@ -12,7 +12,7 @@
 #include "TestCase.h"
 
 //!test for RequestBlocker, migrated from mtfoundation/Test/ThreadsTest
-class RequestBlockerTest : public TestFramework::TestCase
+class RequestBlockerTest : public testframework::TestCase
 {
 public:
 	//--- constructors

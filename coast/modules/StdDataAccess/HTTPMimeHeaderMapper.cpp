@@ -17,7 +17,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 	// Ignore key, store under Mapper.HTTPHeader by default
 	StartTrace(HTTPMimeHeaderMapper.DoPutStream);
 	TraceAny(config, "My Config");
-	MIMEHeader mh(Coast::URLUtils::eDownshift);
+	MIMEHeader mh(coast::urlutils::eDownshift);
 	bool result = false;
 	try {
 		result = mh.ParseHeaders(is);

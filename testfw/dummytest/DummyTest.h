@@ -6,7 +6,7 @@
 #include "TestCase.h"
 
 //---- DummyTest -----------------------------------------------------------
-class DummyTest : public TestFramework::TestCase
+class DummyTest : public testframework::TestCase
 {
 public:
 	DummyTest(TString tstrName);

@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class ObjectListTest: public TestFramework::TestCase {
+class ObjectListTest: public testframework::TestCase {
 public:
 	ObjectListTest(TString tstrName) :
 		TestCaseType(tstrName) {

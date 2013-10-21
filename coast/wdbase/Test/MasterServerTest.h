@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class MasterServerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class MasterServerTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	MasterServerTest(TString tstrName) :
 		TestCaseType(tstrName) {

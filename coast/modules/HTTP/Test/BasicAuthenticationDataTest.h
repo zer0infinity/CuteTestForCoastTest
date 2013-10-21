@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class BasicAuthenticationDataTest : public TestFramework::TestCaseWithConfig
+class BasicAuthenticationDataTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

@@ -13,8 +13,8 @@
 #include "Renderer.h"
 #include "RE.h"
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		namespace constants {
 			char const headerNameDelimiter = ':';
 			char const headerArgumentsDelimiter = ',';

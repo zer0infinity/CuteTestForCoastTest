@@ -15,7 +15,7 @@
 class EBCDICEchoMsgCallBack;
 class AcceptorThread;
 
-class ConnectorAcceptorTest: public TestFramework::TestCaseWithConfig {
+class ConnectorAcceptorTest: public testframework::TestCaseWithConfig {
 public:
 	ConnectorAcceptorTest(TString tstrName);
 	virtual ~ConnectorAcceptorTest();

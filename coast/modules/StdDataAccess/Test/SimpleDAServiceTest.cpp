@@ -98,7 +98,7 @@ protected:
 	bool DoReadInput(std::iostream &Ios, Context &ctx) {
 		Anything args;
 		bool status = args.Import(Ios);
-		StatTraceAny(TestHTTPProcessor.DoReadInput, args, "request arguments " << (status ? "success" : "failure"), Coast::Storage::Current());
+		StatTraceAny(TestHTTPProcessor.DoReadInput, args, "request arguments " << (status ? "success" : "failure"), coast::storage::Current());
 		ctx.PushRequest(args);
 		return status;
 	}

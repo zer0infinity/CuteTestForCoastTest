@@ -127,7 +127,7 @@ void ATTTest::PrintResultTotals()
 	time_t now;
 	time(&now);						// use current time
 	struct tm *tt, res;
-	tt = System::LocalTime(&now, &res);
+	tt = system::LocalTime(&now, &res);
 	char date[maxsize];
 
 	strftime(date, maxsize, formatfile, tt);
@@ -139,7 +139,7 @@ void ATTTest::PrintResultTotals()
 	String pathfile(path);
 	resultfile << name() <<  actualtimefile;
 	pathfile << resultfile;
-	ostream *os = System::OpenOStream(pathfile, "html", ios::out);
+	ostream *os = system::OpenOStream(pathfile, "html", ios::out);
 
 	SystemLog::WriteToStdout(String("\n") << fNrOfTests << " scenarios run, "
 							 << fNrOfErrors << " failures; "

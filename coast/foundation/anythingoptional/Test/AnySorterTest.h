@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class AnySorterTest : public TestFramework::TestCaseWithConfig
+class AnySorterTest : public testframework::TestCaseWithConfig
 {
 public:
 	//! TestCase constructor

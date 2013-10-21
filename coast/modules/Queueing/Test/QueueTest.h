@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class QueueTest : public TestFramework::TestCase
+class QueueTest : public testframework::TestCase
 {
 public:
 	//--- constructors

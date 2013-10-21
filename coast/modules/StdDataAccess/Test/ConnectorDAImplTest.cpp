@@ -29,7 +29,7 @@ class EchoMsgCallBack: public AcceptorCallBack {
 public:
 	//!default constructor is empty since class provides only protocol no implementation
 	EchoMsgCallBack() :
-		fReplyMessage("Accepted"), fMutex("EchoMsgCallBackMutex", Coast::Storage::Current()) {
+		fReplyMessage("Accepted"), fMutex("EchoMsgCallBackMutex", coast::storage::Current()) {
 	}
 
 	//!call back functionality provides the socket object
@@ -150,7 +150,7 @@ void ConnectorDAImplTest::setUp() {
 	StartTrace(ConnectorDAImplTest.setUp);
 	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
 	fCallBack = new EchoMsgCallBack();
-	fAcceptorThread = new (Coast::Storage::Global()) AcceptorThread(new Acceptor(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong(), 2, fCallBack));
+	fAcceptorThread = new (coast::storage::Global()) AcceptorThread(new Acceptor(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong(), 2, fCallBack));
 	t_assert(fCallBack != 0);
 	t_assert(fAcceptorThread != 0);
 	if ((fCallBack) && (fAcceptorThread)) {

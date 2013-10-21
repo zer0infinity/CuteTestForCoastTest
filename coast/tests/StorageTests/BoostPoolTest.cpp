@@ -104,7 +104,7 @@ struct tester {
 void BoostPoolTest::BasicsTest()
 {
 	StartTrace(BoostPoolTest.BasicsTest);
-	MemChecker aChecker("BoostPoolTest.BasicsTest", Coast::Storage::Global());
+	MemChecker aChecker("BoostPoolTest.BasicsTest", coast::storage::Global());
 	{
 		Trace("empty pool test");
 		boost::object_pool<tester> pool;
@@ -227,12 +227,12 @@ struct TrackAlloc {
 
 	static char *malloc(const size_type bytes) {
 		char *const ret = UserAllocator::malloc(bytes);
-		StatTrace(TrackAlloc.malloc, "size:" << (long)bytes << " @" << (long)ret << " blocks@" << (long)&allocated_blocks << " size:" << (long)allocated_blocks.size(), Coast::Storage::Global());
+		StatTrace(TrackAlloc.malloc, "size:" << (long)bytes << " @" << (long)ret << " blocks@" << (long)&allocated_blocks << " size:" << (long)allocated_blocks.size(), coast::storage::Global());
 		allocated_blocks.insert(ret);
 		return ret;
 	}
 	static void free(char *const block) {
-		StatTrace(TrackAlloc.free, "@" << (long)block << " blocks@" << (long)&allocated_blocks << " size:" << (long)allocated_blocks.size(), Coast::Storage::Global());
+		StatTrace(TrackAlloc.free, "@" << (long)block << " blocks@" << (long)&allocated_blocks << " size:" << (long)allocated_blocks.size(), coast::storage::Global());
 		if (allocated_blocks.find(block) == allocated_blocks.end()) {
 			SYSERROR("Free'd non-malloc'ed block: " << (long)(void *) block);
 		}
@@ -291,14 +291,14 @@ void BoostPoolTest::MemUsageTest()
 	t_assertm(track_alloc::ok(), "Memory error");
 }
 
-typedef TrackAlloc<ITOStorage::BoostPoolUserAllocatorGlobal> track_allocWD;
+typedef TrackAlloc<itostorage::BoostPoolUserAllocatorGlobal> track_allocWD;
 
 void BoostPoolTest::GlobalStorageMemUsageTest()
 {
 	StartTrace(BoostPoolTest.GlobalStorageMemUsageTest);
 
 	typedef boost::pool<track_allocWD> pool_typeWD;
-	MemChecker aChecker("BoostPoolTest.GlobalStorageMemUsageTest", Coast::Storage::Global());
+	MemChecker aChecker("BoostPoolTest.GlobalStorageMemUsageTest", coast::storage::Global());
 	{
 		// Constructor should do nothing; no memory allocation
 		pool_typeWD pool(sizeof(int));
@@ -360,7 +360,7 @@ void BoostPoolTest::CurrentStorageMemUsageTest()
 		Trace("doing Test with global storage again");
 		TestCaseFunc f(boost::bind(&BoostPoolTest::TestFuncCurrent, this));
 		CurrentStorageThread aThread(f);
-		aThread.Start(Coast::Storage::Global());
+		aThread.Start(coast::storage::Global());
 		aThread.CheckState(Thread::eTerminated);
 	}
 	{
@@ -372,14 +372,14 @@ void BoostPoolTest::CurrentStorageMemUsageTest()
 	}
 }
 
-typedef TrackAlloc<ITOStorage::BoostPoolUserAllocatorCurrent> track_allocWDCurr;
+typedef TrackAlloc<itostorage::BoostPoolUserAllocatorCurrent> track_allocWDCurr;
 
 void BoostPoolTest::TestFuncCurrent()
 {
 	StartTrace(BoostPoolTest.TestFuncCurrent);
 
 	typedef boost::pool<track_allocWDCurr> pool_typeWDCurr;
-	MemChecker aCChecker("BoostPoolTest.TestFuncCurrent", Coast::Storage::Current());
+	MemChecker aCChecker("BoostPoolTest.TestFuncCurrent", coast::storage::Current());
 	{
 		// Constructor should do nothing; no memory allocation
 		pool_typeWDCurr pool(sizeof(int));
@@ -394,7 +394,7 @@ void BoostPoolTest::TestFuncCurrent()
 		// Ask pool to give up memory it's not using; this should succeed
 		t_assertm(pool.release_memory(), "Pool didn't release memory");
 		t_assertm(track_allocWDCurr::ok(), "Memory error");
-		assertComparem(0LL, greater_equal, aCChecker.CheckDelta(), TString("expected no unfreed memory ") << (Coast::Storage::Current() == Coast::Storage::Global() ? "G" : "C"));
+		assertComparem(0LL, greater_equal, aCChecker.CheckDelta(), TString("expected no unfreed memory ") << (coast::storage::Current() == coast::storage::Global() ? "G" : "C"));
 
 		// Should allocate from system again
 		pool.malloc(); // loses the pointer to the returned chunk (*A*)
@@ -415,7 +415,7 @@ void BoostPoolTest::TestFuncCurrent()
 	}
 
 	t_assertm(track_allocWDCurr::ok(), "Memory error");
-	assertComparem(0LL, greater_equal, aCChecker.CheckDelta(), TString("expected no unfreed memory ") << (Coast::Storage::Current() == Coast::Storage::Global() ? "G" : "C"));
+	assertComparem(0LL, greater_equal, aCChecker.CheckDelta(), TString("expected no unfreed memory ") << (coast::storage::Current() == coast::storage::Global() ? "G" : "C"));
 }
 
 // ----------------------------------------------------------------------------
@@ -630,7 +630,7 @@ public:
 	Thread *DoAllocThread(long i, ROAnything args) {
 		StartTrace(TestMethodWorkerThreadPool.DoAllocThread);
 		TraceAny(args, "Init-Arguments");
-		return new (Coast::Storage::Global()) TestMethodWorkerThread<funcType, innerFunc, cleanupFunc>(fFunc, fInnerFunc, fCleanupFunc);
+		return new (coast::storage::Global()) TestMethodWorkerThread<funcType, innerFunc, cleanupFunc>(fFunc, fInnerFunc, fCleanupFunc);
 	}
 
 	ROAnything DoGetInitConfig(long i, ROAnything args) {

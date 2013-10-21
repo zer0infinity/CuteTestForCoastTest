@@ -14,7 +14,7 @@
 #include <boost/pool/detail/singleton.hpp>
 #include "InitFinisManager.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <cstring>
 #ifdef COAST_TRACE
@@ -44,7 +44,7 @@ namespace {
 		bool fgDumpAnythings;
 	public:
 		TracingInitializer() :
-				fgTriggerMap(Coast::Storage::Global()), fgLowerBound(0), fgUpperBound(0), fgDumpAnythings(false) {
+				fgTriggerMap(coast::storage::Global()), fgLowerBound(0), fgUpperBound(0), fgDumpAnythings(false) {
 			InitTracing();
 			InitFinisManager::IFMTrace("TracingInitializer::Initialized\n");
 		}
@@ -110,12 +110,12 @@ namespace {
 			return false;
 		}
 		void InitTracing(String const& strFilename = fgTracerAnyName) {
-			bool tracingDisabled = (System::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
+			bool tracingDisabled = (system::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
 			if ( tracingDisabled ) {
 				TerminateTracing();
 				return;
 			}
-			std::istream *ifp = System::OpenStream(strFilename, "any");
+			std::istream *ifp = system::OpenStream(strFilename, "any");
 			if (ifp) {
 				Anything anyDebugContext;
 				if ( anyDebugContext.Import(*ifp, strFilename) ) {
@@ -223,7 +223,7 @@ Tracer::Tracer(const char *trigger)
 	: fTrigger(trigger)
 	, fTriggered(false)
 	, fpMsg(NULL)
-	, fpAlloc(Coast::Storage::Current())
+	, fpAlloc(coast::storage::Current())
 {
 	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {
@@ -237,7 +237,7 @@ Tracer::Tracer(const char *trigger, const char *msg)
 	: fTrigger(trigger)
 	, fTriggered(false)
 	, fpMsg(msg)
-	, fpAlloc(Coast::Storage::Current())
+	, fpAlloc(coast::storage::Current())
 {
 	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {

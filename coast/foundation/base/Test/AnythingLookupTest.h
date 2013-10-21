@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "Anything.h"//lint !e537
-class AnythingLookupTest: public TestFramework::TestCase {
+class AnythingLookupTest: public testframework::TestCase {
 public:
 	AnythingLookupTest(TString tname) :
 		TestCaseType(tname) {

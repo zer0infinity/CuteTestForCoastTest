@@ -29,8 +29,8 @@
 #define S_IRWXU		( _S_IREAD | _S_IWRITE | _S_IEXEC )	/* read, write and execute for user */
 #endif /* S_IRWXU */
 
-namespace Coast {
-	namespace System {
+namespace coast {
+	namespace system {
 
 		typedef std::ios::openmode openmode;
 
@@ -239,20 +239,20 @@ namespace Coast {
 			\param pmode permission of new directory, octal number
 			\param bRecurse set to true if nonexisting parent directories should be created
 			\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name \<dir\>_ex[0-9]+ and link the newly created directory into the original location
-			\return System::eSuccess if new directory was created */
+			\return system::eSuccess if new directory was created */
 		DirStatusCode MakeDirectory(String &path, int pmode = 0755, bool bRecurse = false, bool bExtendByLinks = false);
 
 		//! remove given directory - relative directories can be deleted recursively
 		/*! \param path relative or absolute path of directory to be deleted
 			\param bRecurse true if relative directory should be deleted recusrively
-			\return System::eSuccess if directory was removed */
+			\return system::eSuccess if directory was removed */
 		DirStatusCode RemoveDirectory(String &path, bool bRecurse = false);
 
 #if !defined(WIN32)
 		//! create new directory with given permissions, works for relative or absolute path names and also
 		/*! \param filename absolute directory or filename to link to
 			\param symlinkname absolute name of link
-			\return System::eSuccess if new symbolic link was created */
+			\return system::eSuccess if new symbolic link was created */
 		DirStatusCode CreateSymbolicLink(const char *filename, const char *symlinkname);
 #endif
 
@@ -264,33 +264,33 @@ namespace Coast {
 		//! This namespace is a general wrapper for IO specific functions.
 		/*! It is not intended to extend the system specific functionality to handle unsafe conditions or whatever but to present an API which hides
 			system specific differences or irregularities. */
-		namespace IO {
+		namespace io {
 			//! check if a given file or directory is accessible using the given mode
 			/*! \param path file or directory path
 				\param amode permission setting, one or combination of [F_OK|X_OK|W_OK|R_OK]
-				\return 0 in case of success, -1 if file does not exist or is not accessible in the given mode, check System::GetSystemError */
+				\return 0 in case of success, -1 if file does not exist or is not accessible in the given mode, check system::GetSystemError */
 			int access(const char *path, int amode);
 
 			//! make a directory, parent directory must exist already
 			/*! \param path path to be created, must not contain trailing slash
 				\param pmode permission mask of new directory
-				\return 0 in case of success, -1 if something went wrong, check System::GetSystemError */
+				\return 0 in case of success, -1 if something went wrong, check system::GetSystemError */
 			int mkdir(const char *path, int pmode);
 
 			//! remove a directory
 			/*! \param path specify path to delete
-				\return 0 in case of success, -1 if something went wrong, check System::GetSystemError */
+				\return 0 in case of success, -1 if something went wrong, check system::GetSystemError */
 			int rmdir(const char *path);
 
 			//! remove a file or link
 			/*! \param path specify filename and path of file to delete
-				\return 0 in case of success, -1 if something went wrong, check System::GetSystemError */
+				\return 0 in case of success, -1 if something went wrong, check system::GetSystemError */
 			int unlink(const char *path);
 
 			//! rename a file, path or link
 			/*! \param oldfilename specify name of old file, path or link
 				\param newfilename specify name of new file, path or link
-				\return 0 in case of success, -1 if something went wrong, check System::GetSystemError */
+				\return 0 in case of success, -1 if something went wrong, check system::GetSystemError */
 			int rename(const char *oldfilename, const char *newfilename);
 		}
 

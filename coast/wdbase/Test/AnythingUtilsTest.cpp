@@ -24,7 +24,7 @@ void AnythingUtilsTest::StoreCopierTest() {
 		Anything source = config["Source"].DeepClone();
 		Anything result;
 		Context c;
-		Coast::TestFramework::PutInStore(source, c.GetTmpStore());
+		coast::testframework::PutInStore(source, c.GetTmpStore());
 
 		StoreCopier::Operate(c, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 
@@ -62,7 +62,7 @@ void AnythingUtilsTest::StorePutterReplaceTest() {
 	Anything toStore = fQuery["ToStore"];
 	Anything config = fQuery["Destination"];
 	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
-	Coast::TestFramework::PutInStore(rStore, c.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	StorePutter::Operate(toStore, c, config);
 
@@ -79,7 +79,7 @@ void AnythingUtilsTest::StorePutterReplaceRenderedTest() {
 	Anything toStore = fQuery["ToStore"];
 	Anything config = fQuery["Destination"];
 	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
-	Coast::TestFramework::PutInStore(rStore, c.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore before");
 	assertAnyEqual(rStore, c.GetRoleStoreGlobal());
@@ -109,7 +109,7 @@ void AnythingUtilsTest::StoreFinderTest() {
 	Context c;
 	Anything config = fQuery["ToFind"];
 	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
-	Coast::TestFramework::PutInStore(rStore, c.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
 	StoreFinder::Operate(c, foundResult, config);
@@ -119,7 +119,7 @@ void AnythingUtilsTest::StoreFinderTest() {
 
 	config = fQuery["SessionToFind"];
 	rStore = GetConfig()["SessionStore"].DeepClone();
-	Coast::TestFramework::PutInStore(rStore, c.GetSessionStore());
+	coast::testframework::PutInStore(rStore, c.GetSessionStore());
 
 	Anything foundResult2;
 	StoreFinder::Operate(c, foundResult2, config);
@@ -132,7 +132,7 @@ void AnythingUtilsTest::StoreFinderRenderedTest() {
 	Context c;
 	Anything config = fQuery["ToFind"];
 	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
-	Coast::TestFramework::PutInStore(rStore, c.GetRoleStoreGlobal());
+	coast::testframework::PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
 	StoreFinder::Operate(c, foundResult, config);

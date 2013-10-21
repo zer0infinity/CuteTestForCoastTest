@@ -14,7 +14,7 @@
 #include "Action.h"
 #include "PeriodicAction.h"
 
-SimpleMutex SybCTnewDAImpl::fgStructureMutex("StructureMutex", Coast::Storage::Global());
+SimpleMutex SybCTnewDAImpl::fgStructureMutex("StructureMutex", coast::storage::Global());
 Anything SybCTnewDAImpl::fgListOfSybCT;
 Anything SybCTnewDAImpl::fgContextMessages;
 CS_CONTEXT *SybCTnewDAImpl::fg_cs_context;
@@ -60,9 +60,9 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 		}
 
 		LockUnlockEntry me(fgStructureMutex);
-		fgContextMessages.SetAllocator(Coast::Storage::Global());
+		fgContextMessages.SetAllocator(coast::storage::Global());
 		fgContextMessages = Anything();
-		fgListOfSybCT.SetAllocator(Coast::Storage::Global());
+		fgListOfSybCT.SetAllocator(coast::storage::Global());
 		fgListOfSybCT = Anything();
 		// SybCTnewDA::Init initializes the cs_context.  It must be done only once
 		if ( SybCTnewDA::Init(&fg_cs_context, &fgContextMessages, strInterfacesPathName, nrOfSybCTs) == CS_SUCCEED ) {
@@ -71,11 +71,11 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			fgpResourcesSema = new Semaphore(nrOfSybCTs);
 			String server, user;
 			for ( long i = 0; i < nrOfSybCTs; ++i ) {
-				SybCTnewDA *pCT = new (Coast::Storage::Global()) SybCTnewDA(fg_cs_context);
+				SybCTnewDA *pCT = new (coast::storage::Global()) SybCTnewDA(fg_cs_context);
 				IntDoPutbackConnection(pCT, false, server, user);
 			}
 			if ( !fgpPeriodicAction ) {
-				fgpPeriodicAction = new (Coast::Storage::Global()) PeriodicAction("SybCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
+				fgpPeriodicAction = new (coast::storage::Global()) PeriodicAction("SybCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
 				fgpPeriodicAction->Start();
 			}
 			fgInitialized = true;
@@ -128,7 +128,7 @@ bool SybCTnewDAImpl::IntGetOpen(SybCTnewDA *&pSyb, bool &bIsOpen, const String &
 	StartTrace1(SybCTnewDAImpl.IntGetOpen, "server [" << server << "] user [" << user << "]");
 	pSyb = NULL;
 	bIsOpen = false;
-	Anything anyTimeStamp(Coast::Storage::Global()), anyEntry(Coast::Storage::Global());
+	Anything anyTimeStamp(coast::storage::Global()), anyEntry(coast::storage::Global());
 	TraceAny(fgListOfSybCT, "current list of connections");
 	if ( fgListOfSybCT.LookupPath(anyTimeStamp, "Open") && anyTimeStamp.GetSize() ) {
 		String strToLookup(server);
@@ -137,7 +137,7 @@ bool SybCTnewDAImpl::IntGetOpen(SybCTnewDA *&pSyb, bool &bIsOpen, const String &
 		}
 		Trace("Lookup name [" << strToLookup << "]");
 		for (long lIdx = 0; lIdx < anyTimeStamp.GetSize(); ++lIdx) {
-			Anything anyTS(Coast::Storage::Global());
+			Anything anyTS(coast::storage::Global());
 			anyTS = anyTimeStamp[lIdx];
 			for (long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); ++lTimeSub) {
 				if ( ( strToLookup.Length() <= 0 ) || strToLookup == anyTS[lTimeSub][1L].AsString() ) {
@@ -209,12 +209,12 @@ void SybCTnewDAImpl::IntDoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, con
 		String strToStore(server);
 		strToStore << '.' << user;
 		TimeStamp aStamp;
-		Anything anyTimeStamp(Coast::Storage::Global());
+		Anything anyTimeStamp(coast::storage::Global());
 		if ( !fgListOfSybCT.LookupPath(anyTimeStamp, "Open") ) {
-			anyTimeStamp = Anything(Anything::ArrayMarker(),Coast::Storage::Global());
+			anyTimeStamp = Anything(Anything::ArrayMarker(),coast::storage::Global());
 			fgListOfSybCT["Open"] = anyTimeStamp;
 		}
-		Anything anyToStore(Coast::Storage::Global());
+		Anything anyToStore(coast::storage::Global());
 		anyToStore[0L] = (IFAObject *)pSyb;
 		anyToStore[1L] = strToStore;
 		anyTimeStamp[aStamp.AsString()].Append(anyToStore);
@@ -346,7 +346,7 @@ bool SybCTnewDAImpl::CheckCloseOpenedConnections(long lTimeout)
 {
 	StartTrace(SybCTnewDAImpl.CheckCloseOpenedConnections);
 	bool bRet = false;
-	Anything anyTimeStamp(Coast::Storage::Global());
+	Anything anyTimeStamp(coast::storage::Global());
 	TimeStamp aStamp;
 	aStamp -= lTimeout;
 	Trace("current timeout " << lTimeout << "s, resulting time [" << aStamp.AsString() << "]");
@@ -358,7 +358,7 @@ bool SybCTnewDAImpl::CheckCloseOpenedConnections(long lTimeout)
 			long lTS = 0L;
 			// if we still have open connections and the last access is older than lTimeout seconds
 			while ( anyTimeStamp.GetSize() && ( aStamp > TimeStamp(anyTimeStamp.SlotName(lTS)) ) ) {
-				Anything anyTS(Coast::Storage::Global());
+				Anything anyTS(coast::storage::Global());
 				anyTS = anyTimeStamp[lTS];
 				TraceAny(anyTS, "stamp of connections to close [" << anyTimeStamp.SlotName(0L) << "]");
 				while ( anyTS.GetSize() ) {

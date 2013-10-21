@@ -25,7 +25,7 @@ void HTTPFlowControllerTest::DoTest(Anything testCase, const char *testCaseName)
 	StartTrace1(HTTPFlowControllerTest.DoTest, "<" << testCaseName << ">");
 	DoTestWithContext(testCase, testCaseName, fCtx);
 	Anything anyFailureStrings;
-	Coast::TestFramework::CheckStores(anyFailureStrings, testCase["Result"], fCtx, testCaseName, Coast::TestFramework::exists);
+	coast::testframework::CheckStores(anyFailureStrings, testCase["Result"], fCtx, testCaseName, coast::testframework::exists);
 	for ( long sz=anyFailureStrings.GetSize(),i=0; i<sz;++i ) {
 		t_assertm(false, anyFailureStrings[i].AsString().cstr());
 	}

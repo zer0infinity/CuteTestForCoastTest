@@ -21,7 +21,7 @@
 //---- BlowfishTest -----------------------------------------------------------
 class Scrambler;
 
-class BlowfishTest : public TestFramework::TestCase
+class BlowfishTest : public testframework::TestCase
 {
 public:
 	BlowfishTest(TString tstrName);

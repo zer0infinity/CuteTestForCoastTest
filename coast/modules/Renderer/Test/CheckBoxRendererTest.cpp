@@ -16,7 +16,7 @@
 
 CheckBoxRendererTest::CheckBoxRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new (Coast::Storage::Global()) CheckBoxRenderer("CheckBoxRendererTest");
+	fFieldRenderer = new (coast::storage::Global()) CheckBoxRenderer("CheckBoxRendererTest");
 };
 
 CheckBoxRendererTest::~CheckBoxRendererTest()

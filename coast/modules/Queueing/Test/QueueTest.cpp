@@ -18,7 +18,7 @@
 #include "StringStream.h"
 #include "MT_Storage.h"
 
-using namespace Coast;
+using namespace coast;
 
 class DCDStateMachine {
 public:
@@ -156,7 +156,7 @@ public:
 				if ( StoreConsumedProducts )
 					fProducts[lProductCount] = aProduct;
 				if (fWaitTimeMicroSec > 0L)
-					System::MicroSleep(fWaitTimeMicroSec);
+					system::MicroSleep(fWaitTimeMicroSec);
 				++lProductCount;
 			}
 		}
@@ -195,7 +195,7 @@ public:
 			{
 				TraceAny(aProduct, "produced product");
 				if (fWaitTimeMicroSec)
-					System::MicroSleep(fWaitTimeMicroSec);
+					system::MicroSleep(fWaitTimeMicroSec);
 				++lProductCount;
 			}
 		}
@@ -335,13 +335,13 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize) {
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aConsumer.Start(Coast::Storage::Global(), anyCons);
+		aConsumer.Start(coast::storage::Global(), anyCons);
 		anyProd["Product"] = "Prod10";
-		aProd10.Start(Coast::Storage::Global(), anyProd);
+		aProd10.Start(coast::storage::Global(), anyProd);
 		anyProd["Product"] = "Prod4";
-		aProd4.Start(Coast::Storage::Global(), anyProd);
+		aProd4.Start(coast::storage::Global(), anyProd);
 		anyProd["Product"] = "Prod5";
-		aProd5.Start(Coast::Storage::Global(), anyProd);
+		aProd5.Start(coast::storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 		TraceAny(aConsumer.fProducts, "produced items");
@@ -358,13 +358,13 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize) {
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aConsumer.Start(Coast::Storage::Global(), anyCons);
+		aConsumer.Start(coast::storage::Global(), anyCons);
 		anyProd["Product"] = "Prod10";
-		aProd10.Start(Coast::Storage::Global(), anyProd);
+		aProd10.Start(coast::storage::Global(), anyProd);
 		anyProd["Product"] = "Prod4";
-		aProd4.Start(Coast::Storage::Global(), anyProd);
+		aProd4.Start(coast::storage::Global(), anyProd);
 		anyProd["Product"] = "Prod5";
-		aProd5.Start(Coast::Storage::Global(), anyProd);
+		aProd5.Start(coast::storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 		TraceAny(aConsumer.fProducts, "produced items");
@@ -392,11 +392,11 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize) {
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aCons4.Start(Coast::Storage::Global(), anyCons);
-		aCons5.Start(Coast::Storage::Global(), anyCons);
-		aCons10.Start(Coast::Storage::Global(), anyCons);
+		aCons4.Start(coast::storage::Global(), anyCons);
+		aCons5.Start(coast::storage::Global(), anyCons);
+		aCons10.Start(coast::storage::Global(), anyCons);
 		anyProd["Product"] = "Gugus";
-		aProducer.Start(Coast::Storage::Global(), anyProd);
+		aProducer.Start(coast::storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aCons4.CheckState(Thread::eTerminated, 10));
 		t_assert(aCons5.CheckState(Thread::eTerminated, 10));
@@ -419,11 +419,11 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize) {
 		Anything anyCons, anyProd;
 		anyCons["TryLock"] = false;
 		anyProd["TryLock"] = false;
-		aCons4.Start(Coast::Storage::Global(), anyCons);
-		aCons5.Start(Coast::Storage::Global(), anyCons);
-		aCons10.Start(Coast::Storage::Global(), anyCons);
+		aCons4.Start(coast::storage::Global(), anyCons);
+		aCons5.Start(coast::storage::Global(), anyCons);
+		aCons10.Start(coast::storage::Global(), anyCons);
 		anyProd["Product"] = "Gugus";
-		aProducer.Start(Coast::Storage::Global(), anyProd);
+		aProducer.Start(coast::storage::Global(), anyProd);
 		// wait for 10s on consumer to terminate
 		t_assert(aCons4.CheckState(Thread::eTerminated, 10));
 		t_assert(aCons5.CheckState(Thread::eTerminated, 10));
@@ -451,7 +451,7 @@ void QueueTest::ConsumerTerminationTest() {
 	StartTrace(QueueTest.ConsumerTerminationTest);
 	{
 		typedef AnyQueueType QueueType;
-		QueueType *pProductQueue = new (Coast::Storage::Global()) QueueType("pProductQueue", 2);
+		QueueType *pProductQueue = new (coast::storage::Global()) QueueType("pProductQueue", 2);
 		ConsumerTerminationThread<QueueType> aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;
@@ -465,7 +465,7 @@ void QueueTest::ConsumerTerminationTest() {
 		// allow thread to consume element
 		aConsumer.SetWorking();
 		aConsumer.CheckRunningState(Thread::eWorking);
-		System::MicroSleep(5000);
+		system::MicroSleep(5000);
 		assertEqualm(0L, pProductQueue->GetSize(), "expected element to be consumed");
 		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
 		aConsumer.Terminate(1);
@@ -475,7 +475,7 @@ void QueueTest::ConsumerTerminationTest() {
 	}
 	{
 		typedef AnyQueueType QueueType;
-		QueueType *pProductQueue = new (Coast::Storage::Global()) QueueType("pProductQueue", 2);
+		QueueType *pProductQueue = new (coast::storage::Global()) QueueType("pProductQueue", 2);
 		ConsumerTerminationThread<QueueType> aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;
@@ -489,7 +489,7 @@ void QueueTest::ConsumerTerminationTest() {
 		// allow thread to consume element
 		aConsumer.SetWorking();
 		aConsumer.CheckRunningState(Thread::eWorking);
-		System::MicroSleep(5000);
+		system::MicroSleep(5000);
 		assertEqualm(0L, pProductQueue->GetSize(), "expected element to be consumed");
 		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
 		aConsumer.Terminate(1);
@@ -528,7 +528,7 @@ void QueueTest::SimpleTypeAnyStorageQueueTest() {
 typedef dcd_event<DCDStateMachine> EventType;
 typedef EventType *EventTypePtr;
 #if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-typedef STLStorage::fast_pool_allocator_global<EventTypePtr> EvtAllocType;
+typedef stlstorage::fast_pool_allocator_global<EventTypePtr> EvtAllocType;
 typedef Queue<EventTypePtr, std::list<EventTypePtr, EvtAllocType> > EventQueueType;
 #else
 typedef Queue< EventTypePtr, std::list<EventTypePtr > > EventQueueType;
@@ -581,7 +581,7 @@ void QueueTest::QueueWithAllocatorTest() {
 			assertEqual(QueueType::eFull, Q1.Put(anyTest2, true));
 			t_assert(Q1.GetSize() == 1L);
 
-			if (Coast::Storage::GetStatisticLevel() >= 1) {
+			if (coast::storage::GetStatisticLevel() >= 1) {
 				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
 			}
 
@@ -598,8 +598,8 @@ void QueueTest::QueueWithAllocatorTest() {
 			assertEqual(1L, anyOut["MaxLoad"].AsLong(0L));
 			TraceAny(anyOut, "statistics");
 		}
-		if (Coast::Storage::GetStatisticLevel() >= 1) {
-			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Coast::Storage::Global()");
+		if (coast::storage::GetStatisticLevel() >= 1) {
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on coast::storage::Global()");
 		}
 	}
 	{
@@ -622,7 +622,7 @@ void QueueTest::QueueWithAllocatorTest() {
 			Q1.Put(pEventWrapper2);
 			assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
 
-			if (Coast::Storage::GetStatisticLevel() >= 1) {
+			if (coast::storage::GetStatisticLevel() >= 1) {
 				assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to not have allocations");
 			}
 
@@ -634,18 +634,18 @@ void QueueTest::QueueWithAllocatorTest() {
 			assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
 			delete pEventWrapperOut2;
 		}
-		if ( Storage::GetStatisticLevel() >= 1 )
+		if ( storage::GetStatisticLevel() >= 1 )
 		{
-			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Storage::Global()");
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on storage::Global()");
 		}
 	}
 }
 
 namespace {
-	String const testString100B = String("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", Storage::Global());
+	String const testString100B = String("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", storage::Global());
 }
 
-using namespace Coast::Utility;	// for demangle
+using namespace coast::utility;	// for demangle
 
 template<typename ElementType, typename StorageType, long LoopCount, int aResolution>
 void MeasurePutGetForQueueType() {
@@ -710,7 +710,7 @@ void QueueTest::QueueTypePerfTest() {
 	MeasurePutGetForQueueType<Anything, Anything, 10000, testResolution>();
 	{
 		typedef Anything eltType;
-		typedef STLStorage::fast_pool_allocator_global< eltType > QAllocType;
+		typedef stlstorage::fast_pool_allocator_global< eltType > QAllocType;
 		typedef std::deque<eltType, QAllocType > myStorageType;
 		MeasurePutGetForQueueType<eltType, myStorageType, 100, testResolution>();
 		MeasurePutGetForQueueType<eltType, myStorageType, 1000, testResolution>();
@@ -727,7 +727,7 @@ public:
 	typedef typename QueueType::ElementType QElement;
 
 	PoolConsumer(const char* name, ROAnything roaArgs)
-	: Thread(name), fConsumed(0L), fWork(Storage::Global())
+	: Thread(name), fConsumed(0L), fWork(storage::Global())
 	{}
 	bool DoStartRequestedHook(ROAnything roaArgs) {
 		StartTrace(PoolConsumer.DoStartRequestedHook);
@@ -787,7 +787,7 @@ protected:
 		Anything anyArgs = args.DeepClone();
 		anyArgs["ThreadIdx"] = i;
 		TraceAny(anyArgs, "Init-Arguments");
-		return new (Coast::Storage::Global()) ThreadType(demangle<String>(typeid(ThreadType).name()), anyArgs);
+		return new (coast::storage::Global()) ThreadType(demangle<String>(typeid(ThreadType).name()), anyArgs);
 	}
 
 	ROAnything DoGetInitConfig(long i, ROAnything args) {
@@ -871,7 +871,7 @@ void QueueTest::SingleProducerMultiConsumerQTypeTest()
 	ExecuteSingleProducerMultiConsumerQTypeTest<AnyQueueType, 10000, 8, testResolution>();
 	{
 		typedef Anything eltType;
-		typedef STLStorage::fast_pool_allocator_global< eltType > QAllocType;
+		typedef stlstorage::fast_pool_allocator_global< eltType > QAllocType;
 		typedef std::deque<eltType, QAllocType > myStorageType;
 		typedef Queue<eltType, myStorageType> myQType;
 		ExecuteSingleProducerMultiConsumerQTypeTest<myQType, 10000, 8, testResolution>();

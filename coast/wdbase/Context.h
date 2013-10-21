@@ -332,7 +332,7 @@ private:
 	//! the session of this context
 	Session *fSession;
 
-	//! the reference to the session store (Coast::Storage::Global and Coast::Storage::Current)
+	//! the reference to the session store (coast::storage::Global and coast::storage::Current)
 	Anything fSessionStoreGlobal;
 	Anything fSessionStoreCurrent;
 

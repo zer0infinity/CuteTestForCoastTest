@@ -13,7 +13,7 @@
 
 //---- RECompilerTest ----------------------------------------------------------
 //!TestCases description
-class RECompilerTest : public TestFramework::TestCase
+class RECompilerTest : public testframework::TestCase
 {
 public:
 	//--- constructors

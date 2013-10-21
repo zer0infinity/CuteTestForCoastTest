@@ -12,7 +12,7 @@
 #include "SystemFile.h"
 #include "Context.h"
 
-using namespace Coast;
+using namespace coast;
 
 //---- URI2FileNameTest ----------------------------------------------------------------
 URI2FileNameTest::URI2FileNameTest(TString tname) : TestCaseType(tname)
@@ -36,7 +36,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 
 	URI2FileNameMapper tst("test");
 	String result, expected;
-	String rootdir = System::GetRootDir();
+	String rootdir = system::GetRootDir();
 
 	// uri == "/foobaz/foo/" DocumentRoot not set -> should prepend COAST_ROOT
 	// call should fail and set error state
@@ -99,11 +99,11 @@ void URI2FileNameTest::Uri2FilenameTest()
 	tmpStore.Remove("HTTPResponse");
 
 	String pwd;
-	System::GetCWD(pwd);
-	System::ResolvePath(pwd);
+	system::GetCWD(pwd);
+	system::ResolvePath(pwd);
 #if defined(WIN32)
 	char drive;
-	if ( System::GetDriveLetter(pwd, drive)) {
+	if ( system::GetDriveLetter(pwd, drive)) {
 		String drvrel;
 		drvrel << drive << ":" << "config";
 		env["DocumentRoot"] = drvrel;

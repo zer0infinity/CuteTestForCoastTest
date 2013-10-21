@@ -21,14 +21,14 @@
 RegisterRequestProcessor(HTTPProcessor);
 
 namespace {
-	String const strGET("GET", Coast::Storage::Global());
-	String const strPOST("POST", Coast::Storage::Global());
+	String const strGET("GET", coast::storage::Global());
+	String const strPOST("POST", coast::storage::Global());
 
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -106,8 +106,8 @@ bool HTTPProcessor::DoVerifyRequest(Context &ctx) {
 	return true;
 }
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
 			StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
 			Anything defaultSpec;
@@ -121,9 +121,9 @@ namespace Coast {
 namespace {
 	void ErrorReply(std::ostream &reply, const String &msg, Context &ctx) {
 		StartTrace1(HTTPProcessor.ErrorReply, "message [" << msg << "]");
-		long errorCode = ctx.Lookup(String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname), 400L);
+		long errorCode = ctx.Lookup(String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname), 400L);
 		String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
-		Coast::HTTP::RenderHTTPProtocolStatus(reply, ctx);
+		coast::http::RenderHTTPProtocolStatus(reply, ctx);
 		reply << "content-type: text/html" << ENDL << ENDL;
 		reply << "<html><head>\n";
 		reply << "<title>" << errorCode << " " << errorMsg << "</title>\n";
@@ -152,8 +152,8 @@ namespace {
 		if ( ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot","NonExistingSlotname"), roaErrorMessages) ) {
 			LogError(ctx);
 			//!@FIXME: maybe we should log all of them?
-			Anything anyErrCode = roaErrorMessages[0L][Coast::HTTP::constants::protocolCodeSlotname].DeepClone();
-			StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname));
+			Anything anyErrCode = roaErrorMessages[0L][coast::http::constants::protocolCodeSlotname].DeepClone();
+			StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname));
 			ErrorReply(reply, roaErrorMessages[0L]["ErrorMessage"].AsString(), ctx);
 		}
 	}
@@ -184,7 +184,7 @@ bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 }
 
 void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
-	Coast::HTTP::RenderHTTPProtocolStatus(os, ctx);
+	coast::http::RenderHTTPProtocolStatus(os, ctx);
 }
 
 namespace {

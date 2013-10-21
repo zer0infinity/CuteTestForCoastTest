@@ -24,7 +24,7 @@ class AnyImpl {
 	Allocator *fAllocator;
 public:
 	AnyImpl(Allocator *a) :
-		fRefCount(1), fAllocator((a) ? a : Coast::Storage::Current()) {
+		fRefCount(1), fAllocator((a) ? a : coast::storage::Current()) {
 	}
 	virtual ~AnyImpl() {
 		Assert(fRefCount <= 0);
@@ -71,7 +71,7 @@ public:
 		return fRefCount;
 	}
 
-	String ThisToHex(Allocator *a = Coast::Storage::Current()) const;
+	String ThisToHex(Allocator *a = coast::storage::Current()) const;
 
 	Allocator *MyAllocator() const {
 		return fAllocator;
@@ -82,7 +82,7 @@ protected:
 	}
 };
 
-class AnyLongImpl: public Coast::SegStorAllocatorNewDelete<AnyLongImpl>, public AnyImpl {
+class AnyLongImpl: public coast::SegStorAllocatorNewDelete<AnyLongImpl>, public AnyImpl {
 	long fLong;
 	String fBuf;
 
@@ -121,7 +121,7 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-class AnyObjectImpl: public Coast::SegStorAllocatorNewDelete<AnyObjectImpl>, public AnyImpl {
+class AnyObjectImpl: public coast::SegStorAllocatorNewDelete<AnyObjectImpl>, public AnyImpl {
 	IFAObject *fObject;
 
 public:
@@ -162,7 +162,7 @@ private:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-class AnyDoubleImpl: public Coast::SegStorAllocatorNewDelete<AnyDoubleImpl>, public AnyImpl {
+class AnyDoubleImpl: public coast::SegStorAllocatorNewDelete<AnyDoubleImpl>, public AnyImpl {
 	double fDouble;
 	String fBuf;
 
@@ -201,7 +201,7 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-class AnyBinaryBufImpl: public Coast::SegStorAllocatorNewDelete<AnyBinaryBufImpl>, public AnyImpl {
+class AnyBinaryBufImpl: public coast::SegStorAllocatorNewDelete<AnyBinaryBufImpl>, public AnyImpl {
 	String fBuf;
 
 public:
@@ -241,7 +241,7 @@ public:
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
 
-class AnyStringImpl: public Coast::SegStorAllocatorNewDelete<AnyStringImpl>, public AnyImpl {
+class AnyStringImpl: public coast::SegStorAllocatorNewDelete<AnyStringImpl>, public AnyImpl {
 	String fString;
 
 public:
@@ -286,7 +286,7 @@ protected:
 };
 
 class AnyArrayImpl;
-class AnyKeyTable : public Coast::AllocatorNewDelete
+class AnyKeyTable : public coast::AllocatorNewDelete
 {
 public:
 	enum {
@@ -321,7 +321,7 @@ private:
 	AnyKeyTable& operator=(AnyKeyTable const &);
 };
 
-class AnyIndTable : public Coast::AllocatorNewDelete
+class AnyIndTable : public coast::AllocatorNewDelete
 {
 public:
 	AnyIndTable(long initCapacity, Allocator *a);
@@ -355,7 +355,7 @@ private:
 
 class AnyKeyAssoc;
 class AnyComparer;
-class AnyArrayImpl : public Coast::SegStorAllocatorNewDelete<AnyArrayImpl>, public AnyImpl {
+class AnyArrayImpl : public coast::SegStorAllocatorNewDelete<AnyArrayImpl>, public AnyImpl {
 	static const size_t ARRAY_BUF_SIZE = 4;
 
 	AnyKeyAssoc **fContents;

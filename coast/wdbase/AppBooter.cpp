@@ -15,7 +15,7 @@
 #include "WDModule.h"
 #include "URLUtils.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <iomanip>
 #if !defined(WIN32)
@@ -87,7 +87,7 @@ void AppBooter::HandleArgs(int argc, const char *argv[], Anything &args )
 {
 	StartTrace(AppBooter.HandleArgs);
 	for (long i = 0; i < argc; ++i) {
-		Coast::URLUtils::Pair(argv[i], '=', args);
+		coast::urlutils::Pair(argv[i], '=', args);
 	}
 	TraceAny(args, "passed arguments");
 }
@@ -166,7 +166,7 @@ String AppBooter::PrepareBootFileLoading(const ROAnything &roconfig)
 {
 	StartTrace(AppBooter.PrepareBootFileLoading);
 
-	System::InitPath(
+	system::InitPath(
 		roconfig["COAST_ROOT"].AsCharPtr(0),
 		roconfig["COAST_PATH"].AsCharPtr(0)
 	);
@@ -269,7 +269,7 @@ void AppBooter::Halt(const Anything &config)
 bool AppBooter::ReadFromFile(Anything &config, const char *filename)
 {
 	StartTrace1(AppBooter.ReadFromFile, "filename<" << NotNull(filename) << ">");
-	std::istream *ifp = System::OpenStream(filename, "any");
+	std::istream *ifp = system::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are COAST_ROOT/COAST_PATH correctly set?");

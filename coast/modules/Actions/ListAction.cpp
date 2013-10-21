@@ -11,7 +11,7 @@
 #include "Tracer.h"
 #include "AnyIterators.h"
 
-static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Coast::Storage::Global());
+static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, coast::storage::Global());
 //---- ListAction ---------------------------------------------------------------
 
 RegisterAction(ListAction);

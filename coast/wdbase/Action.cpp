@@ -104,7 +104,7 @@ public:
 RegisterAction(PreprocessAction);
 
 bool PreprocessAction::DoAction(String &action, Context &c) {
-	StatTrace(PreprocessAction.DoAction, "<" << action << ">", Coast::Storage::Current());
+	StatTrace(PreprocessAction.DoAction, "<" << action << ">", coast::storage::Current());
 	Page *s(c.GetPage());
 	if (s) {
 		s->Preprocess(c);

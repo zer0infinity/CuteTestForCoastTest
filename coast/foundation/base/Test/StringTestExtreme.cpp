@@ -10,14 +10,14 @@
 #include "TestSuite.h"
 #include "SystemFile.h"
 
-using namespace Coast;
+using namespace coast;
 
 void StringTestExtreme::setUp() {
 	char s;
 	extremelyLongString = "";
 	trueString = "";
 
-	std::iostream *is = System::OpenStream("longString", "txt", std::ios::in);
+	std::iostream *is = system::OpenStream("longString", "txt", std::ios::in);
 	while (is && !is->eof()) {
 		if (is->read(&s, 1)) {
 			extremelyLongString.Append(s);

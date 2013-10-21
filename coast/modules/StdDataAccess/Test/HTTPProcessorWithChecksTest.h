@@ -12,7 +12,7 @@
 #include "WDBaseTestPolicies.h"
 
 //---- HTTPProcessorWithChecksTest ----------------------------------------------------
-class HTTPProcessorWithChecksTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class HTTPProcessorWithChecksTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	//--- constructors
 

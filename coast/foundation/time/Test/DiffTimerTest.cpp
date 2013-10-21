@@ -12,7 +12,7 @@
 #include "Tracer.h"
 #include "SystemBase.h"
 
-using namespace Coast;
+using namespace coast;
 
 DiffTimerTest::DiffTimerTest(TString tname) : TestCaseType(tname)
 {
@@ -70,15 +70,15 @@ void DiffTimerTest::DiffTest()
 	DiffTimer::eResolution resolution( DiffTimer::eMilliseconds );
 	DiffTimer dt(resolution); // milisecond resolution
 	const HRTIME waitTime = 200L; //one fifth of a second, not only one twentieth
-	t_assertm(System::MicroSleep(waitTime * resolution), "oops, interrupted"); // >= 50 miliseconds
+	t_assertm(system::MicroSleep(waitTime * resolution), "oops, interrupted"); // >= 50 miliseconds
 	HRTIME result = dt.Diff() - waitTime;
 	t_assertm( (result < 0 ? - result : result) <= waitTime / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << static_cast<long>(result)));
 	dt = DiffTimer(DiffTimer::eSeconds);
-	t_assertm(System::MicroSleep(600 * resolution), "oops, interrupted"); // >= 50 miliseconds
+	t_assertm(system::MicroSleep(600 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();
 	t_assertm(result == 0L, "expected no round to take effect");
 	dt = DiffTimer(DiffTimer::eSeconds);
-	t_assertm(System::MicroSleep(1100 * resolution), "oops, interrupted"); // >= 50 miliseconds
+	t_assertm(system::MicroSleep(1100 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();
 	t_assertm(result == 1L, "expected no round to take effect");
 }

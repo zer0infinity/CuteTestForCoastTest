@@ -10,7 +10,7 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 //--- WriteFileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(WriteFileDAImpl);
@@ -43,7 +43,7 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 	// we need some special logic for std-ios because there is no more ios::noreplace flag...
 	// check if neither trunc nor app flag is set (this is noreplace mode)
 	if ( ( GetMode(context, in) & (std::ios::trunc | std::ios::app ) ) == 0 ) {
-		std::istream *ifp = System::OpenIStream(filename, extension);
+		std::istream *ifp = system::OpenIStream(filename, extension);
 		if (ifp != NULL) {
 			delete ifp;
 			String strErr("File exists! [");
@@ -65,10 +65,10 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 	return true;
 }
 
-System::openmode WriteFileDAImpl::DoGetMode(ROAnything roaModes)
+system::openmode WriteFileDAImpl::DoGetMode(ROAnything roaModes)
 {
 	StartTrace(WriteFileDAImpl.DoGetMode);
-	System::openmode mode = FileDAImpl::DoGetMode(roaModes) | std::ios::out;
+	system::openmode mode = FileDAImpl::DoGetMode(roaModes) | std::ios::out;
 	Trace("mode so far:" << (long)mode);
 	if ( roaModes.Contains("truncate") ) {
 		mode |= std::ios::trunc;

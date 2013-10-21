@@ -13,14 +13,14 @@
 #include "HTTPConstants.h"
 
 namespace {
-	String const strGET("GET", Coast::Storage::Global());
-	String const strPOST("POST", Coast::Storage::Global());
+	String const strGET("GET", coast::storage::Global());
+	String const strPOST("POST", coast::storage::Global());
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
 		Anything anyMessage;
 		anyMessage["Component"] = "HTTPRequestReader";
-		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -37,7 +37,7 @@ namespace {
 	void ParseRequestLine(Context &ctx, Anything &request, String &line) {
 		StartTrace(HTTPRequestReader.ParseRequestLine); Trace("Line:<" << line << ">");
 		Anything anyRequest;
-		Coast::URLUtils::Split(line, ' ', anyRequest, ' ');
+		coast::urlutils::Split(line, ' ', anyRequest, ' ');
 		if (anyRequest.GetSize() != 3L)
 			throw MIMEHeader::InvalidLineException("Bad request structure or simple HTTP/0.9 request", line);
 		String tok = anyRequest[0L].AsString().ToUpper();
@@ -65,7 +65,7 @@ namespace {
 	void HandleFirstLine(Context &ctx, Anything &request, String &line) {
 		StartTrace(HTTPRequestReader.HandleFirstLine);
 		long llen = line.Length();
-		if (not Coast::URLUtils::TrimENDL(line).Length()) {
+		if (not coast::urlutils::TrimENDL(line).Length()) {
 			throw MIMEHeader::InvalidLineException("Empty request line", line);
 		}
 		if (line.Length() > llen - 2L) {
@@ -81,7 +81,7 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 	long const maxReqSz = ctx.Lookup("RequestSizeLimit", 5120L);
 	String line(maxLineSz);
 	try {
-		Coast::StreamUtils::getLineFromStream(Ios, line, maxLineSz);
+		coast::streamutils::getLineFromStream(Ios, line, maxLineSz);
 		fRequestBufferSize += line.Length();
 		if (fRequestBufferSize > maxReqSz) {
 			throw MIMEHeader::HeaderSizeExceededException("RequestSizeLimit exceeded", line, maxReqSz, fRequestBufferSize);

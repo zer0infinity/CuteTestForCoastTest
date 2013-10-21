@@ -13,7 +13,7 @@
 #include "StringStream.h"
 #include "Anything.h"
 
-class ContextLookupRendererTest : public TestFramework::TestCase
+class ContextLookupRendererTest : public testframework::TestCase
 {
 public:
 	ContextLookupRendererTest(TString tstrName);

@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 
 //---- RenderedKeyResultMapperTest ----------------------------------------------------------
-class RenderedKeyResultMapperTest: public TestFramework::TestCaseWithConfig {
+class RenderedKeyResultMapperTest: public testframework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

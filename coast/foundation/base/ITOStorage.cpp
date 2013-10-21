@@ -55,7 +55,7 @@ MemTracker::MemTracker(const char *name)
 	, fpName(strdup(name))	// copy string to be more flexible when using temporary param objects like Strings
 	, fpUsedList(NULL)
 {
-	if ( Coast::Storage::GetStatisticLevel() >= 3 ) {
+	if ( coast::storage::GetStatisticLevel() >= 3 ) {
 		fpUsedList = new UsedListType();
 	}
 }
@@ -126,17 +126,17 @@ void MemTracker::TrackFree(MemoryHeader *mh)
 void MemTracker::DumpUsedBlocks()
 {
 	if ( fpUsedList && fpUsedList->size() ) {
-		SystemLog::Error(String(Coast::Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
+		SystemLog::Error(String(coast::storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
-		const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
+		const size_t alignedSize = coast::memory::AlignedSize<MemoryHeader>::value;
 		long lIdx = 0;
 		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
 			MemoryHeader *pMH = *aUsedIterator;
 			// reserve memory for the following text plus four times the buffer size for dumping as text
-			String strOut(( 40L + ( ( pMH->fUsableSize + alignedSize ) * 4L ) ), Coast::Storage::Global());
+			String strOut(( 40L + ( ( pMH->fUsableSize + alignedSize ) * 4L ) ), coast::storage::Global());
 			strOut.Append("Block ").Append(lIdx).Append('\n');
-			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, alignedSize, Coast::Storage::Global()).DumpAsHex()).Append('\n');
-			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + alignedSize), pMH->fUsableSize, Coast::Storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, alignedSize, coast::storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + alignedSize), pMH->fUsableSize, coast::storage::Global()).DumpAsHex()).Append('\n');
 			SystemLog::WriteToStderr(strOut);
 		}
 	}
@@ -184,23 +184,23 @@ namespace {
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
 			statisticLevel = lLevel;
-			InitFinisManager::IFMTrace("Storage::Initialized\n");
+			InitFinisManager::IFMTrace("storage::Initialized\n");
 		}
 		~StorageInitializer() {
-			InitFinisManager::IFMTrace("Storage::Finalized\n");
+			InitFinisManager::IFMTrace("storage::Finalized\n");
 		}
 		long GetStatisticLevel() {
 			return statisticLevel;
 		}
 		//exchange this object when MT_Storage is used
-		Coast::Storage::StorageHooksPtr fgTopHook;
+		coast::storage::StorageHooksPtr fgTopHook;
 	};
     typedef boost::details::pool::singleton_default<StorageInitializer> StorageInitializerSingleton;
 }
 
-namespace Coast
+namespace coast
 {
-	namespace Storage
+	namespace storage
 	{
 		namespace
 		{
@@ -293,9 +293,9 @@ namespace Coast
 			}
 			return DoMakeMemTracker(name);
 		}
-	} // namespace Storage
+	} // namespace storage
 
-	namespace Memory
+	namespace memory
 	{
 		Allocator*& allocatorFor(void* ptr) throw () {
 			return (reinterpret_cast<Allocator **>(ptr))[0L];
@@ -310,8 +310,8 @@ namespace Coast
 				a->Free(ptr); //lint !e1550
 			}
 		}
-	} // namespace Memory
-} // namespace Coast
+	} // namespace memory
+} // namespace coast
 
 Allocator::Allocator(long allocatorid) :
 		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker()) {
@@ -338,13 +338,13 @@ void Allocator::Refresh() {
 }
 
 size_t Allocator::AllocSize(size_t n, size_t size) {
-	return (n * size) + Coast::Memory::AlignedSize<MemoryHeader>::value;
+	return (n * size) + coast::memory::AlignedSize<MemoryHeader>::value;
 }
 
 void *Allocator::ExtMemStart(void *vp) {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *) (vp)) + Coast::Memory::AlignedSize<MemoryHeader>::value); //fUsableSize does *not* include header //lint !e429
+		void *s = (((char *) (vp)) + coast::memory::AlignedSize<MemoryHeader>::value); //fUsableSize does *not* include header //lint !e429
 		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
@@ -353,7 +353,7 @@ void *Allocator::ExtMemStart(void *vp) {
 
 MemoryHeader *Allocator::RealMemStart(void *vp) {
 	if (vp) {
-		MemoryHeader *mh = (MemoryHeader *) (((char *) (vp)) - Coast::Memory::AlignedSize<MemoryHeader>::value);
+		MemoryHeader *mh = (MemoryHeader *) (((char *) (vp)) - coast::memory::AlignedSize<MemoryHeader>::value);
 		if (mh->fMagic == MemoryHeader::gcMagic) {
 			return mh;
 		}
@@ -363,8 +363,8 @@ MemoryHeader *Allocator::RealMemStart(void *vp) {
 
 GlobalAllocator::GlobalAllocator() :
 		Allocator(11223344L) {
-	if (Coast::Storage::GetStatisticLevel() >= 1) {
-		fTracker = MemTrackerPtr(Coast::Storage::MakeMemTracker("GlobalAllocator", false));
+	if (coast::storage::GetStatisticLevel() >= 1) {
+		fTracker = MemTrackerPtr(coast::storage::MakeMemTracker("GlobalAllocator", false));
 		fTracker->SetId(fAllocatorId);
 	}
 }
@@ -389,7 +389,7 @@ void *GlobalAllocator::Alloc(size_t allocSize) {
 	void *vp = ::malloc(allocSize);
 
 	if (vp) {
-		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - Coast::Memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
+		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - coast::memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
 		fTracker->TrackAlloc(mh);
 		return ExtMemStart(mh); //lint !e593//lint !e429
 	} else {
@@ -419,18 +419,18 @@ void GlobalAllocator::Free(void *vp) {
 	}
 }
 
-char *ITOStorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes) {
-	return reinterpret_cast<char *>(Coast::Storage::Global()->Malloc(bytes));
+char *itostorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes) {
+	return reinterpret_cast<char *>(coast::storage::Global()->Malloc(bytes));
 }
 
-void ITOStorage::BoostPoolUserAllocatorGlobal::free(char * const block) {
-	Coast::Storage::Global()->Free(block);
+void itostorage::BoostPoolUserAllocatorGlobal::free(char * const block) {
+	coast::storage::Global()->Free(block);
 }
 
-char *ITOStorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes) {
-	return reinterpret_cast<char *>(Coast::Storage::Current()->Malloc(bytes));
+char *itostorage::BoostPoolUserAllocatorCurrent::malloc(const size_type bytes) {
+	return reinterpret_cast<char *>(coast::storage::Current()->Malloc(bytes));
 }
 
-void ITOStorage::BoostPoolUserAllocatorCurrent::free(char * const block) {
-	Coast::Storage::Current()->Free(block);
+void itostorage::BoostPoolUserAllocatorCurrent::free(char * const block) {
+	coast::storage::Current()->Free(block);
 }

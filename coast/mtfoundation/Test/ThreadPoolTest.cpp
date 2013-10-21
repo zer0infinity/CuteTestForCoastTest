@@ -116,7 +116,7 @@ void ThreadPoolTest::PoolManagerTest()
 {
 	StartTrace(ThreadPoolTest.PoolManagerTest);
 	TestPoolManager<GugusThread<ROAnything>, ROAnything> myPool("MyTestPool");
-	GugusThread<ROAnything> myThread("MyGugus", Coast::Storage::Global());
+	GugusThread<ROAnything> myThread("MyGugus", coast::storage::Global());
 	myThread.AddObserver(&myPool);
 	Anything anyData, anyExpected;
 	anyData["Mytest"] = 33;

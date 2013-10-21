@@ -9,7 +9,7 @@
 #include "FileDAImpl.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 //--- FileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(FileDAImpl);
@@ -32,7 +32,7 @@ bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, Pa
 
 	ret = in->Get("Filename", name, context);
 	Trace("filename from context [" << name << "]");
-	System::ResolvePath(name);
+	system::ResolvePath(name);
 	Trace("cleaned filename [" << name << "]");
 	if (ret) {
 		filename << name;
@@ -46,10 +46,10 @@ bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, Pa
 	return ret;
 }
 
-System::openmode FileDAImpl::GetMode(Context &context, ParameterMapper *in)
+system::openmode FileDAImpl::GetMode(Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetMode);
-	System::openmode mode = (System::openmode)0;
+	system::openmode mode = (system::openmode)0;
 	Anything anyModes;
 	// do not fail when Get did not find a Mode...
 	in->Get("Mode", anyModes, context);
@@ -59,10 +59,10 @@ System::openmode FileDAImpl::GetMode(Context &context, ParameterMapper *in)
 	return mode;
 }
 
-System::openmode FileDAImpl::DoGetMode(ROAnything roaModes)
+system::openmode FileDAImpl::DoGetMode(ROAnything roaModes)
 {
 	StartTrace(FileDAImpl.DoGetMode);
-	System::openmode mode = (System::openmode)0;
+	system::openmode mode = (system::openmode)0;
 	if ( roaModes.Contains("text") ) {
 		Trace("text mode");
 	} else if ( roaModes.Contains("binary") ) {
@@ -78,8 +78,8 @@ std::iostream *FileDAImpl::GetFileStream(Context &context, ParameterMapper *in)
 	std::iostream *pStream = NULL;
 	String filename, ext;
 	if (GetFileName(filename, ext, context, in)) {
-		System::openmode mode = GetMode(context, in);
-		pStream = System::OpenStream(filename, ext, mode);
+		system::openmode mode = GetMode(context, in);
+		pStream = system::OpenStream(filename, ext, mode);
 		if (pStream) {
 			Trace("Stream opened ok");
 		}

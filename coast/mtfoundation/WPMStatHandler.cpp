@@ -22,7 +22,7 @@ WPMStatHandler::WPMStatHandler(long poolSize)
 	, fTotalRequests(0)
 	, fTotalTime(0.0)
 	, fTimer( ullResolution )
-	, fMutex( "WPMStatHandler", Coast::Storage::Global() )
+	, fMutex( "WPMStatHandler", coast::storage::Global() )
 {
 	StartTrace(WPMStatHandler.Ctor);
 }
@@ -94,13 +94,13 @@ void WPMStatHandler::DoStatistic(Anything &statElements)
 long WPMStatHandler::DoGetTotalRequests()
 {
 	LockUnlockEntry me(fMutex);
-	StatTrace(WPMStatHandler.DoGetTotalRequests, "total: " << (l_long)fTotalRequests, Coast::Storage::Current());
+	StatTrace(WPMStatHandler.DoGetTotalRequests, "total: " << (l_long)fTotalRequests, coast::storage::Current());
 	return fTotalRequests;
 }
 
 long WPMStatHandler::DoGetCurrentParallelRequests()
 {
 	LockUnlockEntry me(fMutex);
-	StatTrace(WPMStatHandler.DoGetCurrentParallelRequests, "curr: " << fCurrentParallelRequests, Coast::Storage::Current());
+	StatTrace(WPMStatHandler.DoGetCurrentParallelRequests, "curr: " << fCurrentParallelRequests, coast::storage::Current());
 	return fCurrentParallelRequests;
 }

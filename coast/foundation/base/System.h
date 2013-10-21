@@ -14,6 +14,6 @@
 #include "SystemBase.h"
 #include "SystemFile.h"
 
-using namespace Coast;
+using namespace coast;
 
 #endif /* SYSTEM_H_ */

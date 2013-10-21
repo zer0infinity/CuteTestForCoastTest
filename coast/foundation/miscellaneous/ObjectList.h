@@ -40,13 +40,13 @@ private:
 		enum DeleteFuncSelector { Reftype, Pointertype };
 		enum { delAlgo = (boost_or_tr1::is_pointer<Tp>::value) ? Pointertype : Reftype };
 
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Reftype> ) {};
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Pointertype> ) {
-			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << reinterpret_cast<long>(newObjPtr), Coast::Storage::Current());
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, coast::typetraits::Int2Type<Reftype> ) {};
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, coast::typetraits::Int2Type<Pointertype> ) {
+			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << reinterpret_cast<long>(newObjPtr), coast::storage::Current());
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
-			DoDeleteObject(pElement, Coast::TypeTraits::Int2Type<delAlgo>() );
+			DoDeleteObject(pElement, coast::typetraits::Int2Type<delAlgo>() );
 		}
 	};
 
@@ -57,13 +57,13 @@ private:
 	ObjectList(const ThisType &);
 
 public:
-	ObjectList(const char *name, Allocator *a = Coast::Storage::Global())
+	ObjectList(const char *name, Allocator *a = coast::storage::Global())
 		: ListType()
 		, fpAlloc(a)
 		, fName(name, -1, fpAlloc)
 		, fShutdown(false)
 		, fDestructiveShutdown(false) {
-		StatTrace(ObjectList.ObjectList, "param ctor this:" << reinterpret_cast<long>(this), Coast::Storage::Current());
+		StatTrace(ObjectList.ObjectList, "param ctor this:" << reinterpret_cast<long>(this), coast::storage::Current());
 	}
 
 	virtual ~ObjectList() {
@@ -147,7 +147,7 @@ protected:
 	}
 
 	virtual size_t DoGetSize() const {
-		StatTrace(ObjectList.DoGetSize, "this:" << reinterpret_cast<long>(this), Coast::Storage::Current());
+		StatTrace(ObjectList.DoGetSize, "this:" << reinterpret_cast<long>(this), coast::storage::Current());
 		return IntGetSize();
 	}
 	virtual bool DoIsEmpty() const {
@@ -156,7 +156,7 @@ protected:
 
 private:
 	size_t IntGetSize() const {
-		StatTrace(ObjectList.IntGetSize, "size:" << (long)this->constlistptr()->size(), Coast::Storage::Current());
+		StatTrace(ObjectList.IntGetSize, "size:" << (long)this->constlistptr()->size(), coast::storage::Current());
 		return this->constlistptr()->size();
 	}
 	bool IntIsEmpty() const {

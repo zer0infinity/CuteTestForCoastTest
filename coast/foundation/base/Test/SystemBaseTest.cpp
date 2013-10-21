@@ -8,7 +8,7 @@
 
 #include "SystemBaseTest.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include "TestSuite.h"
 #include "DiffTimer.h"
@@ -28,7 +28,7 @@ void SystemBaseTest::DoSingleSelectTest()
 	StartTrace(SystemBaseTest.DoSingleSelectTest);
 #if !defined(WIN32) // select not possible on non-socket handles on WIN32
 	// assume writability of stdout
-	int result = System::DoSingleSelect(STDOUT_FILENO, 100, false, true);
+	int result = system::DoSingleSelect(STDOUT_FILENO, 100, false, true);
 	assertEqual(1L, result);
 	if ( result < 0 ) {
 		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
@@ -38,7 +38,7 @@ void SystemBaseTest::DoSingleSelectTest()
 	const long waittime = 1000L;
 	DiffTimer dt(DiffTimer::eMilliseconds);//1ms accuracy
 	// wait for stdin
-	int iSSRet = System::DoSingleSelect(STDIN_FILENO, waittime, false, false);
+	int iSSRet = system::DoSingleSelect(STDIN_FILENO, waittime, false, false);
 	long difft = dt.Diff();
 	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
 	difft -= waittime;
@@ -52,7 +52,7 @@ void SystemBaseTest::DoSingleSelectTest()
 	t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
 	// sanity check negative value
 #endif
-	t_assert(System::DoSingleSelect(-1, 0, true, false) < 0);
+	t_assert(system::DoSingleSelect(-1, 0, true, false) < 0);
 	// timeout tested indirectly in socket test cases
 	// cannot think of case forcing select really fail, i.e. return -1
 }
@@ -62,7 +62,7 @@ void SystemBaseTest::MicroSleepTest()
 	DiffTimer::eResolution resolution( DiffTimer::eMicroseconds );
 	DiffTimer dt(resolution); // microsecond accuracy
 	const long SLEEP = resolution / 10; // = 100000L; // 100ms
-	t_assert(System::MicroSleep(SLEEP));
+	t_assert(system::MicroSleep(SLEEP));
 	long sleptdelta = dt.Diff() - SLEEP;
 	t_assertm(SLEEP / 5 > abs(sleptdelta), (const char *)(String( "expected sleeping with 20% = 20'000 microsecs (0.02s) accuracy -- but was ") << sleptdelta << " microseconds"));
 }
@@ -70,7 +70,7 @@ void SystemBaseTest::MicroSleepTest()
 void SystemBaseTest::GetProcessEnvironmentTest()
 {
 	Anything env;
-	System::GetProcessEnvironment(env);
+	system::GetProcessEnvironment(env);
 	t_assert(env.IsDefined("PATH"));
 	t_assert(!env.IsDefined("this_shouldnt_be_in_the_environment"));
 	t_assert(env.GetSize() > 1);
@@ -78,9 +78,9 @@ void SystemBaseTest::GetProcessEnvironmentTest()
 
 void SystemBaseTest::allocFreeTests()
 {
-	void *vp = Coast::Storage::Current()->Calloc(32, sizeof(char));
+	void *vp = coast::storage::Current()->Calloc(32, sizeof(char));
 	t_assert(vp != 0);
-	Coast::Storage::Current()->Free(vp);
+	coast::storage::Current()->Free(vp);
 }
 
 void SystemBaseTest::TimeTest ()
@@ -89,12 +89,12 @@ void SystemBaseTest::TimeTest ()
 
 	struct tm agmtime;
 	agmtime.tm_year = 0;
-	System::GmTime(&now, &agmtime);
+	system::GmTime(&now, &agmtime);
 	t_assert(agmtime.tm_year > 0);
 
 	struct tm alocaltime;
 	alocaltime.tm_year = 0;
-	System::LocalTime(&now, &alocaltime);
+	system::LocalTime(&now, &alocaltime);
 	t_assert(alocaltime.tm_year > 0);
 
 	assertEqual(agmtime.tm_sec, alocaltime.tm_sec);
@@ -105,11 +105,11 @@ void SystemBaseTest::TimeTest ()
 void SystemBaseTest::LockFileTest()
 {
 	StartTrace(SystemBaseTest.GetFileSizeTest);
-	String lockFile(System::GetTempPath().Append(System::Sep()).Append("LockFileTest.lck"));
-	bool ret = System::GetLockFileState(lockFile);
+	String lockFile(system::GetTempPath().Append(system::Sep()).Append("LockFileTest.lck"));
+	bool ret = system::GetLockFileState(lockFile);
 	t_assertm(false == ret, "expected Lockfile to be unlocked");
-	t_assertm(true == System::GetLockFileState(lockFile), "expected LockFile to be locked");
-	t_assertm(false == System::IO::unlink(lockFile), "expected unlinking LockFile to succeed.");
+	t_assertm(true == system::GetLockFileState(lockFile), "expected LockFile to be locked");
+	t_assertm(false == system::io::unlink(lockFile), "expected unlinking LockFile to succeed.");
 }
 #endif
 

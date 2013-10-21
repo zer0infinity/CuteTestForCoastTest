@@ -19,7 +19,7 @@
 #include "Policy.h"
 #include "MT_Storage.h"
 
-using namespace Coast;
+using namespace coast;
 
 #if !defined(WIN32)
 #include <pwd.h>
@@ -158,9 +158,9 @@ Server::Server(const char *name)
 	, fPoolManager(0)
 	, fPidFileNameMutex("PIDFile")
 	, fPidFileName("pid")
-	, fPid(System::getpid())	// on linux this pid can't be used to stop the server
+	, fPid(system::getpid())	// on linux this pid can't be used to stop the server
 	, fStoreMutex("Store")
-	, fStore(Coast::Storage::Global())
+	, fStore(coast::storage::Global())
 	, fStatisticObserver(0)
 {
 	StartTrace1(Server.Server, "<" << GetName() << ">");
@@ -217,13 +217,13 @@ int Server::GlobalReinit()
 	// assume there are no threads running with pending requests
 	// reinitialization should take place in global storage
 	// otherwise config anys are allocated in thread local storage
-	Coast::Storage::ForceGlobalStorage(true);
+	coast::storage::ForceGlobalStorage(true);
 	{
 		// block cleaner thread since CheckTimeout of Session
 		// makes Lookup calls to shared configs
 		retCode = DoGlobalReinit();
 	}
-	Coast::Storage::ForceGlobalStorage(false);
+	coast::storage::ForceGlobalStorage(false);
 	ServersModule::SetServerForReInit(0);
 	if ( retCode == 0 ) {
 		retCode = UnblockRequests();
@@ -245,9 +245,9 @@ int Server::DoGlobalReinit()
 	const char *bootfilename = GetConfig()["COAST_BOOTFILE"].AsCharPtr("Config");
 	if (AppBooter().ReadFromFile(config, bootfilename)) {
 		// config file may redefine root directory
-		System::SetRootDir( Lookup("Root", System::GetRootDir()), true);
+		system::SetRootDir( Lookup("Root", system::GetRootDir()), true);
 		// fgConfig file may redefine path list
-		System::SetPathList( Lookup("PathList", System::GetPathList()), true);
+		system::SetPathList( Lookup("PathList", system::GetPathList()), true);
 		SystemLog::WriteToStderr("Environment set\nResetting Components\n");
 
 		TraceAny(GetConfig(), "Old Config");
@@ -417,7 +417,7 @@ RequestProcessor *Server::MakeProcessor()
 		PrepareShutdown(-1);
 	} else {
 		// create processor that is connected to this server
-		rp = (RequestProcessor *)rp->Clone(Coast::Storage::Global());
+		rp = (RequestProcessor *)rp->Clone(coast::storage::Global());
 		rp->Init(this);
 	}
 	return rp;
@@ -524,10 +524,10 @@ void Server::PIDFileName(String &pidFilePath)
 	String pidFileName(Lookup("PIDFileName", "pid"));
 
 	// reset path to root dir
-	pidFilePath = System::GetRootDir();
+	pidFilePath = system::GetRootDir();
 
 	// add log directory and file name
-	pidFilePath << System::Sep() << pidFileName;
+	pidFilePath << system::Sep() << pidFileName;
 	Trace("PID File<" << pidFilePath << ">");
 }
 
@@ -535,14 +535,14 @@ int Server::DoWritePIDFile(const String &pidFilePath, pid_t lPid)
 {
 	StartTrace(Server.WritePIDFile);
 
-	std::ostream *os = System::OpenOStream(pidFilePath, 0);
+	std::ostream *os = system::OpenOStream(pidFilePath, 0);
 
 	if ( os ) {
 		Trace("PID File<" << pidFilePath << "> opened");
 		if ( lPid != (pid_t) - 1 ) {
 			fPid = lPid;
 		} else {
-			fPid = System::getpid();
+			fPid = system::getpid();
 		}
 		(*os) << fPid;
 		os->flush();
@@ -559,7 +559,7 @@ int Server::DoDeletePIDFile(const String &pidFilePath)
 {
 	StartTrace(Server.DoDeletePIDFile);
 
-	if ( System::IO::unlink(pidFilePath) != 0 ) {
+	if ( system::io::unlink(pidFilePath) != 0 ) {
 		SYSWARNING("couldn't delete pid file " << pidFilePath << ": " << SystemLog::LastSysError());
 		return -1;
 	}
@@ -652,13 +652,13 @@ int MasterServer::DoInit()
 			while ( aServersIterator.Next(roaServerConfig) && bStartSuccess ) {
 				TraceAny(roaServerConfig, "initializing server");
 				// Start serverthread which internally waits on setting to work
-				Allocator *pAlloc = Coast::Storage::Global();
+				Allocator *pAlloc = coast::storage::Global();
 				if ( !roaServerConfig.IsNull() && ( roaServerConfig["UsePoolStorage"].AsLong(0) == 1 ) ) {
 					TraceAny(roaServerConfig, "creating PoolAllocator for server");
 					pAlloc = MT_Storage::MakePoolAllocator(roaServerConfig["PoolStorageSize"].AsLong(10240), roaServerConfig["NumOfPoolBucketSizes"].AsLong(10), 0);
 					if ( pAlloc == NULL ) {
 						SYSERROR("was not able to create PoolAllocator for [" << roaServerConfig["ServerName"].AsString() << "], check config!");
-						pAlloc = Coast::Storage::Global();
+						pAlloc = coast::storage::Global();
 					}
 				}
 				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig);
@@ -809,7 +809,7 @@ ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
 	, fbServerIsInitialized(false)
-	, fTerminationMutex( "ServerThreadTerminationMutex", Coast::Storage::Global() )
+	, fTerminationMutex( "ServerThreadTerminationMutex", coast::storage::Global() )
 {
 }
 
@@ -817,7 +817,7 @@ ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
 	, fbServerIsInitialized(false)
-	, fTerminationMutex( "ServerThreadTerminationMutex", Coast::Storage::Global() )
+	, fTerminationMutex( "ServerThreadTerminationMutex", coast::storage::Global() )
 {
 }
 
@@ -837,7 +837,7 @@ void ServerThread::DoStartedHook(ROAnything config)
 	} else {
 		serverName = fServer->GetName();
 	}
-	String strName("ServerThread: ", Coast::Storage::Global());
+	String strName("ServerThread: ", coast::storage::Global());
 	strName.Append(serverName);
 	SetName(strName);
 	if ( fServer ) {

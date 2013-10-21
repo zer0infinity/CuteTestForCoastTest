@@ -16,7 +16,7 @@ class Connector;
 
 //---- ListenerPoolTest ----------------------------------------------------------
 //!TestCases description
-class ListenerPoolTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class ListenerPoolTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

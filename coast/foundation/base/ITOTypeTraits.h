@@ -21,9 +21,9 @@ namespace boost_or_tr1 = boost;
 #endif
 
 
-namespace Coast
+namespace coast
 {
-	namespace TypeTraits
+	namespace typetraits
 	{
 		struct NullType {};
 
@@ -142,8 +142,8 @@ namespace Coast
 #include <cxxabi.h> // __cxa_demangle
 #include <cstdlib> // ::free()
 #endif
-namespace Coast {
-	namespace Utility {
+namespace coast {
+	namespace utility {
 #ifdef __GNUG__
 		template<typename ResultType>
 		inline ResultType demangle(char const *name){

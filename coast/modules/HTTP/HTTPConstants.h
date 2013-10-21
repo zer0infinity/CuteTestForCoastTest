@@ -16,8 +16,8 @@ class ROAnything;
 class String;
 class Context;
 
-namespace Coast {
-	namespace HTTP {
+namespace coast {
+	namespace http {
 		namespace constants {
 			char const * const splitFieldsRegularExpression = "^(accept|allow|cache-control|connection|content-(encoding|language)|expect|If-None-Match|pragma|Proxy-Authenticate|TE$|trailer|Transfer-Encoding|upgrade|vary|via|warning|WWW-Authenticate)";
 			char const * const protocolVersionSlotname = "HTTPVersion";

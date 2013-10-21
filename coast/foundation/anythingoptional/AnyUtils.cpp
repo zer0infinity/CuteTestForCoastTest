@@ -11,7 +11,7 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 //---- Any utilities
 void AnyUtils::ShowDifferences( String &masterString, String &inputString, std::ostream *verbose )
@@ -280,11 +280,11 @@ bool Recording::ReadinRecording( const String &fileName, Anything &recording )
 {
 	StartTrace(Recording.ReadinRecording);
 	//	hardcoded:
-	String recFilename = System::GetRootDir();
-	recFilename << System::Sep() << "config" << System::Sep();
+	String recFilename = system::GetRootDir();
+	recFilename << system::Sep() << "config" << system::Sep();
 	recFilename << fileName;
 
-	std::iostream *ifp = System::OpenStream( recFilename, "any");
+	std::iostream *ifp = system::OpenStream( recFilename, "any");
 
 	if (ifp == 0) {
 		String eMsg = "Can't open recording file ";
@@ -303,11 +303,11 @@ bool Recording::WriteoutRecording( const String &fileName, Anything &recording )
 {
 	StartTrace(Recording.WriteoutRecording);
 
-	String recFilename = System::GetRootDir();
-	recFilename << System::Sep() << "config" << System::Sep();
+	String recFilename = system::GetRootDir();
+	recFilename << system::Sep() << "config" << system::Sep();
 	recFilename << fileName;
 
-	std::iostream *ifp = System::OpenStream( recFilename, "any", std::ios::out );
+	std::iostream *ifp = system::OpenStream( recFilename, "any", std::ios::out );
 
 	if (ifp == 0) {
 		String eMsg = "Can't open config file for writing ";

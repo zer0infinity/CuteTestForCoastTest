@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Context.h"
 
-class PageTest : public TestFramework::TestCase
+class PageTest : public testframework::TestCase
 {
 public:
 	//--- constructors

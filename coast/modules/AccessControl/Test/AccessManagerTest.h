@@ -25,7 +25,7 @@ They have a config themselves, which in turn defines the backends
 (i.e. AccessControllers) that they utilize to get access to user-
 and token information.
 */
-class AccessManagerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class AccessManagerTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

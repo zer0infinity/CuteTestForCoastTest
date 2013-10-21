@@ -13,7 +13,7 @@
 
 class Registry;
 
-class WDModuleTest : public TestFramework::TestCase
+class WDModuleTest : public testframework::TestCase
 {
 public:
 	//!TestCases

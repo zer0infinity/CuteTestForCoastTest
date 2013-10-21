@@ -19,7 +19,7 @@ class Anything;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class HTTPMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class HTTPMapperTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 

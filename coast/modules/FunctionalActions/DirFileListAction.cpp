@@ -13,7 +13,7 @@
 #include "Tracer.h"
 #include "Timers.h"
 
-using namespace Coast;
+using namespace coast;
 
 //---- DirFileListAction ---------------------------------------------------------------
 RegisterAction(DirFileListAction);
@@ -55,7 +55,7 @@ bool DirFileListAction::DoExecAction(String &transitionToken, Context &ctx, cons
 
 	Anything aTmpStore(ctx.GetTmpStore());
 	// Check if path is a valid path
-	if ( !System::IsDirectory(sPath) ) {
+	if ( !system::IsDirectory(sPath) ) {
 		String strMsg("Slot Path contains not a valid path !");
 		Trace(strMsg);
 		aTmpStore["Error"] = strMsg;
@@ -66,7 +66,7 @@ bool DirFileListAction::DoExecAction(String &transitionToken, Context &ctx, cons
 	Anything aFileList;
 	{
 		MethodTimerUnit(DirFileListAction.DoExecAction, "GetDirFileList", ctx, TimeLogger::eMicroseconds);
-		aFileList = System::DirFileList(sPath, sFilter);
+		aFileList = system::DirFileList(sPath, sFilter);
 	}
 	SubTraceAny(TraceList, aFileList, "Found [" << aFileList.GetSize() << "] files");
 
@@ -86,12 +86,12 @@ bool DirFileListAction::DoExecAction(String &transitionToken, Context &ctx, cons
 		while (ii >= 0) {
 			Trace ("File to check [" << aFileList[ii].AsString() << "]");
 			String sCurrPath(sPath);
-			if ( sPath[sPath.Length()-1] != System::Sep() ) {
-				sCurrPath << System::Sep();
+			if ( sPath[sPath.Length()-1] != system::Sep() ) {
+				sCurrPath << system::Sep();
 			}
 			sCurrPath << aFileList[ii].AsString();
 			Trace ("Path to check [" << sCurrPath << "]");
-			if ( System::IsDirectory(sCurrPath) ) {
+			if ( system::IsDirectory(sCurrPath) ) {
 				Trace ("File to check [" << aFileList[ii].AsString() << "] is Directory !!");
 				if ( !bDirs ) {
 					Trace("Removing Directory [" << aFileList[ii].AsString() << "] from list");

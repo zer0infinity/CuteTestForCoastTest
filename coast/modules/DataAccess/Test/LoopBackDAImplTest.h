@@ -14,7 +14,7 @@
 
 //---- LoopBackDAImplTest ----------------------------------------------------------
 //!testcases for LoopBackDAImpl
-class LoopBackDAImplTest : public TestFramework::TestCase
+class LoopBackDAImplTest : public testframework::TestCase
 {
 public:
 	//--- constructors

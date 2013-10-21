@@ -40,7 +40,7 @@ void MemTrackerTest::TrackAllocFreeTest()
 {
 	StartTrace(MemTrackerTest.TrackAllocFreeTest);
 	MemTracker aTracker("AllocFreeTracker");
-	const size_t alignedSize = Coast::Memory::AlignedSize<MemoryHeader>::value;
+	const size_t alignedSize = coast::memory::AlignedSize<MemoryHeader>::value;
 
 	void *vp32 = ::calloc(1, (alignedSize + 16));
 	void *vp48 = ::calloc(1, (alignedSize + 32));

@@ -13,7 +13,7 @@
 
 //---- REBitSetTest ----------------------------------------------------------
 //!TestCases description
-class REBitSetTest : public TestFramework::TestCase
+class REBitSetTest : public testframework::TestCase
 {
 public:
 	//--- constructors

@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class TransitionTests : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class TransitionTests : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

@@ -125,7 +125,7 @@ void HTTPMapperTest::FDTest4()
 
 void HTTPMapperTest::GetTestInput(Anything &testInput, const char *testname)
 {
-	std::iostream *Ios = Coast::System::OpenStream(testname, "any");
+	std::iostream *Ios = coast::system::OpenStream(testname, "any");
 	if ( Ios ) {
 		testInput.Import((*Ios));
 		delete Ios;

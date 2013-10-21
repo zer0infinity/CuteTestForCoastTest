@@ -17,7 +17,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class SSLObjectManagerTest : public TestFramework::TestCaseWithConfig
+class SSLObjectManagerTest : public testframework::TestCaseWithConfig
 {
 public:
 	//--- constructors

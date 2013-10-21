@@ -15,7 +15,7 @@
 
 #include "TestCase.h"//lint !e537
 
-class MmapTest : public TestFramework::TestCase
+class MmapTest : public testframework::TestCase
 {
 public:
 	MmapTest(TString tstrName);

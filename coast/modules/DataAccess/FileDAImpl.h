@@ -44,11 +44,11 @@ public:
 
 protected:
 	//! override to specify different file access modes
-	virtual Coast::System::openmode DoGetMode(ROAnything roaModes);
+	virtual coast::system::openmode DoGetMode(ROAnything roaModes);
 
 	bool GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in);
 	std::iostream *GetFileStream(Context &context, ParameterMapper *in);
-	Coast::System::openmode GetMode(Context &context, ParameterMapper *in);
+	coast::system::openmode GetMode(Context &context, ParameterMapper *in);
 };
 
 #endif		//not defined _FileDAImpl_H

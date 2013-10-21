@@ -101,7 +101,7 @@
  </pre>
  \note You can only check for absence of named slots (so far). Values are not checked, thus * must be provided as leaf (or any other dummy) for correct syntax.
  */
-class ConfiguredActionTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class ConfiguredActionTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	/*! TestCase constructor
 	 \param name name of the test */

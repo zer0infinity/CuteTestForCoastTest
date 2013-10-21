@@ -15,7 +15,7 @@
 #include "SystemFile.h"
 #include "StringStream.h"
 
-using namespace Coast;
+using namespace coast;
 
 #include <fcntl.h>
 #include <fstream>
@@ -62,7 +62,7 @@ Test *MmapTest::suite ()
 
 void MmapTest::TestMagicFlags()
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		MmapMagicFlags fl(std::ios::in, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosIn());
 		t_assert(!fl.IsIosOut());
@@ -107,8 +107,8 @@ void MmapTest::TestMagicFlags()
 void MmapTest::LargeWrite()
 // what: check writing more than one mapped page
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
-		System::IO::unlink(fgcFilename);
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+		system::io::unlink(fgcFilename);
 		// note this can be a problem if more than one process runs this test
 		OMmapStream os(fgcFilename);
 		t_assert(os.good());
@@ -135,7 +135,7 @@ void MmapTest::LargeWrite()
 void MmapTest::SimpleWrite()
 // what: check a few properties of a simple DoScramble-DoUnscramble cycle
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		IntSimpleWrite();
 	}
 }
@@ -143,7 +143,7 @@ void MmapTest::SimpleWrite()
 void MmapTest::IntSimpleWrite(int openmode)
 // what: check a few properties of a simple DoScramble-DoUnscramble cycle
 {
-	System::IO::unlink(fgcFilename);
+	system::io::unlink(fgcFilename);
 	// note this can be a problem if more than one process runs this test
 	OMmapStream os(fgcFilename, std::ios::out, openmode);
 	t_assert(os.good());
@@ -171,7 +171,7 @@ void MmapTest::IntSimpleWrite(int openmode)
 void MmapTest::SimpleRead()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		IntSimpleWrite(); // set up testfile
 		IMmapStream is(fgcFilename);
 		t_assert(is.good());
@@ -194,7 +194,7 @@ void MmapTest::SimpleRead()
 }
 void MmapTest::OperatorShiftLeftWithReadBuf()
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		String testContent("hank");
 		IStringStream is(testContent);
 		if (t_assert(is.good())) {
@@ -203,7 +203,7 @@ void MmapTest::OperatorShiftLeftWithReadBuf()
 			os << is.rdbuf();
 			t_assert(os.good());
 
-			std::istream *is2 = System::OpenIStream("testout2", "txt");
+			std::istream *is2 = system::OpenIStream("testout2", "txt");
 			if (!t_assert(is2)) {
 				return;
 			}
@@ -218,9 +218,9 @@ void MmapTest::OperatorShiftLeftWithReadBuf()
 void MmapTest::EmptyFileRead()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		String mname("tmp/mmapEmptyFile");
-		std::ostream *os0 = System::OpenOStream(mname, "tst");
+		std::ostream *os0 = system::OpenOStream(mname, "tst");
 		delete os0;
 
 		mname << ".tst";
@@ -239,8 +239,8 @@ void MmapTest::EmptyFileRead()
 void MmapTest::EmptyFilePutback()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
-		System::IO::unlink(fgcFilename);
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+		system::io::unlink(fgcFilename);
 		// note this can be a problem if more than one process runs this test
 		MmapStream ms(fgcFilename, std::ios::in | std::ios::out);
 
@@ -263,8 +263,8 @@ void MmapTest::EmptyFilePutback()
 void MmapTest::FStreamEmptyFilePutback()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
-		System::IO::unlink(fgcFilename);
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+		system::io::unlink(fgcFilename);
 		// note this can be a problem if more than one process runs this test
 		std::fstream ms(fgcFilename, std::ios::in | std::ios::out);
 
@@ -286,7 +286,7 @@ void MmapTest::FStreamEmptyFilePutback()
 void MmapTest::SimpleReadOnly()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(0600); // set up testfile, should fail for SunC++ 4.2
 		IMmapStream is(fgcFilename);
 		t_assert(is.good());
@@ -311,7 +311,7 @@ void MmapTest::SimpleReadOnly()
 void MmapTest::SimpleROPutback()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
 		IMmapStream is(fgcFilename);
 		t_assert(is.good());
@@ -334,7 +334,7 @@ void MmapTest::SimpleROPutback()
 void MmapTest::SimplePutback()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
 		MmapStream is(fgcFilename, std::ios::in | std::ios::out | std::ios::app); // do not trunc the file
 		t_assert(is.good());
@@ -365,7 +365,7 @@ void MmapTest::SimplePutback()
 void MmapTest::SimpleAppend()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
 		OMmapStream os(fgcFilename, std::ios::app);
 		t_assert(os.good());
@@ -376,14 +376,14 @@ void MmapTest::SimpleAppend()
 		long filelen = lseek(fd, 0L, SEEK_END);
 		assertEqual(2 * strlen(fgcContent), filelen);
 		close(fd);
-		System::IO::unlink(fgcFilename);
+		system::io::unlink(fgcFilename);
 	}
 } // SimpleAppend
 
 void MmapTest::SimpleTruncate()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
 		MmapStream os(fgcFilename, std::ios::in | std::ios::out); // this truncates the file
 		t_assert(os.good());
@@ -394,17 +394,17 @@ void MmapTest::SimpleTruncate()
 		long filelen = lseek(fd, 0L, SEEK_END);
 		assertEqual(strlen("Hallo"), filelen);
 		close(fd);
-		System::IO::unlink(fgcFilename);
+		system::io::unlink(fgcFilename);
 	}
 } // SimpleAppend
 
 void MmapTest::SimulatedLogAppend()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		TString logfilename(fgcFilename);
 		logfilename << ".log";
-		System::IO::unlink(logfilename);
+		system::io::unlink(logfilename);
 
 		OMmapStream os(logfilename, std::ios::app, MmapStreamBuf::openprot,
 					   MmapStreamBuf::eSync); // eSync is default
@@ -415,14 +415,14 @@ void MmapTest::SimulatedLogAppend()
 			}
 		}
 		os.close();
-		System::IO::unlink(logfilename); // clean up afterwards
+		system::io::unlink(logfilename); // clean up afterwards
 	}
 } // SimpleAppend
 
 void MmapTest::SimpleAtEnd()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
 		OMmapStream os(fgcFilename, std::ios::ate);
 		t_assert(os.good());
@@ -433,14 +433,14 @@ void MmapTest::SimpleAtEnd()
 		long filelen = lseek(fd, 0L, SEEK_END);
 		assertEqual(2 * strlen(fgcContent), filelen);
 		close(fd);
-		System::IO::unlink(fgcFilename);
+		system::io::unlink(fgcFilename);
 	}
 } // SimpleAtEnd
 
 void MmapTest::SimpleSeek()
 // what:
 {
-	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
+	if ( system::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		const long searchpos = 10000; // larger as a memory page
 		this->IntSimpleWrite(); // set up testfile
 		OMmapStream os(fgcFilename);
@@ -453,7 +453,7 @@ void MmapTest::SimpleSeek()
 		long filelen = lseek(fd, 0L, SEEK_END);
 		assertEqual(searchpos + strlen(fgcContent), filelen);
 		close(fd);
-		System::IO::unlink(fgcFilename);
+		system::io::unlink(fgcFilename);
 	}
 } // SimpleSeek
 #endif

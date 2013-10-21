@@ -24,7 +24,7 @@ const long LeaderFollowerPool::cBlockPromotion = -2;
 
 LeaderFollowerPool::LeaderFollowerPool(Reactor *reactor) :
 	ThreadPoolManager("LeaderFollowerPool"), fReactor(reactor), fCurrentLeader(cNoCurrentLeader), fOldLeader(cNoCurrentLeader),
-			fPoolState(Thread::eCreated), fLFMutex("LeaderFollowerPool", Coast::Storage::Global()) {
+			fPoolState(Thread::eCreated), fLFMutex("LeaderFollowerPool", coast::storage::Global()) {
 	StartTrace(LeaderFollowerPool.Ctor);
 	Assert(fReactor);
 }
@@ -164,7 +164,7 @@ bool LeaderFollowerPool::InitReactor(ROAnything args) {
 
 Thread *LeaderFollowerPool::DoAllocThread(long i, ROAnything args) {
 	StartTrace(LeaderFollowerThread.DoAllocThread);
-	return new (Coast::Storage::Global()) LeaderFollowerThread(this);
+	return new (coast::storage::Global()) LeaderFollowerThread(this);
 }
 
 void LeaderFollowerThread::Run() {
@@ -266,7 +266,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout) {
 	if (0 == retCode) {
 		return 0; // timeout, no error
 	}
-	while (retCode < 0 && Coast::System::SyscallWasInterrupted()) {
+	while (retCode < 0 && coast::system::SyscallWasInterrupted()) {
 #if defined(USE_SELECT)
 		retCode = select(maxfd + 1, &rfds, 0, 0, &tv);
 #else

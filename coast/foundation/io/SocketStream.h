@@ -125,7 +125,7 @@ protected: // seekxxx are protected in the std..
 };
 
 //! adapts ios to a Socket Stream buffer
-class iosITOSocket : virtual public std::ios, public Coast::AllocatorNewDelete
+class iosITOSocket : virtual public std::ios, public coast::AllocatorNewDelete
 {
 public:
 	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::in | std::ios::out );

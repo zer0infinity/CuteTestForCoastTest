@@ -65,8 +65,8 @@ void WebAppService::PrepareRequest(Context &ctx) {
 		AnyExtensions::Iterator<ROAnything> cookieIterator(roaCookies);
 		ROAnything roaCookie;
 		while (cookieIterator.Next(roaCookie)) {
-			Coast::URLUtils::Split(roaCookie.AsString(), cookieArgumentsDelimiter, anyPreparedCookies, valueArgumentDelimiter,
-					Coast::URLUtils::eUntouched);
+			coast::urlutils::Split(roaCookie.AsString(), cookieArgumentsDelimiter, anyPreparedCookies, valueArgumentDelimiter,
+					coast::urlutils::eUntouched);
 		}
 		request["WDCookies"] = anyPreparedCookies;
 	}
@@ -157,9 +157,9 @@ void WebAppService::Add2Query(Anything &query, const Anything &queryItems, bool 
 Anything WebAppService::BuildQuery(const String &pathString, const String &queryString) {
 	StartTrace(WebAppService.BuildQuery);
 	Anything query;
-	Coast::URLUtils::Split(pathString, '/', query);
-	Coast::URLUtils::Split(queryString, '&', query);
-	Coast::URLUtils::DecodeAll(query);
+	coast::urlutils::Split(pathString, '/', query);
+	coast::urlutils::Split(queryString, '&', query);
+	coast::urlutils::DecodeAll(query);
 	TraceAny(query, "built query");
 	return query;
 }

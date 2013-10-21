@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-class URLUtilsTest : public TestFramework::TestCaseWithConfig
+class URLUtilsTest : public testframework::TestCaseWithConfig
 {
 public:
 	URLUtilsTest(TString tstrName);

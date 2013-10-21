@@ -20,7 +20,7 @@ void RegisterableObject::ResetCache(bool resetCache)
 
 RegisterableObject::RegisterableObject(const char *name)
 	: NamedObject()
-	, fName(name, -1, Coast::Storage::Global())
+	, fName(name, -1, coast::storage::Global())
 	, fStaticallyInitialized(false)
 	, fbInitialized(false)
 {
@@ -98,7 +98,7 @@ void RegisterableObject::Unregister(const char *name, const char *category)
 
 bool RegisterableObject::Initialize(const char *category)
 {
-	StatTrace(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">", Coast::Storage::Current());
+	StatTrace(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">", coast::storage::Current());
 	if ( category != NULL ) {
 		if ( !fCategory.Length() ) {
 			fCategory = category;
@@ -166,7 +166,7 @@ ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const ch
 ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(ConfNamedObject.DoConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
-	ConfNamedObject *cno = (ConfNamedObject *)this->Clone(Coast::Storage::Global());
+	ConfNamedObject *cno = (ConfNamedObject *)this->Clone(coast::storage::Global());
 	if ( cno ) {
 		cno->SetName(name);
 		cno->fCategory = fCategory;
@@ -286,7 +286,7 @@ RegisterableObjectInstaller::RegisterableObjectInstaller(const char *name, const
 	, fCategory(category)
 {
 	if (fObject) {
-		static bool bTrace = (Coast::System::EnvGet("COAST_TRACE_STATICALLOC") == "1");
+		static bool bTrace = (coast::system::EnvGet("COAST_TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
 			SystemLog::WriteToStderr(String("installing <") << name << "> into <" << category << ">\n");
 		}
@@ -299,7 +299,7 @@ RegisterableObjectInstaller::~RegisterableObjectInstaller()
 {
 	StartTrace(RegisterableObjectInstaller.~RegisterableObjectInstaller);
 	if (fObject) {
-		static bool bTrace = (Coast::System::EnvGet("COAST_TRACE_STATICALLOC") == "1");
+		static bool bTrace = (coast::system::EnvGet("COAST_TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
 			SystemLog::WriteToStderr(String("deleting <") << fObject->GetName() << "> from <" << fCategory << ">\n");
 		}

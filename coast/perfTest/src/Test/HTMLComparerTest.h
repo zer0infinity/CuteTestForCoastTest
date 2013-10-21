@@ -11,7 +11,7 @@
 
 #include "FoundationTestTypes.h"
 
-class HTMLComparerTest: public TestFramework::TestCaseWithConfig {
+class HTMLComparerTest: public testframework::TestCaseWithConfig {
 public:
 	HTMLComparerTest(TString tstrName) :
 		TestCaseType(tstrName) {

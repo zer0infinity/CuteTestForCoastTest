@@ -18,7 +18,7 @@
 #include "SystemBase.h"
 #include "StringStream.h"
 
-using namespace Coast;
+using namespace coast;
 
 void AppLogTest::ApplogModuleNotInitializedTest() {
 	StartTrace(AppLogTest.ApplogModuleNotInitializedTest);
@@ -122,7 +122,7 @@ void AppLogTest::BufferItemsTest() {
 			t_assert(pChannel->GetLogDirectories(roaChannelConfig, logdir, rotatedir));
 
 			strLogFilename = logdir;
-			strLogFilename << System::Sep() << roaChannelConfig["FileName"].AsCharPtr();
+			strLogFilename << system::Sep() << roaChannelConfig["FileName"].AsCharPtr();
 		}
 		t_assertm(pModule->Finis(), "Finis should have succeeded");
 		// Now the pending 2 messages are written to log file 'cause Buffers are flushed on module termination!
@@ -192,9 +192,9 @@ void AppLogTest::LogRotatorTestsCommon() {
 		time_t now = time(0);
 		struct tm res, *tt;
 		if (!(anyModuleConfig["AppLogModule"]["RotateTimeIsGmTime"].AsBool(0L))) {
-			tt = System::LocalTime(&now, &res);
+			tt = system::LocalTime(&now, &res);
 		} else {
-			tt = System::GmTime(&now, &res);
+			tt = system::GmTime(&now, &res);
 		}
 		long lDeltaSec = GetTestCaseConfig()["SecondsToWaitOnRotate"].AsLong(5);
 		long multiRotations = GetTestCaseConfig()["MultiRotations"].AsLong(0);
@@ -219,14 +219,14 @@ void AppLogTest::LogRotatorTestsCommon() {
 				// check for the files
 				ROAnything roaFileName;
 				if (t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateLog.FileName") )) {
-					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
-					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					String strFileName = system::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( system::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
 					// check for rotated file in rotate-subdirectory
 					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "RotateLog");
 					if (t_assertm( pChannel != NULL, "expected valid log channel")) {
 						String logdir, rotatedir;
 						if (t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful")) {
-							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							Anything anyRotateList = system::DirFileList(rotatedir, "");
 							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
 							long lFound = 0;
 							String strEntry, strRotateFileName = roaFileName.AsString();
@@ -248,14 +248,14 @@ void AppLogTest::LogRotatorTestsCommon() {
 					}
 				}
 				if (t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.DoNotRotateLog.FileName") )) {
-					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
-					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					String strFileName = system::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( system::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
 					// check for non-existence of DoNotRotateLog in rotate directory
 					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "DoNotRotateLog");
 					if (t_assertm( pChannel != NULL, "expected valid log channel")) {
 						String logdir, rotatedir;
 						if (t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful")) {
-							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							Anything anyRotateList = system::DirFileList(rotatedir, "");
 							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
 							long lFound = 0;
 							String strEntry, strRotateFileName = roaFileName.AsString();
@@ -355,14 +355,14 @@ void AppLogTest::RotateSpecificLogTest() {
 				// check for the files
 				ROAnything roaFileName;
 				if (t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLog.FileName") )) {
-					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
-					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					String strFileName = system::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( system::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
 					// check for rotated file in rotate-subdirectory
 					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "RotateSpecificLog");
 					if (t_assertm( pChannel != NULL, "expected valid log channel")) {
 						String logdir, rotatedir;
 						if (t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful")) {
-							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							Anything anyRotateList = system::DirFileList(rotatedir, "");
 							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
 							long lFound = 0;
 							String strEntry, strRotateFileName = roaFileName.AsString();
@@ -389,14 +389,14 @@ void AppLogTest::RotateSpecificLogTest() {
 				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride", AppLogModule::eINFO), "RotateSpecificLogOverride Test");
 				// check for the files
 				if (t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLogOverride.FileName") )) {
-					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
-					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					String strFileName = system::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( system::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
 					// check for rotated file in rotate-subdirectory
 					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "RotateSpecificLogOverride");
 					if (t_assertm( pChannel != NULL, "expected valid log channel")) {
 						String logdir, rotatedir;
 						if (t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful")) {
-							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							Anything anyRotateList = system::DirFileList(rotatedir, "");
 							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
 							long lFound = 0;
 							String strEntry, strRotateFileName = roaFileName.AsString();
@@ -536,10 +536,10 @@ void AppLogTest::CheckFile(Context &ctx, const char *channelname, String expecte
 		t_assert(pChannel->GetLogDirectories(roaChannelConfig, logdir, rotatedir));
 
 		String strLogFilename = logdir;
-		strLogFilename << System::Sep() << roaChannelConfig["FileName"].AsCharPtr();
-		t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
+		strLogFilename << system::Sep() << roaChannelConfig["FileName"].AsCharPtr();
+		t_assertm( system::IsRegularFile(strLogFilename), "expected log file to be there");
 
-		std::iostream *fp = System::OpenIStream(strLogFilename, NULL);
+		std::iostream *fp = system::OpenIStream(strLogFilename, NULL);
 		if (t_assertm(fp != NULL, name())) {
 			String fileContent;
 			char c;
@@ -555,9 +555,9 @@ void AppLogTest::CheckFile(Context &ctx, const char *channelname, String expecte
 
 void AppLogTest::CheckFileAfterChannelTermination(Context &ctx, const char *strLogFilename, String expected, bool bExpectSuccess) {
 	StartTrace(AppLogTest.CheckFileAfterChannelTermination);
-	t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
+	t_assertm( system::IsRegularFile(strLogFilename), "expected log file to be there");
 
-	std::iostream *fp = System::OpenIStream(strLogFilename, NULL);
+	std::iostream *fp = system::OpenIStream(strLogFilename, NULL);
 	if (t_assertm(fp != NULL, name())) {
 		String fileContent;
 		char c;

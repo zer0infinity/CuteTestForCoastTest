@@ -11,7 +11,7 @@
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 
-using namespace Coast;
+using namespace coast;
 RegisterModule(TemplatesCacheModule );
 
 bool TemplatesCacheModule::Init(const ROAnything config) {
@@ -30,8 +30,8 @@ bool TemplatesCacheModule::Finis() {
 
 Anything HTMLTemplateCacheLoader::Load(const char *key) {
 	StartTrace1(HTMLTemplateCacheLoader.Load, "key: " << key);
-	Anything cache(Coast::Storage::Global());
-	std::istream *fp = System::OpenIStream(key, (const char *) "html");
+	Anything cache(coast::storage::Global());
+	std::istream *fp = system::OpenIStream(key, (const char *) "html");
 	if (fp) {
 		std::istream &reader = *fp;
 		BuildCache(cache, reader, key);
@@ -62,10 +62,10 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config) {
 	ROAnything langDirMap(config["LanguageDirMap"]);
 
 	StringTokenizer st(config["TemplateDir"].AsCharPtr("config/HTMLTemplates"), ':');
-	String rootDir(System::GetRootDir());
+	String rootDir(system::GetRootDir());
 	String filepath;
 	String templateDir;
-	Anything fileNameMap(Coast::Storage::Global());
+	Anything fileNameMap(coast::storage::Global());
 
 	TemplateParser tp;
 	HTMLTemplateCacheLoader htcl(&tp, config);
@@ -73,19 +73,19 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config) {
 	while (st.NextToken(templateDir)) {
 		// cache templates of template dir
 		filepath = rootDir;
-		filepath << System::Sep() << templateDir;
-		System::ResolvePath(filepath);
+		filepath << system::Sep() << templateDir;
+		system::ResolvePath(filepath);
 		CacheDir(filepath, &htcl, langDirMap, fileNameMap);
 
 		// search over localized dirs
 		for (long j = 0, sz = langDirMap.GetSize(); j < sz; ++j) {
 			//reset filepath
 			filepath = rootDir;
-			filepath << System::Sep() << templateDir;
+			filepath << system::Sep() << templateDir;
 
 			// construct directory name
-			filepath << System::Sep() << langDirMap[j].AsCharPtr("");
-			System::ResolvePath(filepath);
+			filepath << system::Sep() << langDirMap[j].AsCharPtr("");
+			system::ResolvePath(filepath);
 
 			CacheDir(filepath, &htcl, langDirMap.SlotName(j), fileNameMap);
 		}
@@ -103,15 +103,15 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheLoadPolicy *h
 		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
-	Anything fileList = System::DirFileList(filepath, "html");
+	Anything fileList = system::DirFileList(filepath, "html");
 	String fileKey;
 
 	// process all files
 	for (long i = 0, sz = fileList.GetSize(); i < sz; ++i) {
 		const char *file = fileList[i].AsCharPtr("");
-		fileKey << filepath << System::Sep() << file;
+		fileKey << filepath << system::Sep() << file;
 		// smothen path not to load relative-path files more than once
-		System::ResolvePath(fileKey);
+		system::ResolvePath(fileKey);
 		// ignore results, they are stored in the cachehandler anyway
 		CacheHandler::instance().Load("HTML", fileKey, htcl);
 		// store away the name,langKey to fileKey mapping
@@ -129,15 +129,15 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheLoadPolicy *h
 		Anything &fileNameMap) {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory
-	Anything fileList = System::DirFileList(filepath, "html");
+	Anything fileList = system::DirFileList(filepath, "html");
 	String fileKey;
 
 	// process all files
 	for (long i = 0, sz = fileList.GetSize(); i < sz; ++i) {
 		const char *file = fileList[i].AsCharPtr("");
-		fileKey << filepath << System::Sep() << file;
+		fileKey << filepath << system::Sep() << file;
 		// smothen path not to load relative-path files more than once
-		System::ResolvePath(fileKey);
+		system::ResolvePath(fileKey);
 		// ignore results, they are stored in the cachehandler anyway
 		CacheHandler::instance().Load("HTML", fileKey, htcl);
 		// store away the name,langKey to fileKey mapping

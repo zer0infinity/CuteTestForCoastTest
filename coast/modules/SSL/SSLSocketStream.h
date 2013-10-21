@@ -39,7 +39,7 @@ private:
 // adapts ios to a SSL Socket Stream buffer
 //
 
-class iosITOSSLSocket : virtual public std::ios, public Coast::AllocatorNewDelete
+class iosITOSSLSocket : virtual public std::ios, public coast::AllocatorNewDelete
 {
 public:
 	iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);

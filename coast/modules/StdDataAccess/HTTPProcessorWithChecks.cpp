@@ -17,14 +17,14 @@
 RegisterRequestProcessor(HTTPProcessorWithChecks);
 
 namespace {
-	String const strGET("GET", Coast::Storage::Global());
-	String const strPOST("POST", Coast::Storage::Global());
+	String const strGET("GET", coast::storage::Global());
+	String const strPOST("POST", coast::storage::Global());
 
 	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
 		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
 		Anything anyMessage;
-		anyMessage[Coast::HTTP::constants::protocolCodeSlotname] = errorcode;
-		anyMessage[Coast::HTTP::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+		anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
+		anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
 		anyMessage["ErrorMessage"] = msg;
 		anyMessage["FaultyContent"] = content;
 		TraceAny(anyMessage, "generated error message");
@@ -117,7 +117,7 @@ void HTTPProcessorWithChecks::DoHandleVerifyError(std::ostream &reply, Context &
 //		if ( reject ) {
 //			if ( !!Ios ) {
 //				Anything anyErrCode = errcode;
-//				StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(Coast::HTTP::constants::protocolCodeSlotname));
+//				StorePutter::Operate(anyErrCode, ctx, "Tmp", String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname));
 //				Error(Ios, msg, ctx);
 //				Ios << ENDL;
 //				Ios.flush();
@@ -139,32 +139,32 @@ void HTTPProcessorWithChecks::DoHandleVerifyError(std::ostream &reply, Context &
 //{
 //	StartTrace(HTTPRequestReader.VerifyUrlPath);
 //
-//	Coast::URLUtils::URLCheckStatus eUrlCheckStatus = Coast::URLUtils::eOk;
+//	coast::urlutils::URLCheckStatus eUrlCheckStatus = coast::urlutils::eOk;
 //	String urlPathOrig = urlPath;
 //	// Are all chars which must be URL-encoded really encoded?
-//	if (Coast::URLUtils::CheckUrlEncoding(urlPath, ctx.Lookup("CheckUrlEncodingOverride", "")) == false) {
+//	if (coast::urlutils::CheckUrlEncoding(urlPath, ctx.Lookup("CheckUrlEncodingOverride", "")) == false) {
 //		return DoHandleError(ctx, Ios, 400, "Not all unsafe chars URL encoded", urlPathOrig);
 //	}
 //	if (ctx.Lookup("URLExhaustiveDecode", 0L)) {
-//		urlPath = Coast::URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
+//		urlPath = coast::urlutils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
 //	} else {
-//		urlPath = Coast::URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
+//		urlPath = coast::urlutils::urlDecode(urlPath, eUrlCheckStatus, false);
 //	}
-//	if (eUrlCheckStatus == Coast::URLUtils::eSuspiciousChar) {
+//	if (eUrlCheckStatus == coast::urlutils::eSuspiciousChar) {
 //		// We are done, invalid request
 //		return DoHandleError(ctx, Ios, 400, "Encoded char above 0x255 detected", urlPathOrig);
 //	}
-//	if ( Coast::URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, ctx.Lookup("CheckUrlPathContainsUnsafeCharsOverride", ""),
+//	if ( coast::urlutils::CheckUrlPathContainsUnsafeChars(urlPath, ctx.Lookup("CheckUrlPathContainsUnsafeCharsOverride", ""),
 //			ctx.Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", ""),
 //			!(ctx.Lookup("CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii", 0L))) ) {
 //		return DoHandleError(ctx, Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig);
 //	}
 //	// "path" part of URL had to be normalized. This may indicate an attack.
-//	String normalizedUrl =  Coast::URLUtils::CleanUpUriPath(urlPath);
+//	String normalizedUrl =  coast::urlutils::CleanUpUriPath(urlPath);
 //	if ( urlPath.Length() !=  normalizedUrl.Length() ) {
 //		if ( ctx.Lookup("FixDirectoryTraversial", 0L) ) {
 //			// alter the original url
-//			urlPathOrig = Coast::URLUtils::urlEncode(normalizedUrl, ctx.Lookup("URLEncodeExclude", "/?"));
+//			urlPathOrig = coast::urlutils::urlEncode(normalizedUrl, ctx.Lookup("URLEncodeExclude", "/?"));
 //			LogError(ctx, 0, "Directory traversial attack detected and normalized. Request not rejected because of config settings",
 //					   urlPathOrig, "");
 //		} else {
@@ -181,5 +181,5 @@ void HTTPProcessorWithChecks::DoHandleVerifyError(std::ostream &reply, Context &
 //{
 //	StartTrace(HTTPRequestReader.VerifyUrlArgs);
 //	// Are all character which must be URL-encoded really encoded?
-//	return Coast::URLUtils::CheckUrlArgEncoding(urlArgs, ctx.Lookup("CheckUrlArgEncodingOverride", ""));
+//	return coast::urlutils::CheckUrlArgEncoding(urlArgs, ctx.Lookup("CheckUrlArgEncodingOverride", ""));
 //}

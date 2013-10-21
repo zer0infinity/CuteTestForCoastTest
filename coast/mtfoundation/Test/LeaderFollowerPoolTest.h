@@ -13,7 +13,7 @@
 
 class Socket;
 
-class LeaderFollowerPoolTest: public TestFramework::TestCaseWithConfig {
+class LeaderFollowerPoolTest: public testframework::TestCaseWithConfig {
 public:
 	LeaderFollowerPoolTest(TString tstrName) :
 		TestCaseType(tstrName), fEvents(0) {

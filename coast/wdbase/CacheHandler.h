@@ -42,7 +42,7 @@ public:
 	}
 
 	virtual Anything Load(const char *key) {
-		return Anything(Coast::Storage::Global());
+		return Anything(coast::storage::Global());
 	}
 };
 
@@ -55,10 +55,10 @@ public:
 class AnythingLoaderPolicy: public CacheLoadPolicy {
 public:
 	AnythingLoaderPolicy(const Anything &anyToCache) :
-		fCachedAny(anyToCache, Coast::Storage::Global()) {
+		fCachedAny(anyToCache, coast::storage::Global()) {
 	}
 	AnythingLoaderPolicy(const ROAnything roaToCache) :
-		fCachedAny(roaToCache.DeepClone(Coast::Storage::Global())) {
+		fCachedAny(roaToCache.DeepClone(coast::storage::Global())) {
 	}
 	virtual Anything Load(const char *) {
 		return fCachedAny;

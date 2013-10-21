@@ -17,7 +17,7 @@ namespace {
 	long const uniqueIdHashLength=32L;
 	DiffTimer fUniqueIdTimer;
 	long fHostid=::gethostid();
-	long fPid=Coast::System::getpid();
+	long fPid=coast::system::getpid();
 	long getHostId() {
 		return fHostid;
 	}
@@ -37,15 +37,15 @@ namespace {
 	}
 }
 
-namespace Coast {
-	namespace Security {
+namespace coast {
+	namespace security {
 		String generateUniqueId(const String &additionalToken) {
 			StartTrace(UniqueIdGen.generateUniqueId);
 			String buffer(128L);
 			buffer.Append(getDiffTime())
 					.Append('_').Append(getHostId())
 					.Append('_').Append(getPid())
-					.Append('_').Append(Coast::Security::nextRandomNumber());
+					.Append('_').Append(coast::security::nextRandomNumber());
 			if (additionalToken.Length()) {
 				buffer.Append('_').Append(additionalToken);
 			}

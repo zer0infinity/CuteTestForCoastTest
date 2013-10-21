@@ -29,10 +29,10 @@ class StringStreamBuf : public streambuf
 	StringStreamBuf(const StringStreamBuf &);
 	StringStreamBuf &operator=(const StringStreamBuf &);
 public:
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
 
 	/*! default ctor, allocates new internal String object for output
 		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
@@ -81,11 +81,11 @@ public:
 		return specificSync(IoDirType());
 	}
 
-	int specificSync(Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
+	int specificSync(coast::typetraits::Int2Type<NSStringStream::eIn>) {
 		return 0;
 	}
 
-	int specificSync(Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
+	int specificSync(coast::typetraits::Int2Type<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		return 0;
 	}
@@ -248,10 +248,10 @@ private:
 	}
 
 	/*! auxiliary operation to keep track of really output bytes, terminate string */
-	void AdjustStringLength(Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
+	void AdjustStringLength(coast::typetraits::Int2Type<NSStringStream::eIn>) {
 	}
 
-	void AdjustStringLength(Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
+	void AdjustStringLength(coast::typetraits::Int2Type<NSStringStream::eOut>) {
 		if (pbase() && (fOpenMode & std::ios::out)) {
 			Assert(pptr() && pptr() >= start());
 			long newlen = pptr() - pbase();
@@ -314,11 +314,11 @@ private:
 		return true; // space is still available, false alarm
 	}
 
-	bool doreserve( long newlength, Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
+	bool doreserve( long newlength, coast::typetraits::Int2Type<NSStringStream::eIn>) {
 		return false;
 	}
 
-	bool doreserve( long newlength, Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
+	bool doreserve( long newlength, coast::typetraits::Int2Type<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		Assert((pptr() - pbase()) == fStore->Length());
 		long putoffset = 0; // remember offsets if we readjust the mmap/file
@@ -378,8 +378,8 @@ typename BufferType,
 class StringStreambase : virtual public std::ios
 {
 public:
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename coast::typetraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 	typedef StringStreamBuf<BufferType, IoDirType> StreamBufType;
 	typedef StringStreamBuf<BufferType, IoDirType>* StreamBufTypePtr;
 	typedef typename StreamBufType::BufferTypeRef BufferTypeRef;

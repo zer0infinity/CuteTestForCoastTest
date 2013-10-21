@@ -9,7 +9,7 @@
 #define _SegStoreAllocatorTest_H
 
 #include "TestCase.h"//lint !e537
-class SegStoreAllocatorTest: public TestFramework::TestCase {
+class SegStoreAllocatorTest: public testframework::TestCase {
 public:
 	SegStoreAllocatorTest(TString tname) :
 		TestCaseType(tname) {

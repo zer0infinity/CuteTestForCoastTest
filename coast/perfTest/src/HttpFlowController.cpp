@@ -349,7 +349,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx) {
 		TraceAny(formContentsInitial, "<----MERGED Fields from CONFIG and input FORM" );
 
 		if (!isMultipartContent) {
-			tmpStore["CurrentServer"]["formContents"] = Coast::URLUtils::EncodeFormContent(formContentsInitial);
+			tmpStore["CurrentServer"]["formContents"] = coast::urlutils::EncodeFormContent(formContentsInitial);
 		} else {
 			tmpStore["CurrentServer"]["formContents"] = multipartContents;
 		}
@@ -371,7 +371,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx) {
 					if (!resultAnything.IsNull()) {
 						String resultString = resultAnything.AsString(""); // action URI
 						Trace ("Action URI is->" << resultString );
-						Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], resultString, tmpStore["PreviousPage"]["BASE"].AsCharPtr(""));
+						coast::urlutils::HandleURI2(tmpStore["CurrentServer"], resultString, tmpStore["PreviousPage"]["BASE"].AsCharPtr(""));
 						TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 						// empty existing any
 						resultAnything = Anything();
@@ -417,7 +417,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx) {
 			// LINK
 			Trace( "Link is requested" );
 			tmpStore["CurrentServer"]["Method"] = "GET"; // Method i.e. GET or POST etc.
-			Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], resultAnything.AsString(""),
+			coast::urlutils::HandleURI2(tmpStore["CurrentServer"], resultAnything.AsString(""),
 					tmpStore["PreviousPage"]["BASE"].AsString(""));
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			tmpStore.Remove("Link");
@@ -437,7 +437,7 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx) {
 			// FRAME
 			Trace( "Frame is requested" );
 			tmpStore["CurrentServer"]["Method"] = "GET"; // Method i.e. GET or POST etc.
-			Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], resultAnything.AsString(""),
+			coast::urlutils::HandleURI2(tmpStore["CurrentServer"], resultAnything.AsString(""),
 					tmpStore["PreviousPage"]["BASE"].AsString(""));
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			tmpStore.Remove("Frame");
@@ -665,7 +665,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			stream.flush();
 			SystemLog::WriteToStderr(strbuf);
 		}
-		SimpleMutex mtx("delay", Coast::Storage::Current());
+		SimpleMutex mtx("delay", coast::storage::Current());
 		SimpleMutex::ConditionType cond;
 		{
 			LockUnlockEntry me(mtx);
@@ -806,7 +806,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			absPath.Append("/");
 		}
 		Trace("absPath: " << absPath);
-		Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], absPath, tmpStore["PreviousPage"]["BASE"].AsCharPtr(""));
+		coast::urlutils::HandleURI2(tmpStore["CurrentServer"], absPath, tmpStore["PreviousPage"]["BASE"].AsCharPtr(""));
 	} else {
 		bPrepareRequestSucceeded = DoProcessLinksFormsAndFrames(ctx); // no relocations expected here
 	}
@@ -864,8 +864,8 @@ bool HttpFlowController::AnalyseReply(Context &ctx) {
 	TraceAny(tmpStore, "TempStore");
 
 	// check if the request was OK
-	long respCode = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolCodeSlotname].AsLong(0);
-	String respMsg = tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolMsgSlotname].AsString("no message, possible timeout");
+	long respCode = tmpStore["Mapper"]["HTTPResponse"][coast::http::constants::protocolCodeSlotname].AsLong(0);
+	String respMsg = tmpStore["Mapper"]["HTTPResponse"][coast::http::constants::protocolMsgSlotname].AsString("no message, possible timeout");
 
 	if ((respCode != 200L) && (respCode != 302L)) {
 		String eMsg = "";
@@ -951,7 +951,7 @@ bool HttpFlowController::DoMetaRefreshRelocate(Context &ctx) {
 			myString2 = myString1.SubString(Pos + 4, myString1.Length() - Pos - 4); // 4 = "URL="
 			Trace( "String 1 contents are" << myString2 );
 
-			Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], myString2);
+			coast::urlutils::HandleURI2(tmpStore["CurrentServer"], myString2);
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			return true;
 		}
@@ -967,7 +967,7 @@ bool HttpFlowController::DoLocationRelocate(Context &ctx) {
 
 	// HTTP Response code must be 302
 	// Location header contains the whole refresh path
-	if ((tmpStore["Mapper"]["HTTPResponse"][Coast::HTTP::constants::protocolCodeSlotname].AsLong(0L) == 302L) && (tmpStore.LookupPath(refresh,
+	if ((tmpStore["Mapper"]["HTTPResponse"][coast::http::constants::protocolCodeSlotname].AsLong(0L) == 302L) && (tmpStore.LookupPath(refresh,
 			"Mapper.HTTPHeader.location"))) {
 		{
 			String anyRes = "";
@@ -978,7 +978,7 @@ bool HttpFlowController::DoLocationRelocate(Context &ctx) {
 		String refreshURL = refresh.AsString();
 		Trace("Location header is: " << refreshURL);
 		if (refreshURL.Length() > 0) {
-			Coast::URLUtils::HandleURI2(tmpStore["CurrentServer"], refreshURL);
+			coast::urlutils::HandleURI2(tmpStore["CurrentServer"], refreshURL);
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			return true;
 		}
@@ -1241,7 +1241,7 @@ void HttpFlowController::GenerateMultipartContent(String &fieldName, ROAnything 
 	// Content-Body:
 	if (fieldConfig.IsDefined(slotForFile)) {
 		// Get File content with given Filename for this body:
-		std::iostream *pS = Coast::System::OpenIStream(fieldFilename, "", std::ios::in, true); // path will be resolved..
+		std::iostream *pS = coast::system::OpenIStream(fieldFilename, "", std::ios::in, true); // path will be resolved..
 		if (pS) {
 			int c;
 			while ((c = pS->get()) != EOF) {

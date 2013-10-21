@@ -17,7 +17,7 @@
 To understand the results of those tests, you should additionally
 consult "InputMapperMeta.any"
 */
-class ParameterMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class ParameterMapperTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

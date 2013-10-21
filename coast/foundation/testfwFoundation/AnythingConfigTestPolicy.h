@@ -13,8 +13,8 @@
 #include "Tracer.h"
 #include "TString.h"
 
-namespace Coast {
-	namespace TestFramework {
+namespace coast {
+	namespace testframework {
 		template< class InputType >
 		void PutInStore(InputType source, Anything &dest) {
 			long sz = source.GetSize();
@@ -29,7 +29,7 @@ namespace Coast {
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-namespace TestFramework {
+namespace testframework {
 	template
 	<
 	class dummy
@@ -75,7 +75,7 @@ namespace TestFramework {
 			if ( fCfgFileName != getConfigFileName() ) {
 				fCfgFileName = getConfigFileName();
 			}
-			if ( ( bRetCode = Coast::System::LoadConfigFile(fConfig, fCfgFileName, "any") ) ) {
+			if ( ( bRetCode = coast::system::LoadConfigFile(fConfig, fCfgFileName, "any") ) ) {
 				fTestCaseConfig = fConfig[strTestName];
 			}
 			TraceAny(fConfig, "whole Config of [" << fCfgFileName << "]");
@@ -89,6 +89,6 @@ namespace TestFramework {
 		}
 	};
 
-}	// end namespace TestFramework
+} // end namespace testframework
 
 #endif

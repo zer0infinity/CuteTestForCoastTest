@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class SSLSocketArgsTest : public TestFramework::TestCase
+class SSLSocketArgsTest : public testframework::TestCase
 {
 public:
 	//--- constructors

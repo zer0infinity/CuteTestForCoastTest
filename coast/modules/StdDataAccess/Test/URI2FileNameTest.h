@@ -13,7 +13,7 @@
 
 //---- URI2FileNameTest ----------------------------------------------------------
 //!TestCases description
-class URI2FileNameTest : public TestFramework::TestCase
+class URI2FileNameTest : public testframework::TestCase
 {
 public:
 	//--- constructors

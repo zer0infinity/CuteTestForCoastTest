@@ -11,7 +11,7 @@
 #include "Tracer.h"
 #if defined(USE_OPENLDAP)
 static const long fgOptNetworkTimeout = LDAP_OPT_NETWORK_TIMEOUT;
-static const String fgstrOptNetworkTimeout = String("LDAP_OPT_NETWORK_TIMEOUT", -1, Coast::Storage::Global());
+static const String fgstrOptNetworkTimeout = String("LDAP_OPT_NETWORK_TIMEOUT", -1, coast::storage::Global());
 static unsigned long ldap_utf8getcc( const char **src )
 {
 	char UTF8len[64]
@@ -77,7 +77,7 @@ static unsigned long ldap_utf8getcc( const char **src )
 }
 #else
 static const long fgOptNetworkTimeout = LDAP_X_OPT_CONNECT_TIMEOUT;
-static const String fgstrOptNetworkTimeout = String("LDAP_X_OPT_CONNECT_TIMEOUT", -1, Coast::Storage::Global());
+static const String fgstrOptNetworkTimeout = String("LDAP_X_OPT_CONNECT_TIMEOUT", -1, coast::storage::Global());
 #endif
 
 LDAPConnection::LDAPConnection(ROAnything connectionParams)

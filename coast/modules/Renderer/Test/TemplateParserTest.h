@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class TemplateParserTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class TemplateParserTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	TemplateParserTest(TString tstrName) :
 		TestCaseType(tstrName) {

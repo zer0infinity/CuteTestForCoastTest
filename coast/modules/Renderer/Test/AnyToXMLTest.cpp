@@ -25,7 +25,7 @@ void AnyToXMLTest::setUp()
 {
 	String configFilename("AnyToXMLTestConfig");
 
-	std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
+	std::istream *ifp = coast::system::OpenStream(configFilename, "any");
 
 	if (ifp) {
 		fConfig.Import(*ifp, configFilename);

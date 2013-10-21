@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class InterruptHandlerTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class InterruptHandlerTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	InterruptHandlerTest(TString tname) :
 		TestCaseType(tname) {

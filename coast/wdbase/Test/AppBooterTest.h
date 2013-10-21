@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Anything.h"
 
-class AppBooterTest: public TestFramework::TestCase {
+class AppBooterTest: public testframework::TestCase {
 public:
 	AppBooterTest(TString tstrName) :
 		TestCaseType(tstrName) {

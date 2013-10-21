@@ -14,13 +14,13 @@ void AnythingSTLTest::testSwapWithDifferentAllocator() {
 	Anything first(1L, &ga);
 	t_assert(&ga == first.GetAllocator());
 	Anything second("two"); // normal allocator
-	t_assert(Coast::Storage::Current() == second.GetAllocator());
-	t_assert(&ga != Coast::Storage::Current());
+	t_assert(coast::storage::Current() == second.GetAllocator());
+	t_assert(&ga != coast::storage::Current());
 	first.swap(second);
 	assertEqual(1L, second.AsLong());
 	assertEqual("two", first.AsCharPtr());
 	t_assert(&ga == second.GetAllocator());
-	t_assert(Coast::Storage::Current() == first.GetAllocator());
+	t_assert(coast::storage::Current() == first.GetAllocator());
 }
 void AnythingSTLTest::testFrontBackPushPop() {
 	Anything a;
@@ -58,7 +58,7 @@ void AnythingSTLTest::testRangeAssign() {
 void AnythingSTLTest::testRangeCtor() {
 	Anything a(rangeinput, rangeinput + rangeSize);
 	checkRange(a);
-	Anything b(rangeinput, rangeinput + rangeSize, Coast::Storage::Current());
+	Anything b(rangeinput, rangeinput + rangeSize, coast::storage::Current());
 	checkRange(b);
 }
 const Anything::size_type nOfCopies = 4;
@@ -91,7 +91,7 @@ void AnythingSTLTest::testFillCtor() {
 void AnythingSTLTest::testFillCtorWithSizeType() {
 	Anything a(nOfCopies, Anything::size_type(42L));
 	checkFillSizeType(a);
-	Anything b(nOfCopies, Anything::size_type(42L), Coast::Storage::Current());
+	Anything b(nOfCopies, Anything::size_type(42L), coast::storage::Current());
 	checkFillSizeType(b);
 }
 void AnythingSTLTest::testSimpleInsertToEmptyAny() {

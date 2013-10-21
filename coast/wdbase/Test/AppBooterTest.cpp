@@ -16,7 +16,7 @@
 #include "Context.h"
 #include "Tracer.h"
 
-using namespace Coast;
+using namespace coast;
 
 void AppBooterTest::HandleNullArgsTest() {
 	StartTrace(AppBooterTest.HandleNullArgsTest);
@@ -110,16 +110,16 @@ void AppBooterTest::PrepareBootFileLoadingTest() {
 
 		// this tests succeeds only if COAST_PATH and COAST_ROOT are not set in the environment
 		// it is not testable in this way since every environment is different
-		//		assertEqualm(".", System::GetRootDir(), "expected local directory");
-		//		assertEqualm(".:config:src:", System::GetPathList(), "expected default path list");
+		//		assertEqualm(".", system::GetRootDir(), "expected local directory");
+		//		assertEqualm(".:config:src:", system::GetPathList(), "expected default path list");
 	}
 
 	{
 		// config set test
 		Anything config;
 		//store away actual settins
-		String actualRoot = System::GetRootDir();
-		String actualPath = System::GetPathList();
+		String actualRoot = system::GetRootDir();
+		String actualPath = system::GetPathList();
 
 		config["COAST_BOOTFILE"] = "MyConfig";
 		config["COAST_PATH"] = "app:app_src:app_log";
@@ -129,11 +129,11 @@ void AppBooterTest::PrepareBootFileLoadingTest() {
 		assertEqualm("MyConfig", appBooter.PrepareBootFileLoading(config), "expected default name");
 
 		// this tests succeeds only if COAST_PATH and COAST_ROOT are not set in the environment
-		assertEqualm("/foo/bah/end", System::GetRootDir(), "expected local directory");
-		assertEqualm("app:app_src:app_log", System::GetPathList(), "expected default path list");
+		assertEqualm("/foo/bah/end", system::GetRootDir(), "expected local directory");
+		assertEqualm("app:app_src:app_log", system::GetPathList(), "expected default path list");
 		//restore actual settings
-		System::SetRootDir(actualRoot);
-		System::SetPathList(actualPath);
+		system::SetRootDir(actualRoot);
+		system::SetPathList(actualPath);
 	}
 }
 
@@ -211,11 +211,11 @@ void AppBooterTest::OpenLibsTest() {
 	StartTrace(AppBooterTest.OpenLibsTest);
 
 	//write pid to file to make it usable by scripts
-	std::ostream *os = System::OpenOStream("config/wdbasetest", "pid");
+	std::ostream *os = system::OpenOStream("config/wdbasetest", "pid");
 
 	if (os) {
 		Trace("PID File<config/wdbasetest> opened");
-		long pid = System::getpid();
+		long pid = system::getpid();
 		(*os) << pid;
 		os->flush();
 		delete os;

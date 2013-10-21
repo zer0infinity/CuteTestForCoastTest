@@ -11,7 +11,7 @@
 #include "SecurityModule.h"
 #include "SystemFile.h"
 
-using namespace Coast;
+using namespace coast;
 
 Test *SecurityModuleTest::suite() {
 	TestSuite *testSuite = new TestSuite;
@@ -51,9 +51,9 @@ void SecurityModuleTest::InitWithConfigTest() {
 	Anything theConfig;
 	theConfig["smtest"]["SecurityItems"]["TestScrambler"] = "MyTestScrambler";
 	TraceAny(theConfig, "config to use");
-	t_assert(System::GetFilePath("SecurityItems", "any") != "");
+	t_assert(system::GetFilePath("SecurityItems", "any") != "");
 	Anything keyFromFile;
-	t_assert(System::LoadConfigFile(keyFromFile, "aTestKey.txt", ""));
+	t_assert(system::LoadConfigFile(keyFromFile, "aTestKey.txt", ""));
 	t_assert(keyFromFile.AsString("oops") != "oops");
 	TestScrambler *ts = SafeCast(Scrambler::FindScrambler("MyTestScrambler"), TestScrambler);
 	t_assert(!ts);
@@ -178,8 +178,8 @@ void SecurityModuleTest::EncodeDecodeTest() {
 	t_assert( OriginalString == DecodedString);
 
 	// String::IntPrintOn:  05     -> \x05
-	// Coast::URLUtils::urlEncode: \x05   -> %5Cx05
-	// Coast::URLUtils::urlEncode: %5Cx05 -> %255Cx05
+	// coast::urlutils::urlEncode: \x05   -> %5Cx05
+	// coast::urlutils::urlEncode: %5Cx05 -> %255Cx05
 	assertCharPtrEqual( "\x05", EncodedString);
 
 	// Only Printable Chars, scrambled

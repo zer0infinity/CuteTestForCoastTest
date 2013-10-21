@@ -15,7 +15,7 @@
 #include "Renderer.h"
 #include "SystemLog.h"
 
-using namespace Coast;
+using namespace coast;
 
 //---- HTTPPostRequestBodyParserTest ----------------------------------------------------------------
 HTTPPostRequestBodyParserTest::HTTPPostRequestBodyParserTest(TString tname)
@@ -37,7 +37,7 @@ HTTPPostRequestBodyParserTest::~HTTPPostRequestBodyParserTest()
 void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 {
 	StartTrace(HTTPPostRequestBodyParserTest.ReadMultiPartPost);
-	std::iostream *is = System::OpenStream("MultiPartBody.txt", 0);
+	std::iostream *is = system::OpenStream("MultiPartBody.txt", 0);
 
 	t_assertm(is != 0, "expected 'MultiPartBody.txt' to be there");
 	if ( is ) {
@@ -59,7 +59,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	// This relieves us from the need to create an expected result file
 	// which we would use to verify the results.
 
-	is =  System::OpenStream("MultiPartBody.txt", 0);
+	is =  system::OpenStream("MultiPartBody.txt", 0);
 	if ( is ) {
 		MIMEHeader mh;
 		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
@@ -68,7 +68,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 		String unparsedContent = sm.GetUnparsedContent();
 		delete is;
 
-		is =  System::OpenStream("MultiPartBody.txt", 0);
+		is =  system::OpenStream("MultiPartBody.txt", 0);
 		if (is) {
 			char c;
 			String tmp;

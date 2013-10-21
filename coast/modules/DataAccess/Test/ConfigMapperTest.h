@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class ConfigMapperTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+class ConfigMapperTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	ConfigMapperTest(TString tstrName) :
 		TestCaseType(tstrName) {

@@ -22,7 +22,7 @@ Test *ScrambleStateTest::suite() {
 }
 
 void ScrambleStateTest::setUp() {
-	std::iostream *Ios = Coast::System::OpenStream("ScrambleStateTest", "any");
+	std::iostream *Ios = coast::system::OpenStream("ScrambleStateTest", "any");
 	if (Ios) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

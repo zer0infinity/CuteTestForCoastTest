@@ -13,7 +13,7 @@
 
 //---- LDAPConnectionTest ----------------------------------------------------------
 //! Tests LDAPConnecton and LDAPErrorHandler
-class LDAPConnectionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class LDAPConnectionTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

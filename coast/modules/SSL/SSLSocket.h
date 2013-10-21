@@ -51,10 +51,10 @@ class SSLSocket : public Socket
 	// and closes it in destructor
 public:
 	SSLSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true,
-			  long timeout = 0L /* which is blocking */ , Allocator *a = Coast::Storage::Global()); // use socket descriptor
+			  long timeout = 0L /* which is blocking */ , Allocator *a = coast::storage::Global()); // use socket descriptor
 
 	SSLSocket(SSLSocketArgs &sslSocketArgs, SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true,
-			  long timeout = 0L /* which is blocking */ , Allocator *a = Coast::Storage::Global()); // use socket descriptor
+			  long timeout = 0L /* which is blocking */ , Allocator *a = coast::storage::Global()); // use socket descriptor
 
 	~SSLSocket();
 	String GetSessionID(SSL *ssl);
@@ -121,8 +121,8 @@ class SSLClientSocket : public SSLSocket
 	// opens a client side socket connection
 	// and closes it in destructor
 public:
-	SSLClientSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true, long timeOut = 0L, Allocator *a = Coast::Storage::Global());
-	SSLClientSocket(SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true, long timeOut = 0L, Allocator *a = Coast::Storage::Global());
+	SSLClientSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true, long timeOut = 0L, Allocator *a = coast::storage::Global());
+	SSLClientSocket(SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true, long timeOut = 0L, Allocator *a = coast::storage::Global());
 
 	~SSLClientSocket();
 
@@ -144,9 +144,9 @@ class SSLServerSocket : public SSLSocket
 	// and closes it in destructor
 public:
 	SSLServerSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true,
-					long timeOut = 300 * 1000 /* 5 minutes */, Allocator *a = Coast::Storage::Global()); // use socket descriptor
+					long timeOut = 300 * 1000 /* 5 minutes */, Allocator *a = coast::storage::Global()); // use socket descriptor
 	SSLServerSocket(SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose,
-					long timeOut = 300 * 1000 /* 5 minutes */, Allocator *a = Coast::Storage::Global()); // use socket descriptor
+					long timeOut = 300 * 1000 /* 5 minutes */, Allocator *a = coast::storage::Global()); // use socket descriptor
 	~SSLServerSocket();
 
 protected:

@@ -12,12 +12,12 @@
 #include "AnyUtils.h"
 #include "SystemLog.h"
 
-using namespace Coast;
+using namespace coast;
 
 void AnyUtilsTest::CompareTest() {
 	Anything testConfig2;
 	const char *myFilename = "config/anyutilstest1";
-	std::iostream *ifp = System::OpenStream(myFilename, "any");
+	std::iostream *ifp = system::OpenStream(myFilename, "any");
 
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
@@ -91,7 +91,7 @@ void AnyUtilsTest::MergeTest() {
 	StartTrace(AnyUtilsTest.MergeTest);
 	Anything testConfig;
 	const char *myFilename = "AnyMergeTest";
-	std::iostream *ifp = System::OpenStream(myFilename, "any");
+	std::iostream *ifp = system::OpenStream(myFilename, "any");
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
 		eMsg << myFilename << ".any";

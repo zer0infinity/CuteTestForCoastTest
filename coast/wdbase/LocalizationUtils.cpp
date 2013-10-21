@@ -10,11 +10,11 @@
 #include "SystemFile.h"
 #include "Context.h"
 
-using namespace Coast;
+using namespace coast;
 
-Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", Coast::Storage::Global());
+Mutex	LocalizationUtils::fgLanguageMapMutex("LocalizationUtils", coast::storage::Global());
 bool	LocalizationUtils::fgLanguageMapIsInit = false;
-Anything LocalizationUtils::fgLanguageMap(Coast::Storage::Global());
+Anything LocalizationUtils::fgLanguageMap(coast::storage::Global());
 const char *LocalizationUtils::Eval(const char *lang, const ROAnything &config)
 {
 	const char *string = 0;
@@ -108,12 +108,12 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 static std::istream *tryopen(String &absolutepath, const char *rdir, const char *tdir, const char *langdir, const char *filename, const char *ext = 0)
 {
 	absolutepath = rdir;
-	absolutepath << tdir << (System::Sep());
+	absolutepath << tdir << (system::Sep());
 	if (langdir) {
-		absolutepath << langdir << (System::Sep());
+		absolutepath << langdir << (system::Sep());
 	}
 	absolutepath << filename;
-	return System::OpenIStream(absolutepath, ext ? ext : "html");
+	return system::OpenIStream(absolutepath, ext ? ext : "html");
 }
 
 std::istream *LocalizationUtils::OpenStream(Context &c, const char *filename, String &absoluteFileName)
@@ -133,8 +133,8 @@ std::istream *LocalizationUtils::OpenStream(Context &c, const char *filename, St
 	ROAnything languageDirMap(c.Lookup("HTMLTemplateConfig.LanguageDirMap"));
 	String localizedPath;
 
-	String rootpath(System::GetRootDir());
-	rootpath << (System::Sep());
+	String rootpath(system::GetRootDir());
+	rootpath << (system::Sep());
 
 	if (lang) { // language is defined try getting a localized template
 		localizedPath = languageDirMap[lang].AsCharPtr("Localized_D");

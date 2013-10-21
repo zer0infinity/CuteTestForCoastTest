@@ -15,7 +15,7 @@ RegisterRenderer(GetThisHostNameRenderer);
 void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(GetThisHostNameRenderer.RenderAll);
 	String thisHostName;
-	if (Coast::System::HostName(thisHostName)) {
+	if (coast::system::HostName(thisHostName)) {
 		String thisHostIp(Resolver::DNS2IPAddress(thisHostName));
 		String what(config["Representation"].AsString("Full"));
 		if ( what.IsEqual("IPAddress") ) {

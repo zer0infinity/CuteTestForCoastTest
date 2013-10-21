@@ -12,7 +12,7 @@
 #include "TestCase.h"
 #include "Threads.h"
 
-class WorkerPoolManagerTest: public TestFramework::TestCase {
+class WorkerPoolManagerTest: public testframework::TestCase {
 public:
 	WorkerPoolManagerTest(TString tname) :
 		TestCaseType(tname), fCheckMutex("WorkerPoolManager") {

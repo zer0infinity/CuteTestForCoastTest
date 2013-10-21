@@ -11,7 +11,7 @@
 
 #include "WDBaseTestPolicies.h"
 
-class LocalizedStringsTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class LocalizedStringsTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

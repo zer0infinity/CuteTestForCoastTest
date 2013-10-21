@@ -23,5 +23,5 @@ void HTMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAn
 
 	String work;
 	Renderer::RenderOnString(work, ctx, config);
-	reply << Coast::URLUtils::HTMLEscape(work);
+	reply << coast::urlutils::HTMLEscape(work);
 }

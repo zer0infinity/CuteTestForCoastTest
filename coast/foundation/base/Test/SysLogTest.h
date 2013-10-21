@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 
-class SysLogTest: public TestFramework::TestCase {
+class SysLogTest: public testframework::TestCase {
 protected:
 	void setUp();
 public:

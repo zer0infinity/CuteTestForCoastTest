@@ -11,7 +11,7 @@
 
 #include "TestCase.h"//lint !e537
 #include "ITOString.h"//lint !e537
-class StringTestExtreme: public TestFramework::TestCase {
+class StringTestExtreme: public testframework::TestCase {
 protected:
 	String extremelyLongString;
 	std::string trueString;

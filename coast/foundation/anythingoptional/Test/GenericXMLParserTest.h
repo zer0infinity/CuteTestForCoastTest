@@ -16,7 +16,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class GenericXMLParserTest : public TestFramework::TestCaseWithConfig
+class GenericXMLParserTest : public testframework::TestCaseWithConfig
 {
 public:
 	//! TestCase constructor

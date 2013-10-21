@@ -12,7 +12,7 @@
 #include "FoundationTestTypes.h"
 
 //---- RegExpFilterFieldsResultMapperTest ----------------------------------------------------------
-class RegExpFilterFieldsResultMapperTest: public TestFramework::TestCaseWithConfig {
+class RegExpFilterFieldsResultMapperTest: public testframework::TestCaseWithConfig {
 public:
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test

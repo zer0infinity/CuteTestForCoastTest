@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ErrorHandlerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+class ErrorHandlerTest : public testframework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

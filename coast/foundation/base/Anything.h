@@ -55,43 +55,43 @@ public:
 	//! Type information, can be retrieved with GetType().
 
 	//! Constructs an Anything of type eNull (without allocator info... allocator is only used for impls)
-	Anything( Allocator *a = Coast::Storage::Current());
+	Anything( Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eLong
-	Anything(int, Allocator *a = Coast::Storage::Current());
+	Anything(int, Allocator *a = coast::storage::Current());
 
 #if !defined(BOOL_NOT_SUPPORTED)
 	//! Constructs an Anything of type eLong
-	Anything(bool, Allocator *a = Coast::Storage::Current());
+	Anything(bool, Allocator *a = coast::storage::Current());
 #endif
 
 	//! Constructs an Anything of type eLong
-	Anything(long, Allocator *a = Coast::Storage::Current());
+	Anything(long, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eDouble
-	Anything(float, Allocator *a = Coast::Storage::Current());
+	Anything(float, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eDouble
-	Anything(double, Allocator *a = Coast::Storage::Current());
+	Anything(double, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eCharPtr
-	Anything(const char *, long len = -1, Allocator *a = Coast::Storage::Current());
+	Anything(const char *, long len = -1, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eCharPtr
-	Anything(const String &, Allocator *a = Coast::Storage::Current());
+	Anything(const String &, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eVoidBuf
-	Anything(void *buf, long len, Allocator *a = Coast::Storage::Current());
+	Anything(void *buf, long len, Allocator *a = coast::storage::Current());
 
 	//! Constructs an Anything of type eObject
-	Anything(IFAObject *, Allocator *a = Coast::Storage::Current());
+	Anything(IFAObject *, Allocator *a = coast::storage::Current());
 
 	struct ArrayMarker{};
 	//! constructs an ArrayImpl Anything by using a marker type together with the allocator
-	Anything(ArrayMarker m,Allocator *a = Coast::Storage::Current());
+	Anything(ArrayMarker m,Allocator *a = coast::storage::Current());
 
 	//! Copy constructor
-	Anything(const Anything &any, Allocator *a = Coast::Storage::Current());
+	Anything(const Anything &any, Allocator *a = coast::storage::Current());
 
 	//! destructor
 	~Anything();
@@ -99,7 +99,7 @@ public:
 	/*! Clones this Anything and all its content recursively.
 		\param a allocator to use for the Anything and copied Impls
 		\return copy of this Anything */
-	Anything DeepClone(Allocator *a = Coast::Storage::Current()) const;
+	Anything DeepClone(Allocator *a = coast::storage::Current()) const;
 
 	/*! Retrieve this Anything's type information
 		\return the type of this Anything, see AnyImplType. */
@@ -386,7 +386,7 @@ public:
 		assign(n, value_type(val));
 	}
 	// sequence ctors:
-	Anything(size_type n, const value_type &v, Allocator *a = Coast::Storage::Current())
+	Anything(size_type n, const value_type &v, Allocator *a = coast::storage::Current())
 		: fAnyImp(0) {
 		SetAllocator(a);
 		for (; n > 0; --n) {
@@ -396,7 +396,7 @@ public:
 
 	template <typename InputIterator>
 	Anything(InputIterator first, InputIterator last): fAnyImp(0) {
-		SetAllocator(Coast::Storage::Current());
+		SetAllocator(coast::storage::Current());
 		for (; first != last; ++first) {
 			Append(*first);
 		}
@@ -413,7 +413,7 @@ public:
 	// because of unavailable constructor chaining in C++
 	// and because of inability to use default arguments in specialized templates
 	Anything(size_type n, size_type v): fAnyImp(0) {
-		SetAllocator(Coast::Storage::Current());
+		SetAllocator(coast::storage::Current());
 		for (; n > 0; --n) {
 			Append(v);
 		}
@@ -743,7 +743,7 @@ class TrickyThing : public Anything
 public:
 	/*! constructor used for tricky member variables of long-lived classes
 		typically those using global allocators */
-	TrickyThing(Allocator *a = Coast::Storage::Current()) :
+	TrickyThing(Allocator *a = coast::storage::Current()) :
 		Anything(Anything::ArrayMarker(),a) {
 	}
 
@@ -769,7 +769,7 @@ public:
 
 	/*! Clones this Anything and recursivley all its content.
 		\return the copy of this Anything */
-	Anything DeepClone(Allocator *a = Coast::Storage::Current()) const;
+	Anything DeepClone(Allocator *a = coast::storage::Current()) const;
 
 	/*! Retrieve this ROAnything's type information
 		\return the type of this ROAnything, see Enumeration AnyImplType. */

@@ -16,7 +16,7 @@ namespace {
 		stringInserter backinsert;
 		appendFunctor(String& strRet): backinsert(strRet) {}
 		void operator()(unsigned char const c) {
-			StatTrace(UTF8Renderer.append, "character to add:" << static_cast<long>(c), Coast::Storage::Current());
+			StatTrace(UTF8Renderer.append, "character to add:" << static_cast<long>(c), coast::storage::Current());
 			utf8::append(static_cast<utf8::uint32_t>(c), backinsert);
 		}
 	};

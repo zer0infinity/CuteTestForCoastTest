@@ -16,8 +16,8 @@ class Anything;
 class Context;
 class String;
 
-namespace Coast {
-	namespace Security {
+namespace coast {
+	namespace security {
 		unsigned long nextRandomNumber();
 		//! create a string of length random bytes
 		String generateRandomString(long length);

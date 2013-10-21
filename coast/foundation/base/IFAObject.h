@@ -32,7 +32,7 @@ private:
 	 * @return Baseclass pointer to cloned instance of a derived type
 	 */
 	IFAObject *Clone() const {
-		return Clone(Coast::Storage::Current());
+		return Clone(coast::storage::Current());
 	}
 };
 

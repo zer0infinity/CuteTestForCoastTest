@@ -11,7 +11,7 @@
 
 #include "TestCase.h"
 
-class CgiParamsTest: public TestFramework::TestCase {
+class CgiParamsTest: public testframework::TestCase {
 public:
 	CgiParamsTest(TString tstrName) :
 		TestCaseType(tstrName) {
