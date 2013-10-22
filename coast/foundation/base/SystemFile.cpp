@@ -24,7 +24,7 @@
 #include <sys/statvfs.h>
 #endif
 #include "InitFinisManager.h"
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 
 namespace {
 	//!contains the systems path separator
@@ -103,7 +103,7 @@ namespace {
 			return fgPathList.cstr();
 		}
 	};
-    typedef boost::details::pool::singleton_default<PathInitializer> PathInitializerSingleton;
+    typedef coast::utility::singleton_default<PathInitializer> PathInitializerSingleton;
 
 	//! checks existence of a path using stat
 	/*! \param path file or directory path

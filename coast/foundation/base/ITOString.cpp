@@ -15,7 +15,7 @@
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 
 #include <limits>	// for numeric_limits
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
@@ -56,7 +56,7 @@ namespace {
 		}
 	};
 
-	typedef boost::details::pool::singleton_default<StringInitializer> StringInitializerSingleton;
+	typedef coast::utility::singleton_default<StringInitializer> StringInitializerSingleton;
 }
 
 void String::alloc(long capacity)

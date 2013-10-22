@@ -17,7 +17,7 @@
 #include "Tracer.h"
 #include "MT_Storage.h"
 #include "InitFinisManager.h"
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 
 namespace coast
 {
@@ -54,7 +54,7 @@ namespace coast
 					return fpStatEvtHandlerTLS.get();
 				}
 			};
-		    typedef boost::details::pool::singleton_default<OracleTlsKeyInitializer> OracleTlsKeyInitializerSingleton;
+		    typedef coast::utility::singleton_default<OracleTlsKeyInitializer> OracleTlsKeyInitializerSingleton;
 		}
 
 		class ThreadSpecificConnectionCleaner : public CleanupHandler {

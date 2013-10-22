@@ -48,7 +48,7 @@ int closeSocket(int sd) {
 #endif
 }
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 
 namespace {
 	class SocketInitializer {
@@ -94,7 +94,7 @@ namespace {
 			return 0;
 		}
 	};
-    typedef boost::details::pool::singleton_default<SocketInitializer> SocketInitializerSingleton;
+    typedef coast::utility::singleton_default<SocketInitializer> SocketInitializerSingleton;
     int forceInitialize = SocketInitializerSingleton::instance().dummyInt();
 }
 

@@ -170,7 +170,7 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 namespace {
 	class StorageInitializer {
 		/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
@@ -195,7 +195,7 @@ namespace {
 		//exchange this object when MT_Storage is used
 		coast::storage::StorageHooksPtr fgTopHook;
 	};
-    typedef boost::details::pool::singleton_default<StorageInitializer> StorageInitializerSingleton;
+    typedef coast::utility::singleton_default<StorageInitializer> StorageInitializerSingleton;
 }
 
 namespace coast

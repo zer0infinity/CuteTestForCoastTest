@@ -18,7 +18,7 @@
 #else
 #include <syslog.h>
 #endif
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 #include <boost/shared_ptr.hpp>
 #include "InitFinisManager.h"
 
@@ -101,7 +101,7 @@ namespace {
 			return level >= fDoLogOnCerr;
 		}
 	};
-    typedef boost::details::pool::singleton_default<SystemLogInitializer> SystemLogInitializerSingleton;
+    typedef coast::utility::singleton_default<SystemLogInitializer> SystemLogInitializerSingleton;
 }
 
 void SystemLog::Init(const char *appId) {

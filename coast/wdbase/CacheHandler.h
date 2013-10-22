@@ -67,7 +67,7 @@ private:
 	Anything fCachedAny;
 };
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 #include <boost/shared_ptr.hpp>
 
 //! CacheHandlerImpl manages a cache for configuration information
@@ -118,6 +118,6 @@ public:
 	bool Init(const ROAnything);
 	bool Finis();
 };
-typedef boost::details::pool::singleton_default<CacheHandlerImpl> CacheHandler;
+typedef coast::utility::singleton_default<CacheHandlerImpl> CacheHandler;
 
 #endif

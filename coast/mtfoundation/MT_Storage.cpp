@@ -206,7 +206,7 @@ protected:
 	}
 };
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 #include <boost/shared_ptr.hpp>
 
 namespace {
@@ -358,7 +358,7 @@ namespace {
 			return fAllocatorKey;
 		}
 	};
-    typedef boost::details::pool::singleton_default<MTStorageInitializer> MTStorageInitializerSingleton;
+    typedef coast::utility::singleton_default<MTStorageInitializer> MTStorageInitializerSingleton;
 }
 
 Allocator *MTStorageHooks::DoCurrent() {

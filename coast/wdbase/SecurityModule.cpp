@@ -18,7 +18,7 @@ RegisterModule(SecurityModule);
 const char *SecurityItem::fgcLegacyMasterKey = ".u8&ey%2lv$skb?";
 
 #include "InitFinisManager.h"
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 namespace {
 	class RandomNumberInitializer {
 	public:
@@ -41,7 +41,7 @@ namespace {
 #endif
 		}
 	};
-    typedef boost::details::pool::singleton_default<RandomNumberInitializer> RandomNumberInitializerSingleton;
+    typedef coast::utility::singleton_default<RandomNumberInitializer> RandomNumberInitializerSingleton;
 }
 
 namespace coast {

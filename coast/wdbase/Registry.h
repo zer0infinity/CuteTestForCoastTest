@@ -65,7 +65,7 @@ private:
 	Registry &operator=(const Registry &);
 };
 
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 class MetaRegistryImpl {
 	//! Global container holding any registry entries
 	Anything fRegistryArray;
@@ -93,7 +93,7 @@ public:
 	//!accessor to the global registry table
 	Anything &GetRegTable();
 };
-typedef boost::details::pool::singleton_default<MetaRegistryImpl> MetaRegistry;
+typedef coast::utility::singleton_default<MetaRegistryImpl> MetaRegistry;
 
 //!simple non-robust, non mt-safe iterator over registry
 //! this iterator is neither robust against changes in the underlying

@@ -12,7 +12,7 @@
 #include "SecurityModule.h"
 #include "DiffTimer.h"
 #include "InitFinisManager.h"
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 namespace {
 	long const uniqueIdHashLength=32L;
 	DiffTimer fUniqueIdTimer;

@@ -17,7 +17,7 @@
 #if !defined(WIN32)
 #include <errno.h>
 #endif
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 #include <boost/shared_ptr.hpp>
 
 //#define TRACE_LOCKS_IMPL 1
@@ -89,7 +89,7 @@ namespace {
 			return fCleanerKey;
 		}
 	};
-    typedef boost::details::pool::singleton_default<ThreadInitializer> ThreadInitializerSingleton;
+    typedef coast::utility::singleton_default<ThreadInitializer> ThreadInitializerSingleton;
 }
 
 #if defined(__APPLE__)	//!@FIXME check if this is still needed with most current version of framework
@@ -889,7 +889,7 @@ namespace {
 			return fCountTableKey;
 		}
 	};
-    typedef boost::details::pool::singleton_default<MutexInitializer> MutexInitializerSingleton;
+    typedef coast::utility::singleton_default<MutexInitializer> MutexInitializerSingleton;
 }
 
 //:subclasses may be defined to perform cleanup in thread specific storage

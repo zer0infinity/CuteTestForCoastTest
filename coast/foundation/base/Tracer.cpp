@@ -11,7 +11,7 @@
 #include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include <boost/pool/detail/singleton.hpp>
+#include "singleton.hpp"
 #include "InitFinisManager.h"
 
 using namespace coast;
@@ -147,7 +147,7 @@ namespace {
 		}
 	};
 
-    typedef boost::details::pool::singleton_default<TracingInitializer> TracingInitializerSingleton;
+    typedef coast::utility::singleton_default<TracingInitializer> TracingInitializerSingleton;
 
 	bool TracingActive() {
 		return TracingInitializerSingleton::instance().TracingActive();
