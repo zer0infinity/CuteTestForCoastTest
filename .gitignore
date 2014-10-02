@@ -1,0 +1,4 @@
+.cproject
+.sconsign.*.dblite
+.build/
+.sconf_temp/
