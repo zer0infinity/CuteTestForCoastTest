@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <cstring>
 #include <fcntl.h>
+#include <poll.h>
 #if defined(__APPLE__)
 #include <crt_externs.h>
 #endif
@@ -49,46 +50,13 @@ namespace coast {
 		int DoSingleSelect(int fd, long timeout, bool bRead, bool bWrite)
 		{
 			StartTrace1(System.DoSingleSelect, "testing fd:" << static_cast<long>(fd) << "(" << (bRead ? "r" : "-") << (bWrite ? "w" : "-") << ") with timeout:" << timeout << "ms");
-		//NB: solaris select is limited to 1024 file descriptors, poll doesn't carry this burden
-		// compile time settings might increase that up to 65536:
-		// see `man -s 3C select`
-
 			if (fd < 0 ) {
 				return -1;
 			}
-
-		// SOP: alternative implementation using poll, needed ?
-		//	pollfd fds[1];
-		//	fds[0].fd= fd;
-		//	fds[0].events= (bRead?POLLIN:0)|(bWrite?POLLOUT:0);
-		//	return ::poll( fds, 1, timeout);
-
-			fd_set readfds;
-			fd_set writefds;
-			fd_set exceptfds;
-			timeval t;
-
-			// initialize the descriptor sets
-			FD_ZERO(&readfds);//lint !e529
-			FD_ZERO(&writefds);//lint !e529
-			FD_ZERO(&exceptfds);//lint !e529
-
-			// set the descriptor sets
-			if (bRead) {
-				FD_SET(fd, &readfds);//lint !e530
-			} else if (bWrite) {
-				FD_SET(fd, &writefds);//lint !e530
-			}
-			t.tv_sec = timeout / 1000;
-			t.tv_usec = 1000 * (timeout % 1000);
-
-			bool bArg(bRead || bWrite);
-			// FD_SETSIZE is ignored in WIN32 select call, on Ux systems it specifies the number of valid fds in the set
-			return ::select (	FD_SETSIZE,
-								bRead ? &readfds   : NULL,
-								bWrite ? &writefds  : NULL,
-								bArg  ? &exceptfds : NULL,
-								timeout >= 0 ? &t : 0);
+			pollfd fds[1];
+			fds[0].fd= fd;
+			fds[0].events= (bRead?POLLIN:0)|(bWrite?POLLOUT:0);
+			return ::poll( fds, 1, timeout);
 		}
 
 		bool IsReadyForReading(int fd, long timeout) {

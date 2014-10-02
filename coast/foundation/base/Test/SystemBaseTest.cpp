@@ -37,21 +37,23 @@ void SystemBaseTest::DoSingleSelectTest()
 	// just wait 100ms
 	const long waittime = 1000L;
 	DiffTimer dt(DiffTimer::eMilliseconds);//1ms accuracy
-	// wait for stdin
+	// wait for stdin, only test cases where we really have a timeout (==0)
 	int iSSRet = system::DoSingleSelect(STDIN_FILENO, waittime, false, false);
-	long difft = dt.Diff();
-	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
-	difft -= waittime;
-	Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
-	assertEqual(0L, iSSRet);
-	if ( iSSRet < 0 ) {
-		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
+	if ( t_assertm(iSSRet >= 0, "expected select to timeout or succeed") ) {
+		if ( iSSRet == 0L) {
+			long difft = dt.Diff();
+			Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
+			difft -= waittime;
+			Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
+			// need some tolerance on some systems, eg. older SunOS5.6
+			t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
+			t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
+		}
+	} else {
+	  SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
 	}
-	// need some tolerance on some systems, eg. older SunOS5.6
-	t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
-	t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
-	// sanity check negative value
 #endif
+	// sanity check negative value
 	t_assert(system::DoSingleSelect(-1, 0, true, false) < 0);
 	// timeout tested indirectly in socket test cases
 	// cannot think of case forcing select really fail, i.e. return -1
