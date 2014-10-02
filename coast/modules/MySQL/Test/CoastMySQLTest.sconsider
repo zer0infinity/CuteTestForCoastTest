@@ -1,5 +1,11 @@
-import os, re, sys, shlex, pdb
-import SConsider, Anything
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import os
+import re
+import sys
+import shlex
+import SConsider
+import Anything
 from stat import *
 from SomeUtils import multiple_replace, runCommand
 
@@ -7,21 +13,25 @@ Import('*')
 
 defaults = None
 
+
 def setUp(target, source, env):
     target = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
     if not target:
-        raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
+        raise SConsider.SkipTest(
+            'required mysqlbin executable not found, skipping test')
 
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
 
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
-    if not defaults or not defaults.has_key('MySQL'):
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
+    if not defaults or 'MySQL' not in defaults:
         raise SConsider.SkipTest('mysql backend not configured or disabled')
 
-    searchreplacespec= [
+    searchreplacespec = [
         ('##database##', str(defaults['MySQL']['Database'])),
         ('##server##', str(defaults['MySQL']['Server'])),
         ('##port##', str(defaults['MySQL']['Port'])),
@@ -32,7 +42,8 @@ def setUp(target, source, env):
     path = relDir.Dir('config')
 
     command = [target.abspath]
-    command.extend(shlex.split("-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
+    command.extend(shlex.split(
+        "-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
     res = runCommand(
         command,
         logpath=logDir.abspath,
@@ -41,7 +52,10 @@ def setUp(target, source, env):
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to drop test database (rc=' +
+            str(res) +
+            '), check error log')
 
     res = runCommand(
         command,
@@ -51,30 +65,35 @@ def setUp(target, source, env):
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to load test database (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to load test database (rc=' +
+            str(res) +
+            '), check error log')
+
 
 def tearDown(target, source, env):
     pass
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : [
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': [
             'CoastMySQL',
             'testfwWDBase',
         ],
-        'requires' : [
+        'requires': [
             'CoastAppLog',
             'CoastRenderers',
             'mysql.mysqlbin',
         ],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles' : [
-            (SConsider.findFiles(['.'],['.any','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(['.'], ['.any', '.sql']),
+             S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig' : {
-            'setUp' : setUp,
-            'tearDown' : tearDown,
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
     },
 }

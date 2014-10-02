@@ -1,43 +1,50 @@
-import SConsider, socket
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import socket
 from stat import *
 
 Import('*')
 
 hostonly, domain, fqdn = SConsider.getfqdn()
-localhostname='localhost'
-localhostip=socket.gethostbyname(localhostname)
+localhostname = 'localhost'
+localhostip = socket.gethostbyname(localhostname)
 
 searchReplace = {
-  'FQDN': fqdn,
-  'HOSTNAME': hostonly,
-  'HOSTNAMEIP': socket.gethostbyname(hostonly),
-  'DOMAINONLY': domain,
-  'LOCALHOSTNAME': localhostname,
-  'LOCALHOSTIP': localhostip,
+    'FQDN': fqdn,
+    'HOSTNAME': hostonly,
+    'HOSTNAMEIP': socket.gethostbyname(hostonly),
+    'DOMAINONLY': domain,
+    'LOCALHOSTNAME': localhostname,
+    'LOCALHOSTIP': localhostip,
 }
 
-def setUp( target, source, env ):
-  pass
 
-def tearDown( target, source, env ):
-  pass
+def setUp(target, source, env):
+    pass
+
+
+def tearDown(target, source, env):
+    pass
 
 buildSettings = {
-  packagename : {
-    'targetType'       : 'ProgramTest',
-    'linkDependencies' : ['CoastRenderers', 'testfwWDBase'],
-    'requires'         : [],
-    'includeSubdir'    : '',
-    'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-    'copyFiles'        : [
-      ( SConsider.findFiles( ['.'], ['.any', '.txt', '.tst', '.html'] ), S_IRUSR | S_IRGRP | S_IROTH, searchReplace ),
-      ( SConsider.findFiles( ['config'], ['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
-    ],
-    'runConfig' : {
-      'setUp' : setUp,
-      'tearDown' : tearDown,
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': ['CoastRenderers', 'testfwWDBase'],
+        'requires': [],
+        'includeSubdir': '',
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(['.'], [
+             '.any', '.txt', '.tst', '.html']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.findFiles(['config'], ['.sh']),
+             S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+        ],
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
+        },
     },
-  }
 }
 
-SConsider.createTargets( packagename, buildSettings )
+SConsider.createTargets(packagename, buildSettings)

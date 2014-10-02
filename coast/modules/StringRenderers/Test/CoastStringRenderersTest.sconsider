@@ -1,17 +1,25 @@
-import os, pdb
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import os
 import SConsider
 from stat import *
 
 Import('*')
 
 buildSettings = {
-    packagename : {
-        'includeSubdir'    : '',
-        'linkDependencies' : ['CoastStringRenderers', 'testfwWDBase'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [( SConsider.listFiles( ['config/*.any'] ), S_IRUSR | S_IRGRP | S_IROTH )],
-    }
+    packagename: {
+        'includeSubdir': '',
+        'linkDependencies': [
+            'CoastStringRenderers',
+            'testfwWDBase'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any']),
+             S_IRUSR | S_IRGRP | S_IROTH)],
+    },
 }
 
 SConsider.createTargets(packagename, buildSettings)

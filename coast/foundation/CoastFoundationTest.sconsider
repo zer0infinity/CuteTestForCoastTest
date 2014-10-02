@@ -1,18 +1,21 @@
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
 import SConsider
 
 Import('*')
 
-# this is a meta package which executes the runners defined in the configured packages 
+# this is a meta package which executes the runners defined in the
+# configured packages
 
 buildSettings = {
-    packagename : {
-        'requires' : [
-             'CoastFoundationBaseTest',
-             'CoastFoundationIOTest',
-             'CoastFoundationAnythingOptionalTest',
-             'CoastFoundationMiscellaneousTest',
-             'CoastFoundationTimeTest',
-         ],
+    packagename: {
+        'requires': [
+            'CoastFoundationBaseTest',
+            'CoastFoundationIOTest',
+            'CoastFoundationAnythingOptionalTest',
+            'CoastFoundationMiscellaneousTest',
+            'CoastFoundationTimeTest',
+        ],
         'runConfig': {
             'type': 'composite',
         }

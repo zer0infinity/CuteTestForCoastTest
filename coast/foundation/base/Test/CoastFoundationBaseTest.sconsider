@@ -1,16 +1,31 @@
-import os, tempfile
-import SConsider, SCons
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import os
+import tempfile
+import SConsider
+import SCons
 from stat import *
 
 Import('*')
 
 searchReplace = {
-    'DIREXTENDBASEDIR': lambda env: os.path.join(env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath, 'makedirextendtest', 'test'),
-    'TMPDIR': lambda env: tempfile.gettempdir() if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/tmp',
-    'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) in ['cygwin', 'win32'] else '/',
+    'DIREXTENDBASEDIR': lambda env: os.path.join(
+        env['BASEOUTDIR'].Dir(
+            env['RELTARGETDIR']).abspath,
+        'makedirextendtest',
+        'test'),
+    'TMPDIR': lambda env: tempfile.gettempdir() if str(
+        env['PLATFORM']) in [
+        'cygwin',
+        'win32'] else '/tmp',
+    'ROOTFS': lambda env: 'c:/' if str(
+        env['PLATFORM']) in [
+        'cygwin',
+        'win32'] else '/',
     'FILESIZE_len5.tst': SCons.Script.File('config/len5.tst').get_size(),
     'FILESIZE_AnythingTest.any': SCons.Script.File('config/AnythingTest.any').get_size(),
 }
+
 
 def SystemTestMakeDirectoryExtendCleanup(env):
     tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
@@ -18,29 +33,48 @@ def SystemTestMakeDirectoryExtendCleanup(env):
     if os.path.isdir(basepath):
         shutil.rmtree(basepath, ignore_errors=True)
 
+
 def setUp(target, source, env):
     env['ENV']['COAST_LOGONCERR'] = '1'
     env['ENV']['COAST_TRACE_STORAGE'] = '1'
     env['ENV']['COAST_TRACE_INITFINIS'] = '1'
     pass
 
+
 def tearDown(target, source, env):
     # delete generated files
-    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst'], matchfiles=['include.any']))
+    SConsider.removeFiles(
+        SConsider.findFiles(
+            [env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])],
+            extensions=['.res', '.tst'],
+            matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup(env)
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['CoastFoundation.Base', 'CoastFoundation.Time', 'CoastFoundation.Miscellaneous', 'testfwFoundation'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [
-            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
-            (SConsider.listFiles(['config/*.tst', 'config/*.txt', 'tmp/*']), S_IRUSR | S_IRGRP | S_IROTH),
+    packagename: {
+        'linkDependencies': [
+            'CoastFoundation.Base',
+            'CoastFoundation.Time',
+            'CoastFoundation.Miscellaneous',
+            'testfwFoundation'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any']),
+             S_IRUSR | S_IRGRP | S_IROTH,
+             searchReplace),
+            (SConsider.listFiles(
+                [
+                    'config/*.tst',
+                    'config/*.txt',
+                    'tmp/*']),
+             S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig'        : {
-            'setUp'     : setUp,
-            'tearDown'     : tearDown,
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
     },
 }

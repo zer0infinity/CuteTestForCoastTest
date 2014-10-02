@@ -1,6 +1,12 @@
-import SConsider, Anything
-import os, socket, re
-import threading, shutil
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import Anything
+import os
+import socket
+import re
+import threading
+import shutil
 import ServerExtensions
 from stat import *
 from OpenSSL import crypto, SSL
@@ -10,42 +16,52 @@ Import('*')
 
 defaults = None
 
+
 def appendReplaceCommandForCert(key, filename, searchReplace):
     try:
         data = open(filename)
         x509 = crypto.load_certificate(crypto.FILETYPE_PEM, data.read())
         data.close()
-        complist=x509.get_subject().get_components()
+        complist = x509.get_subject().get_components()
         complist.reverse()
-        outname=key+'_subject'
-        searchReplace.append((r"##"+outname+"##",','.join([k+'='+v for k,v in complist])));
-        searchReplace.append((r"##"+outname+"_parts##",' '.join(['"'+k+'='+v+'"' for k,v in complist])));
-        complist=x509.get_issuer().get_components()
+        outname = key + '_subject'
+        searchReplace.append(
+            (r"##" + outname + "##", ','.join([k + '=' + v for k, v in complist])))
+        searchReplace.append(
+            (r"##" + outname + "_parts##",
+             ' '.join(['"' + k + '=' + v + '"' for k, v in complist])))
+        complist = x509.get_issuer().get_components()
         complist.reverse()
-        outname=key+'_issuer'
-        searchReplace.append((r"##"+outname+"##",','.join([k+'='+v for k,v in complist])));
-    except:pass
+        outname = key + '_issuer'
+        searchReplace.append(
+            (r"##" + outname + "##", ','.join([k + '=' + v for k, v in complist])))
+    except:
+        pass
+
 
 def ModifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:
         fname = file.abspath
         if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
+            oldmode = os.stat(fname).st_mode
+            # set writable
             os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
+            # replace tokens in file
             SConsider.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 servers = []
+
+
 def startServer(host, port, server_class, handler_class, **kw):
     server = server_class((host, port), handler_class, **kw)
     servers.append(server)
     server.serve_forever()
 
+
 def prepareMkCaParams(env, commandargs, tdirabs, certdir):
     mkcaScriptName = os.path.join(tdirabs, 'mkca-new.sh')
-    ## set writable cfgfilename
+    # set writable cfgfilename
     target = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
     if not os.path.isfile(mkcaScriptName):
         return False
@@ -53,7 +69,7 @@ def prepareMkCaParams(env, commandargs, tdirabs, certdir):
     if target:
         commandargs.extend(['-b', target.abspath])
         commandargs.extend(['-B', '-S --'])
-    cnfFilename=os.path.join(tdirabs, 'openssl.cnf')
+    cnfFilename = os.path.join(tdirabs, 'openssl.cnf')
     if cnfFilename:
         commandargs.extend(['-o', cnfFilename])
     mkcertDirectory = os.path.join(tdirabs, 'mkcertdir')
@@ -63,54 +79,78 @@ def prepareMkCaParams(env, commandargs, tdirabs, certdir):
             shutil.rmtree(theDir, ignore_errors=True)
         os.mkdir(theDir)
     commandargs.extend(['-d', mkcertDirectory])
-    # maybe we should do the following step by hand because we do not need cert suffixes
+    # maybe we should do the following step by hand because we do not need
+    # cert suffixes
     commandargs.extend(['-c', certOutDir])
     commandargs.extend(['-C', defaults['HostName']])
     commandargs.extend(['-S', defaults['HostName']])
-    fqdn = defaults.get('SSLHost','')
+    fqdn = defaults.get('SSLHost', '')
     if fqdn and fqdn != defaults['HostName']:
         commandargs.extend(['-S', fqdn])
 
+
 def createCertificates(env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    commandargs=[]
-    stdincontent=[]
-    certdir='cert_files'
+    commandargs = []
+    stdincontent = []
+    certdir = 'cert_files'
     certOutDir = os.path.join(tdir.abspath, certdir)
     prepareMkCaParams(env, commandargs, tdir.abspath, certdir)
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
-    retCode=runCommand(commandargs, logpath=logpath.abspath, stdincontent='\n'.join(stdincontent))
-    certFileNodesList=[]
-    certDict={}
+    retCode = runCommand(
+        commandargs,
+        logpath=logpath.abspath,
+        stdincontent='\n'.join(stdincontent))
+    certFileNodesList = []
+    certDict = {}
     if retCode == 0:
         # get list of copied certificates
-        certFileNodesList=SConsider.findFiles([certOutDir], ['.pem','.p12'])
-        certDict=createCertDict(certFileNodesList)
-        target = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
-        sslbin='openssl'
+        certFileNodesList = SConsider.findFiles([certOutDir], ['.pem', '.p12'])
+        certDict = createCertDict(certFileNodesList)
+        target = SConsider.packageRegistry.getPackageTarget(
+            'openssl',
+            'openSSL')
+        sslbin = 'openssl'
         if target:
-            sslbin=''+target.abspath+' -S --'
-        # if there is now c_rehash available, use the following improved script, (base from from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
-        command='for file in *crt*.pem; do theHash=`'+sslbin+' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
-        retCode=runCommand(command, logpath=logpath.abspath, stdincontent=None, shell=True, cwd=certOutDir)
+            sslbin = '' + target.abspath + ' -S --'
+        # if there is now c_rehash available, use the following improved
+        # script, (base from from
+        # http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
+        command = 'for file in *crt*.pem; do theHash=`' + sslbin + \
+            ' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
+        retCode = runCommand(
+            command,
+            logpath=logpath.abspath,
+            stdincontent=None,
+            shell=True,
+            cwd=certOutDir)
     return (certOutDir, certFileNodesList, certDict)
 
+
 def createCertDict(certFileNodesList):
-    certDict={}
-    for cname in ['servercrt', 'serverkey', 'clientcrt', 'clientkey', 'fullchain', 'serverchain','chainwoservercrt', 'subCA1crt', 'subCA1key', 'rootCA1crt', 'rootCA1key']:
+    certDict = {}
+    for cname in ['servercrt', 'serverkey', 'clientcrt', 'clientkey', 'fullchain', 'serverchain', 'chainwoservercrt', 'subCA1crt', 'subCA1key', 'rootCA1crt', 'rootCA1key']:
         try:
-            filename=[c.abspath for c in certFileNodesList if re.match(r''+cname+'(_'+defaults['HostName']+')?\.pem', os.path.split(c.abspath)[1])][0]
-            certDict[cname]=filename
-        except: pass
+            filename = [
+                c.abspath for c in certFileNodesList if re.match(
+                    r'' + cname + '(_' + defaults['HostName'] + ')?\.pem',
+                    os.path.split(
+                        c.abspath)[1])][0]
+            certDict[cname] = filename
+        except:
+            pass
     return certDict
+
 
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
 
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
 
     tdirabs = tdir.abspath
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
@@ -120,18 +160,54 @@ def setUp(target, source, env):
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
     searchReplace = []
     # create certificate files
-    certOutDir,certFileNodesList,certDict=createCertificates(env)
+    certOutDir, certFileNodesList, certDict = createCertificates(env)
     if certDict:
-        for key,value in certDict.items():
-            searchReplace.append((r"##"+key+"_abs##",value));
-            searchReplace.append((r"##"+key+"_rel##",os.path.relpath(value, tdirabs)));
+        for key, value in certDict.items():
+            searchReplace.append(
+                (r"##" + key + "_abs##", value))
+            searchReplace.append(
+                (r"##" + key + "_rel##",
+                 os.path.relpath(
+                     value,
+                     tdirabs)))
             if key.endswith('crt'):
                 appendReplaceCommandForCert(key, value, searchReplace)
-        searchReplace.append((r"##certdir_abs##",certOutDir));
-        searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
-        ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
-        threading.Thread(target=startServer, args=[defaults['SSLHost'], defaults['SSLPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
-        threading.Thread(target=startServer, args=[defaults['SSLHighCipherHost'], defaults['SSLHighCipherPort'], ServerExtensions.SecureHTTPServer, ServerExtensions.SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt'), 'ciphers':defaults['SSLHighCipherList']}).start()
+        searchReplace.append((r"##certdir_abs##", certOutDir))
+        searchReplace.append(
+            (r"##certdir_rel##",
+             os.path.relpath(
+                 certOutDir,
+                 tdirabs)))
+        ModifyConfigFiles(
+            env,
+            searchReplace,
+            SConsider.findFiles(
+                [configdir],
+                ['.any']))
+        threading.Thread(
+            target=startServer,
+            args=[
+                defaults['SSLHost'],
+                defaults['SSLPort'],
+                ServerExtensions.SecureHTTPServer,
+                ServerExtensions.SecureHTTPRequestHandler],
+            kwargs={
+                'certFile': certDict.get('servercrt'),
+                'keyFile': certDict.get('serverkey'),
+                'caChainFile': certDict.get('chainwoservercrt')}).start()
+        threading.Thread(
+            target=startServer,
+            args=[
+                defaults['SSLHighCipherHost'],
+                defaults['SSLHighCipherPort'],
+                ServerExtensions.SecureHTTPServer,
+                ServerExtensions.SecureHTTPRequestHandler],
+            kwargs={
+                'certFile': certDict.get('servercrt'),
+                'keyFile': certDict.get('serverkey'),
+                'caChainFile': certDict.get('chainwoservercrt'),
+                'ciphers': defaults['SSLHighCipherList']}).start()
+
 
 def tearDown(target, source, env):
     for server in servers:
@@ -140,23 +216,25 @@ def tearDown(target, source, env):
 #    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : ['CoastSSL', 'testfwWDBase'],
-        'requires'         : ['openssl.openSSL'],
-		'includeSubdir'    : '',
-        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-        'copyFiles' : [
-            ( SConsider.findFiles( ['.'], extensions=['.any'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.findFiles( ['.'], matchfiles=['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.findFiles( ['.'], matchfiles=['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': ['CoastSSL', 'testfwWDBase'],
+        'requires': ['openssl.openSSL'],
+        'includeSubdir': '',
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['.'], extensions=['.any']), S_IRUSR | S_IRGRP | S_IROTH),
+            (SConsider.findFiles(
+                ['.'], matchfiles=['openssl.cnf']), S_IRUSR | S_IRGRP | S_IROTH),
+            (SConsider.findFiles(
+                ['.'], matchfiles=['mkca-new.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
         ],
-        'runConfig' : {
-            'setUp' : setUp,
-            'tearDown' : tearDown,
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
-    }
+    },
 }
 
-SConsider.createTargets( packagename, buildSettings )
-
+SConsider.createTargets(packagename, buildSettings)

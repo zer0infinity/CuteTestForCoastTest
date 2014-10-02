@@ -1,3 +1,6 @@
+from pkg_resources import require as pkg_require
+pkg_require(['python-ldap>=2.3', "SConsider<0.5"])
+
 from SomeUtils import multiple_replace
 from StringIO import StringIO
 from ldap.cidict import cidict
@@ -12,7 +15,6 @@ import os
 import socket
 import subprocess
 import re
-import pdb
 import sys
 
 Import('*')
@@ -34,9 +36,11 @@ def tearDown(target, source, env):
 def replaceConfigParams(env, relDir, configdir):
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
-    if not defaults or not defaults.has_key('LDAP'):
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
+    if not defaults or 'LDAP' not in defaults:
         raise SConsider.SkipTest('ldap backend not configured or disabled')
 
     searchreplacespec = [
@@ -49,9 +53,12 @@ def replaceConfigParams(env, relDir, configdir):
         ('##BINDPW##', str(defaults['LDAP']['Password'])),
         ('##WRONGBINDPW##', str(defaults['LDAP']['FaultyPassword'])),
         ('##BINDFAILCODE##', str(defaults['LDAP']['BindFailureCode'])),
-        ('##BINDDC##', str(defaults['LDAP']['BindDc'])),]
+        ('##BINDDC##', str(defaults['LDAP']['BindDc'])), ]
 
-    modifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any', '.ldif']))
+    modifyConfigFiles(
+        env, searchreplacespec, SConsider.findFiles(
+            [configdir], [
+                '.any', '.ldif']))
 
 
 def modifyConfigFiles(env, searchReplace=[], files=[]):
@@ -67,17 +74,21 @@ def modifyConfigFiles(env, searchReplace=[], files=[]):
 
 def bulkLoadLdap(configdir):
     try:
-        l = ldap.initialize('ldap://' + defaults['LDAP']['Server'] + ':' + str(defaults['LDAP']['Port']))
-        l.bind_s(str(defaults['LDAP']['BindDn']), str(defaults['LDAP']['Password']))
+        l = ldap.initialize(
+            'ldap://' + defaults['LDAP']['Server'] + ':' +
+            str(defaults['LDAP']['Port']))
+        l.bind_s(
+            str(defaults['LDAP']['BindDn']),
+            str(defaults['LDAP']['Password']))
 
         deleteLdapEntries(l)
         addLdapEntries(l, configdir)
     except ldap.INVALID_CREDENTIALS:
         raise SConsider.SkipTest('username or password is incorrect.')
-    except ldap.LDAPError, e:
+    except ldap.LDAPError as e:
         strList = []
 
-        if type(e.message) == dict:
+        if isinstance(e.message, dict):
             for (k, v) in e.message.iteritems():
                 strList.append("%s: %s\n" % (k, v))
         else:
@@ -94,7 +105,9 @@ def deleteLdapEntries(l):
     try:
         sys.stdout.write("ldap record deletion started.")
         sys.stdout.flush()
-        rawRes = l.search_s('dc='+str(defaults['LDAP']['BindDc']), ldap.SCOPE_SUBTREE, '(objectclass=*)')
+        rawRes = l.search_s(
+            'dc=' + str(defaults['LDAP']['BindDc']),
+            ldap.SCOPE_SUBTREE, '(objectclass=*)')
         res = transformLdapSearchResults(rawRes)
         i = 0
 
@@ -111,19 +124,20 @@ def deleteLdapEntries(l):
 
 
 class LdifLoader(LDIFParser):
-   def __init__(self, input, con):
-      LDIFParser.__init__(self, input)
-      self.con = con
-      self.cnt = 0
 
-   def handle(self, dn, entry):
-      ldifEntry = modlist.addModlist(entry)
-      self.con.add_s(dn, ldifEntry)
+    def __init__(self, input, con):
+        LDIFParser.__init__(self, input)
+        self.con = con
+        self.cnt = 0
 
-      if self.cnt % 10 == 0:
-          sys.stdout.write(".")
-          sys.stdout.flush()
-      self.cnt += 1
+    def handle(self, dn, entry):
+        ldifEntry = modlist.addModlist(entry)
+        self.con.add_s(dn, ldifEntry)
+
+        if self.cnt % 10 == 0:
+            sys.stdout.write(".")
+            sys.stdout.flush()
+        self.cnt += 1
 
 
 def addLdapEntries(l, configdir):
@@ -142,9 +156,9 @@ def addLdapEntries(l, configdir):
 def transformLdapSearchResults(results):
     res = []
 
-    if isinstance(results,tuple) and len(results) == 2 :
+    if isinstance(results, tuple) and len(results) == 2:
         (code, arr) = results
-    elif isinstance(results,list):
+    elif isinstance(results, list):
         arr = results
 
     if not results:
@@ -153,7 +167,8 @@ def transformLdapSearchResults(results):
     for item in arr:
         res.append(LDAPSearchResult(item))
 
-    # Need to reverse the result in order to be able to delete the entries bottom-up
+    # Need to reverse the result in order to be able to delete the entries
+    # bottom-up
     res.reverse()
 
     return res
@@ -178,7 +193,7 @@ class LDAPSearchResult:
         self.attrs = cidict(attrDict)
 
     def hasAttributes(self, attrName):
-        return self.attrs.has_key(attrName)
+        return attrName in self.attrs
 
     def getAttrValues(self, key):
         return self.attrs[key]
@@ -207,17 +222,27 @@ class LDAPSearchResult:
 
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : ['CoastLDAP', 'CoastActions', 'testfwWDBase'],
-        'requires'         : [],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles'        : [
-            (SConsider.findFiles(['config'], extensions=['.any', '.ldif'], matchfiles=[]), S_IRUSR | S_IRGRP | S_IROTH),
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': [
+            'CoastLDAP',
+            'CoastActions',
+            'testfwWDBase'],
+        'requires': [],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['config'],
+                extensions=[
+                    '.any',
+                    '.ldif'],
+                matchfiles=[]),
+             S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig'        : {
-            'setUp'        : setUp,
-            'tearDown'     : tearDown,
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
     },
 }

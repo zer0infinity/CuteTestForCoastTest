@@ -1,20 +1,26 @@
-import SConsider, os
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import os
 from stat import *
 
 Import('*')
 
 buildSettings = {
-    packagename : {
-        'includeSubdir'    : '',
-        'linkDependencies' : ['CoastSystemFunctions', 'testfwFoundation'],
-        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.findFiles(['config'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'public' : {
-        },
-        'runConfig'        : {
-        },
-    }
+    packagename: {
+        'includeSubdir': '',
+        'linkDependencies': [
+            'CoastSystemFunctions',
+            'testfwFoundation'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['config'],
+                ['.any']),
+             S_IRUSR | S_IRGRP | S_IROTH)],
+    },
 }
 
-SConsider.createTargets( packagename, buildSettings )
+SConsider.createTargets(packagename, buildSettings)

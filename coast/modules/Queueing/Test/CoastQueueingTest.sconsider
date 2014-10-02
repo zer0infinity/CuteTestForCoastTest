@@ -1,27 +1,40 @@
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
 import SConsider
 from stat import *
 
 Import('*')
 
+
 def setUp(target, source, env):
     env['ENV']['COAST_LOGONCERR'] = '3'
     env['ENV']['COAST_TRACE_STORAGE'] = '0'
+
 
 def tearDown(target, source, env):
     pass
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['CoastQueueing', 'testfwFoundation'],
-        'requires'         : ['CoastRenderers', 'CoastAppLog'],
-        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.findFiles(['config'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'runConfig'        : {
-            'setUp'     : setUp,
-            'tearDown'     : tearDown,
+    packagename: {
+        'linkDependencies': [
+            'CoastQueueing',
+            'testfwFoundation'],
+        'requires': [
+            'CoastRenderers',
+            'CoastAppLog'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['config'],
+                ['.any']),
+             S_IRUSR | S_IRGRP | S_IROTH)],
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
-    }
+    },
 }
 
-SConsider.createTargets( packagename, buildSettings )
+SConsider.createTargets(packagename, buildSettings)

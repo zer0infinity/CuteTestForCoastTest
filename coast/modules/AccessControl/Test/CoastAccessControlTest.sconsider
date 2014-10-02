@@ -1,22 +1,32 @@
-import SConsider, os
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import os
 from stat import *
 
 Import('*')
 
+
 def setUp(target, source, env):
-#    env['ENV']['COAST_TRACE_INITFINIS'] = 1
+    #    env['ENV']['COAST_TRACE_INITFINIS'] = 1
     pass
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['CoastAccessControl', 'testfwWDBase'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'runConfig' : {
-            'setUp' : setUp,
+    packagename: {
+        'linkDependencies': [
+            'CoastAccessControl',
+            'testfwWDBase'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any']),
+             S_IRUSR | S_IRGRP | S_IROTH)],
+        'runConfig': {
+            'setUp': setUp,
         },
-    }
+    },
 }
 
 SConsider.createTargets(packagename, buildSettings)

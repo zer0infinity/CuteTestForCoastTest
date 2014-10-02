@@ -1,5 +1,11 @@
-import os, re, sys, shlex, pdb
-import SConsider, Anything
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import os
+import re
+import sys
+import shlex
+import SConsider
+import Anything
 from stat import *
 from SomeUtils import multiple_replace, runCommand
 
@@ -7,33 +13,38 @@ Import('*')
 
 defaults = None
 
+
 def ModifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:
         fname = file.abspath
         if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
+            oldmode = os.stat(fname).st_mode
+            # set writable
             os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
+            # replace tokens in file
             SConsider.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
+
 
 def setUp(target, source, env):
     target = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
     if not target:
-        raise SConsider.SkipTest('required isql executable not found, skipping test')
+        raise SConsider.SkipTest(
+            'required isql executable not found, skipping test')
 
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     configdir = relDir.Dir('config')
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
-    if not defaults or not defaults.has_key('Sybase'):
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
+    if not defaults or 'Sybase' not in defaults:
         raise SConsider.SkipTest('sybase backend not configured')
 
-    searchreplacespec= [
+    searchreplacespec = [
         ('##database##', str(defaults['Sybase']['Database'])),
         ('##server##', str(defaults['Sybase']['Server'])),
         ('##hostname##', str(defaults['Sybase']['Hostname'])),
@@ -42,11 +53,17 @@ def setUp(target, source, env):
         ('##password##', str(defaults['Sybase']['Password'])),
     ]
 
-    ModifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir],matchfiles=['interfaces']))
+    ModifyConfigFiles(
+        env,
+        searchreplacespec,
+        SConsider.findFiles(
+            [configdir],
+            matchfiles=['interfaces']))
 
     command = [target.abspath]
-    command.extend(shlex.split("-U {Username!s} -P {Password!s} -S {Server!s}".format(**defaults['Sybase'])))
-    command.extend(['-I' , configdir.File('interfaces').abspath])
+    command.extend(shlex.split(
+        "-U {Username!s} -P {Password!s} -S {Server!s}".format(**defaults['Sybase'])))
+    command.extend(['-I', configdir.File('interfaces').abspath])
     res = runCommand(
         command,
         logpath=logDir.abspath,
@@ -55,7 +72,10 @@ def setUp(target, source, env):
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to drop test database (rc=' +
+            str(res) +
+            '), check error log')
     res = runCommand(
         command,
         logpath=logDir.abspath,
@@ -64,29 +84,34 @@ def setUp(target, source, env):
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to create test database (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to create test database (rc=' +
+            str(res) +
+            '), check error log')
+
 
 def tearDown(target, source, env):
     pass
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : [
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': [
             'CoastSybaseCT',
             'testfwWDBase',
         ],
-        'requires' : [
+        'requires': [
             'CoastActions',
-            SConsider.generateFulltargetname('sybase','isql'),
+            SConsider.generateFulltargetname('sybase', 'isql'),
         ],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles' : [
-            (SConsider.listFiles(['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR|S_IRGRP|S_IROTH),
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig' : {
-            'setUp' : setUp,
-            'tearDown' : tearDown,
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
     },
 }

@@ -1,6 +1,12 @@
-import SConsider, Anything
-import os, socket, re
-import threading, shutil
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import Anything
+import os
+import socket
+import re
+import threading
+import shutil
 from stat import *
 import ServerExtensions
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
@@ -10,61 +16,83 @@ Import('*')
 
 defaults = None
 
+
 class MyHTTPServer(HTTPServer):
+
     """This class wrapper is needed to set allow_reuse_address to True
     prior to initializing it"""
     allow_reuse_address = True
 
 servers = []
+
+
 def startServer(host, port, server_class, handler_class, **kw):
     server = server_class((host, port), handler_class, **kw)
     servers.append(server)
     server.serve_forever()
+
 
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
 
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
 
     tdirabs = tdir.abspath
     logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
     configdir = tdir.Dir('config')
-    threading.Thread(target=startServer, args=[defaults['HostName'], defaults['HttpPort'], MyHTTPServer, SimpleHTTPRequestHandler]).start()
+    threading.Thread(
+        target=startServer,
+        args=[
+            defaults['HostName'],
+            defaults['HttpPort'],
+            MyHTTPServer,
+            SimpleHTTPRequestHandler]).start()
+
 
 def tearDown(target, source, env):
     for server in servers:
         server.shutdown()
     # delete generated files
-    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(os.path.join(env['RELTARGETDIR'],'config'))], extensions=[], matchfiles=['time.txt']))
+    SConsider.removeFiles(
+        SConsider.findFiles(
+            [env['BASEOUTDIR'].Dir(
+                os.path.join(env['RELTARGETDIR'],
+                             'config'))],
+            extensions=[],
+            matchfiles=['time.txt']))
 
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'LibraryShared',
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'includeSubdir'    : '',
-        'linkDependencies' : [
+    packagename: {
+        'targetType': 'LibraryShared',
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'includeSubdir': '',
+        'linkDependencies': [
             'testfwWDBase',
             'CoastPerfTest',
         ],
     },
-    'Runner' : {
-        'targetType'       : 'ProgramTest',
-        'requires' : [
+    'Runner': {
+        'targetType': 'ProgramTest',
+        'requires': [
             packagename + '.' + packagename,
             'CoastStdDataAccess',
             'CoastActions',
             'CoastRenderers',
         ],
-        'usedTarget'       : 'coastd.coastd',
-        'copyFiles' : [
-            (SConsider.findFiles(['.'],['.txt', '.html']), S_IRUSR|S_IRGRP|S_IROTH),
-            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH),
+        'usedTarget': 'coastd.coastd',
+        'copyFiles': [
+            (SConsider.findFiles(['.'], ['.txt', '.html']),
+             S_IRUSR | S_IRGRP | S_IROTH),
+            (SConsider.findFiles(['config'], ['.any']),
+             S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig' : {
+        'runConfig': {
             'setUp': setUp,
             'tearDown': tearDown,
         },

@@ -1,10 +1,12 @@
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
 import SConsider
 
 Import('*')
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : [
+    packagename: {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base'),
             SConsider.generateFulltargetname(packagename, 'IO'),
             SConsider.generateFulltargetname(packagename, 'Time'),
@@ -13,78 +15,78 @@ buildSettings = {
             SConsider.generateFulltargetname(packagename, 'Miscellaneous')
         ]
     },
-    'Base' : {
-        'linkDependencies' : ['boost.include'],
-        'sourceFiles'      : SConsider.listFiles(['base/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['base/*.h', 'base/*.hpp']),
+    'Base': {
+        'linkDependencies': ['boost.include'],
+        'sourceFiles': SConsider.listFiles(['base/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['base/*.h', 'base/*.hpp']),
             'includeSubdir': 'base',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     },
-    'IO' : {
-        'linkDependencies' : [
+    'IO': {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base'),
             SConsider.generateFulltargetname(packagename, 'Time')
         ],
-        'sourceFiles'      : SConsider.listFiles(['io/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['io/*.h', 'io/*.hpp']),
+        'sourceFiles': SConsider.listFiles(['io/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['io/*.h', 'io/*.hpp']),
             'includeSubdir': 'io',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     },
-    'Time' : {
-        'linkDependencies' : [
+    'Time': {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base')
         ],
-        'sourceFiles'      : SConsider.listFiles(['time/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['time/*.h', 'time/*.hpp']),
+        'sourceFiles': SConsider.listFiles(['time/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['time/*.h', 'time/*.hpp']),
             'includeSubdir': 'time',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     },
-    'AnythingOptional' : {
-        'linkDependencies' : [
+    'AnythingOptional': {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base')
         ],
-        'sourceFiles'      : SConsider.listFiles(['anythingoptional/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['anythingoptional/*.h', 'anythingoptional/*.hpp']),
+        'sourceFiles': SConsider.listFiles(['anythingoptional/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['anythingoptional/*.h', 'anythingoptional/*.hpp']),
             'includeSubdir': 'anythingoptional',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     },
-    'STLMemMgmt' : {
-        'linkDependencies' : [
+    'STLMemMgmt': {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base'),
             'boost.system'
         ],
-        'sourceFiles'      : SConsider.listFiles(['stlmemmgmt/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['stlmemmgmt/*.h', 'stlmemmgmt/*.hpp']),
+        'sourceFiles': SConsider.listFiles(['stlmemmgmt/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['stlmemmgmt/*.h', 'stlmemmgmt/*.hpp']),
             'includeSubdir': 'stlmemmgmt',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     },
-    'Miscellaneous' : {
-        'linkDependencies' : [
+    'Miscellaneous': {
+        'linkDependencies': [
             SConsider.generateFulltargetname(packagename, 'Base'),
             SConsider.generateFulltargetname(packagename, 'STLMemMgmt')
         ],
-        'sourceFiles'      : SConsider.listFiles(['miscellaneous/*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['miscellaneous/*.h', 'miscellaneous/*.hpp']),
+        'sourceFiles': SConsider.listFiles(['miscellaneous/*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['miscellaneous/*.h', 'miscellaneous/*.hpp']),
             'includeSubdir': 'miscellaneous',
-            'stripSubdir'  : False
-       }
+            'stripSubdir': False
+        }
     }
 }
 

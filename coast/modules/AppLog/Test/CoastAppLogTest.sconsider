@@ -1,23 +1,33 @@
-import SConsider, os, fnmatch, shutil
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import SConsider
+import os
+import fnmatch
+import shutil
 from stat import *
 
 Import('*')
 
 searchReplace = {
-    "LOGDIR": lambda env: env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('tmp').abspath,
-    "ROTATEDIR": lambda env: env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('tmp').abspath,
+    "LOGDIR": lambda env: env['BASEOUTDIR'].Dir(
+        env['RELTARGETDIR']).Dir('tmp').abspath,
+    "ROTATEDIR": lambda env: env['BASEOUTDIR'].Dir(
+            env['RELTARGETDIR']).Dir('tmp').abspath,
 }
+
 
 def setUp(target, source, env):
     env['ENV']['COAST_USE_MMAP_STREAMS'] = "0"
     targetDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     tmppath = targetDir.Dir('tmp').abspath
-    for d in [tmppath,targetDir.Dir(os.path.join('config','rotate')).abspath]:
+    for d in [tmppath, targetDir.Dir(os.path.join('config', 'rotate')).abspath]:
         if os.path.isdir(d):
             shutil.rmtree(d)
         try:
             os.makedirs(d)
-        except oserror: pass
+        except oserror:
+            pass
+
 
 def tearDown(target, source, env):
     dir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('config')
@@ -27,18 +37,24 @@ def tearDown(target, source, env):
                 os.unlink(os.path.join(root, f))
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['CoastAppLog', 'testfwWDBase'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'ProgramTest',
-        'copyFiles' : [
-            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+    packagename: {
+        'linkDependencies': [
+            'CoastAppLog',
+            'testfwWDBase'],
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any']),
+             S_IRUSR | S_IRGRP | S_IROTH,
+             searchReplace),
         ],
-        'runConfig' : {
+        'runConfig': {
             'setUp': setUp,
             'tearDown': tearDown,
         },
-    }
+    },
 }
 
 SConsider.createTargets(packagename, buildSettings)

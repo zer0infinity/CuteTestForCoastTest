@@ -1,5 +1,10 @@
-import os, re, sys, pdb
-import SConsider, Anything
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
+import os
+import re
+import sys
+import SConsider
+import Anything
 from stat import *
 from SomeUtils import multiple_replace, runCommand
 
@@ -7,26 +12,33 @@ Import('*')
 
 defaults = None
 
+
 def setUp(target, source, env):
     target = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
     if not target:
-        raise SConsider.SkipTest('required sqlplus executable not found, skipping test')
+        raise SConsider.SkipTest(
+            'required sqlplus executable not found, skipping test')
 
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
-    configDir='backendtests/config'
+    configDir = 'backendtests/config'
     env['ENV']['COAST_PATH'] = configDir
 #    env['ENV']['COAST_TRACE_INITFINIS'] = 1
 #    env['ENV']['COAST_LOGONCERR'] = 3
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath, COAST_PATH=configDir)
+    Anything.setLocalEnv(
+        env={},
+        COAST_ROOT=relDir.abspath,
+        COAST_PATH=configDir)
 
     global defaults
-    try: defaults = Anything.loadFromFile('Defaults.any')
-    except IOError: pass
-    if not defaults or not defaults.has_key('Oracle'):
+    try:
+        defaults = Anything.loadFromFile('Defaults.any')
+    except IOError:
+        pass
+    if not defaults or 'Oracle' not in defaults:
         raise SConsider.SkipTest('oracle backend not configured or disabled')
 
-    searchreplacespec= [
+    searchreplacespec = [
         ('##server##', str(defaults['Oracle']['Server'])),
         ('##port##', str(defaults['Oracle']['Port'])),
         ('##sid##', str(defaults['Oracle']['sid'])),
@@ -38,77 +50,91 @@ def setUp(target, source, env):
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     path = relDir.Dir(configDir)
 
-    connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
+    connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(
+        **defaults['Oracle'])
     res = runCommand(
-        [target.abspath,'--','-S',connectstring],
+        [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_dropschema.sql').abspath,
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to drop test schema (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to drop test schema (rc=' +
+            str(res) +
+            '), check error log')
     res = runCommand(
-        [target.abspath,'--','-S',connectstring],
+        [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_schema.sql').abspath,
         env=SConsider.getFlatENV(env)
     )
     res = runCommand(
-        [target.abspath,'--','-S',connectstring],
+        [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_grant.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to grant permissions (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to grant permissions (rc=' +
+            str(res) +
+            '), check error log')
 
-    connectstring = "{Username2!s}/{Password2!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
+    connectstring = "{Username2!s}/{Password2!s}@{Server!s}:{Port!s}/{sid!s}".format(
+        **defaults['Oracle'])
     res = runCommand(
-        [target.abspath,'--','-S',connectstring],
+        [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_synonym.sql').abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
         env=SConsider.getFlatENV(env)
     )
     if res != 0:
-        raise SConsider.SkipTest('failed to create synonyms (rc='+str(res)+'), check error log')
+        raise SConsider.SkipTest(
+            'failed to create synonyms (rc=' +
+            str(res) +
+            '), check error log')
+
 
 def tearDown(target, source, env):
     pass
 
 buildSettings = {
-    packagename : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : [
+    packagename: {
+        'targetType': 'ProgramTest',
+        'linkDependencies': [
             'CoastOracle',
             'testfwWDBase',
         ],
-        'requires' : [
+        'requires': [
             'CoastAppLog',
             'CoastRenderers',
         ],
-        'sourceFiles' : SConsider.listFiles(['*.cpp']),
-        'copyFiles' : [
-            (SConsider.findFiles(['config'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['config'], ['.any', '.txt', '.tst', '.sql']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
     },
-    'backendTests' : {
-        'targetType'       : 'ProgramTest',
-        'linkDependencies' : [
+    'backendTests': {
+        'targetType': 'ProgramTest',
+        'linkDependencies': [
             'CoastOracle',
             'testfwWDBase',
         ],
-        'requires' : [
+        'requires': [
             'CoastAppLog',
             'CoastRenderers',
             'oracle.sqlplus',
         ],
-        'sourceFiles'      : SConsider.listFiles(['backendtests/*.cpp']),
-        'copyFiles' : [
-            (SConsider.findFiles(['backendtests/config'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        'sourceFiles': SConsider.listFiles(['backendtests/*.cpp']),
+        'copyFiles': [
+            (SConsider.findFiles(
+                ['backendtests/config'], ['.any', '.txt', '.tst', '.sql']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
-        'runConfig' : {
+        'runConfig': {
             'setUp': setUp,
             'tearDown': tearDown,
         },

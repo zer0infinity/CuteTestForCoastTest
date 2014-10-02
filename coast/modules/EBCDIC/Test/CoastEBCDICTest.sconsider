@@ -1,12 +1,16 @@
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
 import SConsider
-import os, socket, pdb, re
+import os
+import socket
+import re
 from stat import *
 
 Import('*')
 
-cport1=43041
-cport2=43042
-cport3=43043
+cport1 = 43041
+cport2 = 43042
+cport3 = 43043
 
 hostonly, domain, fqdn = SConsider.getfqdn()
 
@@ -17,28 +21,35 @@ searchReplace = {
     "CPORT3": str(cport3),
 }
 
+
 def setUp(target, source, env):
     tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     configdir = tdir.Dir('config')
 #    env['ENV']['COAST_LOGONCERR'] = 2
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
 
+
 def tearDown(target, source, env):
     pass
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : [
+    packagename: {
+        'linkDependencies': [
             'CoastEBCDIC',
             'CoastMTFoundation',
             'testfwFoundation',
         ],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace)],
-        'runConfig' : {
-            'setUp'        : setUp,
-            'tearDown'     : tearDown,
+        'sourceFiles': SConsider.listFiles(
+            ['*.cpp']),
+        'targetType': 'ProgramTest',
+        'copyFiles': [
+            (SConsider.listFiles(
+                ['config/*.any']),
+             S_IRUSR | S_IRGRP | S_IROTH,
+             searchReplace)],
+        'runConfig': {
+            'setUp': setUp,
+            'tearDown': tearDown,
         },
     },
 }

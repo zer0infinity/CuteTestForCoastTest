@@ -1,17 +1,19 @@
+from pkg_resources import require as pkg_require
+pkg_require(["SConsider<0.5"])
 import SConsider
 
 Import('*')
 
 buildSettings = {
-    packagename : {
-        'includeSubdir'    : '',
-        'linkDependencies' : ['CoastFoundation', 'zlib'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'targetType'       : 'LibraryShared',
-        'public' : {
-            'includes'     : SConsider.listFiles(['*.h']),
-        }
-    }
+    packagename: {
+        'includeSubdir': '',
+        'linkDependencies': ['CoastFoundation', 'zlib'],
+        'sourceFiles': SConsider.listFiles(['*.cpp']),
+        'targetType': 'LibraryShared',
+        'public': {
+            'includes': SConsider.listFiles(['*.h']),
+        },
+    },
 }
 
 SConsider.createTargets(packagename, buildSettings)
