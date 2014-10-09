@@ -103,6 +103,32 @@
 			/Expected	"Gotcha!"
 		}
 		## StringTokenizeRenderer-Tests
+		/StringTokenizeRendererSlashTokenTest {
+			/Env {
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String	"a/b/c"
+					/Token	"/"
+					/RenderToken	"1;3"
+				}
+			}
+			/Expected	"ac"
+		}
+		/StringTokenizeRendererSlashTokenLookupTest {
+			/Env {
+				/InString	"a/b/c"
+				/InToken	"/"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;3"
+				}
+			}
+			/Expected	"ac"
+		}
 		/StringTokenizeRendererEmptyTest {
 			/Env {
 				/InString	"abc"

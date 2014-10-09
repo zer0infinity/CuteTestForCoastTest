@@ -88,7 +88,7 @@ bool StringTokenizeRenderer::SplitStringIntoTokens(Context &ctx, const ROAnythin
 {
 	StartTrace(StringTokenizeRenderer.SplitStringIntoTokens);
 
-	String value, token, filler;
+	String value, token;
 	ROAnything roaSlotConfig;
 
 	if (config.LookupPath(roaSlotConfig, "String")) {
