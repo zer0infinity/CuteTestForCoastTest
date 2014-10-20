@@ -56,7 +56,7 @@ namespace {
 	long getStringLength(String const &str) {
 		long len = 0L;
 		try {
-			len = utf8::distance(str.cstr(), str.cstr()+str.Length());
+			len = utf8::distance(str.begin(), str.end());
 		} catch (utf8::invalid_utf8& e) {
 			len = str.Length();
 		}

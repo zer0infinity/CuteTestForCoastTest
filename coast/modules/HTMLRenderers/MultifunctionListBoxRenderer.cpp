@@ -8,6 +8,20 @@
 
 #include "MultifunctionListBoxRenderer.h"
 #include "StringStream.h"
+#include "utf8.h"
+
+namespace {
+	long getStringLength(String const &str) {
+		long len = 0L;
+		try {
+			len = utf8::distance(str.begin(), str.end());
+		} catch (utf8::invalid_utf8& e) {
+			len = str.Length();
+		}
+		StatTrace(MultifunctionListBoxRenderer.getStringLength, "len: " << len << " str [" << str << "]", coast::storage::Current());
+		return len;
+	}
+}
 
 RegisterRenderer(HeaderListRenderer);
 void HeaderListRenderer::RenderEntry(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
@@ -40,7 +54,8 @@ void HeaderListRenderer::RenderEntry(std::ostream &reply, Context &c, const ROAn
 			if (listItem.LookupPath(roaWidth, "Width")) {
 				RenderOnString(strWidth, c, roaWidth);
 			}
-			long lWidth = strWidth.AsLong(strName.Length());
+			long const nameLen = getStringLength(strName);
+			long lWidth = strWidth.AsLong(nameLen);
 
 			// Have we got any data in the Box?
 			long dataSize = 0L;
@@ -53,7 +68,7 @@ void HeaderListRenderer::RenderEntry(std::ostream &reply, Context &c, const ROAn
 
 					// we have to check if the width isn't minus
 					if ( lWidth < 0 ) {
-						lWidth = strName.Length();
+						lWidth = nameLen;
 					}
 				}
 			}
@@ -176,7 +191,7 @@ void HeaderListRenderer::RenderSortIcon(std::ostream &reply, Context &c, const R
 	}
 }
 
-//-- diese methode liefert zur�ck, ob eine column sortierbar ist oder nicht -- ist ein helpermethode
+//-- diese methode liefert zurück, ob eine column sortierbar ist oder nicht -- ist ein helpermethode
 bool HeaderListRenderer::IsSortableColumn(Context &c, const ROAnything &toCheckConfig)
 {
 	StartTrace(MultifunctionListBoxRenderer.IsSortableColumn);
@@ -1227,7 +1242,7 @@ bool MultifunctionListBoxRenderer::RenderDeleteButton(std::ostream &reply, Conte
 	deleteFunction << "{" << ENDL;
 	deleteFunction << "	listbox=" << strFormPath << ".elements['fld_" << strBoxName << "'];" << ENDL;
 	deleteFunction << "	row=listbox.selectedIndex;" << ENDL;
-	deleteFunction << "	var bDoDelete = ((row>=0) && confirm('Wollen Sie die selektierte Zeile wirklich l�schen?') );" << ENDL;
+	deleteFunction << "	var bDoDelete = ((row>=0) && confirm('Wollen Sie die selektierte Zeile wirklich löschen?') );" << ENDL;
 
 	if (bDoButton && roButton.IsDefined("PreDoScript")) {
 		Render(deleteFunction, c, roButton["PreDoScript"]);
@@ -1259,7 +1274,7 @@ bool MultifunctionListBoxRenderer::RenderDeleteButton(std::ostream &reply, Conte
 			Anything buttonConfig;
 			reply << "<td align=center>";
 			buttonConfig["Name"] = strButtonName;
-			buttonConfig["Label"] = "L�schen";
+			buttonConfig["Label"] = "Löschen";
 			if (roButton.IsDefined("Label")) {
 				// override default
 				buttonConfig["Label"] = roButton["Label"].DeepClone();

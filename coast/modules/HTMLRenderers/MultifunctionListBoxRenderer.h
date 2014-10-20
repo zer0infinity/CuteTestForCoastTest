@@ -80,9 +80,9 @@
 		/SearchButton			optional, when slot is defined show "Suchen"
 		/ClearButton			optional, when slot is defined show "Clear"
 		/SaveButton				optional, when slot is defined show "Speichern"
-		/ResetButton			optional, when slot is defined show "�nderungen zur�cksetzen"
-		/AddButton				optional, when slot is defined show "Hinzuf�gen"
-		/DeleteButton			optional, when slot is defined show "L�schen"
+		/ResetButton			optional, when slot is defined show "Änderungen zurücksetzen"
+		/AddButton				optional, when slot is defined show "Hinzufügen"
+		/DeleteButton			optional, when slot is defined show "Löschen"
 		/PrintButton			optional, when slot is defined show "Drucken"
 		/ExportButton			optional, when slot is defined show "Exportieren"
 

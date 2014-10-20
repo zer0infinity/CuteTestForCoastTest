@@ -7,7 +7,7 @@ Import('*')
 
 buildSettings = {
     packagename: {
-        'linkDependencies': ['CoastRenderers'],
+        'linkDependencies': ['utf8', 'CoastRenderers'],
         'sourceFiles': SConsider.listFiles(['*.cpp']),
         'targetType': 'LibraryShared',
         'public': {

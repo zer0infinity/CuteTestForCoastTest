@@ -30,4 +30,8 @@
 		/MainSwitch	10
 		/EnableAll	10
 	}
+	/FormattedStringRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
 }

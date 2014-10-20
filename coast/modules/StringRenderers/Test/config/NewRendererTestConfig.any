@@ -586,7 +586,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -607,7 +606,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -628,7 +626,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -649,7 +646,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -670,7 +666,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -691,7 +686,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -712,7 +706,6 @@
 			}
 			/Renderer {
 				/FormattedStringRenderer {
-
 					/Value			{ /Lookup InValue }
 					/Width			{ /Lookup InWidth }
 					/Filler			{ /Lookup InFiller }
@@ -722,6 +715,46 @@
 			}
 			/Expected	"       Kurt ist zu Dumm fuer diese Arbeit        "
 #                        01234567890123456789012345678901234567890123456789
+		}
+		/FormattedStringRendererLeftNbspUmlautTest {
+			/Env {
+				/InValue			"Kürt ist zü Dümm fuer diese Arbeit"
+				/InWidth			"36"
+				/InFiller			"&nbsp;"
+				/InAlign			"left"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"Kürt&nbsp;ist&nbsp;zü&nbsp;Dümm&nbsp;fuer&nbsp;diese&nbsp;Arbeit&nbsp;&nbsp;"
+#                        01234567890123456789012345678901234567890123456789x123456789
+		}
+		/FormattedStringRendererLeftNbspUmlautCutOffTest {
+			/Env {
+				/InValue			"Kürt ist zü Dümm fuer diese Arbeit"
+				/InWidth			"26"
+				/InFiller			"&nbsp;"
+				/InAlign			"left"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"Kürt&nbsp;ist&nbsp;zü&nbsp;Dümm&nbsp;fuer&nbsp;dies"
+#                        01234567890123456789012345678901234567890123456789x123456789
 		}
 		/HTTPStringEncodeRendererEncodeTest {
 			/Env {
