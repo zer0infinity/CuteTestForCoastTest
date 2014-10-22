@@ -192,7 +192,7 @@ extern "C" {
 // assume posix api (linux)
 #include <pthread.h>
 #include <semaphore.h>
-
+#include <errno.h>	//! for ETIMEDOUT
 #define TIMEOUTCODE  ETIMEDOUT
 /*
  * Structure describing a read-write lock.
