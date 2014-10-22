@@ -12,7 +12,6 @@
 #include "Action.h"
 #include "AppLog.h"
 
-//---- LoggingAction ----------------------------------------------------------
 //! Action which triggers logging on a channel
 /*!
 \par Configuration
@@ -24,13 +23,13 @@
 }
 \endcode
 */
-class LoggingAction : public Action
-{
+class LoggingAction: public Action {
 public:
-	//--- constructors
-	LoggingAction(const char *name);
-	~LoggingAction();
+	LoggingAction(const char *name) :
+		Action(name) {
+	}
 
+protected:
 	//! Logs on the Channel defined by <I>config /Channel</I>
 	/*!	\param transitionToken (in/out) the event passed by the caller, can be modified.
 		\param ctx the context the action runs within.
@@ -39,7 +38,6 @@ public:
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 
-//---- TimeLoggingAction ----------------------------------------------------------
 //! Triggers logging of timing entries onto a channel
 /*!
 \par Configuration
@@ -51,13 +49,13 @@ public:
 }
 \endcode
 */
-class TimeLoggingAction : public Action
-{
+class TimeLoggingAction: public Action {
 public:
-	//--- constructors
-	TimeLoggingAction(const char *name);
-	~TimeLoggingAction();
+	TimeLoggingAction(const char *name) :
+		Action(name) {
+	}
 
+protected:
 	//! Logs timing entries defined by <I>config /TimeEntries</I> on the Channel defined by <I>config /Channel</I>
 	/*!	\param transitionToken (in/out) the event passed by the caller, can be modified.
 		\param ctx the context the action runs within.
@@ -65,7 +63,6 @@ public:
 		\return true if the action run successfully, false if an error occurred. */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 
-protected:
 	//! generate logentries by traversing substructures of different paths
 	/*!	\param entryPath the path traversed so far
 		\param entry the entry to be logged; it can contain substructures or be an array

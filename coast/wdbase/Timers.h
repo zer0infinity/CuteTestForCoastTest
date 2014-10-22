@@ -34,9 +34,7 @@ But unless you declare the TimeLoggingModule, and configure it to DoTiming and D
 class TimeLoggingModule : public WDModule
 {
 public:
-	//--- constructors
 	TimeLoggingModule(const char *name);
-	virtual ~TimeLoggingModule();
 
 	//! implementers should initialize module using config
 	virtual bool Init(const ROAnything config);
@@ -50,8 +48,6 @@ public:
 	static bool fgDoTiming;
 	static bool fgDoLogging;
 	static const char *fgpLogEntryBasePath;
-	static THREADKEY fgNestingLevelKey;
-	static bool fgTLSUsable;
 };
 
 //!helper class to log timing information
@@ -104,15 +100,11 @@ private:
 This level of abstraction is needed to reduce the overhead of always instantiating a DiffTimer object as done in TimeLogger.
 It is also important to have because there is no flexible other way to have time logging enabled/disabled on demand without recompiling everytime.
 */
-class TimeLoggerEntry
-{
-public:
+class TimeLoggerEntry {
 	typedef std::auto_ptr<TimeLogger> TimeLoggerPtr;
-	TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution);
-	~TimeLoggerEntry();
-
-private:
 	TimeLoggerPtr fpLogger;
+public:
+	TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution);
 };
 
 #define MethodTimer(key, msg, ctx)	\
@@ -144,8 +136,7 @@ private:
 	TimeLoggerEntry _NAME2_(yrtnEreggoLemiT,name)("Request", _QUOTE_(key), _NAME2_(gsMreggoLemiT,name) << msg, ctx, TimeLogger::eMilliseconds)
 
 #define RequestTimeLogger(ctx)						\
-	if ( TimeLoggingModule::fgDoLogging )			\
-	{												\
+	if ( TimeLoggingModule::fgDoLogging ) {			\
 		String snarTreggoLemiT("TimeLoggingAction");\
 		ctx.Process(snarTreggoLemiT);				\
 	}
