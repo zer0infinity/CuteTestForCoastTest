@@ -10,7 +10,7 @@ import shutil
 import ServerExtensions
 from stat import *
 from OpenSSL import crypto, SSL
-from SomeUtils import runCommand
+from SomeUtils import runCommand, replaceRegexInFile
 
 Import('*')
 
@@ -47,7 +47,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             # set writable
             os.chmod(fname, oldmode | S_IWUSR)
             # replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
+            replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 servers = []

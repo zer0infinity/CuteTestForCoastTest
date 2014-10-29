@@ -7,7 +7,7 @@ import shlex
 import SConsider
 import Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommand
+from SomeUtils import multiple_replace, runCommand, replaceRegexInFile
 
 Import('*')
 
@@ -22,7 +22,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             # set writable
             os.chmod(fname, oldmode | S_IWUSR)
             # replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
+            replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 

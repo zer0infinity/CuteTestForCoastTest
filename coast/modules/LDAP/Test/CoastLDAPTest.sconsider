@@ -1,7 +1,7 @@
 from pkg_resources import require as pkg_require
 pkg_require(['python-ldap>=2.3', "SConsider<0.5"])
 
-from SomeUtils import multiple_replace
+from SomeUtils import multiple_replace, replaceRegexInFile
 from StringIO import StringIO
 from ldap.cidict import cidict
 from ldif import LDIFParser, LDIFWriter
@@ -68,7 +68,7 @@ def modifyConfigFiles(env, searchReplace=[], files=[]):
         if os.path.isfile(fname):
             oldmode = os.stat(fname).st_mode
             os.chmod(fname, oldmode | S_IWUSR)
-            SConsider.replaceRegexInFile(fname, searchReplace)
+            replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 
