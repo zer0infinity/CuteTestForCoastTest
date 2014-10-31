@@ -150,7 +150,7 @@ void SystemLog::Alert(const char *msg) {
 // bottleneck routine used by others
 // here you can use severity levels directly
 void SystemLog::Log(eLogLevel level, const char *msg) {
-	SystemLogInitializerSingleton::instance().getSysLog()->DoLog(level, msg);
+	SystemLog::getSysLog()->DoLog(level, msg);
 }
 
 SystemLog* SystemLog::getSysLog() {
