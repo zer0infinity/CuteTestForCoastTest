@@ -1,19 +1,32 @@
-from pkg_resources import require as pkg_require
-pkg_require(["SConsider<0.5"])
+# vim: set et ai ts=4 sw=4:
+# -------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software
+# at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or
+# modify it under the terms of the license that is included with this
+# library/application in the file license.txt.
+# -------------------------------------------------------------------------
+
+import pkg_resources
+pkg_resources.require(["SConsider"])
 import os
 import SConsider
 
 Import('*')
 
-buildSettings = {
-    packagename: {
-        'linkDependencies': ['utf8', 'CoastWDBase', 'CoastRegex'],
-        'sourceFiles': SConsider.listFiles(['*.cpp']),
-        'targetType': 'LibraryShared',
-        'public': {
-            'includes': SConsider.listFiles(['*.h']),
+_scons_dist = pkg_resources.get_distribution("SConsider").parsed_version
+if _scons_dist < pkg_resources.parse_version("0.5.dev"):
+    buildSettings = {
+        packagename: {
+            'linkDependencies': ['utf8', 'CoastWDBase', 'CoastRegex'],
+            'sourceFiles': SConsider.listFiles(['*.cpp']),
+            'targetType': 'LibraryShared',
+            'public': {
+                'includes': SConsider.listFiles(['*.h']),
+            }
         }
     }
-}
 
-SConsider.createTargets(packagename, buildSettings)
+    SConsider.createTargets(packagename, buildSettings)

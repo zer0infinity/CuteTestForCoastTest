@@ -1,5 +1,16 @@
-from pkg_resources import require as pkg_require
-pkg_require(["SConsider<0.5"])
+# vim: set et ai ts=4 sw=4:
+# -------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software
+# at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or
+# modify it under the terms of the license that is included with this
+# library/application in the file license.txt.
+# -------------------------------------------------------------------------
+
+import pkg_resources
+pkg_resources.require(["SConsider"])
 import SConsider
 import socket
 from stat import *
@@ -27,24 +38,26 @@ def setUp(target, source, env):
 def tearDown(target, source, env):
     pass
 
-buildSettings = {
-    packagename: {
-        'targetType': 'ProgramTest',
-        'linkDependencies': ['CoastRenderers', 'testfwWDBase'],
-        'requires': [],
-        'includeSubdir': '',
-        'sourceFiles': SConsider.listFiles(['*.cpp']),
-        'copyFiles': [
-            (SConsider.findFiles(['.'], [
-             '.any', '.txt', '.tst', '.html']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
-            (SConsider.findFiles(['config'], ['.sh']),
-             S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
-        ],
-        'runConfig': {
-            'setUp': setUp,
-            'tearDown': tearDown,
+_scons_dist = pkg_resources.get_distribution("SConsider").parsed_version
+if _scons_dist < pkg_resources.parse_version("0.5.dev"):
+    buildSettings = {
+        packagename: {
+            'targetType': 'ProgramTest',
+            'linkDependencies': ['CoastRenderers', 'testfwWDBase'],
+            'requires': [],
+            'includeSubdir': '',
+            'sourceFiles': SConsider.listFiles(['*.cpp']),
+            'copyFiles': [
+                (SConsider.findFiles(['.'], [
+                 '.any', '.txt', '.tst', '.html']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+                (SConsider.findFiles(['config'], ['.sh']),
+                 S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+            ],
+            'runConfig': {
+                'setUp': setUp,
+                'tearDown': tearDown,
+            },
         },
-    },
-}
+    }
 
-SConsider.createTargets(packagename, buildSettings)
+    SConsider.createTargets(packagename, buildSettings)
