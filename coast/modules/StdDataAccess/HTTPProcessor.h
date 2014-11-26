@@ -13,6 +13,7 @@
 
 class Context;
 class MIMEHeader;
+class HTTPRequestReader;
 
 namespace coast {
 	namespace http {
@@ -41,6 +42,12 @@ public:
 	static bool IsZipEncodingAcceptedByClient(Context &ctx);
 
 protected:
+	//!get the MIMEHeader used to parse the request
+	virtual MIMEHeader GetMIMEHeader() const;
+
+	//!get the RequestReader used to parse and check the request line
+	virtual HTTPRequestReader GetRequestReader(MIMEHeader& header) const;
+
 	//!read in the request body from a POST if any
 	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
 

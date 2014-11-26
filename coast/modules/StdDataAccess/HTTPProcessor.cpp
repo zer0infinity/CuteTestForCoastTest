@@ -41,13 +41,21 @@ void HTTPProcessor::Init(Server *server) {
 	RequestProcessor::Init(server);
 }
 
+MIMEHeader HTTPProcessor::GetMIMEHeader() const {
+	return MIMEHeader();
+}
+
+HTTPRequestReader HTTPProcessor::GetRequestReader(MIMEHeader& header) const {
+	return HTTPRequestReader(header);
+}
+
 bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
 	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 
-	MIMEHeader header;
-	HTTPRequestReader reader(header);
+	MIMEHeader header = GetMIMEHeader();
+	HTTPRequestReader reader = GetRequestReader(header);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
 		if ( not reader.ReadRequest(ctx, Ios) ) {

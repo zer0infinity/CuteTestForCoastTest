@@ -29,7 +29,6 @@ class MIMEHeader: public LookupInterface {
 	//!contains the request/reply header
 	Anything fHeader;
 	coast::urlutils::NormalizeTag fNormalizeKey;
-	MIMEHeader(const MIMEHeader &);
 public:
 	//! represent a mime header
 	MIMEHeader(coast::urlutils::NormalizeTag normalizeKey = coast::urlutils::eUpshift) :
