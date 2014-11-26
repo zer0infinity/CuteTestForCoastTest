@@ -1,0 +1,74 @@
+---
+version: 1
+
+disable_existing_loggers: False
+
+formatters:
+    simple:
+        format: "%(asctime)s %(levelname)s %(name)s: %(message)s"
+    detailed:
+        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+filters:
+    filterLookup:
+        '()': SConsider.Logging.RegexFilter
+        pattern: "^looking up"
+        flags: 0
+    filterExecuting:
+        '()': SConsider.Logging.RegexFilter
+        pattern: "^executing \\["
+        flags: 0
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+
+    info_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: simple
+        filename: info.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+    error_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: simple
+        filename: errors.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+loggers:
+    SConsider:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+        filters: []
+
+    SConsider.PackageRegistry:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+        filters: [filterLookup]
+
+    setupBuildTools:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+
+    coast_options:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+
+root:
+    level: DEBUG
+    handlers: [console, info_file_handler, error_file_handler]
+    filters: [filterLookup]
+...
