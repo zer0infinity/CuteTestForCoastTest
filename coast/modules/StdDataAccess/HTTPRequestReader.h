@@ -30,6 +30,7 @@ public:
 	HTTPRequestReader(MIMEHeader &header) :
 		fHeader(header), fRequestBufferSize(0) {
 	}
+	virtual ~HTTPRequestReader() {}
 	//!delegate to DoReadRequest
 	bool ReadRequest(Context & ctx, std::iostream & Ios);
 	//!get the resulting anything if read request was successful

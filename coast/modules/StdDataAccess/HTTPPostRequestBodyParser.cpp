@@ -11,20 +11,28 @@
 #include "MIMEHeader.h"
 #include "Tracer.h"
 
+namespace {
+	void Decode(String str, Anything &result) {
+		StartTrace(HTTPPostRequestBodyParser.Decode);
+		coast::urlutils::Split(coast::urlutils::TrimENDL(str), '&', result);
+		coast::urlutils::DecodeAll(result);
+	}
+}
+
 bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.Parse);
 	TraceAny(fHeader.GetInfo(), "Header: ");
 	if (fHeader.IsMultiPart()) {
 		Trace("Multipart detected");
-		return ParseMultiPart(input, fHeader.GetBoundary());
+		return DoParseMultiPart(input, fHeader.GetBoundary());
 	} else {
 		Trace("Parsing simple body");
-		return ParseBody(input);
+		return DoParseBody(input);
 	}
 }
 
-bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
-	StartTrace(HTTPPostRequestBodyParser.ParseBody);
+bool HTTPPostRequestBodyParser::DoParseBody(std::istream &input) {
+	StartTrace(HTTPPostRequestBodyParser.DoParseBody);
 	ROAnything contenttype;
 	if (fHeader.Lookup("CONTENT-TYPE", contenttype) && contenttype.AsString().Contains(coast::http::contentTypeAnything) != -1) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
@@ -66,14 +74,8 @@ bool HTTPPostRequestBodyParser::ParseBody(std::istream &input) {
 	return readSuccess;
 }
 
-void HTTPPostRequestBodyParser::Decode(String str, Anything &result) {
-	StartTrace(HTTPPostRequestBodyParser.Decode);
-	coast::urlutils::Split(coast::urlutils::TrimENDL(str), '&', result);
-	coast::urlutils::DecodeAll(result);
-}
-
-bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String &bound, String &body) {
-	StartTrace1(HTTPPostRequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
+bool HTTPPostRequestBodyParser::DoReadToBoundary(std::istream &input, const String &bound, String &body) {
+	StartTrace1(HTTPPostRequestBodyParser.DoReadToBoundary, "bound: <" << bound << ">");
 	char c = '\0';
 	bool newLineFoundLastLine = false;
 	while (input.good()) {
@@ -124,16 +126,15 @@ bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream &input, const String
 	return false;
 }
 
-bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream &input, const String &bound) {
+bool HTTPPostRequestBodyParser::DoParseMultiPart(std::istream &input, const String &bound) {
 	// assume next on input is bound and a line separator
-	StartTrace(HTTPPostRequestBodyParser.ParseMultiPart);
+	StartTrace(HTTPPostRequestBodyParser.DoParseMultiPart);
 	bool endReached = false;
 
-	// ignore value of shouldbeempty
 	while (!endReached && input.good()) {
-		// reaching eof is an error since end of input is determined by seperators
+		// reaching eof is an error since end of input is determined by separators
 		String body;
-		endReached = ReadToBoundary(input, bound, body);
+		endReached = DoReadToBoundary(input, bound, body);
 		Trace("Body: <" << body << ">");
 		if (body.Length()) {
 			IStringStream innerpart(body);

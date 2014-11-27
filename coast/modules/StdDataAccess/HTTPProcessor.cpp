@@ -80,10 +80,14 @@ bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	return true;
 }
 
+HTTPPostRequestBodyParser HTTPProcessor::GetRequestBodyParser(MIMEHeader& header) const {
+	return HTTPPostRequestBodyParser(header);
+}
+
 void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
 	StartTrace(HTTPProcessor.ReadRequestBody);
 	if ( strPOST.IsEqual(request["REQUEST_METHOD"].AsCharPtr()) ) {
-		HTTPPostRequestBodyParser sm(header);
+		HTTPPostRequestBodyParser sm = GetRequestBodyParser(header);
 		try {
 			sm.Parse(Ios);
 		} catch (MIMEHeader::LineSizeExceededException &e) {

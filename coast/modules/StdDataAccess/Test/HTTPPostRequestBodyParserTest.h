@@ -11,21 +11,12 @@
 
 #include "FoundationTestTypes.h"
 
-//---- HTTPPostRequestBodyParserTest ----------------------------------------------------------
 //!TestCases description
-class HTTPPostRequestBodyParserTest : public testframework::TestCaseWithConfig
-{
+class HTTPPostRequestBodyParserTest : public testframework::TestCaseWithConfig {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	HTTPPostRequestBodyParserTest(TString tstrName);
-
-	//!destroys the test case
-	~HTTPPostRequestBodyParserTest();
-
-	//--- public api
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();

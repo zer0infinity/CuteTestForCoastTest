@@ -14,6 +14,7 @@
 class Context;
 class MIMEHeader;
 class HTTPRequestReader;
+class HTTPPostRequestBodyParser;
 
 namespace coast {
 	namespace http {
@@ -47,6 +48,9 @@ protected:
 
 	//!get the RequestReader used to parse and check the request line
 	virtual HTTPRequestReader GetRequestReader(MIMEHeader& header) const;
+
+	//!get the RequestBodyParser used to parse and check the request body
+	virtual HTTPPostRequestBodyParser GetRequestBodyParser(MIMEHeader& header) const;
 
 	//!read in the request body from a POST if any
 	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);

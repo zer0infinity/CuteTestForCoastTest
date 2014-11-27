@@ -25,17 +25,15 @@ class MIMEHeader;
 //! only works for multipart-form data
 class HTTPPostRequestBodyParser {
 	HTTPPostRequestBodyParser();
-	HTTPPostRequestBodyParser(const HTTPPostRequestBodyParser &);
 	MIMEHeader &fHeader;
 	Anything fContent;
 	String fUnparsedContent;
-
-	friend class HTTPPostRequestBodyParserTest;
 public:
 	//! ctor requires a header for parameters on length and decoding
 	HTTPPostRequestBodyParser(MIMEHeader &mainheader) :
 		fHeader(mainheader) {
 	}
+	virtual ~HTTPPostRequestBodyParser() {}
 	//! do the parsing, read everything
 	bool Parse(std::istream &input);
 	//! return the decoded result after parsing
@@ -51,15 +49,13 @@ protected:
 	// operational methods
 	//! do the multi-part mime parsing, using boundary-string bound
 	//! \return whether multipart body was read successfully
-	bool ParseMultiPart(std::istream &input, const String &bound);
+	virtual bool DoParseMultiPart(std::istream &input, const String &bound);
 	//! parse the mime body, usually xxx-form-urlencoded
 	//! \return indicates whether body was successfully read
-	bool ParseBody(std::istream &input);
+	virtual bool DoParseBody(std::istream &input);
 	//! auxiliary for ParseMultiPart
 	//! \return indicates whether body was successfully read
-	bool ReadToBoundary(std::istream &input, const String &bound, String &body);
-	//! do the url-decoding of str
-	void Decode(String str, Anything &result);
+	virtual bool DoReadToBoundary(std::istream &input, const String &bound, String &body);
 };
 
 #endif
