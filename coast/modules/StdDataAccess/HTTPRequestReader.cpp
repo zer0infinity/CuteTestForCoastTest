@@ -88,6 +88,7 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 		}
 		HandleFirstLine(ctx, fRequest, line);
 		fHeader.ParseHeaders(Ios, maxLineSz, maxReqSz-fRequestBufferSize);
+		fRequestBufferSize += fHeader.GetParsedHeaderLength();
 		if (fRequestBufferSize == 0) {
 			throw InvalidLineWithCodeException("Empty request", line, 400);
 		}

@@ -69,6 +69,7 @@ Content-Length: 542\r\n\
 		/SplitHeadersAndFieldsDefaultTest {
 			/Input %CommonInput
 			/NormalizeTag 0
+			/HeaderLength 258
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/ContentLength	-1
@@ -103,6 +104,7 @@ Content-Length: 542\r\n\
 		/SetCookieFieldsNotSplitTest {
 			/Input	%ExtendedInput
 			/NormalizeTag 0
+			/HeaderLength 672
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/ContentLength	-1
@@ -129,6 +131,7 @@ Content-Length: 542\r\n\
 		/MultipartWithFieldsSplitTest {
 			/Input %MultipartInput
 			/NormalizeTag 0
+			/HeaderLength 754
 			/IsMultiPart	1
 			/BoundaryLength 53
 			/Boundary "---------------------------61400283883149348477195787"
@@ -174,6 +177,7 @@ Content-Length: 542\r\n\
 		/MultipartExtendedWithFieldsSplitTest {
 			/Input %MultipartInputExtended
 			/NormalizeTag 0
+			/HeaderLength 806
 			/IsMultiPart	1
 			/BoundaryLength 53
 			/Boundary "---------------------------61400283883149348477195787"
@@ -227,6 +231,7 @@ Content-Type: application/x-unknown-content-type-hfile\r\n\
 \r\n"
 
 			/NormalizeTag 0
+			/HeaderLength 150
 			/IsMultiPart	0
 			/BoundaryLength 0
 			/Boundary ""

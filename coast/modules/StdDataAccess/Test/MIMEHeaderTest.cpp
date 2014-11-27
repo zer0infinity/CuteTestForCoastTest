@@ -59,6 +59,7 @@ void MIMEHeaderTest::ConfiguredTests() {
 		StringStream is(testinput);
 		// basic checks of success
 		t_assertm(mh.ParseHeaders(is), TString("expected header parsing to succeed at ") << caseName);
+		assertEqualm(caseConfig["HeaderLength"].AsLong(777L), mh.GetParsedHeaderLength(), caseName);
 
 		// sanity checks
 		assertEqualm(caseConfig["IsMultiPart"].AsBool(false), mh.IsMultiPart(), caseName);

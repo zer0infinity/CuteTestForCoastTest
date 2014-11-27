@@ -34,10 +34,10 @@ namespace coast {
 }
 
 namespace {
-	char const *boundarySlotname = "BOUNDARY";
-	char const *contentLengthSlotname = "CONTENT-LENGTH";
-	char const *contentDispositionSlotname = "CONTENT-DISPOSITION";
-	char const *contentTypeSlotname = "CONTENT-TYPE";
+	char const * const boundarySlotname = "BOUNDARY";
+	char const * const contentLengthSlotname = "CONTENT-LENGTH";
+	char const * const contentDispositionSlotname = "CONTENT-DISPOSITION";
+	char const * const contentTypeSlotname = "CONTENT-TYPE";
 	String const boundaryToken("boundary=", -1, coast::storage::Global());
 	char const headerNamedDelimiter = ':';
 
@@ -112,15 +112,14 @@ namespace {
 bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long const maxheaderlen) {
 	StartTrace(MIMEHeader.ParseHeaders);
 	String line(maxlinelen);
-	long headerlength = 0;
 	while ( true ) {
 		coast::streamutils::getLineFromStream(in, line, maxlinelen);
-		headerlength += line.Length();
-		Trace("headerlength: " << headerlength << ", maxheaderlen: " << maxheaderlen);
+		fParsedHeaderLength += line.Length();
+		Trace("headerlength: " << fParsedHeaderLength << ", maxheaderlen: " << maxheaderlen);
 		if (not coast::urlutils::TrimENDL(line).Length()) {
 			return true;	//!< successful header termination with empty line
 		}
-		if (headerlength > maxheaderlen) throw MIMEHeader::RequestSizeExceededException("Header size exceeded", line, maxheaderlen, headerlength);
+		if (fParsedHeaderLength > maxheaderlen) throw MIMEHeader::RequestSizeExceededException("Header size exceeded", line, maxheaderlen, fParsedHeaderLength);
 		SplitAndAddHeaderLine(fHeader, line, fNormalizeKey);
 	}
 	return false;

@@ -28,15 +28,19 @@ static const long cDefaultMaxLineSz = 1024;
 class MIMEHeader: public LookupInterface {
 	//!contains the request/reply header
 	Anything fHeader;
+	long fParsedHeaderLength;
 	coast::urlutils::NormalizeTag fNormalizeKey;
 public:
 	//! represent a mime header
 	MIMEHeader(coast::urlutils::NormalizeTag normalizeKey = coast::urlutils::eUpshift) :
-		fNormalizeKey(normalizeKey) {
+		fParsedHeaderLength(0L), fNormalizeKey(normalizeKey) {
 	}
 	//! read the MIME header from is
 	/*! reads MIME header from is withlimit the line size to detect misuse of server */
 	bool ParseHeaders(std::istream & is, const long maxlinelen = cDefaultMaxLineSz, const long maxheaderlen = cDefaultMaxHeaderSz);
+	long GetParsedHeaderLength() const {
+		return fParsedHeaderLength;
+	}
 	//! answer if we are a header of a multipart MIME message
 	bool IsMultiPart() const;
 	//! return the cached boundary string that separates multipart MIME messages

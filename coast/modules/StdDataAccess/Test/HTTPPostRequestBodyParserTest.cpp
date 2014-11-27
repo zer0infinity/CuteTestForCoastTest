@@ -43,6 +43,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	if ( is ) {
 		MIMEHeader mh;
 		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
+		assertEqual(586L, mh.GetParsedHeaderLength());
 		HTTPPostRequestBodyParser sm(mh);
 		t_assert(sm.Parse(*is));
 		Anything expected;
@@ -63,6 +64,7 @@ void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 	if ( is ) {
 		MIMEHeader mh;
 		t_assertm(mh.ParseHeaders(*is, 4096, 4096), "expected global header parsing to succeed");
+		assertEqual(586L, mh.GetParsedHeaderLength());
 		HTTPPostRequestBodyParser sm(mh);
 		t_assert(sm.Parse(*is));
 		String unparsedContent = sm.GetUnparsedContent();
