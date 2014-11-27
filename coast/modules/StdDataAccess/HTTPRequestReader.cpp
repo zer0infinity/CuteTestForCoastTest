@@ -77,6 +77,11 @@ namespace {
 
 bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 	StartTrace(HTTPRequestReader.ReadRequest);
+	return DoReadRequest(ctx, Ios);
+}
+
+bool HTTPRequestReader::DoReadRequest(Context &ctx, std::iostream &Ios) {
+	StartTrace(HTTPRequestReader.DoReadRequest);
 	long const maxLineSz = ctx.Lookup("LineSizeLimit", 4096L);
 	long const maxReqSz = ctx.Lookup("RequestSizeLimit", 5120L);
 	String line(maxLineSz);
