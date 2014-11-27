@@ -62,6 +62,11 @@ loggers:
         handlers: [console]
         propagate: no
 
+    lepl:
+        level: ERROR
+        handlers: [console]
+        propagate: no
+
     coast_options:
         level: INFO
         handlers: [console]
