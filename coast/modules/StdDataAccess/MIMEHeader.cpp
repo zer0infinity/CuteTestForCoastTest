@@ -120,7 +120,7 @@ bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long cons
 		if (not coast::urlutils::TrimENDL(line).Length()) {
 			return true;	//!< successful header termination with empty line
 		}
-		if (headerlength > maxheaderlen) throw MIMEHeader::HeaderSizeExceededException("Header size exceeded", line, maxheaderlen, headerlength);
+		if (headerlength > maxheaderlen) throw MIMEHeader::RequestSizeExceededException("Header size exceeded", line, maxheaderlen, headerlength);
 		SplitAndAddHeaderLine(fHeader, line, fNormalizeKey);
 	}
 	return false;

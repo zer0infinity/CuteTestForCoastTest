@@ -84,7 +84,7 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 		coast::streamutils::getLineFromStream(Ios, line, maxLineSz);
 		fRequestBufferSize += line.Length();
 		if (fRequestBufferSize > maxReqSz) {
-			throw MIMEHeader::HeaderSizeExceededException("RequestSizeLimit exceeded", line, maxReqSz, fRequestBufferSize);
+			throw MIMEHeader::RequestSizeExceededException("RequestSizeLimit exceeded", line, maxReqSz, fRequestBufferSize);
 		}
 		HandleFirstLine(ctx, fRequest, line);
 		fHeader.ParseHeaders(Ios, maxLineSz, maxReqSz-fRequestBufferSize);
@@ -95,7 +95,7 @@ bool HTTPRequestReader::ReadRequest(Context &ctx, std::iostream &Ios) {
 		return true;
 	} catch (MIMEHeader::LineSizeExceededException &e) {
 		PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
-	} catch (MIMEHeader::HeaderSizeExceededException &e) {
+	} catch (MIMEHeader::RequestSizeExceededException &e) {
 		PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine);
 	} catch (URISizeExceededException &e) {
 		PutErrorMessageIntoContext(ctx, 414, String(e.what()).Append(" => check setting of [URISizeLimit]"), e.fLine);

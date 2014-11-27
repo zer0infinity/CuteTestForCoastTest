@@ -77,8 +77,8 @@ public:
 		}
 
 	};
-	struct HeaderSizeExceededException: SizeExceededException {
-		HeaderSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
+	struct RequestSizeExceededException: SizeExceededException {
+		RequestSizeExceededException(const String & msg, const String & line, long lMaxSize, long lActualSize) throw () :
 			SizeExceededException(msg, line, lMaxSize, lActualSize) {
 		}
 	};

@@ -88,7 +88,7 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 			sm.Parse(Ios);
 		} catch (MIMEHeader::LineSizeExceededException &e) {
 			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
-		} catch (MIMEHeader::HeaderSizeExceededException &e) {
+		} catch (MIMEHeader::RequestSizeExceededException &e) {
 			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine);
 		} catch (MIMEHeader::InvalidLineException &e) {
 			PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine);
