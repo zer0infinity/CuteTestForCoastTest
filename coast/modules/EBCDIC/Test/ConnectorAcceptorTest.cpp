@@ -52,6 +52,14 @@ public:
 		} // if
 		delete socket;
 	} // CallBack
+	virtual void Wait() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
+	virtual void Signal() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
 
 	//!I return the last message I read
 	virtual String &GetLastRequest() {

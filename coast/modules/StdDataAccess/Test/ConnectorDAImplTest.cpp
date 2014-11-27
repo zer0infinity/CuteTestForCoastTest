@@ -78,6 +78,14 @@ public:
 			delete pSocket;
 		}
 	}
+	virtual void Wait() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
+	virtual void Signal() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
 
 	//!I return the last message I read
 	virtual Anything &GetLastRequest() {

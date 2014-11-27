@@ -16,6 +16,14 @@ public:
 	TestCallBack(TestReceiver *tr) : fReceiver(tr) {};
 	virtual ~TestCallBack() {};
 	virtual void CallBack(Socket *socket);
+	virtual void Wait() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
+	virtual void Signal() {
+		// dummy wait to force context switch
+		Thread::Wait(0,1000L);
+	}
 
 protected:
 	TestReceiver *fReceiver;

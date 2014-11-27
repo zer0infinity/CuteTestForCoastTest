@@ -41,6 +41,15 @@ public:
 		}
 		delete socket;
 	}
+	virtual void Wait() {
+		// dummy wait to force context switch
+		coast::system::MicroSleep(1);
+	}
+	virtual void Signal() {
+		// dummy wait to force context switch
+		coast::system::MicroSleep(1);
+	}
+
 protected:
 	AcceptorTest *fTest;
 };

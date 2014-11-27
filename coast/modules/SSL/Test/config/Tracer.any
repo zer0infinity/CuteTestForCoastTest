@@ -8,7 +8,7 @@
 
 {
     /LowerBound 0
-    /UpperBound	5020
+    /UpperBound	7001
     /DumpAnythings 1
 
     /ConfiguredTestCase {
@@ -124,6 +124,15 @@
 	/Connector {
 		/MainSwitch	3000
 		/EnableAll	3000
+		/DoConnect  7001
+	}
+	/TestCallBack {
+		/MainSwitch	7000
+		/EnableAll	7001
+	}
+	/TestReceiver {
+		/MainSwitch	7000
+		/EnableAll	7001
 	}
 	/Acceptor {
 		/MainSwitch	3000
