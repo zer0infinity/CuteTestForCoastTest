@@ -36,8 +36,8 @@ void MIMEHeaderTest::SimpleHeaderTest() {
 		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
 		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-		assertAnyEqual(result, mh.GetInfo());
-		TraceAny(mh.GetInfo(), "Header: ");
+		assertAnyEqual(result, mh.GetHeaderInfo());
+		TraceAny(mh.GetHeaderInfo(), "Header: ");
 	}
 }
 
@@ -67,7 +67,7 @@ void MIMEHeaderTest::ConfiguredTests() {
 		assertCharPtrEqualm(caseConfig["Boundary"].AsString(), mh.GetBoundary(), caseName);
 		assertComparem(caseConfig["ContentLength"].AsLong(-1), equal_to, mh.GetContentLength(), caseName);
 		assertEqualm("", mh.Lookup("NotThere", ""), caseName);
-		assertAnyCompareEqual(caseConfig["Expected"], mh.GetInfo(), caseName, '.', ':');
+		assertAnyCompareEqual(caseConfig["Expected"], mh.GetHeaderInfo(), caseName, '.', ':');
 	}
 }
 

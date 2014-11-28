@@ -53,7 +53,7 @@ public:
 	 \return length as set in the header or -1 if none set */
 	long GetContentLength() const;
 	//! the complete header information as an Anything
-	Anything GetInfo() const {
+	Anything GetHeaderInfo() const {
 		return fHeader;
 	}
 

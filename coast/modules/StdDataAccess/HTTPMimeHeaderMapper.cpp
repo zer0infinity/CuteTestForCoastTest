@@ -26,7 +26,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &
 	}
 
 	if (result && is.good()) {
-		Anything header(mh.GetInfo());
+		Anything header(mh.GetHeaderInfo());
 		TraceAny(header, "header");
 		//!@FIXME: all of the following should go to separate mappers
 		if (config["StoreCookies"].AsLong(0)) {

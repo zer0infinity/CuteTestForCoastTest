@@ -21,7 +21,7 @@ namespace {
 
 bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.Parse);
-	TraceAny(fHeader.GetInfo(), "Header: ");
+	TraceAny(fHeader.GetHeaderInfo(), "Header: ");
 	if (fHeader.IsMultiPart()) {
 		Trace("Multipart detected");
 		return DoParseMultiPart(input, fHeader.GetBoundary());
@@ -142,11 +142,11 @@ bool HTTPPostRequestBodyParser::DoParseMultiPart(std::istream &input, const Stri
 			try {
 				if (hinner.ParseHeaders(innerpart)) {
 					Anything partInfo;
-					if (!hinner.GetInfo().IsDefined("CONTENT-TYPE")) {
-						hinner.GetInfo()["CONTENT-TYPE"] = "multipart/part";
+					if (!hinner.GetHeaderInfo().IsDefined("CONTENT-TYPE")) {
+						hinner.GetHeaderInfo()["CONTENT-TYPE"] = "multipart/part";
 					}
-					partInfo["header"] = hinner.GetInfo();
-					TraceAny(hinner.GetInfo(), "Header: ");
+					partInfo["header"] = hinner.GetHeaderInfo();
+					TraceAny(hinner.GetHeaderInfo(), "Header: ");
 
 					HTTPPostRequestBodyParser part(hinner);
 					part.Parse(innerpart); // if we found a boundary, could we unget it?

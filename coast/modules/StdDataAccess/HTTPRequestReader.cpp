@@ -97,7 +97,7 @@ bool HTTPRequestReader::DoReadRequest(Context &ctx, std::iostream &Ios) {
 		if (fRequestBufferSize == 0) {
 			throw InvalidLineWithCodeException("Empty request", line, 400);
 		}
-		TraceAny(fHeader.GetInfo(), "RequestHeader:");
+		TraceAny(fHeader.GetHeaderInfo(), "RequestHeader:");
 		return true;
 	} catch (MIMEHeader::LineSizeExceededException &e) {
 		PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
@@ -117,6 +117,6 @@ bool HTTPRequestReader::DoReadRequest(Context &ctx, std::iostream &Ios) {
 
 Anything const& HTTPRequestReader::GetRequest()
 {
-	fRequest["header"] = fHeader.GetInfo();
+	fRequest["header"] = fHeader.GetHeaderInfo();
 	return fRequest;
 }

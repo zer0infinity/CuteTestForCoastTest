@@ -21,7 +21,7 @@ bool MimeHeaderResultMapper::DoPutStream(const char *key, std::istream &is, Cont
 	MIMEHeader mh(shift);
 	try {
 		if (mh.ParseHeaders(is) && is.good()) {
-			Anything header(mh.GetInfo());
+			Anything header(mh.GetHeaderInfo());
 			TraceAny(header, "header");
 			return DoPutAny(key, header, ctx, script);
 		}
