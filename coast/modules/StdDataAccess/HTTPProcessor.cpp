@@ -21,18 +21,40 @@
 RegisterRequestProcessor(HTTPProcessor);
 
 namespace {
-	String const strGET("GET", coast::storage::Global());
-	String const strPOST("POST", coast::storage::Global());
+	void CopyClientInfoIntoRequest(Context &ctx) {
+		Anything args(ctx.GetRequest());
+		long sz = args["ClientInfo"].GetSize();
+		for (long i = 0; i < sz; ++i) {
+			args["env"]["header"][args["ClientInfo"].SlotName(i)] = args["ClientInfo"][i];
+		}
+	}
+}
 
-	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
-		StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
-		Anything anyMessage;
-		anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
-		anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
-		anyMessage["ErrorMessage"] = msg;
-		anyMessage["FaultyContent"] = content;
-		TraceAny(anyMessage, "generated error message");
-		StorePutter::Operate(anyMessage, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "HTTPProcessor.Error"), true);
+namespace coast {
+	namespace http {
+		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
+			StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
+			Anything defaultSpec;
+			defaultSpec["HTTPProtocolReplyRenderer"] = Anything();
+			ROAnything protocolRendererSpec;
+			Renderer::Render(os, ctx, ctx.Lookup("ProtocolReplyRenderer", protocolRendererSpec) ? protocolRendererSpec : defaultSpec);
+		}
+		Anything GenerateErrorMessageAny(Context& ctx, long const errorcode, String const& msg, String const& content, String const& component) {
+			StartTrace(HTTPProcessor.GenerateErrorMessageAny);
+			Anything anyMessage;
+			anyMessage["Component"] = component;
+			anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
+			anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
+			anyMessage["ErrorMessage"] = msg;
+			anyMessage["FaultyContent"] = content;
+			TraceAny(anyMessage, "generated error message");
+			return anyMessage;
+		}
+		void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content, String const& component) {
+			StartTrace(HTTPProcessor.PutErrorMessageIntoContext);
+			Anything anyMessage = GenerateErrorMessageAny(ctx, errorcode, msg, content, component);
+			StorePutter::Operate(anyMessage, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "HTTPProcessor.Error"), true);
+		}
 	}
 }
 
@@ -49,6 +71,50 @@ HTTPRequestReader HTTPProcessor::GetRequestReader(MIMEHeader& header) const {
 	return HTTPRequestReader(header);
 }
 
+HTTPPostRequestBodyParser HTTPProcessor::GetRequestBodyParser(MIMEHeader& header) const {
+	return HTTPPostRequestBodyParser(header);
+}
+
+bool HTTPProcessor::DoReadRequestHeader(std::iostream &Ios, Context &ctx, HTTPRequestReader &reader) {
+	StartTrace(HTTPProcessor.DoReadRequestHeader);
+	MethodTimer(HTTPProcessor.DoReadRequestHeader, "Reading request header", ctx);
+	return reader.ReadRequest(ctx, Ios);
+}
+
+bool HTTPProcessor::DoPrepareContextRequest(std::iostream &Ios, Context &ctx, Anything &request, HTTPRequestReader &reader) {
+	StartTrace(HTTPProcessor.DoPrepareContextRequest);
+	MethodTimer(HTTPProcessor.DoPrepareContextRequest, "Preparing request for context", ctx);
+	Anything args(ctx.GetRequest());
+	args["env"] = request;
+	args["query"] = Anything(Anything::ArrayMarker());
+	ctx.PushRequest(args);
+	// prepare the environment for the framework
+	CopyClientInfoIntoRequest(ctx);
+	return true;
+}
+
+bool HTTPProcessor::DoReadRequestBody(std::iostream &Ios, Context &ctx, Anything &request, HTTPRequestReader &reader) {
+	StartTrace(HTTPProcessor.DoReadRequestBody);
+	MethodTimer(HTTPProcessor.DoReadRequestBody, "Reading request body", ctx);
+	if ( request["REQUEST_METHOD"].AsString().IsEqual(coast::http::constants::postMethodSlotname) ) {
+		HTTPPostRequestBodyParser sm = GetRequestBodyParser(reader.GetHeaderParser());
+		try {
+			sm.Parse(Ios);
+		} catch (MIMEHeader::LineSizeExceededException &e) {
+			coast::http::PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine, "HTTPProcessor::DoReadRequestBody");
+		} catch (MIMEHeader::RequestSizeExceededException &e) {
+			coast::http::PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine, "HTTPProcessor::DoReadRequestBody");
+		} catch (MIMEHeader::InvalidLineException &e) {
+			coast::http::PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine, "HTTPProcessor::DoReadRequestBody");
+		}
+		request["REQUEST_BODY"] = sm.GetContent();
+		TraceAny(request["REQUEST_BODY"], "Body");
+		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
+		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
+	}
+	return true;
+}
+
 bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
@@ -56,78 +122,26 @@ bool HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 
 	MIMEHeader header = GetMIMEHeader();
 	HTTPRequestReader reader = GetRequestReader(header);
-	{
-		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request header", ctx);
-		if ( not reader.ReadRequest(ctx, Ios) ) {
-			return false;
-		}
+	if ( not DoReadRequestHeader(Ios, ctx, reader) ) {
+		return false;
 	}
-	// GetRequest() returns values in subslot "header"
+
+	// GetRequest() returns headers from request in subslot "header"
 	Anything request(reader.GetRequest());
+	if ( not DoPrepareContextRequest(Ios, ctx, request, reader) ) {
+		return false;
+	}
 
-	Anything args(ctx.GetRequest());	//!@FIXME: replace with reference
-	args["env"] = request;
-	args["query"] = Anything(Anything::ArrayMarker());
-	ctx.PushRequest(args);
-
-	// prepare the environment for the framework
-	CopyClientInfoIntoRequest(ctx);
-	{
-		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request body", ctx);
-		ReadRequestBody(Ios, request, header, ctx);
+	if ( not DoReadRequestBody(Ios, ctx, request, reader) ) {
+		return false;
 	}
 	SubTraceAny(request, request, "Arguments:");
 	return true;
 }
 
-HTTPPostRequestBodyParser HTTPProcessor::GetRequestBodyParser(MIMEHeader& header) const {
-	return HTTPPostRequestBodyParser(header);
-}
-
-void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
-	StartTrace(HTTPProcessor.ReadRequestBody);
-	if ( strPOST.IsEqual(request["REQUEST_METHOD"].AsCharPtr()) ) {
-		HTTPPostRequestBodyParser sm = GetRequestBodyParser(header);
-		try {
-			sm.Parse(Ios);
-		} catch (MIMEHeader::LineSizeExceededException &e) {
-			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
-		} catch (MIMEHeader::RequestSizeExceededException &e) {
-			PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine);
-		} catch (MIMEHeader::InvalidLineException &e) {
-			PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine);
-		}
-		request["REQUEST_BODY"] = sm.GetContent();
-		TraceAny(request["REQUEST_BODY"], "Body");
-		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
-		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
-	}
-}
-
-void HTTPProcessor::CopyClientInfoIntoRequest(Context &ctx)
-{
-	Anything args(ctx.GetRequest());
-	long sz = args["ClientInfo"].GetSize();
-	for (long i = 0; i < sz; ++i) {
-		args["env"]["header"][args["ClientInfo"].SlotName(i)] = args["ClientInfo"][i];
-	}
-}
-
 bool HTTPProcessor::DoVerifyRequest(Context &ctx) {
 	StartTrace(HTTPProcessor.DoVerifyRequest);
 	return true;
-}
-
-namespace coast {
-	namespace http {
-		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx) {
-			StartTrace(HTTPProcessor.RenderHTTPProtocolStatus);
-			Anything defaultSpec;
-			defaultSpec["HTTPProtocolReplyRenderer"] = Anything();
-			ROAnything protocolRendererSpec;
-			Renderer::Render(os, ctx, ctx.Lookup("ProtocolReplyRenderer", protocolRendererSpec) ? protocolRendererSpec : defaultSpec);
-		}
-	}
 }
 
 namespace {
@@ -171,19 +185,22 @@ namespace {
 	}
 }
 
-void HTTPProcessor::DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+bool HTTPProcessor::DoHandleReadInputError(std::iostream &Ios, Context &ctx) {
 	StartTrace(HTTPProcessor.DoHandleReadInputError);
-	GenericRequestProcessorErrorHandler(reply, ctx);
+	GenericRequestProcessorErrorHandler(Ios, ctx);
+	return false;
 }
 
-void HTTPProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
-	StartTrace(HTTPProcessor.DoHandleVerifyError);
-	GenericRequestProcessorErrorHandler(reply, ctx);
+bool HTTPProcessor::DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx) {
+	StartTrace(HTTPProcessor.DoHandleVerifyRequestError);
+	GenericRequestProcessorErrorHandler(Ios, ctx);
+	return false;
 }
 
-void HTTPProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+bool HTTPProcessor::DoHandleProcessRequestError(std::iostream &Ios, Context &ctx) {
 	StartTrace(HTTPProcessor.DoHandleProcessRequestError);
-	GenericRequestProcessorErrorHandler(reply, ctx);
+	GenericRequestProcessorErrorHandler(Ios, ctx);
+	return false;
 }
 
 bool HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)

@@ -19,6 +19,8 @@ class HTTPPostRequestBodyParser;
 namespace coast {
 	namespace http {
 		void RenderHTTPProtocolStatus(std::ostream &os, Context &ctx);
+		Anything GenerateErrorMessageAny(Context& ctx, long const errorcode, String const& msg, String const& content, String const& component);
+		void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content, String const& component);
 	}
 }
 
@@ -52,22 +54,26 @@ protected:
 	//!get the RequestBodyParser used to parse and check the request body
 	virtual HTTPPostRequestBodyParser GetRequestBodyParser(MIMEHeader& header) const;
 
-	//!read in the request body from a POST if any
-	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
-
 	//!read the input arguments from the stream and generate an anything
 	virtual bool DoReadInput(std::iostream &ios, Context &ctx);
+
+	virtual bool DoReadRequestHeader(std::iostream &Ios, Context &ctx, HTTPRequestReader &reader);
+
+	virtual bool DoPrepareContextRequest(std::iostream &Ios, Context &ctx, Anything &request, HTTPRequestReader &reader);
+
+	//!read in the request body from a POST if any
+	virtual bool DoReadRequestBody(std::iostream &Ios, Context &ctx, Anything &request, HTTPRequestReader &reader);
 
 	//!process the arguments and generate a reply
 	virtual bool DoProcessRequest(std::ostream &reply, Context &ctx);
 
 	virtual bool DoVerifyRequest(Context &ctx);
 
-	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx);
 
-	virtual void DoHandleReadInputError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleReadInputError(std::iostream &Ios, Context &ctx);
 
-	virtual void DoHandleProcessRequestError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleProcessRequestError(std::iostream &Ios, Context &ctx);
 
 	//! render the protocol specific status
 	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);
@@ -76,9 +82,6 @@ protected:
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
 private:
-	//!set some client info needed for verification
-	void CopyClientInfoIntoRequest(Context &ctx);
-
 	HTTPProcessor(const HTTPProcessor &);
 	HTTPProcessor &operator=(const HTTPProcessor &);
 };

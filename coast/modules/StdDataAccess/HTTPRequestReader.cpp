@@ -11,21 +11,9 @@
 #include "AnythingUtils.h"
 #include "HTTPProtocolReplyRenderer.h"
 #include "HTTPConstants.h"
+#include "HTTPProcessor.h"
 
 namespace {
-	String const strGET("GET", coast::storage::Global());
-	String const strPOST("POST", coast::storage::Global());
-	void PutErrorMessageIntoContext(Context& ctx, long const errorcode, String const& msg, String const& content) {
-		StartTrace(HTTPRequestReader.PutErrorMessageIntoContext);
-		Anything anyMessage;
-		anyMessage["Component"] = "HTTPRequestReader";
-		anyMessage[coast::http::constants::protocolCodeSlotname] = errorcode;
-		anyMessage[coast::http::constants::protocolMsgSlotname] = HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorcode); //!@FIXME: remove but create and use HTTPResponseMsgRenderer instead where needed, issue #245
-		anyMessage["ErrorMessage"] = msg;
-		anyMessage["FaultyContent"] = content;
-		TraceAny(anyMessage, "generated error message");
-		StorePutter::Operate(anyMessage, ctx, "Tmp", ctx.Lookup("RequestProcessorErrorSlot", "HTTPRequestReader.Error"), true);
-	}
 	struct URISizeExceededException : MIMEHeader::SizeExceededException {
 		URISizeExceededException(String const& msg, String const& line, long lMaxSize, long lActualSize) : MIMEHeader::SizeExceededException(msg, line, lMaxSize, lActualSize) {}
 	};
@@ -100,17 +88,17 @@ bool HTTPRequestReader::DoReadRequest(Context &ctx, std::iostream &Ios) {
 		TraceAny(fHeader.GetHeaderInfo(), "RequestHeader:");
 		return true;
 	} catch (MIMEHeader::LineSizeExceededException &e) {
-		PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine);
+		coast::http::PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [LineSizeLimit]"), e.fLine, "HTTPRequestReader::DoReadRequest");
 	} catch (MIMEHeader::RequestSizeExceededException &e) {
-		PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine);
+		coast::http::PutErrorMessageIntoContext(ctx, 413, String(e.what()).Append(" => check setting of [RequestSizeLimit]"), e.fLine, "HTTPRequestReader::DoReadRequest");
 	} catch (URISizeExceededException &e) {
-		PutErrorMessageIntoContext(ctx, 414, String(e.what()).Append(" => check setting of [URISizeLimit]"), e.fLine);
+		coast::http::PutErrorMessageIntoContext(ctx, 414, String(e.what()).Append(" => check setting of [URISizeLimit]"), e.fLine, "HTTPRequestReader::DoReadRequest");
 	} catch (InvalidLineWithCodeException &e) {
-		PutErrorMessageIntoContext(ctx, e.fCode, e.what(), e.fLine);
+		coast::http::PutErrorMessageIntoContext(ctx, e.fCode, e.what(), e.fLine, "HTTPRequestReader::DoReadRequest");
 	} catch (MIMEHeader::InvalidLineException &e) {
-		PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine);
+		coast::http::PutErrorMessageIntoContext(ctx, 400, e.what(), e.fLine, "HTTPRequestReader::DoReadRequest");
 	} catch (MIMEHeader::StreamNotGoodException &e) {
-		PutErrorMessageIntoContext(ctx, 400, e.what(), "");
+		coast::http::PutErrorMessageIntoContext(ctx, 400, e.what(), "", "HTTPRequestReader::DoReadRequest");
 	}
 	return false;
 }

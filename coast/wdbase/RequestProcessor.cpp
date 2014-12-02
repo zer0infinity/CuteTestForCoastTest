@@ -86,16 +86,19 @@ bool RequestProcessor::DoVerifyRequest(Context &ctx) {
 	return true;
 }
 
-void RequestProcessor::DoHandleVerifyError(std::ostream &reply, Context &ctx) {
-	StartTrace(RequestProcessor.DoHandleVerifyError);
+bool RequestProcessor::DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx) {
+	StartTrace(RequestProcessor.DoHandleVerifyRequestError);
+	return false;
 }
 
-void RequestProcessor::DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+bool RequestProcessor::DoHandleReadInputError(std::iostream &Ios, Context &ctx) {
 	StartTrace(RequestProcessor.DoHandleReadInputError);
+	return false;
 }
 
-void RequestProcessor::DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+bool RequestProcessor::DoHandleProcessRequestError(std::iostream &Ios, Context &ctx) {
 	StartTrace(RequestProcessor.DoHandleProcessRequestError);
+	return false;
 }
 
 void RequestProcessor::ForceConnectionClose(Context &ctx) {
@@ -135,8 +138,7 @@ bool RequestProcessor::ReadInput(std::iostream &Ios, Context &ctx) {
 	Anything anyValue = "ReadInput.Error";
 	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
 	if ( !DoReadInput(Ios, ctx) ) {
-		DoHandleReadInputError(Ios, ctx);
-		return false;
+		return DoHandleReadInputError(Ios, ctx);
 	}
 	return true;
 }
@@ -146,20 +148,18 @@ bool RequestProcessor::VerifyRequest(std::iostream &Ios, Context &ctx) {
 	Anything anyValue = "VerifyRequest.Error";
 	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
 	if ( !DoVerifyRequest(ctx) ) {
-		DoHandleVerifyError(Ios, ctx);
-		return false;
+		return DoHandleVerifyRequestError(Ios, ctx);
 	}
 	return true;
 }
 
 //!process the arguments and generate a reply
-bool RequestProcessor::IntProcessRequest(std::ostream &Ios, Context &ctx) {
+bool RequestProcessor::IntProcessRequest(std::iostream &Ios, Context &ctx) {
 	StartTrace(RequestProcessor.IntProcessRequest);
 	Anything anyValue = "ProcessRequest.Error";
 	Context::PushPopEntry<Anything> aEntry(ctx, "RequestProcessorErrorSlot", anyValue, "RequestProcessorErrorSlot");
 	if ( !DoProcessRequest(Ios, ctx) ) {
-		DoHandleProcessRequestError(Ios, ctx);
-		return false;
+		return DoHandleProcessRequestError(Ios, ctx);
 	}
 	return true;
 }

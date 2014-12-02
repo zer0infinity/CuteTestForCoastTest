@@ -24,7 +24,7 @@
 		}
 		/VerifyFail {
 			/RequestLine	"VerifyFail\n"
-			/Expected		"TestHTTPProcessor::DoHandleVerifyError"
+			/Expected		"TestHTTPProcessor::DoHandleVerifyRequestError"
 		}
 		/ProcessFail {
 			/RequestLine	"ProcessFail\n"

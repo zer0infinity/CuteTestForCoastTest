@@ -93,10 +93,10 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
-							    /Component "HTTPRequestReader"
+							    /Component "HTTPRequestReader::DoReadRequest"
 							    /ResponseCode 400
 							    /ResponseMsg "Bad Request"
 								/ErrorMessage "Invalid request line termination"
@@ -118,10 +118,12 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
+								/Component "HTTPRequestReader::DoReadRequest"
 								/ResponseCode 400
+							    /ResponseMsg "Bad Request"
 								/ErrorMessage "Empty request line"
 								/FaultyContent ""
 							}
@@ -141,10 +143,12 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
+								/Component "HTTPRequestReader::DoReadRequest"
 								/ResponseCode 400
+							    /ResponseMsg "Bad Request"
 								/ErrorMessage "Empty request line"
 								/FaultyContent ""
 							}
@@ -176,10 +180,10 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
-							    /Component "HTTPRequestReader"
+							    /Component "HTTPRequestReader::DoReadRequest"
 							    /ResponseCode 413
 							    /ResponseMsg "Request Entity Too Large"
 							    /ErrorMessage "Line size exceeded; max: 8 actual: 9 => check setting of [LineSizeLimit]"
@@ -202,10 +206,10 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
-							    /Component "HTTPRequestReader"
+							    /Component "HTTPRequestReader::DoReadRequest"
 							    /ResponseCode 414
 							    /ResponseMsg "Request-URI Too Large"
 							    /ErrorMessage "Request-URI too long; max: 8 actual: 9 => check setting of [URISizeLimit]"
@@ -227,10 +231,10 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
-							    /Component "HTTPRequestReader"
+							    /Component "HTTPRequestReader::DoReadRequest"
 							    /ResponseCode 413
 							    /ResponseMsg "Request Entity Too Large"
 							    /ErrorMessage "RequestSizeLimit exceeded; max: 8 actual: 15 => check setting of [RequestSizeLimit]"
@@ -252,10 +256,10 @@
 					/header *
 				}
 				/TmpStore {
-					/HTTPRequestReader {
+					/HTTPProcessor {
 						/Error {
 							{
-							    /Component "HTTPRequestReader"
+							    /Component "HTTPRequestReader::DoReadRequest"
 							    /ResponseCode 405
 							    /ResponseMsg "Method Not Allowed"
 							    /ErrorMessage "Method Not Allowed"

@@ -110,21 +110,24 @@ protected:
 	}
 
 	//! render the protocol specific error msg
-	void DoHandleVerifyError(std::ostream &reply, Context &ctx) {
-		StartTrace(TestHTTPProcessor.DoHandleVerifyError);
-		reply << "TestHTTPProcessor::DoHandleVerifyError" << std::flush;
+	bool DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx) {
+		StartTrace(TestHTTPProcessor.DoHandleVerifyRequestError);
+		Ios << "TestHTTPProcessor::DoHandleVerifyRequestError" << std::flush;
+		return false;
 	}
-	void DoHandleReadInputError(std::ostream &reply, Context &ctx) {
+	bool DoHandleReadInputError(std::iostream &Ios, Context &ctx) {
 		StartTrace(TestHTTPProcessor.DoHandleReadInputError);
-		reply << "TestHTTPProcessor::DoHandleReadInputError" << std::flush;
+		Ios << "TestHTTPProcessor::DoHandleReadInputError" << std::flush;
+		return false;
 	}
 
-	void DoHandleProcessRequestError(std::ostream &reply, Context &ctx) {
+	bool DoHandleProcessRequestError(std::iostream &Ios, Context &ctx) {
 		StartTrace(TestHTTPProcessor.DoHandleProcessRequestError);
-		ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot", "SlotNotFound!"))[0L].PrintOn(reply, false);
+		ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot", "SlotNotFound!"))[0L].PrintOn(Ios, false);
 		OStringStream ostr;
 		ctx.DebugStores("blabla", ostr, true);
 		Trace(ostr.str());
+		return false;
 	}
 };
 //--- TestHTTPProcessor ----------------------------------------------------------

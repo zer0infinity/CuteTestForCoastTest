@@ -57,11 +57,11 @@ protected:
 	//! render the protocol specific status
 	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);
 
-	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx);
 
-	virtual void DoHandleReadInputError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleReadInputError(std::iostream &Ios, Context &ctx);
 
-	virtual void DoHandleProcessRequestError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleProcessRequestError(std::iostream &Ios, Context &ctx);
 
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
@@ -72,7 +72,7 @@ private:
 	bool VerifyRequest(std::iostream &Ios, Context &ctx);
 
 	//!process the arguments and generate a reply
-	bool IntProcessRequest(std::ostream &Ios, Context &ctx);
+	bool IntProcessRequest(std::iostream &Ios, Context &ctx);
 
 	//!the server we use as callback for application functionality
 	Server *fServer;

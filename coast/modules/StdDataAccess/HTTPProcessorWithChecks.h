@@ -27,13 +27,13 @@ public:
 	}
 
 protected:
+	virtual bool DoPrepareContextRequest(std::iostream &Ios, Context &ctx, Anything &request, HTTPRequestReader &reader);
+
 	virtual bool DoVerifyRequest(Context &ctx);
 
-	virtual void DoHandleVerifyError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleVerifyRequestError(std::iostream &Ios, Context &ctx);
 
-//	virtual void DoHandleReadInputError(std::ostream &reply, Context &ctx);
-//
-//	virtual void DoHandleProcessRequestError(std::ostream &reply, Context &ctx);
+	virtual bool DoHandleReadInputError(std::iostream &Ios, Context &ctx);
 
 private:
 	HTTPProcessorWithChecks(const HTTPProcessorWithChecks &);

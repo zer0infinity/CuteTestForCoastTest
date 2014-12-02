@@ -25,9 +25,9 @@
 
 	/CheckFaultyHeadersTest {
 		/OnlyQuerySuccess {
-			/RequestLine 	"GET ?bar HTTP/1.0\r\n"
+			/RequestLine 	"GET ?bar HTTP/1.0\r\n\r\n"
 			/Expected {
-				/Reply	"GET ?bar HTTP/1.0"
+				/Reply	"HTTP/1.1 404 Not Found"
 				/Request {
 					/env {
 						/REQUEST_URI "?bar"
@@ -36,41 +36,40 @@
 			}
 		}
 		/OnlyRootURISuccess {
-			/RequestLine 	"GET / HTTP/1.0\r\n"
+			/RequestLine 	"GET / HTTP/1.0\r\n\r\n"
 			/Expected {
 				/Request {
 					/env {
 						/REQUEST_URI "/"
 					}
 				}
-				/Reply "GET / HTTP/1.0"
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 		/SimpleFileURISuccess {
-				/RequestLine 	"GET /ftimage/image.gif HTTP/1.0\r\n"
+				/RequestLine 	"GET /ftimage/image.gif HTTP/1.0\r\n\r\n"
 				/Expected {
 					/Request {
 						/env {
 							/REQUEST_URI "/ftimage/image.gif"
 						}
 					}
-					/Reply "GET /ftimage/image.gif HTTP/1.0"
+					/Reply "HTTP/1.1 404 Not Found"
 				}
 		}
 		/EncodedPathSeparatorSuccess {
-				/RequestLine 	"GET %2Fftimage%2Fimage.gif HTTP/1.0\r\n"
-				/WrongUrlArgsEncoding 0
+				/RequestLine 	"GET %2Fftimage%2Fimage.gif HTTP/1.0\r\n\r\n"
 				/Expected {
 					/Request {
 						/env {
-							/REQUEST_URI "%2Fftimage%2Fimage.gif"
+							/REQUEST_URI "/ftimage/image.gif"
 						}
 					}
-					/Reply "GET %2Fftimage%2Fimage.gif HTTP/1.0"
+					/Reply "HTTP/1.1 404 Not Found"
 				}
 		}
 		/IllegalServerProtocolFormat {
-				/RequestLine 	"GET %2F HTTP%2F1.0\r\n"
+				/RequestLine 	"GET %2F HTTP%2F1.0\r\n\r\n"
 				/Expected {
 					/Request {
 						/env {
@@ -79,1316 +78,1474 @@
 					/Reply "HTTP/1.1 400 Bad Request"
 				}
 		}
-	} { #//FIXME: implement checking code in HTTPProcessorWithChecks
-		/AbovehexFFfail {
-				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Encoded char above 0x255 detected"
+
+		/RelativeBackMovementAttack {
+			/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
-		}
-		# 6 # currently same as 5
-		{
-				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Encoded char above 0x255 detected"
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
 				}
-		}
-		# 7
-		{
-				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
-				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 
 		}
-		# 8
-		{
-				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
+		/RelativeBackMovementAttackAgain {
+			/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 9
-		{
-				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
+		/RelativeBackMovementAttackWithArguments {
+			/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 10
-		{
-				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
+		/DeepRelativeBackMovementAttack {
+			/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 11
-		{
-				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
+		/EncodedCharactersTraversalAttack {
+			/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 12
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
+		/UnicodeCharactersTraversalAttack {
+			/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 13
-		# Arguments are not unescaped!
-		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "%2Fftimage%2Ffoo?fobaz%2F%u002F&..&..&X"
-						}
-					}
-					/Reply ""
+		/EncodedRelativeBackMovementAttackWithArguments {
+			/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 14
-		# Request with terminating ? ( Must be removed, since a URI with terminating ? is not likely to be found )
-		{
-				/RequestLine 	"GET /kimdojo? HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/kimdojo"
-						}
-					}
-					/Reply ""
+		/EncodedDeepRelativeBackMovementAttack {
+			/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 15
-		{
-				/RequestLine 	"GET %2Fkimdojo? HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "%2Fkimdojo"
-						}
-					}
-					/Reply ""
+		/UnicodeRelativeMovementAttack {
+			/RequestLine 	"GET /ftimage/%u002e%u002e/image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
-		# 16
-		{
-				/RequestLine 	"GET ? HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
+		# 46 "old traversal attack tests"
+		/DirectoryTraversalOverride {
+			/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply ""
 				}
-		}
-		# 17
-		{
-				/RequestLine 	"GET /? HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
-					}
-					/Reply ""
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
 				}
-		}
-		# 18
-		# Directory traversial cleanup, more elaborate cases
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
-				}
-		}
-		# 19
-		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
-				}
-		}
-		# 20
-		# Argument checking
-		{
-				/RequestLine 	"GET ?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "?bar=%4B%69%6D-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 21
-		{
-				/RequestLine 	"GET /?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/?bar=%4B%69%6D-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 22
-		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-~dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "%2F?bar=%4B%69%6D-~dojo&"
-						}
-					}
-					/Reply "Argument string (after ?) was not correctly encoded. Request not rejected."
-				}
-		}
-		# 23
-		# Override ~{} in argument check
-		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-~{dojo}& HTTP/1.0\r\n"
-				/CheckUrlArgEncodingOverride	"%=-~{}&"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "%2F?bar=%4B%69%6D-~{dojo}&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 24
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image.gif?bar=%4B%69%6D-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 25
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u004B%u0069%u006D-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image.gif?bar=%u004B%u0069%u006D-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 26
-		{
-				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "%2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~&"
-						}
-					}
-					/Reply "Argument string (after ?) was not correctly encoded. Request not rejected."
-				}
-		}
-		# 27
-		# args above hex FF
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image.gif?bar=%u01FF-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 28
-		# Wrong path encodings, 4 cases basing on same url
-		{
-				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Not all unsafe chars URL encoded"
-				}
-		}
-		# 29
-		# Same, without url-decoding
-		{
-				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Not all unsafe chars URL encoded"
-				}
-		}
-		# 30
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage%21/image.gif"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 31
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage%21/image.gif"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 32
-		{
-				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image.gif?bar=%u01FF-dojo&"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 33
-		# Same, without url-decoding
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage%21/image.gif"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 34
-		# not encoded blanks trigger end of path parsing
-		{
-				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 35
-		{
-				/RequestLine 	"GET /ftimage/image%20withblank.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image%20withblank.gif"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 36
-		# this does not correspond to the rfc, blank should be encoded
-		{
-				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/image"
-						}
-					}
-					/Reply ""
-				}
-		}
-		# 37
-		# \ is not allowed
-		{
-				/RequestLine 	"GET /ftimage\image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Not all unsafe chars URL encoded"
-				}
-		}
-		# 38
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%255Cimage/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-		# 39
-		# %25%35%63 evaluates to \ which is not valid
-		{
-				/RequestLine 	"GET /ftimage%25%35%63../image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-
-		# 40
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%255C../ HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-
-		# 41
-		# %%35c evaluates to \
-		{
-				/RequestLine 	"GET /ftimage%%35c../image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-
-		# 42
-		# this are encoded chars > ascii 127 (//), thus invalid
-		{
-				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-		# 43
-		# unicode encoded .. sequence
-		{
-				/RequestLine 	"GET /ftimage/%u002e%u002e/image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Directory traversial attack"
-				}
-		}
-		# 44
-		# %255C evaluates to \
-		{
-				/RequestLine 	"GET /ftimage%255C../image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-		# 45
-		# after one-time url decoding there are no more escaped squences, but invalid chars (same as 41)
-		{
-				/RequestLine 	"GET /ftimage%255C..%255C..%255C../image/my.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
-				}
-		}
-		# 46 "old traversial attack tests"
-		{
-				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
-					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
-				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 47
 		{
-				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 48
 		{
-				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 49
 		{
-				/RequestLine 	"GET /ftimage/../../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET /ftimage/../../../etc/shadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 50
 		{
-				/RequestLine 	"GET %2Fftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET %2Fftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 51
 		{
-				/RequestLine 	"GET %2Fftimage%u002F%u002E%2E/%2E%2E%2F.%2E/etc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET %2Fftimage%u002F%u002E%2E/%2E%2E%2F.%2E/etc%2Fshadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 52
 		{
-				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 53
 		{
-				/RequestLine 	"GET %2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/shadow"
-						}
+			/RequestLine 	"GET %2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/shadow"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 54
 		{
-				/RequestLine 	"GET /ftimage/../../.. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /ftimage/../../.. HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 55
 		{
-				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 56
 		{
-				/RequestLine 	"GET /ftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /ftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 57
 		{
-				/RequestLine 	"GET /ftimage/../../../ HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /ftimage/../../../ HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 58
 		{
-				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%u002E%2E%2F HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%u002E%2E%2F HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 59
 		{
-				/RequestLine 	"GET /. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET /. HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 60
 		{
-				/RequestLine 	"GET %2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine 	"GET %2F%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 61
 		{
-				/RequestLine	"GET /./. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine	"GET /./. HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 62
 		{
-				/RequestLine	"GET %2F%2E%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/"
-						}
+			/RequestLine	"GET %2F%2E%2F%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 63
 		{
-				/RequestLine	"GET /ftimage/./ HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/"
-						}
+			/RequestLine	"GET /ftimage/./ HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 64
 		{
-				/RequestLine	"GET %2Fftimage%2F%2E%2F HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/"
-						}
+			/RequestLine	"GET %2Fftimage%2F%2E%2F HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 65
 		{
-				/RequestLine	"GET /ftimage/./. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage"
-						}
+			/RequestLine	"GET /ftimage/./. HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 66
 		{
-				/RequestLine	"GET %2Fftimage%2F%2E%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage"
-						}
+			/RequestLine	"GET %2Fftimage%2F%2E%2F%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 67
 		{
-				/RequestLine	 "GET /ftimage/. HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage"
-						}
+			/RequestLine	 "GET /ftimage/. HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 68
 		{
-				/RequestLine	 "GET %2Fftimage%2F%2E HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage"
-						}
+			/RequestLine	 "GET %2Fftimage%2F%2E HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 69
 		{
-				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage?fobaz&..&..&X"
-						}
+			/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage?fobaz&..&..&X"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 70
 		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage?fobaz&..&..&X"
-						}
+			/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage?fobaz&..&..&X"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# Arguments are not unescaped!
 		# 71
 		{
-				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage?fobaz%2F%u002F&..&..&X"
-						}
+			/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage?fobaz%2F%u002F&..&..&X"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
-		# Directory traversial cleanup, more elaborate cases
+		# Directory traversal cleanup, more elaborate cases
 		# 72
 		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/aa/bb/cc/dd/ee/etc/passwd"
-						}
+			/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/aa/bb/cc/dd/ee/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 73
 		{
-				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/aa/bb/cc/dd/ee/etc/passwd"
-						}
+			/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/aa/bb/cc/dd/ee/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 74
 		{
-				/RequestLine 	"GET /../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET /../../../../../etc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 75
 		{
-				/RequestLine 	"GET %2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET %2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 76
 		{
-				/RequestLine 	"GET ../../../../../etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET ../../../../../etc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 77
 		{
-				/RequestLine 	"GET %2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET %2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 78
 		{
-				/RequestLine 	"GET /etc%2f%2e%2fpasswd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET /etc%2f%2e%2fpasswd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 79
 		{
-				/RequestLine 	"GET /etc/./././passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET /etc/./././passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 80
 		{
-				/RequestLine 	"GET /etc/./passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/URLEncodeExclude   "/?"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET /etc/./passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/URLEncodeExclude   "/?"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 81
 		{
-				/RequestLine 	"GET /etc%2f%2e%2f%2f%2e%2f%2f%2e%2fpasswd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/etc/passwd"
-						}
+			/RequestLine 	"GET /etc%2f%2e%2f%2f%2e%2f%2f%2e%2fpasswd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 82
 		{
-				/RequestLine 	"GET ./etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET ./etc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 83
 		{
-				/RequestLine 	"GET %2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET %2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 84
 		{
-				/RequestLine 	"GET %2e%2f%2e%2f%2e%2fetc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET %2e%2f%2e%2f%2e%2fetc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 85
 		{
-				/RequestLine 	"GET ./././etc/passwd HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd"
-						}
+			/RequestLine 	"GET ./././etc/passwd HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 86
 		# Url with blank
 		{
-				/RequestLine 	"GET ./././etc/passwd/my%20blank.gif HTTP/1.1\r\n"
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd/my%20blank.gif"
-						}
+			/RequestLine 	"GET ./././etc/passwd/my%20blank.gif HTTP/1.1\r\n\r\n"
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd/my%20blank.gif"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 87
 		# URLEncodeExclude set to ("/?=")
 		{
-				/RequestLine 	"GET ./././etc/passwd/my%3Dequals.gif HTTP/1.1\r\n"
-				/URLEncodeExclude  "/?="
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "etc/passwd/my=equals.gif"
-						}
+			/RequestLine 	"GET ./././etc/passwd/my%3Dequals.gif HTTP/1.1\r\n\r\n"
+			/URLEncodeExclude  "/?="
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "etc/passwd/my=equals.gif"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
-		}
-		# 88
-		#  multiple encodings.
-		# after first pass of decoding there are still encoded sequences
-		{
-				/RequestLine 	"GET /ftimage%252Fimage/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	0
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
-					}
-					/Reply "Decoded URL path contains unsafe char"
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 89
 		# multiple encodings. Only with FixDirectoryTraversial the modified request will be seen
 		# and only if there had something to be fixed in the directory structure
 		{
-				/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/image/my.gif"
-						}
+			/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n\r\n"
+			/URLExhaustiveDecode	1
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/image/my.gif"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 90
 		# multiple encodings.No FixDirectoryTraversial given
 		{
-				/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
+			/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n\r\n"
+			/URLExhaustiveDecode	1
+			/Expected {
+				/Request {
+					/env {
 					}
-					/Reply "Directory traversial attack"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
 		# 91
 		# %%%25%25%32%35%25%25%37%35002%%%u0075004%u0035 evaluates to a .
 		{
-				/RequestLine 	"GET /ftimage%252F.%%%25%25%32%35%25%25%37%35002%%%u0075004%u0035/image/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/image/my.gif"
-						}
+			/RequestLine 	"GET /ftimage%252F.%%%25%25%32%35%25%25%37%35002%%%u0075004%u0035/image/my.gif HTTP/1.0\r\n\r\n"
+			/URLExhaustiveDecode	1
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/image/my.gif"
 					}
-					/Reply "Directory traversial attack detected and normalized. Request not rejected because of config settings"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Directory traversal attack detected and normalized. Request not rejected because of FixDirectoryTraversial setting"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		/AbovehexFFfail {
+			/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env *
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Encoded char above 0x255 detected"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 13
+		# Arguments are not unescaped!
+		{
+			/RequestLine 	"GET %2Fftimage%2Ffoo?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/foo?fobaz%2F%u002F&..&..&X"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 14
+		# Request with terminating ? ( Must be removed, since a URI with terminating ? is not likely to be found )
+		{
+			/RequestLine 	"GET /kimdojo? HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/kimdojo"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 15
+		{
+			/RequestLine 	"GET %2Fkimdojo? HTTP/1.1\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/kimdojo"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 16
+		{
+			/RequestLine 	"GET ? HTTP/1.1\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI ""
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 17
+		{
+			/RequestLine 	"GET /? HTTP/1.1\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 20
+		# Argument checking
+		{
+			/RequestLine 	"GET ?bar=%4B%69%6D-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "?bar=%4B%69%6D-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 21
+		{
+			/RequestLine 	"GET /?bar=%4B%69%6D-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/?bar=%4B%69%6D-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 22
+		{
+			/RequestLine 	"GET %2F?bar=%4B%69%6D-~dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Argument string (after ?) was not correctly encoded. Request not rejected."
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 23
+		# Override ~{} in argument check
+		{
+			/RequestLine 	"GET %2F?bar=%4B%69%6D-~{dojo}& HTTP/1.0\r\n\r\n"
+			/CheckUrlArgEncodingOverride	"%=-~{}&"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/?bar=%4B%69%6D-~{dojo}&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 24
+		{
+			/RequestLine 	"GET /ftimage/image.gif?bar=%4B%69%6D-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image.gif?bar=%4B%69%6D-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 25
+		{
+			/RequestLine 	"GET /ftimage/image.gif?bar=%u004B%u0069%u006D-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image.gif?bar=%u004B%u0069%u006D-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 26
+		{
+			/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image.gif?bar=%4B%69%6D-dojo~&"
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Argument string (after ?) was not correctly encoded. Request not rejected."
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 27
+		# args above hex FF
+		{
+			/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image.gif?bar=%u01FF-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 28
+		# Wrong path encodings, 4 cases basing on same url
+		{
+			/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Not all unsafe chars URL encoded"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 30
+		{
+			/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage!/image.gif"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 32
+		{
+			/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image.gif?bar=%u01FF-dojo&"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 34
+		# not encoded blanks trigger end of path parsing
+		{
+			/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Bad request structure or simple HTTP/0.9 request"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 35
+		{
+			/RequestLine 	"GET /ftimage/image%20withblank.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/image withblank.gif"
+					}
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		# 37
+		# \ is not allowed
+		{
+			/RequestLine 	"GET /ftimage\image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Not all unsafe chars URL encoded"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 38
+		# after first pass of decoding there are still encoded sequences
+		{
+			/RequestLine 	"GET /ftimage%255Cimage/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 39
+		# %25%35%63 evaluates to \ which is not valid
+		{
+			/RequestLine 	"GET /ftimage%25%35%63../image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 40
+		# after first pass of decoding there are still encoded sequences
+		/StillEncodedCharactersAfterFirstDecoding {
+			/RequestLine 	"GET /ftimage%255C../ HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 41
+		# %%35c evaluates to \
+		{
+			/RequestLine 	"GET /ftimage%%35c../image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+
+		# 42
+		# this are encoded chars > ascii 127 (//), thus invalid
+		{
+			/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 44
+		# %255C evaluates to \
+		{
+			/RequestLine 	"GET /ftimage%255C../image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 45
+		# after one-time url decoding there are no more escaped squences, but invalid chars (same as 41)
+		{
+			/RequestLine 	"GET /ftimage%255C..%255C..%255C../image/my.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		# 88
+		#  multiple encodings.
+		# after first pass of decoding there are still encoded sequences
+		{
+			/RequestLine 	"GET /ftimage%252Fimage/my.gif HTTP/1.0\r\n\r\n"
+			/URLExhaustiveDecode	0
+			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
 		# 92
 		# Char above hex 255  (unicode)
 		{
-				/RequestLine 	"GET /ftimage/%u0900/my.gif HTTP/1.0\r\n"
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial		1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
+			/RequestLine 	"GET /ftimage/%u0900/my.gif HTTP/1.0\r\n\r\n"
+			/URLExhaustiveDecode	1
+			/FixDirectoryTraversial		1
+			/Expected {
+				/Request {
+					/env {
 					}
-					/Reply "Encoded char above 0x255 detected"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Encoded char above 0x255 detected"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
 		# 93
 		# We accept $-_.+/?%= as unencoded chars in a URL
 		# Now we allow ] to be unencoded
 		{
-				/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n"
-				/CheckUrlEncodingOverride	"]"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/my=equals.gif"
-						}
+			/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n\r\n"
+			/CheckUrlEncodingOverride	"]"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/my=equals.gif"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 94
 		# but with ] the request is invalid
 		{
-				/RequestLine 	"GET /ftimage/my]equals.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
+			/RequestLine 	"GET /ftimage/my]equals.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
 					}
-					/Reply "Not all unsafe chars URL encoded"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Not all unsafe chars URL encoded"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
 		# 95
 		# Not allowed chars in URL-path, default is "<>\"#%{}|\\^~[]`" ( after decoding )
 		# x84=пїЅ is extended ascii
 		{
-				/RequestLine 	"GET /ftimage/%u0084umlaut.gif HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI ""
-						}
+			/RequestLine 	"GET /ftimage/%u0084umlaut.gif HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
 					}
-					/Reply "Decoded URL path contains unsafe char"
 				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Decoded URL path contains unsafe char"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
 		}
 		# 96
-		# Now allow  0xe4=д 0xf6=ц
+		# Now allow  0xe4=a 0xf6=Г¶
 		{
-				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsAsciiOverride "дц"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/%u00e4%f6umlaut.gif"
-						}
+			/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n\r\n"
+			/CheckUrlPathContainsUnsafeCharsAsciiOverride "\xe4\xf6"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/\xE4\xF6umlaut.gif"
 					}
-					/Reply ""
 				}
-		}
-		# 97
-		# Now allow  0xe4=пїЅ 0xf6=пїЅ, given in \x notation
-		{
-				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsAsciiOverride "\xe4\xf6"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/%u00e4%f6umlaut.gif"
-						}
-					}
-					/Reply ""
-				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 98
 		# Override the default set of allowed chars in URL-path ( after decoding ) < = 0x3c
 		# by removing it from the list
 		{
-				/RequestLine 	"GET /ftimage/%3csmaller.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsOverride ">\"#%{}|\\^~[]`"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/%3csmaller.gif"
-						}
+			/RequestLine 	"GET /ftimage/%3csmaller.gif HTTP/1.0\r\n\r\n"
+			/CheckUrlPathContainsUnsafeCharsOverride ">\"#%{}|\\^~[]`"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/<smaller.gif"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 99
 		# this are encoded chars > ascii 127 (//), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
 		{
-				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
-				/CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii 1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage%C0%AF%C0%AF/image/my.gif"
-						}
+			/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n\r\n"
+			/CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii 1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage\xC0\xAF\xC0\xAF/image/my.gif"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 100
 		# this request contains ; as delimiter
 		{
-				/RequestLine 	"GET /ftimage/my.gif;ali=baba&gu^gus=da^da& HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/my.gif;ali=baba&gu^gus=da^da&"
-						}
+			/RequestLine 	"GET /ftimage/my.gif;ali=baba&gu^gus=da^da& HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/my.gif;ali=baba&gu^gus=da^da&"
 					}
-					/Reply "Argument string (after ;) was not correctly encoded. Request not rejected."
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 101
 		# this request contains ; as url encoded (3B) delimiter
 		{
-				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/my.gif%3Bali%3Dbaba"
-						}
+			/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n\r\n"
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/my.gif;ali=baba"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 102
 		# this request contains ; as url encoded (3B) delimiter, exhaustive decoding
 		{
-				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
-				/URLEncodeExclude  "/?="
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial 1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/my.gif%3Bali%3Dbaba"
-						}
+			/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n\r\n"
+			/URLEncodeExclude  "/?="
+			/URLExhaustiveDecode	1
+			/FixDirectoryTraversial 1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/my.gif;ali=baba"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 103
 		# this request contains ? as url encoded (3F) delimiter, exhaustive decoding
 		{
-				/RequestLine 	"GET /ftimage/my.gif%3Fali%3Dbaba HTTP/1.0\r\n"
-				/URLEncodeExclude  "/?="
-				/URLExhaustiveDecode	1
-				/FixDirectoryTraversial 1
-				/Expected {
-					/Request {
-						/env {
-							/REQUEST_URI "/ftimage/my.gif%3Fali%3Dbaba"
-						}
+			/RequestLine 	"GET /ftimage/my.gif%3Fali%3Dbaba HTTP/1.0\r\n\r\n"
+			/URLEncodeExclude  "/?="
+			/URLExhaustiveDecode	1
+			/FixDirectoryTraversial 1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_URI "/ftimage/my.gif?ali=baba"
 					}
-					/Reply ""
 				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
 		}
 		# 104
 		# this request is derived from the production environment
 		{
-			/RequestLine "GET /HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1 HTTP/1.0\r\n"
+			/RequestLine "GET /HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1 HTTP/1.0\r\n\r\n"
 			/CheckUrlEncodingOverride	"$-_.+/?%;="
 			/URISizeLimit			2048
 			/URLEncodeExclude			"/?;"
@@ -1398,7 +1555,7 @@
 						/REQUEST_URI "/HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1"
 					}
 				}
-				/Reply ""
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 		{
@@ -1410,18 +1567,19 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 0
 			/Expected {
-				/Reply "GET /alibaba HTTP/1.0"
 				/Request {
 					/env {
 						/REQUEST_METHOD	GET
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
+							/X-EVIL "GET /gaga HTTP/1.0"
 						}
 					}
 				}
 				/TmpStore {
 				}
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 		{
@@ -1433,6 +1591,14 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A header contains a GET/POST request"
+				}
 				/Reply	"HTTP/1.1 400 Bad Request"
 			}
 		}
@@ -1445,6 +1611,14 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/Request {
+					/env {
+					}
+				}
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A header contains a GET/POST request"
+				}
 				/Reply	"HTTP/1.1 400 Bad Request"
 			}
 		}
@@ -1457,7 +1631,17 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply	"GET /alibaba HTTP/1.0"
+				/Request {
+					/env {
+						/REQUEST_METHOD	GET
+						/REQUEST_URI "/alibaba"
+						/SERVER_PROTOCOL "HTTP/1.0"
+						/header {
+							/X-EVIL "vGET"
+						}
+					}
+				}
+				/Reply	"HTTP/1.1 404 Not Found"
 			}
 		}
 		{
@@ -1469,7 +1653,17 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply	"GET /alibaba HTTP/1.0"
+				/Request {
+					/env {
+						/REQUEST_METHOD	GET
+						/REQUEST_URI "/alibaba"
+						/SERVER_PROTOCOL "HTTP/1.0"
+						/header {
+							/X-EVIL "vGET /gaga HTTP1.0"
+						}
+					}
+				}
+				/Reply	"HTTP/1.1 404 Not Found"
 			}
 		}
 		{
@@ -1481,6 +1675,10 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Empty request line"
+				}
 				/Reply	"HTTP/1.1 400 Bad Request"
 			}
 		}
@@ -1493,11 +1691,15 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/REQUEST_METHOD	"GET"
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Bad request structure or simple HTTP/0.9 request"
+				}
+				/Reply	"HTTP/1.1 400 Bad Request"
 			}
 		}
 		{
-			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/RequestLine "GET /12345678 HTTP/1.0\r\n\r\n"
 			/URISizeLimit		8
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
@@ -1505,11 +1707,15 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply	"HTTP/1.1 414 Request-URL Too Large"
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Request-URI too long; max: 8 actual: 9 => check setting of [URISizeLimit]"
+				}
+				/Reply	"HTTP/1.1 414 Request-URI Too Large"
 			}
 		}
 		{
-			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/RequestLine "GET /12345 HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		8
 			/RequestSizeLimit	5120
@@ -1517,11 +1723,15 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Line size exceeded; max: 8 actual: 9 => check setting of [LineSizeLimit]"
+				}
 				/Reply	"HTTP/1.1 413 Request Entity Too Large"
 			}
 		}
 		{
-			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/RequestLine "GET / HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	8
@@ -1529,11 +1739,15 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"RequestSizeLimit exceeded; max: 8 actual: 16 => check setting of [RequestSizeLimit]"
+				}
 				/Reply	"HTTP/1.1 413 Request Entity Too Large"
 			}
 		}
 		{
-			/RequestLine "xxGET  HTTP/1.0\r\n\r\n"
+			/RequestLine "xxGET / HTTP/1.0\r\n\r\n"
 			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
@@ -1541,12 +1755,21 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Method Not Allowed"
+				}
 				/Reply "HTTP/1.1 405 Method Not Allowed"
 			}
 		}
 		{
 			/RequestLine {
-				"POST /alibaba HTTP/1.0" "\r\n" "X-Evil: GET /gaga HTTP/1.0" "\r\n" "Content-type: application/x-www-form-urlencoded" "\r\n" "key=value&Content-length: 11" "\r\n" "\r\n"
+				"POST /alibaba HTTP/1.0\r\n"
+				"X-Evil: GET /gaga HTTP/1.0\r\n"
+				"Content-type: application/x-www-form-urlencoded\r\n"
+				"Content-length: 11\r\n"
+				"\r\n"
+				"key=value\r\n"
 			}
 			/URISizeLimit		1024
 			/LineSizeLimit		4096
@@ -1555,40 +1778,29 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply "HTTP/1.1 400 Bad Request"
 				/Request {
 					/env {
 						/REQUEST_METHOD	POST
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
+							/X-EVIL "GET /gaga HTTP/1.0"
+							/CONTENT-TYPE "application/x-www-form-urlencoded"
+							/CONTENT-LENGTH "11"
 						}
+						/REQUEST_BODY {
+							/key "value"
+						}
+						/WHOLE_REQUEST_BODY "key=value\x0D\n"
 					}
 				}
 				/TmpStore {
 				}
-			}
-		}
-		{
-			/RequestLine {
-				"GET  HTTP/1.0" "\r\n" "\r\n"
-			}
-			/URISizeLimit		1024
-			/LineSizeLimit		4096
-			/RequestSizeLimit	5120
-			/URLEncodeExclude   "/?"
-			/CheckHeaderFields	1
-			/RejectRequestsWithInvalidHeaders 1
-			/Expected {
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A header contains a GET/POST request"
+				}
 				/Reply "HTTP/1.1 400 Bad Request"
-				/Request {
-					/env {
-						/header {
-						}
-					}
-				}
-				/TmpStore {
-				}
 			}
 		}
 		{
@@ -1602,19 +1814,23 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply "HTTP/1.1 400 Bad Request"
 				/Request {
 					/env {
 						/REQUEST_METHOD	GET
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
-							/X-Evil	POST
+							/X-EVIL	POST
 						}
 					}
 				}
 				/TmpStore {
 				}
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A header contains a GET/POST request"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
 			}
 		}
 		{
@@ -1628,19 +1844,23 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply "HTTP/1.1 400 Bad Request"
 				/Request {
 					/env {
 						/REQUEST_METHOD	GET
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
-							/X-Evil	GET
+							/X-EVIL	GET
 						}
 					}
 				}
 				/TmpStore {
 				}
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A header contains a GET/POST request"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
 			}
 		}
 		{
@@ -1654,19 +1874,19 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 0
 			/Expected {
-				/Reply "HTTP/1.1 404 Not Found"
 				/Request {
 					/env {
 						/REQUEST_METHOD	GET
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
-							/X-Evil	GET
+							/X-EVIL	GET
 						}
 					}
 				}
 				/TmpStore {
 				}
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 		{
@@ -1680,24 +1900,30 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply "HTTP/1.1 404 Not Found"
 				/Request {
 					/env {
 						/REQUEST_METHOD	GET
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
 						/header {
-							/X-Evil	xGET
+							/X-EVIL	xGET
 						}
 					}
 				}
 				/TmpStore {
 				}
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 		{
 			/RequestLine {
-				"POST /alibaba HTTP/1.0" "\r\n" "Content-type: multipart/form-data; boundary=me;" "\r\n" "Content-length: 64" "\r\n" "\r\n" "--me" "\r\n" "X-Evil: GET /gaga HTTP/1.0" "\r\n" "This is the content." "\r\n" "--me--" "\r\n"
+				"POST /alibaba HTTP/1.0\r\n"
+				"Content-type: multipart/form-data; boundary=me\r\n"
+				"Content-length: 64\r\n\r\n"
+				"--me\r\n"
+				"X-Evil: GET /gaga HTTP/1.0\r\n\r\n"
+				"This is the content.\r\n"
+				"--me--\r\n"
 			}
 			/URISizeLimit		1024
 			/LineSizeLimit		4096
@@ -1706,20 +1932,85 @@
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
 			/Expected {
-				/Reply "HTTP/1.1 404 Not Found"
 				/Request {
 					/env {
 						/REQUEST_METHOD	POST
 						/REQUEST_URI "/alibaba"
 						/SERVER_PROTOCOL "HTTP/1.0"
-						/header {
-							/X-Evil	xGET
+						/REQUEST_BODY:0.header {
+							/X-EVIL	"GET /gaga HTTP/1.0"
 						}
 					}
 				}
 				/TmpStore {
-					"where is the message about negotiation"
 				}
+				/ErrorsSlotname "VerifyRequest.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request"
+				}
+				/Reply "HTTP/1.1 400 Bad Request"
+			}
+		}
+		{
+			/RequestLine {
+				"POST /alibaba HTTP/1.0\r\n"
+				"Content-type: multipart/form-data; boundary=me\r\n"
+				"Content-length: 64\r\n\r\n"
+				"--me\r\n"
+				"X-Evil: GET /gaga HTTP/1.0\r\n"
+				"This is the content.\r\n"
+				"--me--\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_METHOD	POST
+						/REQUEST_URI "/alibaba"
+						/SERVER_PROTOCOL "HTTP/1.0"
+					}
+				}
+				/TmpStore {
+				}
+				/ErrorsSlotname "ReadInput.Error"
+				/ErrorMessages {
+					/:0.ErrorMessage	"Missing header field name"
+				}
+				/Reply "HTTP/1.1 404 Not Found"
+			}
+		}
+		{
+			/RequestLine {
+				"POST /alibaba HTTP/1.0\r\n"
+				"Content-type: multipart/form-data; boundary=me\r\n"
+				"Content-length: 64\r\n\r\n"
+				"--me\r\n"
+				"X-Evil: xGET /gaga HTTP/1.0\r\n\r\n"
+				"This is the content.\r\n"
+				"--me--\r\n"
+			}
+			/URISizeLimit		1024
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected {
+				/Request {
+					/env {
+						/REQUEST_METHOD	POST
+						/REQUEST_URI "/alibaba"
+						/SERVER_PROTOCOL "HTTP/1.0"
+					}
+				}
+				/TmpStore {
+				}
+				/Reply "HTTP/1.1 404 Not Found"
 			}
 		}
 	}
