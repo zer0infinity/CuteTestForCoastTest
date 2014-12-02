@@ -30,7 +30,7 @@ public:
 	//! If the status code is unknown, the string "Unknown Error" is returned.
 	//! \param status http status code
 	//! \return default reason phrase for a given http status code
-	static const char *DefaultReasonPhrase(long status);
+	static const char *DefaultReasonPhrase(long const status);
 protected:
 	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);

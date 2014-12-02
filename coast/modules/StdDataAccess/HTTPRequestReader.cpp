@@ -41,7 +41,7 @@ namespace {
 		if (anyRequest.GetSize() != 3L)
 			throw MIMEHeader::InvalidLineException("Bad request structure or simple HTTP/0.9 request", line);
 		String tok = anyRequest[0L].AsString().ToUpper();
-		if (strGET.IsEqual(tok) || strPOST.IsEqual(tok)) { //!@FIXME allow more methods..., make it configurable?
+		if (tok.IsEqual(coast::http::constants::getMethodSlotname) || tok.IsEqual(coast::http::constants::postMethodSlotname)) { //!@FIXME allow more methods..., make it configurable?
 			request["REQUEST_METHOD"] = tok;
 		} else {
 			throw InvalidLineWithCodeException("Method Not Allowed", line, 405);

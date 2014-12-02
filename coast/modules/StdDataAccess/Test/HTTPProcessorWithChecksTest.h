@@ -11,19 +11,11 @@
 
 #include "WDBaseTestPolicies.h"
 
-//---- HTTPProcessorWithChecksTest ----------------------------------------------------
 class HTTPProcessorWithChecksTest: public testframework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
 	HTTPProcessorWithChecksTest(TString tstrName);
-
-	//! destroys the test case
-	~HTTPProcessorWithChecksTest();
-
-	//--- public api
 
 	//! builds up a suite of testcases for this test
 	static Test *suite();

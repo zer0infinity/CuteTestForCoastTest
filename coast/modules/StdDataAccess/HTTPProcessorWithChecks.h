@@ -13,7 +13,6 @@
 
 class Context;
 
-//--- HTTPProcessor ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
 class HTTPProcessorWithChecks : public HTTPProcessor
 {

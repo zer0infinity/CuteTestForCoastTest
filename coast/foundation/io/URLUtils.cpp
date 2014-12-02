@@ -519,7 +519,7 @@ namespace coast {
 		}
 
 		// Check URL for chars which should be encoded according to RFC1808
-		bool CheckUrlArgEncoding(String &str, const String &override)
+		bool CheckUrlArgEncoding(const String &str, const String &override)
 		{
 			StartTrace(URLUtils.CheckUrlArgEncoding);
 			String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -536,7 +536,7 @@ namespace coast {
 		}
 
 		// Check URL contains only valid chars according to RFC1738
-		bool CheckUrlPathContainsUnsafeChars(String &str, const String &overrideUnsafe, const String &overrideAscii, bool asciiExtended)
+		bool CheckUrlPathContainsUnsafeChars(const String &str, const String &overrideUnsafe, const String &overrideAscii, bool asciiExtended)
 		{
 			StartTrace(URLUtils.CheckUrlPathContainsUnsafeChars);
 			String base("<>\"#%{}|\\^~[]`");

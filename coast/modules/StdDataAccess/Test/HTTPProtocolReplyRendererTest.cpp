@@ -21,7 +21,7 @@ void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine() {
 	Anything anyConfig;
 	anyConfig["HTTPProtocolReplyRenderer"] = Anything();
 	Renderer::Render(response, c, anyConfig);
-	assertEqual("HTTP/1.1 500 Server Error\r\nConnection: close\r\n", response.str());
+	assertEqual("HTTP/1.1 500 Internal Server Error\r\nConnection: close\r\n", response.str());
 	assertEqual(500L, c.Lookup(String("HTTPStatus.").Append(coast::http::constants::protocolCodeSlotname), -1L));
 }
 

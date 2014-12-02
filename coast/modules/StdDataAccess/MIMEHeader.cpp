@@ -34,16 +34,7 @@ namespace coast {
 }
 
 namespace {
-	char const * const boundarySlotname = "BOUNDARY";
-	char const * const contentLengthSlotname = "CONTENT-LENGTH";
-	char const * const contentDispositionSlotname = "CONTENT-DISPOSITION";
-	char const * const contentTypeSlotname = "CONTENT-TYPE";
 	String const boundaryToken("boundary=", -1, coast::storage::Global());
-	char const headerNamedDelimiter = ':';
-
-	char const contentDispositionDelimiter = ';';
-	char const headerArgumentsDelimiter = ',';
-	char const valueArgumentDelimiter = '=';
 
 //	Anything const headersREProgram = RECompiler().compile(coast::http::constants::splitFieldsRegularExpression);
 
@@ -54,10 +45,10 @@ namespace {
 		RE multivalueRE(coast::http::constants::splitFieldsRegularExpression, RE::MATCH_ICASE);
 		if ( multivalueRE.ContainedIn(strKey) ) {
 			Anything &anyValues = headers[strKey];
-			coast::urlutils::Split(strValue, headerArgumentsDelimiter, anyValues, headerArgumentsDelimiter, coast::urlutils::eUpshift);
-		} else if ( strKey.IsEqual(contentDispositionSlotname)) {
+			coast::urlutils::Split(strValue, coast::http::constants::headerArgumentsDelimiter, anyValues, coast::http::constants::headerArgumentsDelimiter, coast::urlutils::eUpshift);
+		} else if ( strKey.IsEqual(coast::http::constants::contentDispositionSlotname)) {
 			Anything &anyValues = headers[strKey];
-			coast::urlutils::Split(strValue, contentDispositionDelimiter, anyValues, valueArgumentDelimiter, coast::urlutils::eUpshift);
+			coast::urlutils::Split(strValue, coast::http::constants::contentDispositionDelimiter, anyValues, coast::http::constants::keyValueDelimiter, coast::urlutils::eUpshift);
 		} else {
 			coast::urlutils::AppendValueTo(headers, strKey, strValue);
 		}
@@ -73,7 +64,7 @@ namespace {
 			long index = contenttype.Contains(boundaryToken.cstr());
 			if (index > 0) {
 				String strBoundary = contenttype.SubString(index + boundaryToken.Length());
-				header[shiftedHeaderKey(boundarySlotname, shiftFlag)] = strBoundary;
+				header[shiftedHeaderKey(coast::http::constants::boundarySlotname, shiftFlag)] = strBoundary;
 				Trace("Multipart boundary found: <" << strBoundary << ">");
 			}
 		}
@@ -82,10 +73,11 @@ namespace {
 	long GetNormalizedFieldName(String const &line, String &fieldname, coast::urlutils::NormalizeTag const normTag) {
 		StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
 		// following headerfield specification of HTTP/1.1 RFC 2068
-		long pos = line.StrChr(headerNamedDelimiter);
+		long pos = line.StrChr(coast::http::constants::headerNameDelimiter);
 		if (pos > 0) {
 			fieldname = shiftedHeaderKey(line.SubString(0, pos), normTag);
-		} Trace("Fieldname: " << fieldname << " Position of " << headerNamedDelimiter << " is: " << pos);
+		}
+		Trace("Fieldname: " << fieldname << " Position of " << coast::http::constants::headerNameDelimiter << " is: " << pos);
 		return pos;
 	}
 
@@ -102,7 +94,7 @@ namespace {
 			coast::urlutils::TrimBlanks(fieldvalue);
 			StoreKeyValue(headers, fieldname, fieldvalue);
 		}
-		if (fieldname.IsEqual(shiftedHeaderKey(contentTypeSlotname, normTag))) {
+		if (fieldname.IsEqual(shiftedHeaderKey(coast::http::constants::contentTypeSlotname, normTag))) {
 			CheckMultipartBoundary(fieldvalue, headers, normTag);
 		}
 		TraceAny(headers, "headers on exit");
@@ -130,17 +122,17 @@ bool MIMEHeader::ParseHeaders(std::istream &in, long const maxlinelen, long cons
 
 bool MIMEHeader::IsMultiPart() const {
 	StartTrace(MIMEHeader.IsMultiPart);
-	return (Lookup(boundarySlotname).AsString().Length() > 0);
+	return (Lookup(coast::http::constants::boundarySlotname).AsString().Length() > 0);
 }
 
 String MIMEHeader::GetBoundary() const {
-	String boundary = Lookup(boundarySlotname).AsString();
+	String boundary = Lookup(coast::http::constants::boundarySlotname).AsString();
 	StatTrace(MIMEHeader.GetBoundary, boundaryToken << boundary, coast::storage::Current());
 	return boundary;
 }
 
 long MIMEHeader::GetContentLength() const {
-	long contentLength = Lookup(contentLengthSlotname).AsLong(-1L);
+	long contentLength = Lookup(coast::http::constants::contentLengthSlotname).AsLong(-1L);
 	StatTrace(MIMEHeader.GetContentLength, "length: " << contentLength, coast::storage::Current());
 	return contentLength;
 }

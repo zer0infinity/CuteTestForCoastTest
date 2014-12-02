@@ -14,6 +14,7 @@
 #include "Tracer.h"
 #include "Renderer.h"
 #include "SystemLog.h"
+#include "HTTPConstants.h"
 
 namespace {
 	// allow access to protected methods for testing
@@ -275,10 +276,10 @@ void HTTPPostRequestBodyParserTest::ParseMultiPartTest()
 		"A492993f39393939f393939393f393939r393\n"
 		"-----------------------------210003122518197--\n";
 
-	result[0L]["header"]["CONTENT-DISPOSITION"][0L] = "form-data";
-	result[0L]["header"]["CONTENT-DISPOSITION"]["NAME"] = "Datei3";
-	result[0L]["header"]["CONTENT-DISPOSITION"]["FILENAME"] = "G:\\DEVELOP\\coast\\foundation\\Test\\config\\len5.tst";
-	result[0L]["header"]["CONTENT-TYPE"] = "multipart/part";
+	result[0L]["header"][coast::http::constants::contentDispositionSlotname][0L] = "form-data";
+	result[0L]["header"][coast::http::constants::contentDispositionSlotname]["NAME"] = "Datei3";
+	result[0L]["header"][coast::http::constants::contentDispositionSlotname]["FILENAME"] = "G:\\DEVELOP\\coast\\foundation\\Test\\config\\len5.tst";
+	result[0L]["header"][coast::http::constants::contentTypeSlotname] = coast::http::constants::contentTypeMultipart;
 	result[0L]["body"].Append("01234");
 	{
 		IStringStream is(testinput);

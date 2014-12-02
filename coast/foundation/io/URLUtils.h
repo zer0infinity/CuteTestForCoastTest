@@ -64,14 +64,14 @@ namespace coast {
 		bool CheckUrlEncoding(const String &str, const String &override = String());
 
 		//! check URL Args Encoding according to RFC1738
-		bool CheckUrlArgEncoding(String &str, const String &override = String());
+		bool CheckUrlArgEncoding(const String &str, const String &override = String());
 
 		//! check URL Path char to be safe according to RFC1738
 		//! You may pass in your own set of unsafe chars (overrideUnsafe
 		//! If asciiExtended is enabled, you may define chars which are in the extended set which are ignored
 		//! by this check.
 		//! The default applies to RFC1738
-		bool CheckUrlPathContainsUnsafeChars(String &str, const String &overrideUnsafe = String(), const String &overrideAscii = String(),
+		bool CheckUrlPathContainsUnsafeChars(const String &str, const String &overrideUnsafe = String(), const String &overrideAscii = String(),
 				bool asciiExtended = true);
 
 		//! takes a full uri and decomposes it into a query anything

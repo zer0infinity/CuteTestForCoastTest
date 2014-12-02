@@ -207,7 +207,7 @@
 							{
 							    /Component "HTTPRequestReader"
 							    /ResponseCode 414
-							    /ResponseMsg "Request-URL Too Large"
+							    /ResponseMsg "Request-URI Too Large"
 							    /ErrorMessage "Request-URI too long; max: 8 actual: 9 => check setting of [URISizeLimit]"
 							    /FaultyContent "GET /23456789 HTTP/1.0"
 							}

@@ -24,6 +24,25 @@ namespace coast {
 			char const * const protocolCodeSlotname = "ResponseCode";
 			char const * const protocolMsgSlotname = "ResponseMsg";
 			char const * const newLine = ENDL;
+			char const * const contentTypeAnything = "application/x-coast-anything";
+			char const * const contentTypeMultipart = "multipart/part";
+			char const * const contentDispositionSlotname = "CONTENT-DISPOSITION";
+			char const * const contentTypeSlotname = "CONTENT-TYPE";
+			char const * const contentLengthSlotname = "CONTENT-LENGTH";
+			char const * const boundarySlotname = "BOUNDARY";
+			char const * const cookieSlotname = "COOKIE";
+			char const * const setCookieSlotname = "SET-COOKIE";
+
+			char const * const getMethodSlotname = "GET";
+			char const * const postMethodSlotname = "POST";
+
+			char const headerNameDelimiter = ':';
+			char const headerArgumentsDelimiter = ',';
+			char const headerCookieArgumentsDelimiter = ';';
+			char const headerCookieValueDelimiter = '=';
+			char const contentDispositionDelimiter = ';';
+			char const keyValueDelimiter = '=';
+			char const space = ' ';
 		}
 		void putValuesOnSameLine(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);
 		void putValuesOnMultipleLines(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values);

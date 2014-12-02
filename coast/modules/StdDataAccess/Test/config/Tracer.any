@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/LowerBound		0
-	/UpperBound		2211
+	/UpperBound		320
 	/DumpAnythings  1
 
 	/Registry {
@@ -202,9 +202,26 @@
 		/MainSwitch						310
 		/EnableAll						320
 	}
+	/RequestURISplitHelper {
+		/MainSwitch						310
+		/EnableAll						320
+	}
 	/HTTPProcessorWithChecksTest {
-		/MainSwitch						10
-		/EnableAll						20
+		/MainSwitch						210
+		/EnableAll						220
+	}
+	/SimpleDAServiceTest {
+		/MainSwitch						210
+		/EnableAll						220
+	}
+	/TestHTTPProcessor {
+		/MainSwitch						210
+		/EnableAll						220
+	}
+	/AnyUtils {
+		/MainSwitch						210
+		/EnableAll						0
+		/AnyCompareEqual				210
 	}
 	/MIMEHeader {
 		/MainSwitch						200
@@ -315,8 +332,9 @@
 		/EnableAll						200
 	}
 	/HTTPProtocolReplyRenderer {
-		/MainSwitch			20
-		/EnableAll			20
+		/MainSwitch			200
+		/EnableAll			200
+		/InitStatusCodeMap  -200
 	}
 	/HTTPProtocolReplyRendererTest {
 		/MainSwitch			20

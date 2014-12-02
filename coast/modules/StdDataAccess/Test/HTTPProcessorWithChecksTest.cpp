@@ -21,8 +21,8 @@
 #include "Server.h"
 #include "AnyLookupInterfaceAdapter.h"
 #include "Renderer.h"
+#include "MIMEHeader.h"
 
-//---- HTTPProcessorWithChecksTest ----------------------------------------------------------------
 HTTPProcessorWithChecksTest::HTTPProcessorWithChecksTest(TString tstrName) :
 	TestCaseType(tstrName) {
 	StartTrace(HTTPProcessorWithChecksTest.HTTPProcessorWithChecksTest);
@@ -30,10 +30,6 @@ HTTPProcessorWithChecksTest::HTTPProcessorWithChecksTest(TString tstrName) :
 
 TString HTTPProcessorWithChecksTest::getConfigFileName() {
 	return "HTTPProcessorWithChecksTestConfig";
-}
-
-HTTPProcessorWithChecksTest::~HTTPProcessorWithChecksTest() {
-	StartTrace(HTTPProcessorWithChecksTest.Dtor);
 }
 
 namespace {
@@ -74,10 +70,18 @@ void HTTPProcessorWithChecksTest::CheckFaultyHeadersTest() {
 			Trace(oss.str());
 			assertCharPtrEqualm(caseConfig["Expected"]["Reply"].AsString(), GetFirstResponseLine(strInOut), caseName);
 			if (caseConfig["Expected"].IsDefined("Request") ) {
+				TraceAny(caseConfig["Expected"]["Request"], "Expected Request");
 				assertAnyCompareEqual(caseConfig["Expected"]["Request"], ctx.GetRequest(), caseName, '.', ':');
 			}
 			if (caseConfig["Expected"].IsDefined("TmpStore") ) {
 				assertAnyCompareEqual(caseConfig["Expected"]["TmpStore"], ctx.GetTmpStore(), caseName, '.', ':');
+			}
+			ROAnything roaErrorMessages, roaExpectedMessage;
+			if ( caseConfig["Expected"].LookupPath(roaExpectedMessage, "ErrorMessages") &&
+					ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot",
+							caseConfig["Expected"]["ErrorsSlotname"].AsString("NoSlotDefined")), roaErrorMessages) ) {
+				TraceAny(roaExpectedMessage, "Expected error messages");
+				assertAnyCompareEqual(roaExpectedMessage, roaErrorMessages, caseName, '.', ':');
 			}
 		}
 	}

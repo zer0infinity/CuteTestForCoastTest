@@ -10,6 +10,7 @@
 #include "StringStream.h"
 #include "MIMEHeader.h"
 #include "Tracer.h"
+#include "HTTPConstants.h"
 
 namespace {
 	void Decode(String str, Anything &result) {
@@ -34,11 +35,11 @@ bool HTTPPostRequestBodyParser::Parse(std::istream &input) {
 bool HTTPPostRequestBodyParser::DoParseBody(std::istream &input) {
 	StartTrace(HTTPPostRequestBodyParser.DoParseBody);
 	ROAnything contenttype;
-	if (fHeader.Lookup("CONTENT-TYPE", contenttype) && contenttype.AsString().Contains(coast::http::contentTypeAnything) != -1) {
+	if (fHeader.Lookup(coast::http::constants::contentTypeSlotname, contenttype) && contenttype.AsString().Contains(coast::http::constants::contentTypeAnything) != -1) {
 		// there must be exactly one anything in the body handle our special format more efficient than the standard cases
 		Anything a;
 		if (not a.Import(input) || a.IsNull()) {
-			Trace("" << coast::http::contentTypeAnything << " - syntax error");
+			Trace("" << coast::http::constants::contentTypeAnything << " - syntax error");
 			return false;
 		}
 		TraceAny(a, "Content-type: " << contenttype.AsString());
@@ -62,7 +63,7 @@ bool HTTPPostRequestBodyParser::DoParseBody(std::istream &input) {
 	Trace("Body: <" << fUnparsedContent << ">");
 	ROAnything contentdisp;
 	String name, filename;
-	if (fHeader.Lookup("CONTENT-DISPOSITION", contentdisp) && contentdisp.Contains("form-data")) {
+	if (fHeader.Lookup(coast::http::constants::contentDispositionSlotname, contentdisp) && contentdisp.Contains("form-data")) {
 		name = contentdisp["NAME"].AsString();
 		filename = contentdisp["FILENAME"].AsString();
 	}
@@ -142,8 +143,8 @@ bool HTTPPostRequestBodyParser::DoParseMultiPart(std::istream &input, const Stri
 			try {
 				if (hinner.ParseHeaders(innerpart)) {
 					Anything partInfo;
-					if (!hinner.GetHeaderInfo().IsDefined("CONTENT-TYPE")) {
-						hinner.GetHeaderInfo()["CONTENT-TYPE"] = "multipart/part";
+					if (!hinner.GetHeaderInfo().IsDefined(coast::http::constants::contentTypeSlotname)) {
+						hinner.GetHeaderInfo()[coast::http::constants::contentTypeSlotname] = coast::http::constants::contentTypeMultipart;
 					}
 					partInfo["header"] = hinner.GetHeaderInfo();
 					TraceAny(hinner.GetHeaderInfo(), "Header: ");

@@ -15,17 +15,6 @@
 
 namespace coast {
 	namespace http {
-		namespace constants {
-			char const headerNameDelimiter = ':';
-			char const headerArgumentsDelimiter = ',';
-			char const headerCookieArgumentsDelimiter = ';';
-			char const headerCookieValueDelimiter = '=';
-			char const space = ' ';
-			char const * const contentDispositionSlotname = "CONTENT-DISPOSITION";
-			char const * const cookieSlotname = "COOKIE";
-			char const * const setCookieSlotname = "SET-COOKIE";
-		}
-
 		void putValuesOnSameLine(std::ostream &os, Context &ctx, String const& slotname, ROAnything const &values) {
 			StartTrace(Coast.HTTP.putValuesOnSameLine);
 			TraceAny(values, "Header[" << slotname << "]");

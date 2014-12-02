@@ -67,7 +67,7 @@
 			/LineSizeLimit		1024
 			/RequestSizeLimit	5120
 			/Expected {
-				/Reply			"HTTP/1.1 414 Request-URL Too Large"
+				/Reply			"HTTP/1.1 414 Request-URI Too Large"
 				/Request {
 				}
 				/TmpStore {

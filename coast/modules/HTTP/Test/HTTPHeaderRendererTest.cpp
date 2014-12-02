@@ -10,6 +10,7 @@
 #include "TestSuite.h"
 #include "StringStream.h"
 #include "Renderer.h"
+#include "HTTPConstants.h"
 
 void HTTPHeaderRendererTest::WholeHeaderConfig() {
 	StartTrace(HTTPHeaderRendererTest.WholeHeaderConfig);
@@ -65,13 +66,13 @@ void HTTPHeaderRendererTest::MultiLine() {
 void HTTPHeaderRendererTest::Issue299MissingFilenamePrefix() {
 	StartTrace(HTTPHeaderRendererTest.Issue299MissingFilenamePrefix);
 	Context c;
-	c.GetTmpStore()["header"]["CONTENT-DISPOSITION"][0] = "attachment";
-	c.GetTmpStore()["header"]["CONTENT-DISPOSITION"]["FILENAME"] = "12166_reservation_07.12.2011.pdf";
+	c.GetTmpStore()["header"][coast::http::constants::contentDispositionSlotname][0] = "attachment";
+	c.GetTmpStore()["header"][coast::http::constants::contentDispositionSlotname]["FILENAME"] = "12166_reservation_07.12.2011.pdf";
 	Anything cfg;
 	cfg["HTTPHeaderRenderer"]["HeaderSlot"] = "header";
 	StringStream result;
 	Renderer::Render(result, c, cfg);
-	assertEqual("CONTENT-DISPOSITION: attachment; FILENAME=12166_reservation_07.12.2011.pdf\r\n"
+	assertEqual(String(coast::http::constants::contentDispositionSlotname).Append(": attachment; FILENAME=12166_reservation_07.12.2011.pdf\r\n")
 			, result.str());
 }
 

@@ -36,6 +36,10 @@ public:
 	//!get the resulting anything if read request was successful
 	const Anything & GetRequest();
 
+	MIMEHeader& GetHeaderParser() const {
+		return fHeader;
+	}
+
 protected:
 	//!read a request and handle error through ios
 	virtual bool DoReadRequest(Context & ctx, std::iostream & Ios);
