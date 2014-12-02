@@ -33,9 +33,10 @@ public:
 	inline void CheckException(const char *pFile, long lLine) {
 		if ( frLockerId != 0 ) {
 			long lOther = frLockerId;
-			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
-			SystemLog::WriteToStderr(buf, strlen(buf));
+			const int bufSize = 256;
+			char buf[bufSize] = { 0 };
+			snprintf(buf, bufSize, "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
+			SystemLog::WriteToStderr(buf, -1);
 		}
 	}
 };

@@ -30,13 +30,14 @@ MemChecker::~MemChecker() {
 void MemChecker::TraceDelta(const char *message) {
 	l_long delta = CheckDelta();
 	if (delta != 0) {
-		char msgbuf[1024] = { '\0' };
+		const int bufSize = 1024;
+		char msgbuf[bufSize] = { 0 };
 		if (message) {
-			SystemLog::WriteToStderr(message, strlen(message));
+			SystemLog::WriteToStderr(message, -1);
 		}
-		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
+		int bufsz = snprintf(msgbuf, bufSize, "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
 				(fAllocator ? fAllocator->GetId() : 0L));
-		SystemLog::WriteToStderr(msgbuf, bufsz);
+		SystemLog::WriteToStderr(msgbuf, bufsz>=bufSize?-1:bufsz);
 	}
 }
 
@@ -145,8 +146,9 @@ void MemTracker::DumpUsedBlocks()
 void MemTracker::PrintStatistic(long lLevel)
 {
 	if ( lLevel >= 2 ) {
-		char buf[2048] = { 0 }; // safety margin for bytes
-		snprintf(buf, sizeof(buf), "\nAllocator [%ld] [%s]\n"
+		const int bufSize = 2048;
+		char buf[bufSize] = {0};
+		snprintf(buf, bufSize, "\nAllocator [%ld] [%s]\n"
 #if defined(WIN32)
 				 "Peek Allocated  %20I64d bytes\n"
 				 "Total Allocated %20I64d bytes in %15I64d runs (%ld/run)\n"
@@ -166,7 +168,7 @@ void MemTracker::PrintStatistic(long lLevel)
 				 fSizeFreed, fNumFrees, (fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
 				 fAllocated
 				);
-		SystemLog::WriteToStderr(buf, strlen(buf));
+		SystemLog::WriteToStderr(buf, -1);
 	}
 }
 
@@ -393,9 +395,10 @@ void *GlobalAllocator::Alloc(size_t allocSize) {
 		fTracker->TrackAlloc(mh);
 		return ExtMemStart(mh); //lint !e593//lint !e429
 	} else {
-		static char crashmsg[255] = { 0 };
-		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
-		SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
+		const int bufSize = 256;
+		static char crashmsg[bufSize] = { 0 };
+		snprintf(crashmsg, bufSize, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
+		SystemLog::WriteToStderr(crashmsg, -1);
 	}
 
 	return 0;

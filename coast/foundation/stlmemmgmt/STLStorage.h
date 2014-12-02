@@ -141,9 +141,10 @@ namespace stlstorage
 			_StartTrace1(STLAllocator.allocate, "num:" << static_cast<long>(num) << " of size:" << sizeof(T) << " but no initialization");
 			pointer ret = (pointer)fAllocator->Calloc(num, sizeof(T));
 			if ( ret == NULL ) {
-				static char pMsg[255] = { 0 };
-				snprintf(pMsg, 254, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
-				SystemLog::WriteToStderr(pMsg, strlen(pMsg));
+				const int bufSize = 256;
+				char buf[bufSize] = { 0 };
+				snprintf(buf, bufSize, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
+				SystemLog::WriteToStderr(buf, -1);
 			}
 			return ret;
 		}

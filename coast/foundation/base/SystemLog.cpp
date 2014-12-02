@@ -205,10 +205,11 @@ int syslog_assert(const char *file, long line, const char *assertion) {
 }
 
 int SystemLog::LogAssert(const char *file, long line, const char *assertion) {
-	// implement brain dead with C style things to avoid problems of recursion
-	char asrt_buf[2048];
-	int asrt_buf_used = sprintf(asrt_buf, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
-	SystemLog::WriteToStderr(asrt_buf, asrt_buf_used);
+	const int bufSize = 2048;
+	char buf[bufSize] = {0};
+	int buf_used = snprintf(buf, bufSize, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
+	// snprintf might return size required to convert, e.g. truncated output
+	SystemLog::WriteToStderr(buf, buf_used>=bufSize?-1:buf_used);
 	return 0;
 }
 

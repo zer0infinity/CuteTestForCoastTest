@@ -303,16 +303,17 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				// oops we failed. terminate the process
 				// don't use strings - allocators not fork-safe
 				int iError( system::GetSystemError() );
+				const int bufSize = 1024;
 				char buff[1024];
-				int len = snprintf(buff, sizeof(buff),
+				int len = snprintf(buff, bufSize,
 								   "%s exec of program %s in dir %s failed with code %d: %s\n",
 								   (const char *)strTime,
 								   parm[0L].AsCharPtr(),
 								   (const char *)fWorkingDir,
 								   iError,
 								   strerror(iError));
-				ssize_t written = write(1, buff, len);
-				written = write(2, buff, len);
+				ssize_t written = write(1, buff, len>=bufSize?bufSize-1:len);
+				written = write(2, buff, len>=bufSize?bufSize-1:len);
 				(void)written;
 				SystemLog::Error(buff);
 				_exit(EXIT_FAILURE); // point of no return for child process.....

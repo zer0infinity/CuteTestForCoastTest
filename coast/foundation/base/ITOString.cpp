@@ -378,7 +378,7 @@ String &String::Append(const long &number)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
 	int iSize = snprintf(pcBuf, iBufSize, "%ld", number);
-	Set(Length(), pcBuf, iSize);
+	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -401,7 +401,7 @@ String &String::Append(const l_long &number)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
 	int iSize = snprintf(pcBuf, iBufSize, "%lld", number);
-	Set(Length(), pcBuf, iSize);
+	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -424,7 +424,7 @@ String &String::Append(const u_long &number)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
 	int iSize = snprintf(pcBuf, iBufSize, "%lu", number);
-	Set(Length(), pcBuf, iSize);
+	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -454,7 +454,8 @@ void String::DoubleToString(const double &number, String &strBuf)
 	int iSize(0);
 	if ( number < 1e+16 ) {
 		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getLowFormat(), number);
-		int iTmp(iSize);
+		int iTmp = iSize>=iBufSize?iBufSize-1:iSize;
+		//!< adjust start index, as we have the size and not the index
 		--iTmp;
 		// eat trailing zeroes
 		while ( pcBuf[iTmp] == '0' && pcBuf[--iTmp] != '.' ) {
@@ -463,7 +464,7 @@ void String::DoubleToString(const double &number, String &strBuf)
 	} else {
 		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getHiFormat(), number);
 	}
-	strBuf.Set(strBuf.Length(), pcBuf, iSize);
+	strBuf.Set(strBuf.Length(), pcBuf, iSize>=iBufSize?-1:iSize);
 #else
 	{
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)

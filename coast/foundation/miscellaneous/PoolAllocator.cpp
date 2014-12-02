@@ -190,8 +190,9 @@ MemTracker *ExcessTrackerElt::operator[](size_t ulPayloadSize)
 	size_t ulWishSize = std::max<size_t>( GetSizeToPowerOf2(ulPayloadSize), fgMinPayloadSize);
 	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
 	if ( pTracker == NULL ) {
-		char buf[80] = { 0 };
-		snprintf(buf, sizeof(buf), "PoolExcessTracker[%zu]", ulWishSize);
+		const int bufSize = 128;
+		char buf[bufSize] = { 0 };
+		snprintf(buf, bufSize, "PoolExcessTracker[%zu]", ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
 		pTracker = coast::storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
@@ -219,8 +220,9 @@ void ExcessTrackerElt::Refresh()
 	while ( pElt ) {
 		MemTracker *pTracker = pElt->fpTracker;
 		if ( pTracker && ( pTracker->CurrentlyAllocated() > 0 ) ) {
-			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
+			const int bufSize = 256;
+			char buf[bufSize] = { 0 };
+			snprintf(buf, bufSize, "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 			SystemLog::Error(buf);
 		}
 		pElt = pElt->fpNext;
@@ -299,8 +301,9 @@ void PoolAllocator::Initialize()
 		fPoolBuckets[i].fFirstFree = NULL;
 		// only create new trackers once
 		if ( fPoolBuckets[i].fpBucketTracker == NULL && coast::storage::GetStatisticLevel() >= 2 ) {
-			char buf[80] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolBucketTracker[%ld]", sz);
+			const int bufSize = 128;
+			char buf[bufSize] = { 0 };
+			snprintf(buf, bufSize, "PoolBucketTracker[%ld]", sz);
 			fPoolBuckets[i].fpBucketTracker = coast::storage::MakeMemTracker(buf, false);
 			fPoolBuckets[i].fpBucketTracker->SetId(fAllocatorId);
 		}
@@ -328,8 +331,9 @@ PoolAllocator::~PoolAllocator()
 				pTracker->PrintStatistic(lStatisticLevel);
 				if ( pTracker->CurrentlyAllocated() > 0 ) {
 					if ( bFirst ) {
-						char buf[256] = { 0 };
-						snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
+						const int bufSize = 256;
+						char buf[bufSize] = { 0 };
+						snprintf(buf, bufSize, "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 						SystemLog::Error(buf);
 						bFirst = false;
 					}
@@ -422,8 +426,9 @@ void PoolAllocator::DumpStillAllocated()
 			MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 			if ( pTracker && ( pTracker->PeakAllocated() > 0 ) && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 				if ( bFirst ) {
-					char buf[256] = { 0 };
-					snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::DumpStillAllocated()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
+					const int bufSize = 256;
+					char buf[bufSize] = { 0 };
+					snprintf(buf, bufSize, "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::DumpStillAllocated()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 					SystemLog::Error(buf);
 					bFirst = false;
 				}
@@ -609,9 +614,10 @@ void *PoolAllocator::Alloc(size_t allocSize)
 		}
 		return ExtMemStart(mh);//lint !e429
 	}
-	static char crashmsg[255] = { 0 };
-	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%zub failed. I will crash :-(\n", allocSize);
-	SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
+	const int bufSize = 256;
+	static char crashmsg[bufSize] = { 0 };
+	snprintf(crashmsg, bufSize, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%zub failed. I will crash :-(\n", allocSize);
+	SystemLog::WriteToStderr(crashmsg, -1);
 
 	return 0;
 }
@@ -702,8 +708,9 @@ void PoolAllocator::Refresh()
 	for (long i = 0; i < static_cast<long>(fNumOfPoolBucketSizes); ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker && pTracker->CurrentlyAllocated() > 0 ) {
-			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
+			const int bufSize = 256;
+			char buf[bufSize] = { 0 };
+			snprintf(buf, bufSize, "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));//lint !e666
 			SystemLog::Error(buf);
 		}
 	}
