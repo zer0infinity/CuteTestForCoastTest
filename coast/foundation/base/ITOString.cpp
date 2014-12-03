@@ -9,8 +9,9 @@
 #include "ITOString.h"
 #include "SystemLog.h"
 #include "StringStream.h"
-#include <cstring>
 #include "InitFinisManager.h"
+#include "SystemBase.h"
+#include <cstring>
 
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
@@ -44,7 +45,7 @@ namespace {
 	#if !defined(IOSTREAM_NUM_CONVERSION)
 			int const fmtSize = 10;
 			char pcFmtLow[fmtSize] = { 0 };
-			snprintf(pcFmtLow, fmtSize, "%%.%df", std::numeric_limits<double>::digits10);
+			coast::system::SnPrintf(pcFmtLow, fmtSize, "%%.%df", std::numeric_limits<double>::digits10);
 			fmtLow = pcFmtLow;
 	#endif
 		}
@@ -377,8 +378,8 @@ String &String::Append(const long &number)
 #if !defined(IOSTREAM_NUM_CONVERSION)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
-	int iSize = snprintf(pcBuf, iBufSize, "%ld", number);
-	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
+	int charsStoredOrRequired = coast::system::SnPrintf(pcBuf, iBufSize, "%ld", number);
+	Set(Length(), pcBuf, charsStoredOrRequired>=iBufSize?-1:charsStoredOrRequired);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -400,8 +401,8 @@ String &String::Append(const l_long &number)
 #if !defined(IOSTREAM_NUM_CONVERSION)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
-	int iSize = snprintf(pcBuf, iBufSize, "%lld", number);
-	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
+	int charsStoredOrRequired = coast::system::SnPrintf(pcBuf, iBufSize, "%lld", number);
+	Set(Length(), pcBuf, charsStoredOrRequired>=iBufSize?-1:charsStoredOrRequired);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -423,8 +424,8 @@ String &String::Append(const u_long &number)
 #if !defined(IOSTREAM_NUM_CONVERSION)
 	const int iBufSize = 100;
 	char pcBuf[iBufSize] = { 0 };
-	int iSize = snprintf(pcBuf, iBufSize, "%lu", number);
-	Set(Length(), pcBuf, iSize>=iBufSize?-1:iSize);
+	int charsStoredOrRequired = coast::system::SnPrintf(pcBuf, iBufSize, "%lu", number);
+	Set(Length(), pcBuf, charsStoredOrRequired>=iBufSize?-1:charsStoredOrRequired);
 #else
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 	const int iBufSize = 100;
@@ -451,20 +452,20 @@ void String::DoubleToString(const double &number, String &strBuf)
 #if !defined(IOSTREAM_NUM_CONVERSION)
 	const int iBufSize = 500;
 	char pcBuf[iBufSize] = { 0 };
-	int iSize(0);
+	int charsStoredOrRequired(0);
 	if ( number < 1e+16 ) {
-		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getLowFormat(), number);
-		int iTmp = iSize>=iBufSize?iBufSize-1:iSize;
+		charsStoredOrRequired = coast::system::SnPrintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getLowFormat(), number);
+		int iTmp = charsStoredOrRequired>=iBufSize?iBufSize-1:charsStoredOrRequired;
 		//!< adjust start index, as we have the size and not the index
 		--iTmp;
 		// eat trailing zeroes
 		while ( pcBuf[iTmp] == '0' && pcBuf[--iTmp] != '.' ) {
-			--iSize;
+			--charsStoredOrRequired;
 		}
 	} else {
-		iSize = snprintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getHiFormat(), number);
+		charsStoredOrRequired = coast::system::SnPrintf(pcBuf, iBufSize, StringInitializerSingleton::instance().getHiFormat(), number);
 	}
-	strBuf.Set(strBuf.Length(), pcBuf, iSize>=iBufSize?-1:iSize);
+	strBuf.Set(strBuf.Length(), pcBuf, charsStoredOrRequired>=iBufSize?-1:charsStoredOrRequired);
 #else
 	{
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)

@@ -304,16 +304,16 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				// don't use strings - allocators not fork-safe
 				int iError( system::GetSystemError() );
 				const int bufSize = 1024;
-				char buff[1024];
-				int len = snprintf(buff, bufSize,
+				char buff[bufSize] = {0};
+				int charsStoredOrRequired = coast::system::SnPrintf(buff, bufSize,
 								   "%s exec of program %s in dir %s failed with code %d: %s\n",
 								   (const char *)strTime,
 								   parm[0L].AsCharPtr(),
 								   (const char *)fWorkingDir,
 								   iError,
 								   strerror(iError));
-				ssize_t written = write(1, buff, len>=bufSize?bufSize-1:len);
-				written = write(2, buff, len>=bufSize?bufSize-1:len);
+				ssize_t written = write(1, buff, charsStoredOrRequired>=bufSize?bufSize-1:charsStoredOrRequired);
+				written = write(2, buff, charsStoredOrRequired>=bufSize?bufSize-1:charsStoredOrRequired);
 				(void)written;
 				SystemLog::Error(buff);
 				_exit(EXIT_FAILURE); // point of no return for child process.....

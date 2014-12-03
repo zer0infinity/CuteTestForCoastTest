@@ -207,9 +207,9 @@ int syslog_assert(const char *file, long line, const char *assertion) {
 int SystemLog::LogAssert(const char *file, long line, const char *assertion) {
 	const int bufSize = 2048;
 	char buf[bufSize] = {0};
-	int buf_used = snprintf(buf, bufSize, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
-	// snprintf might return size required to convert, e.g. truncated output
-	SystemLog::WriteToStderr(buf, buf_used>=bufSize?-1:buf_used);
+	int charsStoredOrRequired = coast::system::SnPrintf(buf, bufSize, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
+	// SnPrintf might return size required to convert, e.g. truncated output
+	SystemLog::WriteToStderr(buf, charsStoredOrRequired>=bufSize?-1:charsStoredOrRequired);
 	return 0;
 }
 

@@ -10,9 +10,9 @@
 #include "AnyVisitor.h"
 #include "SystemLog.h"
 #include "Tracer.h"
+#include "SystemBase.h"
 #include <iostream>
 #include <cstring>
-#include <cstdio>
 
 #if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
@@ -37,8 +37,8 @@ String AnyImpl::ThisToHex(Allocator *a) const {
 	const int bufSize = 1+2*sizeof(std::ptrdiff_t);
 	char buf[bufSize] = {0};
 	static char const *const fmt = (sizeof(this)>4)?"%016tx":"%08tx"; // assume large pointers are 64bit = 8 Bytes large
-	int iSize = snprintf(buf, bufSize, fmt, reinterpret_cast<std::ptrdiff_t>(this));
-	String hexStr(buf, iSize, a);
+	int charsStoredOrRequired = coast::system::SnPrintf(buf, bufSize, fmt, reinterpret_cast<std::ptrdiff_t>(this));
+	String hexStr(buf, charsStoredOrRequired, a);
 	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, coast::storage::Current());
 	return hexStr;
 }

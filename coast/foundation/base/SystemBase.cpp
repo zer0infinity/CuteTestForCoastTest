@@ -12,6 +12,8 @@
 #include "Anything.h"
 #include <errno.h>
 #include <cstring>
+#include <cstdarg>
+#include <cstdio>
 #include <fcntl.h>
 #include <poll.h>
 #if defined(__APPLE__)
@@ -20,6 +22,8 @@
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>
+#include <stdarg.h>
+#include <stdio.h>
 #else
 #include <sys/time.h>
 #include <sys/utsname.h>
@@ -338,6 +342,27 @@ namespace coast {
 		#else
 			return fork();
 		#endif
+		}
+
+		int SnPrintf(char * buf, size_t buf_size, const char *format, ...) {
+#if defined(WIN32)
+#define vsnprintf	_vsnprintf
+#endif
+		    va_list args;
+		    va_start(args, format);
+			int charsWrittenOrRequired = ::vsnprintf(buf, buf_size, format, args);
+		    va_end(args);
+#if defined(WIN32)
+		    // according to http://msdn.microsoft.com/en-us/library/2ts7cx93.aspx
+		    // If len < count, len characters are stored in buffer, a null-terminator is appended, and len is returned.
+		    // so far so good, but from the next lines on, we stick to our promise of always zero terminating the buffer
+		    // If len == count, len characters are stored in buffer, no null-terminator is appended, and len is returned.
+		    // If len > count, count characters are stored in buffer, no null-terminator is appended, and a negative value is returned.
+			if ( charsWrittenOrRequired >= buf_size ) {
+				buf[buf_size-1] = '\0';
+			}
+#endif
+			return charsWrittenOrRequired;
 		}
 
 #if !defined(WIN32)

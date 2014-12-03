@@ -19,10 +19,6 @@ SystemBaseTest::SystemBaseTest(TString tname)
 {
 }
 
-SystemBaseTest::~SystemBaseTest()
-{
-}
-
 void SystemBaseTest::DoSingleSelectTest()
 {
 	StartTrace(SystemBaseTest.DoSingleSelectTest);
@@ -115,6 +111,47 @@ void SystemBaseTest::LockFileTest()
 }
 #endif
 
+void SystemBaseTest::SnPrintf_ReturnsBytesOfContentWrittenWithoutTerminatingZero() {
+	{
+		const int bufSize = 64;
+		char buf[bufSize] = {'X'};
+		int bytesWritten = coast::system::SnPrintf(buf, bufSize, "%s", "123456789");
+		assertEqual(9, bytesWritten);
+		assertCharPtrEqual("123456789", buf);
+		assertEqual(buf[bytesWritten], '\0');
+	}
+	{
+		const int bufSize = 10;
+		char buf[bufSize] = {'X'};
+		int bytesWritten = coast::system::SnPrintf(buf, bufSize, "%s", "123456789");
+		assertEqual(9, bytesWritten);
+		assertCharPtrEqual("123456789", buf);
+		assertEqual(buf[bytesWritten], '\0');
+	}
+}
+
+void SystemBaseTest::SnPrintf_ReturnsBytesRequiredWithoutTerminatingZero() {
+	{
+		const int bufSize = 9;
+		char buf[bufSize] = {'X'};
+		int bytesRequired = coast::system::SnPrintf(buf, bufSize, "%s", "12345678901234567890");
+		assertEqual(20, bytesRequired);
+		assertCharPtrEqual("12345678", buf);
+		assertEqual(buf[bufSize-1], '\0');
+	}
+}
+
+void SystemBaseTest::SnPrintf_WritesTerminatingZeroEvenWhenTruncatingBuffer() {
+	{
+		const int bufSize = 9;
+		char buf[bufSize] = {0};
+		int bytesRequired = coast::system::SnPrintf(buf, bufSize, "%s", "123456789");
+		assertEqual(9, bytesRequired);
+		assertCharPtrEqual("12345678", buf);
+		assertEqual(buf[bufSize-1], '\0');
+	}
+}
+
 Test *SystemBaseTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
@@ -123,6 +160,9 @@ Test *SystemBaseTest::suite ()
 	ADD_CASE(testSuite, SystemBaseTest, allocFreeTests);
 	ADD_CASE(testSuite, SystemBaseTest, MicroSleepTest);
 	ADD_CASE(testSuite, SystemBaseTest, TimeTest);
+	ADD_CASE(testSuite, SystemBaseTest, SnPrintf_ReturnsBytesOfContentWrittenWithoutTerminatingZero);
+	ADD_CASE(testSuite, SystemBaseTest, SnPrintf_ReturnsBytesRequiredWithoutTerminatingZero);
+	ADD_CASE(testSuite, SystemBaseTest, SnPrintf_WritesTerminatingZeroEvenWhenTruncatingBuffer);
 #if !defined(WIN32)
 	ADD_CASE(testSuite, SystemBaseTest, LockFileTest);
 #endif

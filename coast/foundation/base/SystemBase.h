@@ -102,6 +102,20 @@ namespace coast {
 		/*! \return user id of current process */
 		uid_t getuid();
 
+		//! Writes the results to a character string buffer.
+		/*! \note At most buf_size - 1 characters are written. The resulting character string
+		 * will always be terminated with a null character, unless buf_size is zero.
+		 * \param buf pointer to a character string to write to
+		 * \param buf_size up to buf_size - 1 characters may be written, plus the null terminator
+		 * \param format pointer to a null-terminated multibyte string specifying how to interpret the data
+		 * \return Upon successful return, these functions return the number of characters printed
+		 * (excluding the null byte used to end output to strings). If the output was truncated due to the buf_size limit,
+		 * then the return value is the number of characters (excluding the terminating null byte)
+		 * which would have been written to the final string if enough space had been available.
+		 * Thus, a return value of size or more means that the output was truncated.
+		 */
+		int SnPrintf(char * buf, size_t buf_size, const char *format, ...);
+
 #if !defined(WIN32)
 		//! Get the state of the lock file.
 		/*! \param lockFileName file name to get lock state of

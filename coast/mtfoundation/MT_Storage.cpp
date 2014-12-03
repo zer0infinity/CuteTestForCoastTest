@@ -11,8 +11,8 @@
 #include "Threads.h"
 #include "PoolAllocator.h"
 #include "SystemLog.h"
+#include "SystemBase.h"
 #include <cstring>
-#include <cstdio>	// for snprintf
 
 #if 1
 #define TrackLockerInit(lockvar) , lockvar(0)
@@ -35,7 +35,7 @@ public:
 			long lOther = frLockerId;
 			const int bufSize = 256;
 			char buf[bufSize] = { 0 };
-			snprintf(buf, bufSize, "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
+			coast::system::SnPrintf(buf, bufSize, "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
 			SystemLog::WriteToStderr(buf, -1);
 		}
 	}

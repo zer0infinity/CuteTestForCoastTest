@@ -12,11 +12,7 @@
 #include "MemHeader.h"
 #include "AllocatorNewDelete.h"
 #include <cstring>
-#include <stdio.h> //lint !e537//lint !e451
 #include "InitFinisManager.h"
-#if defined(WIN32)
-#define snprintf	_snprintf
-#endif
 
 
 MemChecker::MemChecker(const char *scope, Allocator *a) :
@@ -30,14 +26,14 @@ MemChecker::~MemChecker() {
 void MemChecker::TraceDelta(const char *message) {
 	l_long delta = CheckDelta();
 	if (delta != 0) {
-		const int bufSize = 1024;
-		char msgbuf[bufSize] = { 0 };
 		if (message) {
 			SystemLog::WriteToStderr(message, -1);
 		}
-		int bufsz = snprintf(msgbuf, bufSize, "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
+		const int bufSize = 1024;
+		char msgbuf[bufSize] = { 0 };
+		int charsStoredOrRequired = coast::system::SnPrintf(msgbuf, bufSize, "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
 				(fAllocator ? fAllocator->GetId() : 0L));
-		SystemLog::WriteToStderr(msgbuf, bufsz>=bufSize?-1:bufsz);
+		SystemLog::WriteToStderr(msgbuf, charsStoredOrRequired>=bufSize?-1:charsStoredOrRequired);
 	}
 }
 
@@ -148,7 +144,7 @@ void MemTracker::PrintStatistic(long lLevel)
 	if ( lLevel >= 2 ) {
 		const int bufSize = 2048;
 		char buf[bufSize] = {0};
-		snprintf(buf, bufSize, "\nAllocator [%ld] [%s]\n"
+		coast::system::SnPrintf(buf, bufSize, "\nAllocator [%ld] [%s]\n"
 #if defined(WIN32)
 				 "Peek Allocated  %20I64d bytes\n"
 				 "Total Allocated %20I64d bytes in %15I64d runs (%ld/run)\n"
@@ -397,7 +393,7 @@ void *GlobalAllocator::Alloc(size_t allocSize) {
 	} else {
 		const int bufSize = 256;
 		static char crashmsg[bufSize] = { 0 };
-		snprintf(crashmsg, bufSize, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
+		coast::system::SnPrintf(crashmsg, bufSize, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
 		SystemLog::WriteToStderr(crashmsg, -1);
 	}
 

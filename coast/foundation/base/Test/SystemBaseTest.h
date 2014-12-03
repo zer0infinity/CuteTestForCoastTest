@@ -14,9 +14,7 @@
 class SystemBaseTest : public testframework::TestCase
 {
 public:
-	//!constructors
 	SystemBaseTest(TString tstrName);
-	~SystemBaseTest();
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
@@ -34,6 +32,10 @@ public:
 	void allocFreeTests();
 
 	void TimeTest();
+
+	void SnPrintf_ReturnsBytesOfContentWrittenWithoutTerminatingZero();
+	void SnPrintf_ReturnsBytesRequiredWithoutTerminatingZero();
+	void SnPrintf_WritesTerminatingZeroEvenWhenTruncatingBuffer();
 };
 
 #endif

@@ -11,8 +11,8 @@
 
 #include "SystemLog.h"
 #include "Tracer.h"
+#include "SystemBase.h"
 #include <cstring>
-#include <cstdio>
 #include <boost/limits.hpp>
 #include <boost/pool/pool.hpp>
 #include <boost/intrusive_ptr.hpp>
@@ -143,7 +143,7 @@ namespace stlstorage
 			if ( ret == NULL ) {
 				const int bufSize = 256;
 				char buf[bufSize] = { 0 };
-				snprintf(buf, bufSize, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
+				coast::system::SnPrintf(buf, bufSize, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
 				SystemLog::WriteToStderr(buf, -1);
 			}
 			return ret;
