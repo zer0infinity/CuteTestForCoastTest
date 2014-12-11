@@ -21,7 +21,7 @@ import shutil
 import ServerExtensions
 from stat import *
 from OpenSSL import crypto, SSL
-from SomeUtils import runCommand, replaceRegexInFile
+import SomeUtils
 
 Import('*')
 
@@ -58,7 +58,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             # set writable
             os.chmod(fname, oldmode | S_IWUSR)
             # replace tokens in file
-            replaceRegexInFile(fname, searchReplace)
+            SomeUtils.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 servers = []
@@ -101,14 +101,14 @@ def prepareMkCaParams(env, commandargs, tdirabs, certdir):
 
 
 def createCertificates(env):
-    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdir = env.getTargetBaseInstallDir()
     commandargs = []
     stdincontent = []
     certdir = 'cert_files'
     certOutDir = os.path.join(tdir.abspath, certdir)
     prepareMkCaParams(env, commandargs, tdir.abspath, certdir)
-    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
-    retCode = runCommand(
+    logpath = env.getLogInstallDir()
+    retCode = SomeUtils.runCommand(
         commandargs,
         logpath=logpath.abspath,
         stdincontent='\n'.join(stdincontent))
@@ -129,7 +129,7 @@ def createCertificates(env):
         # http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
         command = 'for file in *crt*.pem; do theHash=`' + sslbin + \
             ' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
-        retCode = runCommand(
+        retCode = SomeUtils.runCommand(
             command,
             logpath=logpath.abspath,
             stdincontent=None,
@@ -154,7 +154,7 @@ def createCertDict(certFileNodesList):
 
 
 def setUp(target, source, env):
-    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdir = env.getTargetBaseInstallDir()
     Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
 
     global defaults
@@ -164,7 +164,7 @@ def setUp(target, source, env):
         pass
 
     tdirabs = tdir.abspath
-    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
+    logpath = env.getLogInstallDir()
     configdir = tdir.Dir('config')
 #    env['ENV']['COAST_ROOT'] = tdirabs
 #    env['ENV']['COAST_LOGONCERR'] = '3'
@@ -224,7 +224,7 @@ def tearDown(target, source, env):
     for server in servers:
         server.shutdown()
     # delete generated files
-#    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
+#    SConsider.removeFiles(SConsider.findFiles([env.getTargetBaseInstallDir()], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
 
 _sconsider_dist = pkg_resources.get_distribution("SConsider").parsed_version
 if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):

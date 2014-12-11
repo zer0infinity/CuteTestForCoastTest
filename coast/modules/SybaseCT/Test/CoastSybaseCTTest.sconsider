@@ -18,7 +18,7 @@ import shlex
 import SConsider
 import Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommand, replaceRegexInFile
+import SomeUtils
 
 Import('*')
 
@@ -33,7 +33,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             # set writable
             os.chmod(fname, oldmode | S_IWUSR)
             # replace tokens in file
-            replaceRegexInFile(fname, searchReplace)
+            SomeUtils.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 
@@ -43,8 +43,8 @@ def setUp(target, source, env):
         raise SConsider.SkipTest(
             'required isql executable not found, skipping test')
 
-    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    relDir = env.getTargetBaseInstallDir()
+    logDir = env.getLogInstallDir()
     configdir = relDir.Dir('config')
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
     global defaults
@@ -52,7 +52,7 @@ def setUp(target, source, env):
         defaults = Anything.loadFromFile('Defaults.any')
     except IOError:
         pass
-    if not defaults or 'Sybase' not in defaults:
+    if not defaults or not defaults.has_key('Sybase'):
         raise SConsider.SkipTest('sybase backend not configured')
 
     searchreplacespec = [
@@ -75,24 +75,24 @@ def setUp(target, source, env):
     command.extend(shlex.split(
         "-U {Username!s} -P {Password!s} -S {Server!s}".format(**defaults['Sybase'])))
     command.extend(['-I', configdir.File('interfaces').abspath])
-    res = runCommand(
+    res = SomeUtils.runCommand(
         command,
         logpath=logDir.abspath,
         filename=configdir.File('dropPub2.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(
             'failed to drop test database (rc=' +
             str(res) +
             '), check error log')
-    res = runCommand(
+    res = SomeUtils.runCommand(
         command,
         logpath=logDir.abspath,
         filename=configdir.File('createPub2.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(

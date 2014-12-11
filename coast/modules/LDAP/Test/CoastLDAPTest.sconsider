@@ -12,7 +12,7 @@
 import pkg_resources
 pkg_resources.require(['python-ldap>=2.3', "SConsider"])
 
-from SomeUtils import multiple_replace, replaceRegexInFile
+import SomeUtils
 from StringIO import StringIO
 from ldap.cidict import cidict
 from ldif import LDIFParser, LDIFWriter
@@ -34,7 +34,7 @@ defaults = None
 
 
 def setUp(target, source, env):
-    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    relDir = env.getTargetBaseInstallDir()
     configdir = relDir.Dir('config')
     replaceConfigParams(env, relDir, configdir)
     bulkLoadLdap(configdir)
@@ -51,7 +51,7 @@ def replaceConfigParams(env, relDir, configdir):
         defaults = Anything.loadFromFile('Defaults.any')
     except IOError:
         pass
-    if not defaults or 'LDAP' not in defaults:
+    if not defaults or not defaults.has_key('LDAP'):
         raise SConsider.SkipTest('ldap backend not configured or disabled')
 
     searchreplacespec = [
@@ -79,7 +79,7 @@ def modifyConfigFiles(env, searchReplace=[], files=[]):
         if os.path.isfile(fname):
             oldmode = os.stat(fname).st_mode
             os.chmod(fname, oldmode | S_IWUSR)
-            replaceRegexInFile(fname, searchReplace)
+            SomeUtils.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
 
 

@@ -21,8 +21,7 @@ Import('*')
 
 searchReplace = {
     'DIREXTENDBASEDIR': lambda env: os.path.join(
-        env['BASEOUTDIR'].Dir(
-            env['RELTARGETDIR']).abspath,
+        env.getTargetBaseInstallDir().abspath,
         'makedirextendtest',
         'test'),
     'TMPDIR': lambda env: tempfile.gettempdir() if str(
@@ -39,7 +38,7 @@ searchReplace = {
 
 
 def SystemTestMakeDirectoryExtendCleanup(env):
-    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    tdirabs = env.getTargetBaseInstallDir().abspath
     basepath = os.path.join(tdirabs, 'makedirextendtest')
     if os.path.isdir(basepath):
         shutil.rmtree(basepath, ignore_errors=True)
@@ -57,7 +56,7 @@ def tearDown(target, source, env):
     # delete generated files
     SConsider.removeFiles(
         SConsider.findFiles(
-            [env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])],
+            [env.getTargetBaseInstallDir()],
             extensions=['.res', '.tst'],
             matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup(env)

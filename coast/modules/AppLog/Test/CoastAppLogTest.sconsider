@@ -20,16 +20,14 @@ from stat import *
 Import('*')
 
 searchReplace = {
-    "LOGDIR": lambda env: env['BASEOUTDIR'].Dir(
-        env['RELTARGETDIR']).Dir('tmp').abspath,
-    "ROTATEDIR": lambda env: env['BASEOUTDIR'].Dir(
-            env['RELTARGETDIR']).Dir('tmp').abspath,
+    "LOGDIR": lambda env: env.getTargetBaseInstallDir().Dir('tmp').abspath,
+    "ROTATEDIR": lambda env: env.getTargetBaseInstallDir().Dir('tmp').abspath,
 }
 
 
 def setUp(target, source, env):
     env['ENV']['COAST_USE_MMAP_STREAMS'] = "0"
-    targetDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    targetDir = env.getTargetBaseInstallDir()
     tmppath = targetDir.Dir('tmp').abspath
     for d in [tmppath, targetDir.Dir(os.path.join('config', 'rotate')).abspath]:
         if os.path.isdir(d):
@@ -41,7 +39,7 @@ def setUp(target, source, env):
 
 
 def tearDown(target, source, env):
-    dir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('config')
+    dir = env.getTargetBaseInstallDir().Dir('config')
     for root, dirs, files in os.walk(dir.abspath):
         for f in files:
             if fnmatch.fnmatch(f, '*.log*'):

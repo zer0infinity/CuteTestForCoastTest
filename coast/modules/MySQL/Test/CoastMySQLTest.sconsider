@@ -18,7 +18,7 @@ import shlex
 import SConsider
 import Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommand
+import SomeUtils
 
 Import('*')
 
@@ -31,7 +31,7 @@ def setUp(target, source, env):
         raise SConsider.SkipTest(
             'required mysqlbin executable not found, skipping test')
 
-    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    relDir = env.getTargetBaseInstallDir()
     Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
 
     global defaults
@@ -39,7 +39,7 @@ def setUp(target, source, env):
         defaults = Anything.loadFromFile('Defaults.any')
     except IOError:
         pass
-    if not defaults or 'MySQL' not in defaults:
+    if not defaults or not defaults.has_key('MySQL'):
         raise SConsider.SkipTest('mysql backend not configured or disabled')
 
     searchreplacespec = [
@@ -49,18 +49,18 @@ def setUp(target, source, env):
         ('##username##', str(defaults['MySQL']['Username'])),
         ('##password##', str(defaults['MySQL']['Password'])),
     ]
-    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    logDir = env.getLogInstallDir()
     path = relDir.Dir('config')
 
     command = [target.abspath]
     command.extend(shlex.split(
         "-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
-    res = runCommand(
+    res = SomeUtils.runCommand(
         command,
         logpath=logDir.abspath,
         filename=path.File('dropTestDefinitions.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(
@@ -68,12 +68,12 @@ def setUp(target, source, env):
             str(res) +
             '), check error log')
 
-    res = runCommand(
+    res = SomeUtils.runCommand(
         command,
         logpath=logDir.abspath,
         filename=path.File('TestDBDefinition.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(

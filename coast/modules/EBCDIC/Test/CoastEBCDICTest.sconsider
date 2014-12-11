@@ -34,7 +34,7 @@ searchReplace = {
 
 
 def setUp(target, source, env):
-    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdir = env.getTargetBaseInstallDir()
     configdir = tdir.Dir('config')
 #    env['ENV']['COAST_LOGONCERR'] = 2
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])

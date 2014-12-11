@@ -26,7 +26,7 @@ def tearDown(target, source, env):
     # delete generated files
     SConsider.removeFiles(
         SConsider.findFiles(
-            [env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])],
+            [env.getTargetBaseInstallDir()],
             matchfiles=['MultCprsTest.gz', 'big.gz', 'testzip.gz', 'tt.gz',
                         'empty.gz', 'empty2.gz']))
 

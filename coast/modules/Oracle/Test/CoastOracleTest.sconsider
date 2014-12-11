@@ -17,7 +17,7 @@ import sys
 import SConsider
 import Anything
 from stat import *
-from SomeUtils import multiple_replace, runCommand
+import SomeUtils
 
 Import('*')
 
@@ -35,7 +35,7 @@ def setUp(target, source, env):
     env['ENV']['COAST_PATH'] = configDir
 #    env['ENV']['COAST_TRACE_INITFINIS'] = 1
 #    env['ENV']['COAST_LOGONCERR'] = 3
-    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    relDir = env.getTargetBaseInstallDir()
     Anything.setLocalEnv(
         env={},
         COAST_ROOT=relDir.abspath,
@@ -46,7 +46,7 @@ def setUp(target, source, env):
         defaults = Anything.loadFromFile('Defaults.any')
     except IOError:
         pass
-    if not defaults or 'Oracle' not in defaults:
+    if not defaults or not defaults.has_key('Oracle'):
         raise SConsider.SkipTest('oracle backend not configured or disabled')
 
     searchreplacespec = [
@@ -58,34 +58,34 @@ def setUp(target, source, env):
         ("##pass1##", str(defaults['Oracle']['Password1'])),
         ("##pass2##", str(defaults['Oracle']['Password2'])),
     ]
-    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    logDir = env.getLogInstallDir()
     path = relDir.Dir(configDir)
 
     connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(
         **defaults['Oracle'])
-    res = runCommand(
+    res = SomeUtils.runCommand(
         [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_dropschema.sql').abspath,
-        env=SConsider.getFlatENV(env)
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(
             'failed to drop test schema (rc=' +
             str(res) +
             '), check error log')
-    res = runCommand(
+    res = SomeUtils.runCommand(
         [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_schema.sql').abspath,
-        env=SConsider.getFlatENV(env)
+        env=SomeUtils.getFlatENV(env)
     )
-    res = runCommand(
+    res = SomeUtils.runCommand(
         [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_grant.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(
@@ -95,12 +95,12 @@ def setUp(target, source, env):
 
     connectstring = "{Username2!s}/{Password2!s}@{Server!s}:{Port!s}/{sid!s}".format(
         **defaults['Oracle'])
-    res = runCommand(
+    res = SomeUtils.runCommand(
         [target.abspath, '--', '-S', connectstring],
         logpath=logDir.abspath,
         filename=path.File('oratest_synonym.sql').abspath,
-        filter=lambda string: multiple_replace(searchreplacespec, string),
-        env=SConsider.getFlatENV(env)
+        filter=lambda string: SomeUtils.multiple_replace(searchreplacespec, string),
+        env=SomeUtils.getFlatENV(env)
     )
     if res != 0:
         raise SConsider.SkipTest(

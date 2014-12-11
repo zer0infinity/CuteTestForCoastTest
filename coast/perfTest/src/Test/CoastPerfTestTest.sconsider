@@ -44,7 +44,7 @@ def startServer(host, port, server_class, handler_class, **kw):
 
 
 def setUp(target, source, env):
-    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdir = env.getTargetBaseInstallDir()
     Anything.setLocalEnv(env={}, COAST_ROOT=tdir.abspath)
 
     global defaults
@@ -54,7 +54,7 @@ def setUp(target, source, env):
         pass
 
     tdirabs = tdir.abspath
-    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
+    logpath = env.getLogInstallDir()
     configdir = tdir.Dir('config')
     threading.Thread(
         target=startServer,
@@ -71,9 +71,7 @@ def tearDown(target, source, env):
     # delete generated files
     SConsider.removeFiles(
         SConsider.findFiles(
-            [env['BASEOUTDIR'].Dir(
-                os.path.join(env['RELTARGETDIR'],
-                             'config'))],
+            [env.getTargetBaseInstallDir().Dir('config')],
             extensions=[],
             matchfiles=['time.txt']))
 
