@@ -301,7 +301,7 @@
 				}
 			}
 		}
-		/EmpSalaryNULLTest {
+		/EmpSalaryAnyNULLTest {
 			/TheAction {
 				/CallDA {
 					/DataAccess	SPExecute
@@ -317,7 +317,91 @@
 						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
 						/ID		*
 						/SALARY		0
-						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString        # !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+					}
+				}
+			}
+		}
+		/EmpSalaryNULLStringTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/SPName	getempsalary
+						/ID		"NULL"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID		*
+						/SALARY		0
+						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+					}
+				}
+			}
+		}
+		/EmpSalarynullStringTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/SPName	getempsalary
+						/ID		"null"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID		*
+						/SALARY		0
+						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+					}
+				}
+			}
+		}
+		/EmpSalaryNULLAsEmptyStringTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/SPName	getempsalary
+						/ID		""
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID		*
+						/SALARY		0
+						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+					}
+				}
+			}
+		}
+		/EmpSalaryNotANULLValueTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/SPName	getempsalary
+						/ID		"0"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID		0
+						/SALARY		""
+						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
 					}
 				}
 			}

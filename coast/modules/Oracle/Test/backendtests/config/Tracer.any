@@ -139,6 +139,10 @@
 		/EnableAll						10
 		/DoSelectScript					-10
 	}
+	/NullParameterMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
 	/PeriodicAction {
 		/MainSwitch						0
 		/EnableAll						10
