@@ -171,11 +171,13 @@ namespace {
 
 	void GenericRequestProcessorErrorHandler(std::ostream &reply, Context &ctx) {
 		StartTrace(HTTPProcessor.GenericRequestProcessorErrorHandler);
-		OStringStream ostr;
-		ctx.DebugStores("Stores after error", ostr, true);
-		Trace(ostr.str());
+		if (TriggerEnabled(HTTPProcessor.GenericRequestProcessorErrorHandler)) {
+			OStringStream ostr;
+			ctx.DebugStores("Stores after error", ostr, true);
+			Trace(ostr.str());
+		}
 		ROAnything roaErrorMessages;
-		if ( ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot","NonExistingSlotname"), roaErrorMessages) ) {
+		if (ctx.Lookup(ctx.Lookup("RequestProcessorErrorSlot", "NonExistingSlotname"), roaErrorMessages)) {
 			LogError(ctx);
 			//!@FIXME: maybe we should log all of them?
 			Anything anyErrCode = roaErrorMessages[0L][coast::http::constants::protocolCodeSlotname].DeepClone();

@@ -78,7 +78,6 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	}
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, " writing", context);
-
 		if (!SendInput(Ios, s, cps->Timeout(), context, in, out) || !(*Ios)) {
 			return false;
 		}
@@ -86,9 +85,11 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, " reading", context);
 		bool bPutSuccess = out->Put("Output", *Ios, context);
-		OStringStream ostr;
-		context.DebugStores(0, ostr, true);
-		SubTrace(Stores, ostr.str());
+		if (TriggerEnabled(HTTPDAImpl.DoExec.Stores)) {
+			OStringStream ostr;
+			context.DebugStores(0, ostr, true);
+			SubTrace(Stores, ostr.str());
+		}
 		if (!bPutSuccess) {
 			out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
 		}
