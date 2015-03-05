@@ -1,0 +1,57 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	# The following temporary directory must already exist and will be used to create and delete subdirectories from within tests
+	/TmpDir			"##TMPDIR##"
+	/BlocksLeftOnFSTest {
+		/FS			"##ROOTFS##"
+	}
+	/MakeDirectoryTest {
+		/BasePath	"##TMPDIR##/MKDIRTEST"
+		/MaxNumDirs	30
+	}
+	/SymbolicLinkTest {
+		/OnelevelExtendedTest {
+			/BaseDir			%TmpDir
+			/PathToCreate		"MyTestDir"
+			/Link				"TestLink1"
+		}
+	}
+	/GetFileSizeTest {
+		{
+			/File				"len5.tst"
+			/ExpectedSize		##FILESIZE_len5.tst##
+		}
+		{
+			/File				"AnythingTest.any"
+			/ExpectedSize		##FILESIZE_AnythingTest.any##
+		}
+	}
+	/MakeDirectoryExtendTest {
+		# enabling BaseDir slot activates directory extension test, empty value disables
+		# note: on file systems like ext3 and above, zfs etc. it will probably not work...
+#		/BaseDir			"##DIREXTENDBASEDIR##"
+		/BaseDir			""
+		/Tests {
+			/OnelevelExtendedTest {
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"TestCaseDir1"
+			}
+			/MutlilevelExtendedTest {
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
+			}
+			/OnelevelExtendedExistTest {
+				/EnsureDirExists	"##DIREXTENDBASEDIR##_ex0/ExistingDir"
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"ExistingDir/SubDir"
+			}
+		}
+	}
+}

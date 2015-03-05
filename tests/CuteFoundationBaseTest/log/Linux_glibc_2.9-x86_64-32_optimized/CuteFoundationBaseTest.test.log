@@ -1,0 +1,18 @@
+storage::Initialized
+String::Initialized
+PathInitializer::Initialized
+Root Dir: <.>
+SystemLog::Initialized
+Pathlist: <.:config:src:>
+
+#beginning AllTests 1
+
+#starting SS1Test::SimpleTest
+
+#success SS1Test::SimpleTest OK
+
+#ending AllTests
+PathInitializer::Finalized
+SystemLog::Finalized
+String::Finalized
+storage::Finalized

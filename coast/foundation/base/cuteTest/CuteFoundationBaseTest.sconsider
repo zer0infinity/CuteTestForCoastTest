@@ -1,0 +1,85 @@
+import pkg_resources
+pkg_resources.require(["SConsider"])
+import os
+import tempfile
+import SConsider
+import SCons
+from stat import *
+
+Import('*')
+
+searchReplace = {
+    'DIREXTENDBASEDIR': lambda env: os.path.join(
+        env.getTargetBaseInstallDir().abspath,
+        'makedirextendtest',
+        'test'),
+    'TMPDIR': lambda env: tempfile.gettempdir() if str(
+        env['PLATFORM']) in [
+        'cygwin',
+        'win32'] else '/tmp',
+    'ROOTFS': lambda env: 'c:/' if str(
+        env['PLATFORM']) in [
+        'cygwin',
+        'win32'] else '/',
+    'FILESIZE_len5.tst': SCons.Script.File('config/len5.tst').get_size(),
+    'FILESIZE_AnythingTest.any': SCons.Script.File('config/AnythingTest.any').get_size(),
+}
+
+
+def SystemTestMakeDirectoryExtendCleanup(env):
+    tdirabs = env.getTargetBaseInstallDir().abspath
+    basepath = os.path.join(tdirabs, 'makedirextendtest')
+    if os.path.isdir(basepath):
+        shutil.rmtree(basepath, ignore_errors=True)
+
+
+def setUp(target, source, env):
+    env['ENV']['COAST_DOLOG'] = '4'
+    env['ENV']['COAST_LOGONCERR'] = '4'
+    env['ENV']['COAST_TRACE_STORAGE'] = '1'
+    env['ENV']['COAST_TRACE_INITFINIS'] = '1'
+    pass
+
+
+def tearDown(target, source, env):
+    # delete generated files
+    SConsider.removeFiles(
+        SConsider.findFiles(
+            [env.getTargetBaseInstallDir()],
+            extensions=['.res', '.tst'],
+            matchfiles=['include.any']))
+    SystemTestMakeDirectoryExtendCleanup(env)
+
+_sconsider_dist = pkg_resources.get_distribution("SConsider").parsed_version
+if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
+    buildSettings = {
+        packagename: {
+            'linkDependencies': [
+                'CoastFoundation.Base',
+                'CoastFoundation.Time',
+                'CoastFoundation.Miscellaneous',
+                'cute',],
+            'sourceFiles': SConsider.listFiles(
+                ['*.cpp']),
+            'targetType': 'ProgramTest',
+            'copyFiles': [
+                (SConsider.listFiles(
+                    ['config/*.any']),
+                 S_IRUSR | S_IRGRP | S_IROTH,
+                 searchReplace),
+                (SConsider.listFiles(
+                    [
+                        'config/*.tst',
+                        'config/*.txt',
+                        'tmp/*']),
+                 S_IRUSR | S_IRGRP | S_IROTH),
+            ],
+            'runConfig': {
+                'setUp': setUp,
+                'tearDown': tearDown,
+                'runParams':'',
+            },
+        },
+    }
+	
+    SConsider.createTargets(packagename, buildSettings)

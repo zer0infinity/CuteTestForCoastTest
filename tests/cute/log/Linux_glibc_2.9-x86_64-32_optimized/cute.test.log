@@ -1,0 +1,12 @@
+
+#beginning AllTests 2
+
+#starting Test::TestFalse
+
+#failure Test::TestFalse cute/cute_main.cpp:7 TestFalse: false
+
+#starting Test::TestTrue
+
+#success Test::TestTrue OK
+
+#ending AllTests

@@ -1,0 +1,28 @@
+import pkg_resources
+pkg_resources.require(["SConsider"])
+import SConsider
+
+Import('*')
+
+_sconsider_dist = pkg_resources.get_distribution('SConsider').parsed_version
+if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
+    buildSettings = {
+        #'include': {
+            #'public': {
+                #'includeSubdir': '',
+            #}
+        #},
+        packagename: {
+            'sourceFiles': SConsider.listFiles(['*.cpp']),
+            'targetType': 'LibraryShared',
+            #'linkDependencies': ['cute.include'],
+            #'lazylinking': True,
+            'public': {
+                'includes': SConsider.listFiles(['*.h']),
+            },
+            #'runConfig': {
+                #'runParams':'',
+            #},
+        }
+    }
+    SConsider.createTargets(packagename, buildSettings)
