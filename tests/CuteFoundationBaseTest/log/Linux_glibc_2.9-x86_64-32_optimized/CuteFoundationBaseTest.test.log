@@ -5,11 +5,31 @@ Root Dir: <.>
 SystemLog::Initialized
 Pathlist: <.:config:src:>
 
-#beginning AllTests 1
+#beginning AllTests 6
 
-#starting SS1Test::SimpleTest
+#starting StringTokenizerTest::constructors
 
-#success SS1Test::SimpleTest OK
+#success StringTokenizerTest::constructors OK
+
+#starting StringTokenizerTest::constrMethodsAll
+
+#success StringTokenizerTest::constrMethodsAll OK
+
+#starting StringTokenizerTest::nextTokenNormal
+
+#success StringTokenizerTest::nextTokenNormal OK
+
+#starting StringTokenizerTest::nextTokenEmpty
+
+#success StringTokenizerTest::nextTokenEmpty OK
+
+#starting StringTokenizerTest::getRemainder
+
+#success StringTokenizerTest::getRemainder OK
+
+#starting StringTokenizerTest::resetTest
+
+#success StringTokenizerTest::resetTest OK
 
 #ending AllTests
 PathInitializer::Finalized

@@ -12,7 +12,7 @@ struct Test {
 	}
 };
 
-void runAllTests(int argc, char const *argv[]){
+void runAllTests(int argc, char const *argv[]) {
 	cute::suite s;
 	s.push_back(CUTE_SMEMFUN(Test, TestFalse));
 	s.push_back(CUTE_SMEMFUN(Test, TestTrue));

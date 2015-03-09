@@ -1,13 +1,7 @@
 #include "SS1Test.h"
 #include "StringStream.h"
 
-SS1Test::SS1Test()
-{}
-
-SS1Test::~SS1Test()
-{}
-
-void runAllTests(int argc, char const *argv[]){
+void SS1Test::runAllTests(int argc, char const *argv[]) {
 	cute::suite s;
 	s.push_back(CUTE_SMEMFUN(SS1Test, SimpleTest));
 	cute::ide_listener<> lis;

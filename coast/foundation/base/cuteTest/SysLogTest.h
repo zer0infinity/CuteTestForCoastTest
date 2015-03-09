@@ -1,14 +1,16 @@
-#ifndef _SS1Test_h_
-#define _SS1Test_h_
+#ifndef _SysLogTest_H
+#define _SysLogTest_H
 
 #include "cute.h"
 #include "ide_listener.h"
 #include "cute_runner.h"
 
-class SS1Test {
+class SysLogTest {
 public:
-	void SimpleTest();
 	void runAllTests(int argc, char const *argv[]);
+	SysLogTest();
+	~SysLogTest();
+	void TestFlags();
 };
 
 #endif

@@ -1,13 +1,14 @@
-#ifndef _SS1Test_h_
-#define _SS1Test_h_
+#ifndef _StrSpecialTest_h_
+#define _StrSpecialTest_h_
 
 #include "cute.h"
 #include "ide_listener.h"
 #include "cute_runner.h"
 
-class SS1Test {
+class StrSpecialTest {
 public:
-	void SimpleTest();
+	void simpleAppendTest();
+	void umlauteTest();
 	void runAllTests(int argc, char const *argv[]);
 };
 

@@ -1,14 +1,15 @@
-#ifndef _SS1Test_h_
-#define _SS1Test_h_
+#ifndef _TypeTraitsTest_H
+#define _TypeTraitsTest_H
 
 #include "cute.h"
 #include "ide_listener.h"
 #include "cute_runner.h"
 
-class SS1Test {
+class TypeTraitsTest {
 public:
-	void SimpleTest();
 	void runAllTests(int argc, char const *argv[]);
+	void TraitsTest();
+	void ClassTraitsTest();
 };
 
 #endif
