@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2015, David Tran, Faculty of Computer Science,
+ * University of Applied Sciences Rapperswil (HSR),
+ * 8640 Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #include "StringIteratorTest.h"
 
 void StringIteratorTest::testEmptyStringBegin() {
@@ -195,8 +206,7 @@ StringIteratorTest::StringIteratorTest() {
 	}
 }
 
-void StringIteratorTest::runAllTests(int argc, char const *argv[]) {
-	cute::suite s;
+void StringIteratorTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testEmptyStringBegin));
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testSimpleStringBegin));
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testSimpleStringDeref));
@@ -210,6 +220,4 @@ void StringIteratorTest::runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testIteratorIntAdd));
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testIteratorIntSubstract));
 	s.push_back(CUTE_SMEMFUN(StringIteratorTest, testIteratorCompare));
-	cute::ide_listener<> lis;
-	cute::makeRunner(lis,argc,argv)(s, "AllTests");
 }

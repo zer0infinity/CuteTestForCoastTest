@@ -5,7 +5,75 @@ Root Dir: <.>
 SystemLog::Initialized
 Pathlist: <.:config:src:>
 
-#beginning AllTests 6
+#beginning AllTests 39
+
+#starting SS1Test::SimpleTest
+
+#success SS1Test::SimpleTest OK
+
+#starting ROSimpleAnythingTest::ConstructorsAndConversions
+
+#success ROSimpleAnythingTest::ConstructorsAndConversions OK
+
+#starting ROSimpleAnythingTest::AssignmentsAndConversions
+
+#success ROSimpleAnythingTest::AssignmentsAndConversions OK
+
+#starting StringIteratorTest::testEmptyStringBegin
+
+#success StringIteratorTest::testEmptyStringBegin OK
+
+#starting StringIteratorTest::testSimpleStringBegin
+
+#success StringIteratorTest::testSimpleStringBegin OK
+
+#starting StringIteratorTest::testSimpleStringDeref
+
+#success StringIteratorTest::testSimpleStringDeref OK
+
+#starting StringIteratorTest::testSimpleStringIncrement
+
+#success StringIteratorTest::testSimpleStringIncrement OK
+
+#starting StringIteratorTest::testSimpleStringDecrement
+
+#success StringIteratorTest::testSimpleStringDecrement OK
+
+#starting StringIteratorTest::testSimpleStringIncDec
+
+#success StringIteratorTest::testSimpleStringIncDec OK
+
+#starting StringIteratorTest::testSimpleStringAssignment
+
+#success StringIteratorTest::testSimpleStringAssignment OK
+
+#starting StringIteratorTest::testStringIteration
+
+#success StringIteratorTest::testStringIteration OK
+
+#starting StringIteratorTest::testStringIndex
+
+#success StringIteratorTest::testStringIndex OK
+
+#starting StringIteratorTest::testIteratorSubstract
+
+#success StringIteratorTest::testIteratorSubstract OK
+
+#starting StringIteratorTest::testIteratorIntAdd
+
+#success StringIteratorTest::testIteratorIntAdd OK
+
+#starting StringIteratorTest::testIteratorIntSubstract
+
+#success StringIteratorTest::testIteratorIntSubstract OK
+
+#starting StringIteratorTest::testIteratorCompare
+
+#success StringIteratorTest::testIteratorCompare OK
+
+#starting StringTestExtreme::extremeLength
+
+#success StringTestExtreme::extremeLength OK
 
 #starting StringTokenizerTest::constructors
 
@@ -30,6 +98,70 @@ Pathlist: <.:config:src:>
 #starting StringTokenizerTest::resetTest
 
 #success StringTokenizerTest::resetTest OK
+
+#starting StrSpecialTest::simpleAppendTest
+
+#success StrSpecialTest::simpleAppendTest OK
+
+#starting StrSpecialTest::umlauteTest
+
+#success StrSpecialTest::umlauteTest OK
+
+#starting SysLogTest::TestFlags
+
+#success SysLogTest::TestFlags OK
+
+#starting TracerTest::CheckMacrosCompile
+
+#success TracerTest::CheckMacrosCompile OK
+
+#starting TracerTest::TracerTestExplicitlyEnabled
+
+#success TracerTest::TracerTestExplicitlyEnabled OK
+
+#starting TracerTest::TracerTestLowerBoundZero
+
+#success TracerTest::TracerTestLowerBoundZero OK
+
+#starting TracerTest::TracerTestEnableAllFirstLevel
+
+#success TracerTest::TracerTestEnableAllFirstLevel OK
+
+#starting TracerTest::TracerTestEnableAllSecondLevel
+
+#success TracerTest::TracerTestEnableAllSecondLevel OK
+
+#starting TracerTest::TracerTestEnableAllThirdLevel
+
+#success TracerTest::TracerTestEnableAllThirdLevel OK
+
+#starting TracerTest::TracerTestEnableAllAboveUpperBound
+
+#success TracerTest::TracerTestEnableAllAboveUpperBound OK
+
+#starting TracerTest::TracerTestEnableAllBelowLowerBound
+
+#success TracerTest::TracerTestEnableAllBelowLowerBound OK
+
+#starting TracerTest::TracerTestEnableAllSecondAndBelowDisabled
+
+#success TracerTest::TracerTestEnableAllSecondAndBelowDisabled OK
+
+#starting TracerTest::TracerTestNotAllAboveLowerBound
+
+#success TracerTest::TracerTestNotAllAboveLowerBound OK
+
+#starting TracerTest::TracerTestBug248
+
+#success TracerTest::TracerTestBug248 OK
+
+#starting TypeTraitsTest::TraitsTest
+
+#success TypeTraitsTest::TraitsTest OK
+
+#starting TypeTraitsTest::ClassTraitsTest
+
+#success TypeTraitsTest::ClassTraitsTest OK
 
 #ending AllTests
 PathInitializer::Finalized

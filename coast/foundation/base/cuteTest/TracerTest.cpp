@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2015, David Tran, Faculty of Computer Science,
+ * University of Applied Sciences Rapperswil (HSR),
+ * 8640 Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #include "TracerTest.h"
 #include "Tracer.h"
 #include "Anything.h"
@@ -304,8 +315,7 @@ void TracerTest::CheckMacrosCompile()
 	TriggerEnabled(SectionNotDefined.SlotNotDefined);//lint !e522
 }
 
-void TracerTest::runAllTests(int argc, char const *argv[]) {
-	cute::suite s;
+void TracerTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(TracerTest, CheckMacrosCompile));
 	s.push_back(CUTE_SMEMFUN(TracerTest, TracerTestExplicitlyEnabled));
 	s.push_back(CUTE_SMEMFUN(TracerTest, TracerTestLowerBoundZero));
@@ -317,6 +327,4 @@ void TracerTest::runAllTests(int argc, char const *argv[]) {
 	s.push_back(CUTE_SMEMFUN(TracerTest, TracerTestEnableAllSecondAndBelowDisabled));
 	s.push_back(CUTE_SMEMFUN(TracerTest, TracerTestNotAllAboveLowerBound));
 	s.push_back(CUTE_SMEMFUN(TracerTest, TracerTestBug248));
-	cute::ide_listener<> lis;
-	cute::makeRunner(lis,argc,argv)(s, "AllTests");
 }

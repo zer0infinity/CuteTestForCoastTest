@@ -1,11 +1,19 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2015, David Tran, Faculty of Computer Science,
+ * University of Applied Sciences Rapperswil (HSR),
+ * 8640 Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #include "SS1Test.h"
 #include "StringStream.h"
 
-void SS1Test::runAllTests(int argc, char const *argv[]) {
-	cute::suite s;
+void SS1Test::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(SS1Test, SimpleTest));
-	cute::ide_listener<> lis;
-	cute::makeRunner(lis,argc,argv)(s, "AllTests");
 }
 
 void SS1Test::SimpleTest()
@@ -31,4 +39,3 @@ void SS1Test::SimpleTest()
 	ASSERT_EQUAL(146, out.Capacity());
 	ASSERT_EQUAL(73, out.Length());
 } // SimpleTest
-

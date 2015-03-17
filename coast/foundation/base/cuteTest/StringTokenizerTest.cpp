@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2015, David Tran, Faculty of Computer Science,
+ * University of Applied Sciences Rapperswil (HSR),
+ * 8640 Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #include "StringTokenizerTest.h"
 
 StringTokenizerTest::StringTokenizerTest() {
@@ -5,17 +16,15 @@ StringTokenizerTest::StringTokenizerTest() {
 	fLong = "a somewhat longer string";
 }
 
-void StringTokenizerTest::runAllTests(int argc, char const *argv[]) {
-	cute::suite s;
+void StringTokenizerTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, constructors));
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, constrMethodsAll));
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, nextTokenNormal));
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, nextTokenEmpty));
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, getRemainder));
 	s.push_back(CUTE_SMEMFUN(StringTokenizerTest, resetTest));
-	cute::ide_listener<> lis;
-	cute::makeRunner(lis,argc,argv)(s, "AllTests");
 }
+
 void StringTokenizerTest::constrMethods0 ()
 {
 	String token;

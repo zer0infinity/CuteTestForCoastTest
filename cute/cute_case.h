@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
  * Copyright (c) 2015, David Tran, Faculty of Computer Science,
  * University of Applied Sciences Rapperswil (HSR),
  * 8640 Rapperswil, Switzerland
@@ -9,17 +8,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _SS1Test_h_
-#define _SS1Test_h_
+#ifndef CUTE_CASE_H_
+#define CUTE_CASE_H_
 
 #include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
 
-class SS1Test {
-public:
-	void SimpleTest();
-	static void runAllTests(cute::suite &s);
-};
+void setupSuite(cute::suite &s);
 
-#endif
+#endif /* CUTE_CASE_H_ */

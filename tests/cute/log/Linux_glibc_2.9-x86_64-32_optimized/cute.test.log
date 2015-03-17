@@ -3,7 +3,7 @@
 
 #starting Test::TestFalse
 
-#failure Test::TestFalse cute/cute_main.cpp:7 TestFalse: false
+#failure Test::TestFalse cute/cute_main.cpp:17 TestFalse: false
 
 #starting Test::TestTrue
 
