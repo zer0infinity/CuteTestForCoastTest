@@ -10,8 +10,8 @@ Running StringTokenizerTest
 --StringTokenizerTest.nextTokenNormal-- (0ms)
 --StringTokenizerTest.nextTokenEmpty-- (0ms)
 --StringTokenizerTest.getRemainder-- (0ms)
---StringTokenizerTest.resetTest-- (0ms)
-OK (6 tests and 214 assertions in 0 ms)
+--StringTokenizerTest.resetTest-- (10ms)
+OK (6 tests and 214 assertions in 10 ms)
 
 Running StringTokenizer2Test
 --StringTokenizer2Test.constrMethodsAll-- (0ms)
@@ -35,7 +35,7 @@ ERROR: String::GetSub: from < 0
 ERROR: String::GetSub: from < 0
 ERROR: String::GetSub: from < 0
  (40ms)
---StringTest.TestCapacity-- (180ms)
+--StringTest.TestCapacity-- (200ms)
 --StringTest.GetLine-- (0ms)
 --StringTest.OptimizedConstructorOrAssignment-- (0ms)
 --StringTest.trimFrontEmpty-- (0ms)
@@ -44,19 +44,19 @@ ERROR: String::GetSub: from < 0
 --StringTest.ReplaceTest-- (0ms)
 --StringTest.TestFirstCharOf-- (0ms)
 --StringTest.TestLastCharOf-- (0ms)
---StringTest.TestContainsCharAbove-- (40ms)
---StringTest.prependWith-- (830ms)
+--StringTest.TestContainsCharAbove-- (10ms)
+--StringTest.prependWith-- (390ms)
 --StringTest.DoubleToStringTest-- (0ms)
-OK (24 tests and 141585 assertions in 1090 ms)
+OK (24 tests and 141585 assertions in 640 ms)
 
 Running AnyImplsTest
---AnyImplsTest.ThisToHexTest-- (80ms)
-OK (1 tests and 3 assertions in 80 ms)
+--AnyImplsTest.ThisToHexTest-- (60ms)
+OK (1 tests and 3 assertions in 60 ms)
 
 Running AnythingConstructorsTest
 --AnythingConstructorsTest.DefaultConstrTest-- (0ms)
 --AnythingConstructorsTest.IntConstrTest-- (0ms)
---AnythingConstructorsTest.LongConstrTest-- (10ms)
+--AnythingConstructorsTest.LongConstrTest-- (0ms)
 --AnythingConstructorsTest.FloatConstrTest-- (0ms)
 --AnythingConstructorsTest.DoubleConstr0Test-- (0ms)
 --AnythingConstructorsTest.DoubleConstr1Test-- (0ms)
@@ -71,7 +71,7 @@ Running AnythingConstructorsTest
 --AnythingConstructorsTest.IFAObjectStarConstrTest--ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -1 out of range
  (0ms)
 --AnythingConstructorsTest.AnythingConstrTest-- (0ms)
-OK (16 tests and 481 assertions in 10 ms)
+OK (16 tests and 481 assertions in 0 ms)
 
 Running AnythingKeyIndexTest
 --AnythingKeyIndexTest.SimpleRemove-- (0ms)
@@ -167,36 +167,36 @@ ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -51 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -38 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -25 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -12 out of range
- (80ms)
+ (30ms)
 --AnythingKeyIndexTest.IndexAccess-- (0ms)
 --AnythingKeyIndexTest.KeyAccess0-- (0ms)
---AnythingKeyIndexTest.KeyAccess1-- (300ms)
---AnythingKeyIndexTest.KeyAccess2-- (30ms)
+--AnythingKeyIndexTest.KeyAccess1-- (130ms)
+--AnythingKeyIndexTest.KeyAccess2-- (10ms)
 --AnythingKeyIndexTest.MixKeysAndArray-- (0ms)
 --AnythingKeyIndexTest.Recursive-- (0ms)
 --AnythingKeyIndexTest.EmptyAccess0--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
---AnythingKeyIndexTest.EmptyAccess1-- (10ms)
-OK (10 tests and 52557 assertions in 420 ms)
+--AnythingKeyIndexTest.EmptyAccess1-- (0ms)
+OK (10 tests and 52557 assertions in 170 ms)
 
 Running AnythingTest
---AnythingTest.TypeTest-- (10ms)
+--AnythingTest.TypeTest-- (0ms)
 --AnythingTest.SuccessiveAssignments-- (0ms)
---AnythingTest.BinaryBufOutput-- (20ms)
+--AnythingTest.BinaryBufOutput-- (0ms)
 --AnythingTest.roConversion-- (0ms)
---AnythingTest.operatorAssignemnt-- (10ms)
---AnythingTest.appendTest-- (20ms)
+--AnythingTest.operatorAssignemnt-- (0ms)
+--AnythingTest.appendTest-- (10ms)
 --AnythingTest.String2LongConversion-- (0ms)
 --AnythingTest.AsCharPtrBufLen-- (10ms)
 --AnythingTest.RefCount-- (0ms)
---AnythingTest.AnythingLeafIteratorTest-- (10ms)
---AnythingTest.SlotFinderTest-- (0ms)
---AnythingTest.SlotCopierTest-- (10ms)
---AnythingTest.SlotPutterTest-- (0ms)
---AnythingTest.SlotPutterAppendTest-- (0ms)
---AnythingTest.SlotnameSorterTest-- (10ms)
+--AnythingTest.AnythingLeafIteratorTest-- (0ms)
+--AnythingTest.SlotFinderTest-- (10ms)
+--AnythingTest.SlotCopierTest-- (0ms)
+--AnythingTest.SlotPutterTest-- (10ms)
+--AnythingTest.SlotPutterAppendTest-- (10ms)
+--AnythingTest.SlotnameSorterTest-- (0ms)
 --AnythingTest.SlotCleanerTest-- (0ms)
-OK (16 tests and 232 assertions in 100 ms)
+OK (16 tests and 232 assertions in 50 ms)
 
 Running AnythingDeepCloneTest
 --AnythingDeepCloneTest.DeepClone0Test-- (0ms)
@@ -226,8 +226,8 @@ Difference                         0 bytes
 
 Allocator [1]
 Pool usage: configured 16384kB, used 15kB
- (20ms)
-OK (8 tests and 547 assertions in 20 ms)
+ (10ms)
+OK (8 tests and 547 assertions in 10 ms)
 
 Running AnythingImportExportTest
 --AnythingImportExportTest.ImportTest-- (0ms)
@@ -235,7 +235,7 @@ Running AnythingImportExportTest
  (0ms)
 --AnythingImportExportTest.WriteRead0Test-- (0ms)
 --AnythingImportExportTest.WriteRead1Test-- (10ms)
---AnythingImportExportTest.WriteRead5Test-- (0ms)
+--AnythingImportExportTest.WriteRead5Test-- (10ms)
 --AnythingImportExportTest.WriteRead7Test-- (0ms)
 --AnythingImportExportTest.WriteRead8Test-- (0ms)
 --AnythingImportExportTest.RefSlotTest-- (0ms)
@@ -244,7 +244,7 @@ Running AnythingImportExportTest
 --AnythingImportExportTest.RefBug227Test-- (0ms)
 --AnythingImportExportTest.RefBug231Test-- (0ms)
 --AnythingImportExportTest.RefBug220Test-- (0ms)
-OK (12 tests and 55 assertions in 20 ms)
+OK (12 tests and 55 assertions in 30 ms)
 
 Running AnythingLookupTest
 --AnythingLookupTest.LookUp0Test-- (0ms)
@@ -331,7 +331,7 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
---AnythingParserTest.parseMixedAnything-- (10ms)
+--AnythingParserTest.parseMixedAnything-- (0ms)
 --AnythingParserTest.importEmptyStream--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
 --AnythingParserTest.readWriteAnything--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
@@ -412,7 +412,7 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
- (50ms)
+ (60ms)
 --AnythingParserTest.parseTestFiles--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
@@ -420,17 +420,17 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
- (50ms)
+ (40ms)
 --AnythingParserTest.testObjectParsing--buf [{/myObjectImpl &12345}]
 {/myObjectImpl &12345}
 buf [{/myObjectImpl &-12345}]
 {/myObjectImpl &4294954951}
-buf [{/myObjectImpl &-754360}]
-{/myObjectImpl &4294212936}
-buf [{/myObjectImpl &-754360/some content}]
+buf [{/myObjectImpl &-2782168}]
+{/myObjectImpl &4292185128}
+buf [{/myObjectImpl &-2782168/some content}]
  (0ms)
 --AnythingParserTest.testNumberParsing-- (0ms)
-OK (13 tests and 978 assertions in 120 ms)
+OK (13 tests and 978 assertions in 110 ms)
 
 Running StrSpecialTest
 --StrSpecialTest.simpleAppendTest-- (0ms)
@@ -438,22 +438,22 @@ Running StrSpecialTest
 OK (2 tests and 5 assertions in 0 ms)
 
 Running MmapTest
---MmapTest.SimpleReadOnly-- (20ms)
+--MmapTest.SimpleReadOnly-- (10ms)
 --MmapTest.TestMagicFlags-- (0ms)
---MmapTest.SimpleWrite-- (10ms)
+--MmapTest.SimpleWrite-- (0ms)
 --MmapTest.SimpleRead-- (0ms)
 --MmapTest.EmptyFileRead-- (0ms)
 --MmapTest.EmptyFilePutback-- (0ms)
 --MmapTest.SimpleTruncate-- (0ms)
 --MmapTest.SimplePutback-- (0ms)
 --MmapTest.SimpleROPutback-- (0ms)
---MmapTest.SimpleAppend-- (0ms)
+--MmapTest.SimpleAppend-- (10ms)
 --MmapTest.SimpleAtEnd-- (0ms)
---MmapTest.SimpleSeek-- (10ms)
+--MmapTest.SimpleSeek-- (0ms)
 --MmapTest.LargeWrite-- (0ms)
 --MmapTest.SimulatedLogAppend-- (10ms)
 --MmapTest.OperatorShiftLeftWithReadBuf-- (0ms)
-OK (15 tests and 691 assertions in 50 ms)
+OK (15 tests and 691 assertions in 30 ms)
 
 Running StringStreamTest
 --StringStreamTest.SimpleWrite-- (0ms)
@@ -465,13 +465,13 @@ Running StringStreamTest
 --StringStreamTest.SimpleOStringStreamWriteTest-- (0ms)
 --StringStreamTest.WriteAnyOnString-- (0ms)
 --StringStreamTest.ReadFromAndWriteToStringTest-- (0ms)
---StringStreamTest.ReadFromAndWriteToAnythingTest-- (10ms)
+--StringStreamTest.ReadFromAndWriteToAnythingTest-- (0ms)
 --StringStreamTest.OperatorShiftLeftWithReadBuf-- (0ms)
 --StringStreamTest.OperatorShiftLeftWithLongLong-- (0ms)
 --StringStreamTest.OperatorShiftLeftWithUnsignedLongLong-- (0ms)
 --StringStreamTest.OperatorShiftRightWithLongLong-- (0ms)
 --StringStreamTest.OperatorShiftRightWithUnsignedLongLong-- (0ms)
-OK (15 tests and 54 assertions in 10 ms)
+OK (15 tests and 54 assertions in 0 ms)
 
 Running TracerTest
 --TracerTest.CheckMacrosCompile-- (0ms)
@@ -504,11 +504,11 @@ Running AnyBuiltInSortTest
 --AnyBuiltInSortTest.SortMany--sorting of 1000 took 0 ms.
 sorting of sorted 1000 took 0 ms.
 Slogname sorting of 1000 took 0 ms.
- (80ms)
---AnyBuiltInSortTest.SortManyStringValues--sorting of 1000 took 2 ms.
+ (50ms)
+--AnyBuiltInSortTest.SortManyStringValues--sorting of 1000 took 14 ms.
  (20ms)
 --AnyBuiltInSortTest.SortIsStable-- (0ms)
-OK (7 tests and 1046 assertions in 100 ms)
+OK (7 tests and 1046 assertions in 70 ms)
 
 Running TypeTraitsTest
 --TypeTraitsTest.TraitsTest-- (0ms)
@@ -584,16 +584,16 @@ Pathlist: <config>
 --SystemFileTest.ResolvePathTest-- (0ms)
 --SystemFileTest.OpenStreamTest-- (10ms)
 --SystemFileTest.OpenStreamWithSearchTest-- (0ms)
---SystemFileTest.OpenOStreamTest-- (10ms)
+--SystemFileTest.OpenOStreamTest-- (0ms)
 --SystemFileTest.OpenIStreamTest-- (0ms)
 --SystemFileTest.GetFilePathTest-- (0ms)
 --SystemFileTest.dirFileListTest-- (0ms)
 --SystemFileTest.IStreamTest-- (0ms)
---SystemFileTest.OStreamTest-- (10ms)
---SystemFileTest.IOStreamTest-- (20ms)
+--SystemFileTest.OStreamTest-- (0ms)
+--SystemFileTest.IOStreamTest-- (10ms)
 --SystemFileTest.CWDTests-- (0ms)
 --SystemFileTest.LoadConfigFileTest--ERROR: ( coast/foundation/base/SystemFile.cpp:1088 ) cannot import config file  from NotExisting.any
- (0ms)
+ (10ms)
 --SystemFileTest.TimeTest-- (0ms)
 --SystemFileTest.MkRmDirTest-- (0ms)
 --SystemFileTest.MakeRemoveDirectoryTest--ERROR: ( coast/foundation/base/SystemFile.cpp:347 ) parent directory does not exist [/tmp/MakeRemoveDirectoryTest]
@@ -601,13 +601,13 @@ ERROR: ( coast/foundation/base/SystemFile.cpp:1046 ) recursive deletion of absol
 ERROR: ( coast/foundation/base/SystemFile.cpp:451 ) rmdir of [/tmp/MakeRemoveDirectoryTest] was unsuccessful [39 Directory not empty]
 ERROR: ( coast/foundation/base/SystemFile.cpp:451 ) rmdir of [MakeRemoveDirectoryTest] was unsuccessful [39 Directory not empty]
  (0ms)
---SystemFileTest.MakeDirectoryTest-- (10ms)
+--SystemFileTest.MakeDirectoryTest-- (0ms)
 --SystemFileTest.SymbolicLinkTest-- (0ms)
 --SystemFileTest.MakeDirectoryExtendTest-- (0ms)
 --SystemFileTest.GetFileSizeTest-- (0ms)
 --SystemFileTest.BlocksLeftOnFSTest-- (0ms)
 --SystemFileTest.statTests-- (0ms)
-OK (25 tests and 350 assertions in 60 ms)
+OK (25 tests and 350 assertions in 30 ms)
 
 Running StringTestExtreme
 --StringTestExtreme.extremeLength-- (0ms)
@@ -654,7 +654,7 @@ Running StringSTLTest
 --StringSTLTest.testStringInsertIteratorRange-- (0ms)
 OK (6 tests and 60 assertions in 0 ms)
 
-201363 assertions run in 2620 ms, 0 failures; 100% complete
+201363 assertions run in 1500 ms, 0 failures; 100% complete
 PathInitializer::Finalized
 SystemLog::Finalized
 String::Finalized

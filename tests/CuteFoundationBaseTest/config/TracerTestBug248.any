@@ -1,0 +1,23 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/LowerBound 7
+	/UpperBound 10
+	/DumpAnythings 1
+
+	/MyHTMLWriter {
+		/MainSwitch 0
+		/EnableAll 10
+		/Put -1
+		/Tag {
+			/MainSwitch 10
+			/EnableAll 10
+			/NodeStack -1
+		}
+	}
+}
