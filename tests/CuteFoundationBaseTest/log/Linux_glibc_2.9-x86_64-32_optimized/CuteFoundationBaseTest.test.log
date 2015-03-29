@@ -5,7 +5,7 @@ Root Dir: <.>
 SystemLog::Initialized
 Pathlist: <.:config:src:>
 
-#beginning AllTests 39
+#beginning AllTests 83
 
 #starting SS1Test::SimpleTest
 
@@ -162,6 +162,182 @@ Pathlist: <.:config:src:>
 #starting TypeTraitsTest::ClassTraitsTest
 
 #success TypeTraitsTest::ClassTraitsTest OK
+
+#starting AnythingIteratorTest::testEmptyAnythingBegin
+
+#success AnythingIteratorTest::testEmptyAnythingBegin OK
+
+#starting AnythingIteratorTest::testSimpleAnythingBegin
+
+#success AnythingIteratorTest::testSimpleAnythingBegin OK
+
+#starting AnythingIteratorTest::testSimpleAnythingDeref
+
+#success AnythingIteratorTest::testSimpleAnythingDeref OK
+
+#starting AnythingIteratorTest::testSimpleAnythingIncrement
+
+#success AnythingIteratorTest::testSimpleAnythingIncrement OK
+
+#starting AnythingIteratorTest::testSimpleAnythingDecrement
+
+#success AnythingIteratorTest::testSimpleAnythingDecrement OK
+
+#starting AnythingIteratorTest::testSimpleAnythingIncDec
+
+#success AnythingIteratorTest::testSimpleAnythingIncDec OK
+
+#starting AnythingIteratorTest::testSimpleAnythingAssignment
+
+#success AnythingIteratorTest::testSimpleAnythingAssignment OK
+
+#starting AnythingIteratorTest::testAnythingIteration
+
+#success AnythingIteratorTest::testAnythingIteration OK
+
+#starting AnythingIteratorTest::testAnythingIndex
+
+#success AnythingIteratorTest::testAnythingIndex OK
+
+#starting AnythingIteratorTest::testIteratorSubstract
+
+#success AnythingIteratorTest::testIteratorSubstract OK
+
+#starting AnythingIteratorTest::testIteratorIntAdd
+
+#success AnythingIteratorTest::testIteratorIntAdd OK
+
+#starting AnythingIteratorTest::testIteratorIntSubstract
+
+#success AnythingIteratorTest::testIteratorIntSubstract OK
+
+#starting AnythingIteratorTest::testIteratorCompare
+
+#success AnythingIteratorTest::testIteratorCompare OK
+
+#starting AnythingIteratorTest::testAnythingSingleErase
+
+#success AnythingIteratorTest::testAnythingSingleErase OK
+
+#starting AnythingIteratorTest::testAnythingRangeErase
+
+#success AnythingIteratorTest::testAnythingRangeErase OK
+
+#starting StringReverseIteratorTest::testEmptyStringBegin
+
+#success StringReverseIteratorTest::testEmptyStringBegin OK
+
+#starting StringReverseIteratorTest::testSimpleStringBegin
+
+#success StringReverseIteratorTest::testSimpleStringBegin OK
+
+#starting StringReverseIteratorTest::testSimpleStringDeref
+
+#success StringReverseIteratorTest::testSimpleStringDeref OK
+
+#starting StringReverseIteratorTest::testSimpleStringIncrement
+
+#success StringReverseIteratorTest::testSimpleStringIncrement OK
+
+#starting StringReverseIteratorTest::testSimpleStringDecrement
+
+#success StringReverseIteratorTest::testSimpleStringDecrement OK
+
+#starting StringReverseIteratorTest::testSimpleStringIncDec
+
+#success StringReverseIteratorTest::testSimpleStringIncDec OK
+
+#starting StringReverseIteratorTest::testSimpleStringAssignment
+
+#success StringReverseIteratorTest::testSimpleStringAssignment OK
+
+#starting StringReverseIteratorTest::testStringIteration
+
+#success StringReverseIteratorTest::testStringIteration OK
+
+#starting StringReverseIteratorTest::testStringIndex
+
+#success StringReverseIteratorTest::testStringIndex OK
+
+#starting StringReverseIteratorTest::testIteratorSubstract
+
+#success StringReverseIteratorTest::testIteratorSubstract OK
+
+#starting StringReverseIteratorTest::testIteratorIntAdd
+
+#success StringReverseIteratorTest::testIteratorIntAdd OK
+
+#starting StringReverseIteratorTest::testIteratorIntSubstract
+
+#success StringReverseIteratorTest::testIteratorIntSubstract OK
+
+#starting StringReverseIteratorTest::testIteratorCompare
+
+#success StringReverseIteratorTest::testIteratorCompare OK
+
+#starting AnyImplsTest::ThisToHexTest
+
+#success AnyImplsTest::ThisToHexTest OK
+
+#starting AnythingLookupTest::LookUp0Test
+
+#success AnythingLookupTest::LookUp0Test OK
+
+#starting AnythingLookupTest::LookUp1Test
+
+#success AnythingLookupTest::LookUp1Test OK
+
+#starting AnythingLookupTest::LookupPathByIndex
+
+#success AnythingLookupTest::LookupPathByIndex OK
+
+#starting AnythingLookupTest::EmptyLookup
+
+#success AnythingLookupTest::EmptyLookup OK
+
+#starting AnythingLookupTest::invPathLookup
+
+#failure AnythingLookupTest::invPathLookup coast/foundation/base/cuteTest/AnythingLookupTest.cpp:359 intLookupPathCheck: ..test.invalid expected:	1	but was:	0	
+
+#starting AnythingLookupTest::LookUpWithSpecialCharsTest
+
+#success AnythingLookupTest::LookUpWithSpecialCharsTest OK
+
+#starting AnythingLookupTest::LookupCaseSensitiveTest
+
+#success AnythingLookupTest::LookupCaseSensitiveTest OK
+
+#starting StringSTLTest::testStringSingleErase
+
+#success StringSTLTest::testStringSingleErase OK
+
+#starting StringSTLTest::testStringRangeErase
+
+#success StringSTLTest::testStringRangeErase OK
+
+#starting StringSTLTest::testStringRangeIteratorErase
+
+#success StringSTLTest::testStringRangeIteratorErase OK
+
+#starting StringSTLTest::testStringInsertIteratorSingle
+
+#success StringSTLTest::testStringInsertIteratorSingle OK
+
+#starting StringSTLTest::testStringInsertIteratorMultiple
+
+#success StringSTLTest::testStringInsertIteratorMultiple OK
+
+#starting StringSTLTest::testStringInsertIteratorRange
+
+#success StringSTLTest::testStringInsertIteratorRange OK
+
+#starting StringTokenizer2Test::constrMethodsAll
+
+#success StringTokenizer2Test::constrMethodsAll OK
+
+#starting StringTokenizer2Test::getRemainder
+
+#success StringTokenizer2Test::getRemainder OK
 
 #ending AllTests
 PathInitializer::Finalized

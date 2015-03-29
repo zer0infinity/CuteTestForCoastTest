@@ -10,8 +10,8 @@ Running StringTokenizerTest
 --StringTokenizerTest.nextTokenNormal-- (0ms)
 --StringTokenizerTest.nextTokenEmpty-- (0ms)
 --StringTokenizerTest.getRemainder-- (0ms)
---StringTokenizerTest.resetTest-- (10ms)
-OK (6 tests and 214 assertions in 10 ms)
+--StringTokenizerTest.resetTest-- (0ms)
+OK (6 tests and 214 assertions in 0 ms)
 
 Running StringTokenizer2Test
 --StringTokenizer2Test.constrMethodsAll-- (0ms)
@@ -23,7 +23,7 @@ Running StringTest
 --StringTest.appendsChar-- (0ms)
 --StringTest.appendsCharChain-- (0ms)
 --StringTest.appendsNullPtr-- (0ms)
---StringTest.appendsString-- (0ms)
+--StringTest.appendsString-- (10ms)
 --StringTest.appendsLong-- (0ms)
 --StringTest.appendsDouble-- (0ms)
 --StringTest.appendsAsHex-- (0ms)
@@ -34,9 +34,9 @@ Running StringTest
 ERROR: String::GetSub: from < 0
 ERROR: String::GetSub: from < 0
 ERROR: String::GetSub: from < 0
- (40ms)
---StringTest.TestCapacity-- (200ms)
---StringTest.GetLine-- (0ms)
+ (20ms)
+--StringTest.TestCapacity-- (120ms)
+--StringTest.GetLine-- (20ms)
 --StringTest.OptimizedConstructorOrAssignment-- (0ms)
 --StringTest.trimFrontEmpty-- (0ms)
 --StringTest.EmptyAllocatorTest-- (0ms)
@@ -44,17 +44,17 @@ ERROR: String::GetSub: from < 0
 --StringTest.ReplaceTest-- (0ms)
 --StringTest.TestFirstCharOf-- (0ms)
 --StringTest.TestLastCharOf-- (0ms)
---StringTest.TestContainsCharAbove-- (10ms)
---StringTest.prependWith-- (390ms)
+--StringTest.TestContainsCharAbove-- (20ms)
+--StringTest.prependWith-- (540ms)
 --StringTest.DoubleToStringTest-- (0ms)
-OK (24 tests and 141585 assertions in 640 ms)
+OK (24 tests and 141585 assertions in 730 ms)
 
 Running AnyImplsTest
 --AnyImplsTest.ThisToHexTest-- (60ms)
 OK (1 tests and 3 assertions in 60 ms)
 
 Running AnythingConstructorsTest
---AnythingConstructorsTest.DefaultConstrTest-- (0ms)
+--AnythingConstructorsTest.DefaultConstrTest-- (20ms)
 --AnythingConstructorsTest.IntConstrTest-- (0ms)
 --AnythingConstructorsTest.LongConstrTest-- (0ms)
 --AnythingConstructorsTest.FloatConstrTest-- (0ms)
@@ -71,7 +71,7 @@ Running AnythingConstructorsTest
 --AnythingConstructorsTest.IFAObjectStarConstrTest--ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -1 out of range
  (0ms)
 --AnythingConstructorsTest.AnythingConstrTest-- (0ms)
-OK (16 tests and 481 assertions in 0 ms)
+OK (16 tests and 481 assertions in 20 ms)
 
 Running AnythingKeyIndexTest
 --AnythingKeyIndexTest.SimpleRemove-- (0ms)
@@ -167,36 +167,36 @@ ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -51 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -38 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -25 out of range
 ERROR: ( coast/foundation/base/AnyImpls.cpp:768 ) index -12 out of range
- (30ms)
+ (80ms)
 --AnythingKeyIndexTest.IndexAccess-- (0ms)
 --AnythingKeyIndexTest.KeyAccess0-- (0ms)
---AnythingKeyIndexTest.KeyAccess1-- (130ms)
+--AnythingKeyIndexTest.KeyAccess1-- (270ms)
 --AnythingKeyIndexTest.KeyAccess2-- (10ms)
 --AnythingKeyIndexTest.MixKeysAndArray-- (0ms)
 --AnythingKeyIndexTest.Recursive-- (0ms)
 --AnythingKeyIndexTest.EmptyAccess0--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
 --AnythingKeyIndexTest.EmptyAccess1-- (0ms)
-OK (10 tests and 52557 assertions in 170 ms)
+OK (10 tests and 52557 assertions in 360 ms)
 
 Running AnythingTest
 --AnythingTest.TypeTest-- (0ms)
 --AnythingTest.SuccessiveAssignments-- (0ms)
---AnythingTest.BinaryBufOutput-- (0ms)
---AnythingTest.roConversion-- (0ms)
+--AnythingTest.BinaryBufOutput-- (10ms)
+--AnythingTest.roConversion-- (10ms)
 --AnythingTest.operatorAssignemnt-- (0ms)
 --AnythingTest.appendTest-- (10ms)
 --AnythingTest.String2LongConversion-- (0ms)
 --AnythingTest.AsCharPtrBufLen-- (10ms)
 --AnythingTest.RefCount-- (0ms)
 --AnythingTest.AnythingLeafIteratorTest-- (0ms)
---AnythingTest.SlotFinderTest-- (10ms)
+--AnythingTest.SlotFinderTest-- (0ms)
 --AnythingTest.SlotCopierTest-- (0ms)
---AnythingTest.SlotPutterTest-- (10ms)
---AnythingTest.SlotPutterAppendTest-- (10ms)
+--AnythingTest.SlotPutterTest-- (0ms)
+--AnythingTest.SlotPutterAppendTest-- (0ms)
 --AnythingTest.SlotnameSorterTest-- (0ms)
 --AnythingTest.SlotCleanerTest-- (0ms)
-OK (16 tests and 232 assertions in 50 ms)
+OK (16 tests and 232 assertions in 40 ms)
 
 Running AnythingDeepCloneTest
 --AnythingDeepCloneTest.DeepClone0Test-- (0ms)
@@ -226,16 +226,16 @@ Difference                         0 bytes
 
 Allocator [1]
 Pool usage: configured 16384kB, used 15kB
- (10ms)
-OK (8 tests and 547 assertions in 10 ms)
+ (20ms)
+OK (8 tests and 547 assertions in 20 ms)
 
 Running AnythingImportExportTest
 --AnythingImportExportTest.ImportTest-- (0ms)
 --AnythingImportExportTest.ReadFailsTest--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
 --AnythingImportExportTest.WriteRead0Test-- (0ms)
---AnythingImportExportTest.WriteRead1Test-- (10ms)
---AnythingImportExportTest.WriteRead5Test-- (10ms)
+--AnythingImportExportTest.WriteRead1Test-- (0ms)
+--AnythingImportExportTest.WriteRead5Test-- (0ms)
 --AnythingImportExportTest.WriteRead7Test-- (0ms)
 --AnythingImportExportTest.WriteRead8Test-- (0ms)
 --AnythingImportExportTest.RefSlotTest-- (0ms)
@@ -244,7 +244,7 @@ Running AnythingImportExportTest
 --AnythingImportExportTest.RefBug227Test-- (0ms)
 --AnythingImportExportTest.RefBug231Test-- (0ms)
 --AnythingImportExportTest.RefBug220Test-- (0ms)
-OK (12 tests and 55 assertions in 30 ms)
+OK (12 tests and 55 assertions in 10 ms)
 
 Running AnythingLookupTest
 --AnythingLookupTest.LookUp0Test-- (0ms)
@@ -258,7 +258,7 @@ OK (7 tests and 209 assertions in 0 ms)
 
 Running AnythingParserSemanticTest
 --AnythingParserSemanticTest.Semantic0Test-- (0ms)
---AnythingParserSemanticTest.Semantic1Test-- (0ms)
+--AnythingParserSemanticTest.Semantic1Test-- (10ms)
 --AnythingParserSemanticTest.Semantic2Test-- (0ms)
 --AnythingParserSemanticTest.Semantic3Test-- (0ms)
 --AnythingParserSemanticTest.Semantic4Test-- (0ms)
@@ -294,7 +294,7 @@ Running AnythingParserSemanticTest
 --AnythingParserSemanticTest.QuotedSlotnameTest-- (0ms)
 --AnythingParserSemanticTest.slashSlotnames--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
-OK (36 tests and 805 assertions in 0 ms)
+OK (36 tests and 805 assertions in 10 ms)
 
 Running AnythingParserTest
 --AnythingParserTest.parseSimpleTypeCharPtr--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
@@ -330,8 +330,8 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
- (0ms)
---AnythingParserTest.parseMixedAnything-- (0ms)
+ (10ms)
+--AnythingParserTest.parseMixedAnything-- (10ms)
 --AnythingParserTest.importEmptyStream--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
  (0ms)
 --AnythingParserTest.readWriteAnything--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
@@ -412,7 +412,7 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
- (60ms)
+ (40ms)
 --AnythingParserTest.parseTestFiles--ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
@@ -420,17 +420,17 @@ ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: s
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
 ERROR: ( coast/foundation/base/Anything.cpp:1396 ) Anything::Import <NoName>:: syntax error
- (40ms)
+ (50ms)
 --AnythingParserTest.testObjectParsing--buf [{/myObjectImpl &12345}]
 {/myObjectImpl &12345}
 buf [{/myObjectImpl &-12345}]
 {/myObjectImpl &4294954951}
-buf [{/myObjectImpl &-2782168}]
-{/myObjectImpl &4292185128}
-buf [{/myObjectImpl &-2782168/some content}]
+buf [{/myObjectImpl &-1580760}]
+{/myObjectImpl &4293386536}
+buf [{/myObjectImpl &-1580760/some content}]
  (0ms)
 --AnythingParserTest.testNumberParsing-- (0ms)
-OK (13 tests and 978 assertions in 110 ms)
+OK (13 tests and 978 assertions in 120 ms)
 
 Running StrSpecialTest
 --StrSpecialTest.simpleAppendTest-- (0ms)
@@ -438,22 +438,22 @@ Running StrSpecialTest
 OK (2 tests and 5 assertions in 0 ms)
 
 Running MmapTest
---MmapTest.SimpleReadOnly-- (10ms)
+--MmapTest.SimpleReadOnly-- (0ms)
 --MmapTest.TestMagicFlags-- (0ms)
 --MmapTest.SimpleWrite-- (0ms)
 --MmapTest.SimpleRead-- (0ms)
 --MmapTest.EmptyFileRead-- (0ms)
---MmapTest.EmptyFilePutback-- (0ms)
+--MmapTest.EmptyFilePutback-- (10ms)
 --MmapTest.SimpleTruncate-- (0ms)
 --MmapTest.SimplePutback-- (0ms)
 --MmapTest.SimpleROPutback-- (0ms)
---MmapTest.SimpleAppend-- (10ms)
---MmapTest.SimpleAtEnd-- (0ms)
+--MmapTest.SimpleAppend-- (0ms)
+--MmapTest.SimpleAtEnd-- (10ms)
 --MmapTest.SimpleSeek-- (0ms)
 --MmapTest.LargeWrite-- (0ms)
---MmapTest.SimulatedLogAppend-- (10ms)
+--MmapTest.SimulatedLogAppend-- (0ms)
 --MmapTest.OperatorShiftLeftWithReadBuf-- (0ms)
-OK (15 tests and 691 assertions in 30 ms)
+OK (15 tests and 691 assertions in 20 ms)
 
 Running StringStreamTest
 --StringStreamTest.SimpleWrite-- (0ms)
@@ -463,7 +463,7 @@ Running StringStreamTest
 --StringStreamTest.SimpleAtEnd-- (0ms)
 --StringStreamTest.SimpleSeek-- (0ms)
 --StringStreamTest.SimpleOStringStreamWriteTest-- (0ms)
---StringStreamTest.WriteAnyOnString-- (0ms)
+--StringStreamTest.WriteAnyOnString-- (10ms)
 --StringStreamTest.ReadFromAndWriteToStringTest-- (0ms)
 --StringStreamTest.ReadFromAndWriteToAnythingTest-- (0ms)
 --StringStreamTest.OperatorShiftLeftWithReadBuf-- (0ms)
@@ -471,7 +471,7 @@ Running StringStreamTest
 --StringStreamTest.OperatorShiftLeftWithUnsignedLongLong-- (0ms)
 --StringStreamTest.OperatorShiftRightWithLongLong-- (0ms)
 --StringStreamTest.OperatorShiftRightWithUnsignedLongLong-- (0ms)
-OK (15 tests and 54 assertions in 0 ms)
+OK (15 tests and 54 assertions in 10 ms)
 
 Running TracerTest
 --TracerTest.CheckMacrosCompile-- (0ms)
@@ -503,12 +503,12 @@ Running AnyBuiltInSortTest
 --AnyBuiltInSortTest.SortThree-- (0ms)
 --AnyBuiltInSortTest.SortMany--sorting of 1000 took 0 ms.
 sorting of sorted 1000 took 0 ms.
-Slogname sorting of 1000 took 0 ms.
- (50ms)
---AnyBuiltInSortTest.SortManyStringValues--sorting of 1000 took 14 ms.
+Slogname sorting of 1000 took 4 ms.
+ (60ms)
+--AnyBuiltInSortTest.SortManyStringValues--sorting of 1000 took 11 ms.
  (20ms)
 --AnyBuiltInSortTest.SortIsStable-- (0ms)
-OK (7 tests and 1046 assertions in 70 ms)
+OK (7 tests and 1046 assertions in 80 ms)
 
 Running TypeTraitsTest
 --TypeTraitsTest.TraitsTest-- (0ms)
@@ -540,7 +540,7 @@ Running AnythingSTLTest
 --AnythingSTLTest.testRangeAssign-- (0ms)
 --AnythingSTLTest.testFillAssign-- (0ms)
 --AnythingSTLTest.testFillAssignWithSizeType-- (0ms)
---AnythingSTLTest.testRangeCtor-- (0ms)
+--AnythingSTLTest.testRangeCtor-- (10ms)
 --AnythingSTLTest.testFillCtor-- (0ms)
 --AnythingSTLTest.testFillCtorWithSizeType-- (0ms)
 --AnythingSTLTest.testSimpleInsertToEmptyAny-- (0ms)
@@ -556,18 +556,18 @@ Running AnythingSTLTest
 --AnythingSTLTest.testIterInsertInArray-- (0ms)
 --AnythingSTLTest.testIterInsertWithKeys-- (0ms)
 --AnythingSTLTest.testIterInsertZero-- (0ms)
-OK (22 tests and 426 assertions in 0 ms)
+OK (22 tests and 426 assertions in 10 ms)
 
 Running SystemBaseTest
 --SystemBaseTest.DoSingleSelectTest-- (0ms)
 --SystemBaseTest.GetProcessEnvironmentTest-- (0ms)
 --SystemBaseTest.allocFreeTests-- (0ms)
---SystemBaseTest.MicroSleepTest-- (110ms)
+--SystemBaseTest.MicroSleepTest-- (100ms)
 --SystemBaseTest.TimeTest-- (0ms)
 --SystemBaseTest.SnPrintf_ReturnsBytesOfContentWrittenWithoutTerminatingZero-- (0ms)
 --SystemBaseTest.SnPrintf_ReturnsBytesRequiredWithoutTerminatingZero-- (0ms)
 --SystemBaseTest.SnPrintf_WritesTerminatingZeroEvenWhenTruncatingBuffer-- (0ms)
---SystemBaseTest.LockFileTest-- (0ms)
+--SystemBaseTest.LockFileTest-- (10ms)
 OK (9 tests and 37 assertions in 110 ms)
 
 Running SystemFileTest
@@ -582,9 +582,9 @@ Pathlist: <config>
 --SystemFileTest.rooDirTest-- (0ms)
 --SystemFileTest.IsAbsolutePathTest-- (0ms)
 --SystemFileTest.ResolvePathTest-- (0ms)
---SystemFileTest.OpenStreamTest-- (10ms)
---SystemFileTest.OpenStreamWithSearchTest-- (0ms)
---SystemFileTest.OpenOStreamTest-- (0ms)
+--SystemFileTest.OpenStreamTest-- (0ms)
+--SystemFileTest.OpenStreamWithSearchTest-- (10ms)
+--SystemFileTest.OpenOStreamTest-- (10ms)
 --SystemFileTest.OpenIStreamTest-- (0ms)
 --SystemFileTest.GetFilePathTest-- (0ms)
 --SystemFileTest.dirFileListTest-- (0ms)
@@ -600,14 +600,14 @@ Pathlist: <config>
 ERROR: ( coast/foundation/base/SystemFile.cpp:1046 ) recursive deletion of absolute path not allowed [/tmp/MakeRemoveDirectoryTest/Level2]
 ERROR: ( coast/foundation/base/SystemFile.cpp:451 ) rmdir of [/tmp/MakeRemoveDirectoryTest] was unsuccessful [39 Directory not empty]
 ERROR: ( coast/foundation/base/SystemFile.cpp:451 ) rmdir of [MakeRemoveDirectoryTest] was unsuccessful [39 Directory not empty]
- (0ms)
+ (10ms)
 --SystemFileTest.MakeDirectoryTest-- (0ms)
 --SystemFileTest.SymbolicLinkTest-- (0ms)
 --SystemFileTest.MakeDirectoryExtendTest-- (0ms)
 --SystemFileTest.GetFileSizeTest-- (0ms)
 --SystemFileTest.BlocksLeftOnFSTest-- (0ms)
 --SystemFileTest.statTests-- (0ms)
-OK (25 tests and 350 assertions in 30 ms)
+OK (25 tests and 350 assertions in 50 ms)
 
 Running StringTestExtreme
 --StringTestExtreme.extremeLength-- (0ms)
@@ -623,11 +623,11 @@ Running StringIteratorTest
 --StringIteratorTest.testSimpleStringAssignment-- (0ms)
 --StringIteratorTest.testStringIteration-- (0ms)
 --StringIteratorTest.testStringIndex-- (0ms)
---StringIteratorTest.testIteratorSubstract-- (0ms)
+--StringIteratorTest.testIteratorSubstract-- (10ms)
 --StringIteratorTest.testIteratorIntAdd-- (0ms)
 --StringIteratorTest.testIteratorIntSubstract-- (0ms)
 --StringIteratorTest.testIteratorCompare-- (0ms)
-OK (13 tests and 117 assertions in 0 ms)
+OK (13 tests and 117 assertions in 10 ms)
 
 Running StringReverseIteratorTest
 --StringReverseIteratorTest.testEmptyStringBegin-- (0ms)
@@ -654,7 +654,7 @@ Running StringSTLTest
 --StringSTLTest.testStringInsertIteratorRange-- (0ms)
 OK (6 tests and 60 assertions in 0 ms)
 
-201363 assertions run in 1500 ms, 0 failures; 100% complete
+201363 assertions run in 1990 ms, 0 failures; 100% complete
 PathInitializer::Finalized
 SystemLog::Finalized
 String::Finalized

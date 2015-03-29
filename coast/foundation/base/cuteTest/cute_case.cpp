@@ -18,6 +18,12 @@
 #include "SysLogTest.h"
 #include "TracerTest.h"
 #include "TypeTraitsTest.h"
+#include "AnythingIteratorTest.h"
+#include "StringReverseIteratorTest.h"
+#include "AnyImplsTest.h"
+#include "AnythingLookupTest.h"
+#include "StringSTLTest.h"
+#include "StringTokenizer2Test.h"
 
 void setupSuite(cute::suite &s) {
 	SS1Test::runAllTests(s);
@@ -29,4 +35,10 @@ void setupSuite(cute::suite &s) {
 	SysLogTest::runAllTests(s);
 	TracerTest::runAllTests(s);
 	TypeTraitsTest::runAllTests(s);
+	AnythingIteratorTest::runAllTests(s);
+	StringReverseIteratorTest::runAllTests(s);
+	AnyImplsTest::runAllTests(s);
+	AnythingLookupTest::runAllTests(s);
+	StringSTLTest::runAllTests(s);
+	StringTokenizer2Test::runAllTests(s);
 }

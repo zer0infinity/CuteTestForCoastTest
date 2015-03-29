@@ -1,5 +1,14 @@
+/*
+ * Copyright (c) 2015, David Tran, Faculty of Computer Science,
+ * University of Applied Sciences Rapperswil (HSR),
+ * 8640 Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #include "AnythingIteratorTest.h"
-#include "../../cuteFoundation/FoundationTestTypes.h"
 
 void AnythingIteratorTest::testEmptyAnythingBegin() {
 	Anything a;
@@ -83,25 +92,25 @@ void AnythingIteratorTest::testSimpleAnythingIncDec() {
 void AnythingIteratorTest::testAnythingIndex() {
 	ASSERT_EQUAL(5, fAny5.GetSize());
 	Anything_iterator it = fAny5.begin();
-	assertAnyEqual(fAny5[0], it[0]);
-	assertAnyEqual(fAny5[4], it[4]);
+	ASSERT_EQUAL(fAny5[0], it[0]);
+	ASSERT_EQUAL(fAny5[4], it[4]);
 	++it;
-	assertAnyEqual(fAny5[4], it[3]);
+	ASSERT_EQUAL(fAny5[4], it[3]);
 	++it;
-	assertAnyEqual(fAny5[4], it[2]);
-	assertAnyEqual(fAny5.begin()[2], *it);
-	assertAnyEqual(*fAny5.begin(), it[-2]);
-	assertAnyEqual(fAny5.end()[-3], *it);
+	ASSERT_EQUAL(fAny5[4], it[2]);
+	ASSERT_EQUAL(fAny5.begin()[2], *it);
+	ASSERT_EQUAL(*fAny5.begin(), it[-2]);
+	ASSERT_EQUAL(fAny5.end()[-3], *it);
 	Anything_const_iterator cit = fAny5.begin();
-	assertAnyEqual(fAny5[0], cit[0]);
-	assertAnyEqual(fAny5[4], cit[4]);
+	ASSERT_EQUAL(fAny5[0], cit[0]);
+	ASSERT_EQUAL(fAny5[4], cit[4]);
 	++cit;
-	assertAnyEqual(fAny5[4], cit[3]);
+	ASSERT_EQUAL(fAny5[4], cit[3]);
 	++cit;
-	assertAnyEqual(fAny5[4], cit[2]);
-	assertAnyEqual(fAny5.begin()[2], *cit);
-	assertAnyEqual(*fAny5.begin(), cit[-2]);
-	assertAnyEqual(fAny5.end()[-3], *cit);
+	ASSERT_EQUAL(fAny5[4], cit[2]);
+	ASSERT_EQUAL(fAny5.begin()[2], *cit);
+	ASSERT_EQUAL(*fAny5.begin(), cit[-2]);
+	ASSERT_EQUAL(fAny5.end()[-3], *cit);
 }
 void AnythingIteratorTest::testIteratorSubstract() {
 	ASSERT_EQUAL(fAny5.GetSize(), fAny5.end() - fAny5.begin());
@@ -128,24 +137,24 @@ void AnythingIteratorTest::testIteratorSubstract() {
 }
 void AnythingIteratorTest::testIteratorIntAdd() {
 	Anything_iterator ai = fAny5.begin();
-	assertAnyEqual(*(ai + 4), fAny5[4]);
+	ASSERT_EQUAL(*(ai + 4), fAny5[4]);
 	++ai;
 	ASSERT(ai == (fAny5.begin() + 1));
 	ASSERT(ai == (fAny5.end() + (-4)));
 	Anything_const_iterator bi = fAny5.begin();
-	assertAnyEqual(*(bi + 4), fAny5[4]);
+	ASSERT_EQUAL(*(bi + 4), fAny5[4]);
 	++bi;
 	ASSERT(bi == (fAny5.begin() + 1));
 	ASSERT(bi == (fAny5.end() + (-4)));
 }
 void AnythingIteratorTest::testIteratorIntSubstract() {
 	Anything_iterator ai = fAny5.end();
-	assertAnyEqual(*(ai - 4), fAny5[1]);
+	ASSERT_EQUAL(*(ai - 4), fAny5[1]);
 	--ai;
 	ASSERT(ai == (fAny5.end() - 1));
 	ASSERT(ai == (fAny5.begin() - (-4)));
 	Anything_const_iterator bi = fAny5.end();
-	assertAnyEqual(*(bi - 4), fAny5[1]);
+	ASSERT_EQUAL(*(bi - 4), fAny5[1]);
 	--bi;
 	ASSERT(bi == (fAny5.end() - 1));
 	ASSERT(bi == (fAny5.begin() - (-4)));
@@ -216,14 +225,14 @@ void AnythingIteratorTest::testAnythingRangeErase() {
 	ASSERT_EQUAL(4, a.end() - a.begin());
 
 }
-void AnythingIteratorTest::AnythingIteratorTest() {
+AnythingIteratorTest::AnythingIteratorTest() {
 	fAny5.clear();
 	for (long i = 1; i <= 5; ++i) {
 		fAny5.Append(i);
 	}
 }
 
-static void runAllTests(cute::suite &s) {
+void AnythingIteratorTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(AnythingIteratorTest, testEmptyAnythingBegin));
 	s.push_back(CUTE_SMEMFUN(AnythingIteratorTest, testSimpleAnythingBegin));
 	s.push_back(CUTE_SMEMFUN(AnythingIteratorTest, testSimpleAnythingDeref));
