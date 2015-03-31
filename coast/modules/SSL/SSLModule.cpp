@@ -238,7 +238,7 @@ SSL_CTX *SSLModule::GetSSLCtx(ConfNamedObject *object) {
 
 	Assert(object);
 	if (object && object->GetName(name)) {
-		Trace("Creating new Context...");
+		Trace("Creating new SSL-Server-Context for " << name);
 		ctx = DoMakeServerContext(object);
 		if (!ctx) {
 			String logMsg("Could not create SSL Context for: ");
@@ -534,7 +534,7 @@ RegisterAcceptorFactory(SSLAcceptorFactory);
 
 Acceptor *SSLAcceptorFactory::MakeAcceptor(AcceptorCallBack *ac) {
 	StartTrace(SSLAcceptorFactory.MakeAcceptor);
-
+	TraceAny(GetConfig(), "my own config");
 	SSL_CTX *sslCtx = SSLModule::GetSSLCtx(this);
 	if (!sslCtx) {
 		return 0;

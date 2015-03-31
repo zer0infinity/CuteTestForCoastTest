@@ -98,26 +98,6 @@ MT_MemTracker::~MT_MemTracker()
 	}
 }
 
-void *MT_MemTracker::operator new(size_t size)
-{
-	// never allocate on allocator, because we are tracking exactly the one...
-	void *vp = ::calloc(1, sizeof(MT_MemTracker));
-	return vp;
-}
-
-void *MT_MemTracker::operator new(size_t size, Allocator *)
-{
-	// never allocate on allocator, because we are tracking exactly the one...
-	void *vp = ::calloc(1, sizeof(MT_MemTracker));
-	return vp;
-}
-
-void MT_MemTracker::operator delete(void *vp)
-{
-	if (vp) {
-		::operator delete(vp);
-	}
-}
 
 void MT_MemTracker::TrackAlloc(MemoryHeader *mh)
 {
@@ -227,7 +207,7 @@ namespace {
 			StatTrace(MT_Storage.Initialize, "entering", coast::storage::Global());
 			// must be called before threading is activated
 			fMTHooks = StorageHooksPtr(new MTStorageHooks());
-			coast::storage::registerHooks(fMTHooks);
+			coast::storage::registerHook(fMTHooks);
 			// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
 			Allocator *a = coast::storage::Global();
 			if (a && coast::storage::GetStatisticLevel() >= 1) {
@@ -262,7 +242,7 @@ namespace {
 					fOldTracker.reset();
 				}
 			}
-			coast::storage::StorageHooksPtr pOldHook = coast::storage::unregisterHooks();
+			coast::storage::StorageHooksPtr pOldHook = coast::storage::unregisterHook();
 			if ( pOldHook != fMTHooks ) {
 				SYSERROR("unregistered different hooks, oops");
 			}

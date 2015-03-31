@@ -508,8 +508,9 @@ protected:
 	friend class AnyImpl;
 
 	Anything(AnyImpl *);
-	AnyImpl *GetImpl(); // TODO: this is a loophole that discards const-ness
-	AnyImpl const *GetImpl()const; // TODO: this is a loophole that discards const-ness
+	//!@TODO: this is a loophole that discards const-ness
+	AnyImpl *GetImpl();
+	AnyImpl const *GetImpl()const;
 	Allocator *GetImplAllocator() const ;
 	union {
 		AnyImpl *fAnyImp;

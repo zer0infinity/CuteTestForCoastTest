@@ -30,8 +30,10 @@
 #define aimplTraceAny(any, msg)
 #endif
 
-static const String fgStrEmpty(coast::storage::Global()); //avoid temporary
-static const Anything fgAnyEmpty(coast::storage::Global()); // avoid temporary
+namespace {
+	//!< avoid temporary
+	const String fgStrEmpty(coast::storage::Global());
+}
 
 String AnyImpl::ThisToHex(Allocator *a) const {
 	const int bufSize = 1+2*sizeof(std::ptrdiff_t);
@@ -269,7 +271,7 @@ AnyKeyTable::AnyKeyTable(AnyArrayImpl *table, long initCapacity) :
 AnyKeyTable::~AnyKeyTable() {
 	if (fHashTable) {
 		Clear();
-		fAllocator->Free(fHashTable);
+		fAllocator->Free(static_cast<void*>(fHashTable));
 		fKeyTable = 0;
 		fHashTable = 0;
 	}
@@ -637,7 +639,7 @@ Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 			Expand(newsz);
 		}
 	}
-	// calculate the adress of the anything
+	// calculate the address of the anything
 	slot = IntAt(slot);
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }

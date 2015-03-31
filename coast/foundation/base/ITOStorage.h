@@ -81,10 +81,6 @@ public:
 		return fpName;
 	}
 
-	static void *operator new(size_t size);
-	static void *operator new(size_t size, class Allocator *);
-	static void operator delete(void *d);
-
 protected:
 	//!tracks the currently allocated size in bytes, and the peek allocated size
 	ul_long fAllocated, fMaxAllocated;
@@ -101,16 +97,15 @@ private:
 	//! the id of the pool we track
 	long fId;
 	//! the name of the pool we track
-	const char *fpName;
+	char *fpName;
 	//! list to store used MemoryHeaders
 	UsedListTypePtr fpUsedList;
 };
 
 class NullMemTracker : public MemTracker {
 public:
-	NullMemTracker() : MemTracker("NullMemTracker") {}
-	NullMemTracker(const char *) : MemTracker("NullMemTracker") {}
-
+	NullMemTracker(const char *);
+	~NullMemTracker();
 	//!tracks allocation; chunk allocated has allocSz
 	virtual void TrackAlloc(MemoryHeader *) {}
 
@@ -122,8 +117,7 @@ public:
 };
 
 //!helper class to check for memory leaks
-class MemChecker
-{
+class MemChecker {
 	MemChecker(const MemChecker &);
 	MemChecker &operator=(const MemChecker &);
 public:
@@ -137,7 +131,6 @@ public:
 
 	//! returns delta bytes of allocation since the constructor was run
 	l_long CheckDelta();
-	void Use() { }
 
 protected:
 	//!the allocator which is checked
@@ -269,11 +262,8 @@ class GlobalAllocator: public Allocator
 	GlobalAllocator(const GlobalAllocator &);
 	GlobalAllocator &operator=(const GlobalAllocator &);
 public:
-	//!does nothing
 	GlobalAllocator();
-
-	//!prints only statistics
-	virtual ~GlobalAllocator();
+	~GlobalAllocator();
 
 	//!frees memory allocated by global allocator
 	virtual void Free(void *vp);//lint !e1511
@@ -345,13 +335,16 @@ namespace coast
 		long GetStatisticLevel();
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		void registerHooks(coast::storage::StorageHooksPtr h);
+		void registerHook(coast::storage::StorageHooksPtr h);
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
-		coast::storage::StorageHooksPtr unregisterHooks();
+		coast::storage::StorageHooksPtr unregisterHook();
 
 		//!temporarily disable thread local storage policies e.g. to reinitialize server
-		void ForceGlobalStorage(bool b);
+		struct ForceGlobalStorageEntry {
+			ForceGlobalStorageEntry();
+			~ForceGlobalStorageEntry();
+		};
 
 		//!access the global allocator
 		Allocator *DoGlobal();
@@ -394,7 +387,7 @@ public:
 	/*! allocate a memory tracker object
 	 \param name name of the tracker
 	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-	 \return poniter to a newly created MemTracker object */
+	 \return pointer to a newly created MemTracker object */
 	MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) {
 		return DoMakeMemTracker(name, bThreadSafe);
 	}
@@ -423,7 +416,7 @@ protected:
 	/*! allocate a memory tracker object
 	 \param name name of the tracker
 	 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-	 \return poniter to a newly created MemTracker object */
+	 \return pointer to a newly created MemTracker object */
 	virtual MemTracker *DoMakeMemTracker(const char *name, bool bThreadSafe) = 0;
 };
 
@@ -432,17 +425,14 @@ class FoundationStorageHooks: public StorageHooks {
 	typedef boost::shared_ptr<Allocator> AllocatorTypePtr;
 	AllocatorTypePtr fAllocator;
 public:
-	FoundationStorageHooks() : fAllocator(new GlobalAllocator()) {
-	}
+	FoundationStorageHooks();
+	~FoundationStorageHooks();
 protected:
-	virtual void DoInitialize() {
-	}
-	virtual void DoFinalize() {
-	}
+	virtual void DoInitialize();
+	virtual void DoFinalize();
 	virtual Allocator *DoGlobal() {
 		return fAllocator.get();
 	}
-
 	virtual Allocator *DoCurrent() {
 		return fAllocator.get();
 	}
@@ -483,10 +473,10 @@ class TestStorageHooks {
 public:
 	TestStorageHooks(Allocator *wdallocator) :
 			theHooks(new _Hooks(wdallocator)) {
-		coast::storage::registerHooks(theHooks);
+		coast::storage::registerHook(theHooks);
 	}
 	virtual ~TestStorageHooks() {
-		coast::storage::StorageHooksPtr pHook = coast::storage::unregisterHooks();
+		coast::storage::StorageHooksPtr pHook = coast::storage::unregisterHook();
 		Assert( pHook != theHooks && "another coast::storage::SetHook() was called without restoring old Hook!");
 	}
 };

@@ -24,6 +24,7 @@
 #include "AnythingLookupTest.h"
 #include "StringSTLTest.h"
 #include "StringTokenizer2Test.h"
+#include "SystemBaseTest.h"
 
 void setupSuite(cute::suite &s) {
 	SS1Test::runAllTests(s);
@@ -41,4 +42,5 @@ void setupSuite(cute::suite &s) {
 	AnythingLookupTest::runAllTests(s);
 	StringSTLTest::runAllTests(s);
 	StringTokenizer2Test::runAllTests(s);
+	SystemBaseTest::runAllTests(s);
 }

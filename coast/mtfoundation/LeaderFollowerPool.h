@@ -19,6 +19,9 @@ class Socket;
 class LeaderFollowerPool: public ThreadPoolManager {
 	typedef Mutex MutexType;
 	typedef MutexType::ConditionType ConditionType;
+	LeaderFollowerPool();
+	LeaderFollowerPool(const LeaderFollowerPool &);
+	LeaderFollowerPool &operator=(const LeaderFollowerPool &);
 public:
 	LeaderFollowerPool(Reactor *reactor);
 	//!wait for a request and demultiplex the handling of it
@@ -105,6 +108,7 @@ protected:
 class Reactor {
 	HandleSet fHandleSet;
 public:
+	virtual ~Reactor() {}
 	//!process socket connections
 	virtual void ProcessEvents(LeaderFollowerPool *lfp, long timeout);
 

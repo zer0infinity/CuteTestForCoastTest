@@ -2,3 +2,10 @@
 .sconsign.*.dblite
 .build/
 .sconf_temp/
+3rdparty/
+errors.log
+include/
+info.log
+lib/
+tests/
+

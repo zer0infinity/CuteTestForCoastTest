@@ -23,16 +23,16 @@
 		/EnableAll	33
 	}
 	/Registry {
-		/MainSwitch	33
-		/EnableAll	33
+		/MainSwitch	22
+		/EnableAll	22
 	}
 	/RegistryTest {
-		/MainSwitch	33
+		/MainSwitch	22
 		/EnableAll	0
 	}
 	/RegisterableObject {
-		/MainSwitch	33
-		/EnableAll	33
+		/MainSwitch	22
+		/EnableAll	22
 	}
 	/Mutex {
 		/MainSwitch	3
@@ -163,32 +163,32 @@
 		/EnableAll	33
 	}
 	/ConfNamedObject {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/HierarchConfNamed {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/HierarchyInstaller {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/AliasInstaller {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/InstallerPolicy {
-		/MainSwitch			33
+		/MainSwitch			22
 		/EnableAll			0
 	}
 	/TerminationPolicy {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/AliasTerminator {
-		/MainSwitch			33
-		/EnableAll			33
+		/MainSwitch			22
+		/EnableAll			22
 	}
 	/ServerReInitTerminator {
 		/MainSwitch			33

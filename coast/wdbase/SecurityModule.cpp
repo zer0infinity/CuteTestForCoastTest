@@ -170,6 +170,7 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key) {
 		return (key.Length() > 0L);
 
 	}
+
 	Trace("Unable to open file: [" << name << " resolved: [" << resolvedFileName << "]");
 	return false;
 }

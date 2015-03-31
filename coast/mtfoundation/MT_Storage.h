@@ -30,9 +30,6 @@ public:
 	//!returns currently allocated bytes
 	ul_long  CurrentlyAllocated();
 
-	static void *operator new(size_t size);
-	static void *operator new(size_t size, Allocator *);
-	static void operator delete(void *d);
 protected:
 	//!system dependent mutex handle to avoid allocation of string memory
 	MUTEX fMutex;

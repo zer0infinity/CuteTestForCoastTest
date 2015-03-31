@@ -18,9 +18,9 @@ RegisterDataAccessImpl( HTTPDAImpl);
 
 String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 	ROAnything appPref(context.Lookup("URIPrefix2ServiceMap"));
-	Anything anyPrefix = appPref.SlotName(appPref.FindValue(fName));
+	Anything anyPrefix = appPref.SlotName(appPref.FindValue(GetName()));
 	String errorMsg(msg);
-	errorMsg << anyPrefix.AsString(fName) << "[";
+	errorMsg << anyPrefix.AsString(GetName()) << "[";
 	errorMsg << "Server:" << context.Lookup("Backend.Server").AsString("no IP");
 	errorMsg << " Port:" << context.Lookup("Backend.Port").AsString("no Port");
 	errorMsg << "] failed";
@@ -28,7 +28,7 @@ String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 }
 
 bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {
-	StartTrace(HTTPDAImpl.Exec);
+	StartTrace1(HTTPDAImpl.Exec, GetName());
 
 	ConnectorParams cps(context, in);
 	Trace( "Address<" << cps.IPAddress() << "> Port[" << cps.Port() << "] SSL(" << ((cps.UseSSL()) ? "yes" : "no") << ")" );
@@ -51,15 +51,14 @@ bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) 
 }
 
 bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out) {
-	StartTrace(HTTPDAImpl.DoExec);
+	StartTrace1(HTTPDAImpl.DoExec, GetName());
 #ifdef RECORD
 	return DoExecRecord( csc, cps, context, in, out);
 #endif
-	Trace("name: " << fName);
 	Socket *s = 0;
 	std::iostream *Ios = 0;
 	{
-		DAAccessTimer(HTTPDAImpl.DoExec, "Connecting <" << fName << ">", context);
+		DAAccessTimer(HTTPDAImpl.DoExec, "Connecting <" << GetName() << ">", context);
 		s = csc->Use();
 		// Store client info
 		context.GetTmpStore()["ClientInfoBackends"] = csc->ClientInfo();
@@ -157,7 +156,7 @@ bool HTTPDAImpl::SendRequest(String &request, std::iostream *Ios, Socket *s, Con
 
 bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out)
 {
-	StartTrace(HTTPDAImpl.DoExecRecordOrTest);
+	StartTrace1(HTTPDAImpl.DoExecRecord, GetName());
 
 	Anything tmpStore = context.GetTmpStore();
 
@@ -165,12 +164,10 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 	Anything recording;
 
 	Recording::ReadinRecording( String("Recording"), recording );
-
-	Trace("name: " << fName);
 	Socket *s = 0;
 	std::iostream *Ios = 0;
 	{
-		DAAccessTimer(HTTPDAImpl.DoExecRecord, "connecting <" << fName << ">", context);
+		DAAccessTimer(HTTPDAImpl.DoExecRecord, "connecting <" << GetName() << ">", context);
 		s = csc->Use();
 		if ( s ) {
 			Ios = csc->GetStream();

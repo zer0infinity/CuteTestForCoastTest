@@ -62,7 +62,7 @@ namespace {
 
 void String::alloc(long capacity)
 {
-	// this method is extremly performance sensitive
+	// this method is extremely performance sensitive
 	// beware of overhead
 	// make initial capacity some power of 2 for saving allocs with short
 	// strings, only if we have fixed size initializers string buffers
@@ -73,13 +73,13 @@ void String::alloc(long capacity)
 	capacity += sizeof(*fStringImpl); // add tara
 
 	capacity = GetAllocator()->SizeHint(capacity);
-	fStringImpl = (StringImpl *)	fAllocator->Calloc(capacity, sizeof( char ));
+	fStringImpl = static_cast<StringImpl *>(fAllocator->Calloc(capacity, sizeof( char )));
 
 	if (!fStringImpl) {
 		//--- allocation failed
 		SystemLog::Error("String::alloc: Memory allocation failed!");
 	} else {
-		// substract to get netto capacity again.
+		// subtract to get net capacity again.
 		fStringImpl->fCapacity = capacity - sizeof(*fStringImpl);
 		// length is 0 by using Calloc
 	}
@@ -157,7 +157,7 @@ String::String(const String &s, Allocator *a)
 String::~String()
 {
 	if (GetImpl()) {
-		fAllocator->Free(GetImpl());
+		fAllocator->Free(static_cast<void*>(GetImpl()));
 		fStringImpl = 0;
 	}
 }//lint !e1579
@@ -252,7 +252,7 @@ note: if start > fLength then the new buffer will contain undefined
 	}
 
 	if (oldImpl) {	// don't forget to free old buffer if new memory was allocated
-		fAllocator->Free(oldImpl);
+		fAllocator->Free(static_cast<void*>(oldImpl));
 	}
 }
 

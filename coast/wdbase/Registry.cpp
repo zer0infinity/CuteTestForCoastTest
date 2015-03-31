@@ -223,7 +223,6 @@ RegisterableObject *RegistryIterator::Next(String &key)
 			(fForward) ? ++fStart : --fStart;
 		}
 	}
-
 	Trace("fStart[" << fStart << "] fEnd[" << fEnd << "]");
 
 	return obj;

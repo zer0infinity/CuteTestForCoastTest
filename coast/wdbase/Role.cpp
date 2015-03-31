@@ -101,7 +101,8 @@ long Role::GetRoleLevel(const Role *pRole) {
 		} catch (std::bad_cast& bc) {
 			SYSINFO("bad_cast caught: " << bc.what());
 		}
-	} Trace("Role <" << strRoleName << "> has Level " << lLevel);
+	}
+	Trace("Role <" << strRoleName << "> has Level " << lLevel);
 	return lLevel;
 }
 

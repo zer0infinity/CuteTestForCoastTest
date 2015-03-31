@@ -43,7 +43,6 @@ void AnythingUtilsTest::StorePutterTest() {
 	for (long i = 0; i < sz; i++) {
 		StorePutter::Operate(toStore, c, destinations[i]);
 	}
-
 	TraceAny(c.GetTmpStore(), "TempStore after");
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 	TraceAny(c.GetSessionStore(), "SessionStore after");

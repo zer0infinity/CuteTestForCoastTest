@@ -25,10 +25,10 @@ class SegStoreAllocator : public Allocator {
 	void Free(void *vp) {}
 public:
 	SegStoreAllocator(long allocatorid) : Allocator(allocatorid) {}
+	~SegStoreAllocator();
 
 	//!print out the allocators statistics
-	void PrintStatistic(long lLevel = -1) {
-	}
+	void PrintStatistic(long lLevel = -1);
 
 	//!returns the currently allocated bytes
 	ul_long CurrentlyAllocated() {
@@ -42,5 +42,4 @@ public:
 	void *Alloc(size_t sz);
 	void Free(void *p, size_t sz);
 };
-
 #endif /* _SegStorAllocator_H */

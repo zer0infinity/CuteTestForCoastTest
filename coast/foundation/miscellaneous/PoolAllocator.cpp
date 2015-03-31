@@ -376,9 +376,9 @@ PoolAllocator::~PoolAllocator()
 	}
 	if ( fpPoolTotalExcessTracker && fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
 		strUsedPoolSize << " excess " << (l_long)( fpPoolTotalExcessTracker->PeakAllocated() / 1024UL ) << "kB";
-		delete fpPoolTotalExcessTracker;
-		fpPoolTotalExcessTracker = NULL;
 	}
+	delete fpPoolTotalExcessTracker;
+	fpPoolTotalExcessTracker = NULL;
 
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " PoolTotalTrackers deleted", coast::storage::Global());
 

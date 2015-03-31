@@ -116,6 +116,12 @@ namespace coast {
 		 */
 		int SnPrintf(char * buf, size_t buf_size, const char *format, ...);
 
+		bool StrToL(long & value, const char* str, int base = 10);
+		bool StrToUL(unsigned long & value, const char* str, int base = 10);
+		bool StrToLL(long long & value, const char* str, int base = 10);
+		bool StrToULL(unsigned long long & value, const char* str, int base = 10);
+		bool StrToD(double& value, const char* str);
+
 #if !defined(WIN32)
 		//! Get the state of the lock file.
 		/*! \param lockFileName file name to get lock state of

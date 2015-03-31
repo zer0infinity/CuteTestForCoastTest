@@ -33,10 +33,7 @@ public:
 	class Observer
 	{
 	public:
-		//--- constructors
-		Observer() {}
 		virtual ~Observer() {}
-
 		/*! interface which must be implemented if you want to be notified when objects's state changes
 			\param pObserved the object to be observed
 			\param aUpdateArgs arguments that describe the change */
@@ -48,9 +45,9 @@ public:
 	typedef typename tObserverList::iterator tObserverListIterator;
 	typedef typename tObserverList::value_type tObserverListValueType;
 
-	//--- constructors
 	Observable(const char *name, Allocator *a = coast::storage::Global())
 		: fObserversMutex(name, a)
+		, fObserversList()
 	{}
 	virtual ~Observable() {}
 

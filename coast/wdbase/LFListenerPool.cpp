@@ -203,7 +203,6 @@ bool RequestReactor::AwaitEmpty(long sec)
 				SystemLog::WriteToStderr(os.str());
 			}
 		}
-
 		Trace("CurrentParallelRequests:[" << parallelRequests << "]");
 		return (parallelRequests <= 0);
 	}

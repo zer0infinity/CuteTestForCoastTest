@@ -10,8 +10,7 @@
 #include "SystemLog.h"
 #include "Tracer.h"
 #include "Anything.h"
-#include <errno.h>
-#include <cstring>
+#include <cerrno>
 #include <cstdarg>
 #include <cstdio>
 #include <fcntl.h>
@@ -22,16 +21,10 @@
 #if defined(WIN32)
 #include <io.h>
 #include <direct.h>
-#include <stdarg.h>
-#include <stdio.h>
 #else
-#include <sys/time.h>
 #include <sys/utsname.h>
-#include <sys/statvfs.h>
 #if defined(__sun)
 extern char **environ;
-#else
-#include <unistd.h>
 #endif
 #endif
 
@@ -361,8 +354,49 @@ namespace coast {
 			if ( charsWrittenOrRequired >= buf_size ) {
 				buf[buf_size-1] = '\0';
 			}
+#undef vsnprintf
 #endif
 			return charsWrittenOrRequired;
+		}
+
+		namespace {
+			bool CheckErrnoForRangeError() {
+				if (errno == ERANGE) {
+					errno = 0;
+					return false;
+				}
+				return true;
+			}
+		}
+
+		bool StrToL(long & value, const char* str, int base) {
+			using namespace std;
+			value = strtol(str, 0, base);
+			return CheckErrnoForRangeError();
+		}
+
+		bool StrToD(double& value, const char* str) {
+			using namespace std;
+			value = strtod(str, 0);
+			return CheckErrnoForRangeError();
+		}
+
+		bool StrToULL(unsigned long long & value, const char* str, int base) {
+			using namespace std;
+			value = strtoull(str, 0, base);
+			return CheckErrnoForRangeError();
+		}
+
+		bool StrToLL(long long & value, const char* str, int base) {
+			using namespace std;
+			value = strtoll(str, 0, base);
+			return CheckErrnoForRangeError();
+		}
+
+		bool StrToUL(unsigned long & value, const char* str, int base) {
+			using namespace std;
+			value = strtoul(str, 0, base);
+			return CheckErrnoForRangeError();
 		}
 
 #if !defined(WIN32)
@@ -387,6 +421,7 @@ namespace coast {
 			return false;
 		}
 #endif
+
 	}
 }
 

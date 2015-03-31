@@ -27,6 +27,14 @@ Import('*')
 
 defaults = None
 
+hostonly, domain, fqdn = SConsider.getfqdn()
+
+searchReplaceDict = {
+    'FQDN': fqdn,
+    'HOSTNAME': hostonly,
+    'HOSTNAMEIP': socket.gethostbyname(hostonly),
+    'DOMAINONLY': domain,
+}
 
 def appendReplaceCommandForCert(key, filename, searchReplace):
     try:
@@ -167,7 +175,7 @@ def setUp(target, source, env):
     logpath = env.getLogInstallDir()
     configdir = tdir.Dir('config')
 #    env['ENV']['COAST_ROOT'] = tdirabs
-#    env['ENV']['COAST_LOGONCERR'] = '3'
+    env['ENV']['COAST_LOGONCERR'] = '3'
 #    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
     searchReplace = []
     # create certificate files
@@ -237,7 +245,7 @@ if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
             'sourceFiles': SConsider.listFiles(['*.cpp']),
             'copyFiles': [
                 (SConsider.findFiles(
-                    ['.'], extensions=['.any']), S_IRUSR | S_IRGRP | S_IROTH),
+                    ['.'], extensions=['.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplaceDict),
                 (SConsider.findFiles(
                     ['.'], matchfiles=['openssl.cnf']), S_IRUSR | S_IRGRP | S_IROTH),
                 (SConsider.findFiles(

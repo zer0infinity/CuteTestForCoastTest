@@ -11,38 +11,11 @@
 
 #include "TestCase.h"
 
-//---- MemTrackerTest ----------------------------------------------------------
-//! <B>really brief class description</B>
-/*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class MemTrackerTest : public testframework::TestCase
-{
+class MemTrackerTest: public testframework::TestCase {
 public:
-	//--- constructors
-
-	/*! \param tstrName name of the test */
 	MemTrackerTest(TString tstrName);
-
-	//! destroys the test case
-	~MemTrackerTest();
-
-	//--- public api
-
-	//! builds up a suite of testcases for this test
-	static Test *suite ();
-
-// uncomment if really needed or delete, base class does almost everything
-//	//! sets the environment for this test
-//	void setUp ();
-//
-//	//! deletes the environment for this test
-//	void tearDown ();
-
-	//! describe this testcase
+	static Test *suite();
 	void TrackAllocFreeTest();
-	void XxxTest();
 };
 
 #endif

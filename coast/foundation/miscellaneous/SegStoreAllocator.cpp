@@ -7,6 +7,17 @@
  */
 
 #include "SegStoreAllocator.h"
+#include <iostream>
+
+SegStoreAllocator::~SegStoreAllocator() {
+	allocPoolMap.clear();
+}
+
+void SegStoreAllocator::PrintStatistic(long lLevel) {
+	long lStatisticLevel = ( ( lLevel >= 0 ) ? lLevel : coast::storage::GetStatisticLevel() );
+	if ( lStatisticLevel >= 1 ) {
+	}
+}
 
 void* SegStoreAllocator::Alloc(size_t sz) {
 	AllocPoolMapping::iterator it;

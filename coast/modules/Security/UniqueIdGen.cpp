@@ -9,10 +9,8 @@
 #include "UniqueIdGen.h"
 #include "MD5.h"
 #include "SystemBase.h"
-#include "SecurityModule.h"
 #include "DiffTimer.h"
-#include "InitFinisManager.h"
-#include "singleton.hpp"
+
 namespace {
 	long const uniqueIdHashLength=32L;
 	DiffTimer fUniqueIdTimer;

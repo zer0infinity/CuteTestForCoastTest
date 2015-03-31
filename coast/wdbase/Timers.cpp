@@ -47,7 +47,6 @@ bool TimeLoggingModule::Init(const ROAnything config)
 	StartTrace(TimeLoggingModule.Init);
 	SubTraceAny(FullConfig, config, "Config: ");
 	ROAnything roaModuleConfig;
-	// set defaults
 	fgDoTiming = fgDoLogging = false;
 	if ( ((ROAnything)config).LookupPath(roaModuleConfig, fName) ) {
 		TraceAny(roaModuleConfig, "Module config");
@@ -68,6 +67,7 @@ bool TimeLoggingModule::Init(const ROAnything config)
 bool TimeLoggingModule::Finis()
 {
 	StartTrace(TimeLoggingModule.Finis);
+	fgDoTiming = fgDoLogging = false;
 	if ( fgTLSUsable ) {
 		if (THRKEYDELETE(fgNestingLevelKey) != 0) {
 			SYSERROR("TlsFree of fgNestingLevelKey failed" );

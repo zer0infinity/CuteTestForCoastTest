@@ -16,6 +16,7 @@ public:
 	}
 	static Test *suite();
 	void CreateSimpleAllocator();
+	void RealAnythingTest();
 };
 
 #endif		//not defined _SegStoreAllocatorTest_H

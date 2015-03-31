@@ -403,6 +403,7 @@ WorkerPoolManager::WorkerPoolManager(const char *name)
 	, fName( name, coast::storage::Global() )
 	, fPoolSize(0)
 	, fBlockRequestHandling(false)
+	, fTerminated(true)
 	, fpStatEvtHandler()
 {
 	StartTrace(WorkerPoolManager.Ctor);

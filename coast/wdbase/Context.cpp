@@ -49,7 +49,7 @@ Context::Context(Socket *socket) :
 Context::Context(const Anything &env, const Anything &query, Server *server, Session *s, Role *role, Page *page) :
 			fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
 			// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
-			// while InitSession handels the refcounting correctly.
+			// while InitSession handles the refcounting correctly.
 			fSessionStoreGlobal(Anything::ArrayMarker(), coast::storage::Global()), fSessionStoreCurrent(Anything::ArrayMarker(),
 					coast::storage::Current()), fStackSz(0), fStoreSz(0), fStore(Anything::ArrayMarker()), fSocket(0),
 			fCopySessionStore(false) {
@@ -82,7 +82,6 @@ void Context::InitSession(Session *s) {
 	if (Lookup("Context", contextAny)) {
 		fCopySessionStore = contextAny["CopySessionStore"].AsBool(false);
 	}
-
 	Trace("CopySessionStore: " << (fCopySessionStore ? "true" : "false"));
 	Trace("s = " << (long)(void *)s << " fSession = " << (long)(void *)fSession );
 	Trace("session is " << (sessionIsDifferent ? "" : "not ") << "different");
@@ -300,7 +299,8 @@ bool Context::GetStore(const char *key, Anything &result) {
 			result = GetRoleStoreGlobal();
 			return true;
 		}
-	} Trace("failed");
+	}
+	Trace("failed");
 	return false;
 }
 
@@ -392,7 +392,8 @@ LookupInterface *Context::Find(const char *key) const {
 		// no Safecast here, because a LookupInterface is not an IFAObject
 		LookupInterface *li = (LookupInterface *) fLookupStack["Stack"][index].AsIFAObject(0);
 		return li;
-	} Trace("<" << NotNull(key) << "> not found");
+	}
+	Trace("<" << NotNull(key) << "> not found");
 	return 0;
 }
 
@@ -422,14 +423,16 @@ long Context::Remove(const char *key) {
 	StartTrace(Context.Remove);
 	if (!key) {
 		return -1;
-	} TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
+	}
+	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
 
 	long index = FindIndex(fLookupStack, key);
 	if (index >= 0) {
 		fLookupStack["Stack"].Remove(index);
 		fLookupStack["Keys"].Remove(index);
 		--fStackSz;
-	} TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	}
+	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
 	return index;
 }
 
@@ -438,7 +441,6 @@ void Context::Replace(const char *key, LookupInterface *li) {
 	if (!key || !li) {
 		return;
 	}
-
 	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
 
 	long index = FindIndex(fLookupStack, key);
@@ -446,7 +448,8 @@ void Context::Replace(const char *key, LookupInterface *li) {
 		fLookupStack["Stack"][index] = (IFAObject *) li;
 	} else {
 		Push(key, li);
-	} TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	}
+	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
 }
 
 bool Context::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
@@ -456,7 +459,8 @@ bool Context::DoLookup(const char *key, ROAnything &result, char delim, char ind
 			indexdelim) || LookupObjects(key, result, delim, indexdelim) || LookupRequest(key, result, delim, indexdelim)) {
 		Trace("found");
 		return true;
-	} Trace("failed");
+	}
+	Trace("failed");
 	return false;
 }
 
@@ -501,7 +505,8 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 			Trace("found in SessionStore [Global]");
 			return true;
 		}
-	} Trace("failed");
+	}
+	Trace("failed");
 	return false;
 }
 
@@ -516,7 +521,8 @@ bool Context::LookupObjects(const char *key, ROAnything &result, char delim, cha
 			if (li->Lookup(key, result, delim, indexdelim)) {
 				Trace("value found");
 				return true;
-			} Trace("value not found");
+			}
+			Trace("value not found");
 		}
 	}
 	return false;
@@ -538,7 +544,8 @@ bool Context::LookupLocalized(const char *key, ROAnything &result, char delim, c
 	if (ls && ls->Lookup(key, result, delim, indexdelim)) {
 		Trace(key << " found in LocalizedStrings");
 		return true;
-	} Trace("failed");
+	}
+	Trace("failed");
 	return false;
 }
 

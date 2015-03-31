@@ -24,6 +24,7 @@ void StringTestExtreme::setUp() {
 			trueString.append(1, s);
 		}
 	}
+	delete is;
 }
 
 Test *StringTestExtreme::suite() {

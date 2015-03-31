@@ -57,33 +57,12 @@ MemTracker::MemTracker(const char *name)
 	}
 }
 
-void *MemTracker::operator new(size_t size)
-{
-	// never allocate on allocator, because we are tracking exactly the one...
-	void *vp = ::calloc(1, sizeof(MemTracker));
-	return vp;
-}
-
-void *MemTracker::operator new(size_t size, Allocator *)
-{
-	// never allocate on allocator, because we are tracking exactly the one...
-	void *vp = ::calloc(1, sizeof(MemTracker));
-	return vp;
-}
-
-void MemTracker::operator delete(void *vp)
-{
-	if (vp) {
-		::operator delete(vp);
+MemTracker::~MemTracker() {
+	if (fpUsedList) {
+		delete fpUsedList;	//lint !e1551
+		fpUsedList = 0;
 	}
-}
-
-MemTracker::~MemTracker()
-{
-	if ( fpUsedList ) {
-		delete fpUsedList;//lint !e1551
-	}
-	delete fpName;//lint !e1551//lint !e605
+	::free(fpName);
 }
 
 void MemTracker::SetId(long id)
@@ -168,6 +147,13 @@ void MemTracker::PrintStatistic(long lLevel)
 	}
 }
 
+NullMemTracker::NullMemTracker(const char *) :
+		MemTracker("NullMemTracker") {
+}
+
+NullMemTracker::~NullMemTracker() {
+}
+
 #include "singleton.hpp"
 namespace {
 	class StorageInitializer {
@@ -180,13 +166,13 @@ namespace {
 	public:
 		StorageInitializer() {
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
-			long lLevel = ((pEnvVar != 0) ? atol(pEnvVar) : 0);
-			statisticLevel = lLevel;
+			long lLevel = 0;
+			if ( pEnvVar != 0 && coast::system::StrToL(lLevel, pEnvVar) ) {
+				statisticLevel = lLevel;
+			}
 			InitFinisManager::IFMTrace("storage::Initialized\n");
 		}
-		~StorageInitializer() {
-			InitFinisManager::IFMTrace("storage::Finalized\n");
-		}
+		~StorageInitializer();
 		long GetStatisticLevel() {
 			return statisticLevel;
 		}
@@ -202,13 +188,11 @@ namespace coast
 	{
 		namespace
 		{
-
 			//flag to force global store temporarily
 			bool forceGlobal = false;
-
 			// the global allocator
 			Allocator *globalPool = 0;
-		} // anonymous namespace
+		}
 
 		void Initialize() {
 			if (StorageInitializerSingleton::instance().fgTopHook.get() && !forceGlobal) {
@@ -243,6 +227,10 @@ namespace coast
 			if (GetStatisticLevel() >= 1) {
 				DoGlobal()->PrintStatistic(2);
 			}
+			if (globalPool) {
+				delete globalPool;
+				globalPool = 0;
+			}
 		}
 
 		void Finalize() {
@@ -259,7 +247,7 @@ namespace coast
 			DoGlobal()->PrintStatistic(lLevel);
 		}
 
-		void registerHooks(StorageHooksPtr h) {
+		void registerHook(StorageHooksPtr h) {
 			if (!h) {
 				return;
 			}
@@ -268,7 +256,7 @@ namespace coast
 			StorageInitializerSingleton::instance().fgTopHook = h;
 		}
 
-		StorageHooksPtr unregisterHooks() {
+		StorageHooksPtr unregisterHook() {
 			StorageHooksPtr pOldHook = StorageInitializerSingleton::instance().fgTopHook;
 			if (pOldHook.get()) {
 				StorageInitializerSingleton::instance().fgTopHook = pOldHook->GetOldHook();
@@ -277,8 +265,11 @@ namespace coast
 			return pOldHook;
 		}
 
-		void ForceGlobalStorage(bool b) {
-			forceGlobal = b;
+		ForceGlobalStorageEntry::ForceGlobalStorageEntry() {
+			forceGlobal = true;
+		}
+		ForceGlobalStorageEntry::~ForceGlobalStorageEntry() {
+			forceGlobal = false;
 		}
 
 		MemTracker *DoMakeMemTracker(const char *name) {
@@ -311,8 +302,15 @@ namespace coast
 	} // namespace memory
 } // namespace coast
 
+namespace {
+	StorageInitializer::~StorageInitializer() {
+		coast::storage::Finalize();
+		InitFinisManager::IFMTrace("storage::Finalized\n");
+	}
+}
+
 Allocator::Allocator(long allocatorid) :
-		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker()) {
+		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker("AllocatorNullTracker")) {
 }
 
 Allocator::~Allocator() {
@@ -416,6 +414,16 @@ void GlobalAllocator::Free(void *vp) {
 		}
 		::free(vp);
 	}
+}
+
+FoundationStorageHooks::FoundationStorageHooks() :
+		fAllocator(new GlobalAllocator()) {
+}
+FoundationStorageHooks::~FoundationStorageHooks() {
+}
+void FoundationStorageHooks::DoInitialize() {
+}
+void FoundationStorageHooks::DoFinalize() {
 }
 
 char *itostorage::BoostPoolUserAllocatorGlobal::malloc(const size_type bytes) {

@@ -6,18 +6,18 @@
 # the license that is included with this library/application in the file license.txt.
 #--------------------------------------------------------------------
 {
-	/HostName				"localhost"
+	/HostName				"##HOSTNAME##"
 	/HttpPort				43010
 	/FaultyHttpPort			43011
 
-	/SSLHost				"localhost"		# fqdn if available
+	/SSLHost				"##HOSTNAME##"		# fqdn if available
 	/SSLPort				43012
 
 	/RemoteSSLHost			%SSLHost
 	/RemoteSSLPort			%SSLPort
 	/FaultySSLPort			43013
 
-	/SSLHighCipherHost	"localhost"		# fqdn if available
+	/SSLHighCipherHost	"##HOSTNAME##"		# fqdn if available
 	/SSLHighCipherPort	43014
 	/SSLHighCipherList  "HIGH:"
 

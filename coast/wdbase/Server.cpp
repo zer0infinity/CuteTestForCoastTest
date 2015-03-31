@@ -206,34 +206,32 @@ int Server::GlobalReinit()
 {
 	StartTrace(Server.GlobalReinit);
 	LockUnlockEntry me(fgReInitMutex);
-	int retCode = 0;
 	if ( BlockRequests() != 0 ) {
 		UnblockRequests();
 		return -1;
 	}
-
 	fgInReInit = true;
 	ServersModule::SetServerForReInit(this);
+	int globalReinitReturnCode = 0;
 	// assume there are no threads running with pending requests
-	// reinitialization should take place in global storage
-	// otherwise config anys are allocated in thread local storage
-	coast::storage::ForceGlobalStorage(true);
 	{
+		// reinitialization should take place in global storage
+		// otherwise configuration Anythings are allocated in thread local storage
+		coast::storage::ForceGlobalStorageEntry onlyUseGlobalMemoryHere;
 		// block cleaner thread since CheckTimeout of Session
-		// makes Lookup calls to shared configs
-		retCode = DoGlobalReinit();
+		// makes Lookup calls to shared configurations
+		globalReinitReturnCode = DoGlobalReinit();
 	}
-	coast::storage::ForceGlobalStorage(false);
 	ServersModule::SetServerForReInit(0);
-	if ( retCode == 0 ) {
-		retCode = UnblockRequests();
+	if ( globalReinitReturnCode == 0 ) {
+		globalReinitReturnCode = UnblockRequests();
 	}
 	fgInReInit = false;
 	String msg;
-	msg << "Global reinit: " << (retCode == 0 ? "succeeded" : "failed");
+	msg << "Global reinit: " << (globalReinitReturnCode == 0 ? "succeeded" : "failed");
 	Trace(msg);
 	SYSINFO(msg);
-	return retCode;
+	return globalReinitReturnCode;
 }
 
 // reintialization of the Server and its modules
@@ -368,7 +366,6 @@ bool Server::DoLookup(const char *key, ROAnything &result, char delim, char inde
 		Trace("found in Master Config");
 		return true;
 	}
-
 	Trace("failed");
 	return false;
 }
