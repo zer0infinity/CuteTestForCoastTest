@@ -33,19 +33,20 @@ void SystemBaseTest::DoSingleSelectTest()
 	// wait for stdin, only test cases where we really have a timeout (==0)
 	int iSSRet = system::DoSingleSelect(STDIN_FILENO, waittime, false, false);
 	ASSERTM("expected select to timeout or succeed", iSSRet >= 0);
-//	if ( ASSERTM("expected select to timeout or succeed", iSSRet >= 0) ) {
-		if ( iSSRet == 0L) {
-			long difft = dt.Diff();
-//			Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
-			difft -= waittime;
-//			Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
-			// need some tolerance on some systems, eg. older SunOS5.6
-//			ASSERTM(difft >= -10, String("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
-//			ASSERTM(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
-		}
-//	} else {
-//	  SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
-//	}
+	if (iSSRet == 0L) {
+		long difft = dt.Diff();
+		Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
+		difft -= waittime;
+		Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
+		// need some tolerance on some systems, eg. older SunOS5.6
+		String message;
+		message << "assume waiting long enough >=-10ms, diff was: " << difft << "ms";
+		ASSERTM(message.cstr(), difft >= -10);
+		message << "assume 20% (20ms) accuracy, but was " << difft;
+		ASSERTM(message.cstr(), difft < waittime / 5);
+	} else {
+		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
+	}
 #endif
 	// sanity check negative value
 	ASSERT(system::DoSingleSelect(-1, 0, true, false) < 0);

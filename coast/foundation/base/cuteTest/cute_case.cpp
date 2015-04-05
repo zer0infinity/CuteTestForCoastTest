@@ -9,7 +9,6 @@
  */
 
 #include "cute_case.h"
-#include "SS1Test.h"
 #include "ROSimpleAnythingTest.h"
 #include "StringIteratorTest.h"
 #include "StringTestExtreme.h"
@@ -25,9 +24,10 @@
 #include "StringSTLTest.h"
 #include "StringTokenizer2Test.h"
 #include "SystemBaseTest.h"
+#include "AnythingDeepCloneTest.h"
+#include "AnythingConstructorsTest.h"
 
 void setupSuite(cute::suite &s) {
-	SS1Test::runAllTests(s);
 	ROSimpleAnythingTest::runAllTests(s);
 	StringIteratorTest::runAllTests(s);
 	StringTestExtreme::runAllTests(s);
@@ -43,4 +43,6 @@ void setupSuite(cute::suite &s) {
 	StringSTLTest::runAllTests(s);
 	StringTokenizer2Test::runAllTests(s);
 	SystemBaseTest::runAllTests(s);
+	AnythingDeepCloneTest::runAllTests(s);
+	AnythingConstructorsTest::runAllTests(s);
 }

@@ -13,8 +13,6 @@
 #define _StrSpecialTest_h_
 
 #include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
 
 class StrSpecialTest {
 public:

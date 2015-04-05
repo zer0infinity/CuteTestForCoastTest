@@ -13,8 +13,6 @@
 #define _TypeTraitsTest_H
 
 #include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
 
 class TypeTraitsTest {
 public:
