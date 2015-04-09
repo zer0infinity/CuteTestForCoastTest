@@ -12,8 +12,9 @@
 #ifndef AnythingSTLTest_H
 #define AnythingSTLTest_H
 
-#include "cute.h"//lint !e537
+#include "cute.h"
 #include "Anything.h"//lint !e537
+
 class AnythingSTLTest {
 	void checkRange(const Anything &, long n, long length);
 	void checkFill(const Anything &);

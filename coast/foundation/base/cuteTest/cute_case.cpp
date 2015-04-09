@@ -9,23 +9,38 @@
  */
 
 #include "cute_case.h"
-#include "ROSimpleAnythingTest.h"
-#include "StringIteratorTest.h"
+#include "AnythingConstructorsTest.h"
+#include "AnythingDeepCloneTest.h"
+#include "AnythingImportExportTest.h"
+#include "AnythingLookupTest.h"
+#include "AnythingKeyIndexTest.h"
+//#include "AnythingTest.h"
+#include "StringTest.h"
 #include "StringTestExtreme.h"
 #include "StringTokenizerTest.h"
+#include "StringTokenizer2Test.h"
+#include "AnythingParserSemanticTest.h"
+#include "AnythingParserTest.h"
 #include "StrSpecialTest.h"
 #include "SysLogTest.h"
 #include "TracerTest.h"
+#include "SystemBaseTest.h"
+//#include "SystemFileTest.h"
+#include "ROSimpleAnythingTest.h"
+#include "AnyBuiltInSortTest.h"
+#include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
 #include "AnythingIteratorTest.h"
+#include "AnythingSTLTest.h"
+#if !defined(WIN32)
+#include "MmapTest.h"
+#endif
+#include "StringStreamTest.h"
+#include "StringIteratorTest.h"
 #include "StringReverseIteratorTest.h"
-#include "AnyImplsTest.h"
-#include "AnythingLookupTest.h"
 #include "StringSTLTest.h"
-#include "StringTokenizer2Test.h"
-#include "SystemBaseTest.h"
-#include "AnythingDeepCloneTest.h"
-#include "AnythingConstructorsTest.h"
+#include "AnythingImportExportTest.h"
+#include "AnythingKeyIndexTest.h"
 
 void setupSuite(cute::suite &s) {
 	ROSimpleAnythingTest::runAllTests(s);
@@ -45,4 +60,16 @@ void setupSuite(cute::suite &s) {
 	SystemBaseTest::runAllTests(s);
 	AnythingDeepCloneTest::runAllTests(s);
 	AnythingConstructorsTest::runAllTests(s);
+	AnythingParserSemanticTest::runAllTests(s);
+	StringTest::runAllTests(s);
+#if !defined(WIN32)
+	MmapTest::runAllTests(s);
+#endif
+	AnyBuiltInSortTest::runAllTests(s);
+//	AnythingTest::runAllTests(s);
+	AnythingSTLTest::runAllTests(s);
+	StringStreamTest::runAllTests(s);
+	AnythingImportExportTest::runAllTests(s);
+	AnythingKeyIndexTest::runAllTests(s);
+	AnythingParserTest::runAllTests(s);
 }
