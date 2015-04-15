@@ -14,7 +14,7 @@
 #include "AnythingImportExportTest.h"
 #include "AnythingLookupTest.h"
 #include "AnythingKeyIndexTest.h"
-//#include "AnythingTest.h"
+#include "AnythingTest.h"
 #include "StringTest.h"
 #include "StringTestExtreme.h"
 #include "StringTokenizerTest.h"
@@ -25,7 +25,7 @@
 #include "SysLogTest.h"
 #include "TracerTest.h"
 #include "SystemBaseTest.h"
-//#include "SystemFileTest.h"
+#include "SystemFileTest.h"
 #include "ROSimpleAnythingTest.h"
 #include "AnyBuiltInSortTest.h"
 #include "AnyImplsTest.h"
@@ -41,6 +41,7 @@
 #include "StringSTLTest.h"
 #include "AnythingImportExportTest.h"
 #include "AnythingKeyIndexTest.h"
+#include "SystemFileTest.h"
 
 void setupSuite(cute::suite &s) {
 	ROSimpleAnythingTest::runAllTests(s);
@@ -66,10 +67,11 @@ void setupSuite(cute::suite &s) {
 	MmapTest::runAllTests(s);
 #endif
 	AnyBuiltInSortTest::runAllTests(s);
-//	AnythingTest::runAllTests(s);
+	AnythingTest::runAllTests(s);
 	AnythingSTLTest::runAllTests(s);
 	StringStreamTest::runAllTests(s);
 	AnythingImportExportTest::runAllTests(s);
 	AnythingKeyIndexTest::runAllTests(s);
 	AnythingParserTest::runAllTests(s);
+	SystemFileTest::runAllTests(s);
 }
