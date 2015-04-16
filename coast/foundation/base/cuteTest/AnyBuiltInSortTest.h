@@ -15,6 +15,7 @@
 #include "cute.h"
 #include "Anything.h"//lint !e537
 #include "Tracer.h"
+#include "StringStream.h"
 class AnyBuiltInSortTest {
 public:
 	static void runAllTests(cute::suite &s);

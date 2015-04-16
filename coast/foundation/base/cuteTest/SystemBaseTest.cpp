@@ -18,7 +18,7 @@ using namespace coast;
 
 void SystemBaseTest::DoSingleSelectTest()
 {
-//	StartTrace(SystemBaseTest.DoSingleSelectTest);
+	StartTrace(SystemBaseTest.DoSingleSelectTest);
 #if !defined(WIN32) // select not possible on non-socket handles on WIN32
 	// assume writability of stdout
 	int result = system::DoSingleSelect(STDOUT_FILENO, 100, false, true);

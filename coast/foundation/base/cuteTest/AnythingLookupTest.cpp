@@ -356,13 +356,13 @@ void AnythingLookupTest::intLookupPathCheck(Anything &test, const char *path) {
 	// do the test
 	Anything result;
 	bool retVal = test.LookupPath(result, path);
-	ASSERT_EQUALM( NotNull(path), 1, retVal);
+	ASSERT_EQUALM( NotNull(path), false, retVal);
 	ASSERTM( NotNull(path),result.IsNull());
 
 	ROAnything roTest(test);
 	ROAnything roResult;
 	retVal = roTest.LookupPath(roResult, path);
-	ASSERT_EQUALM( NotNull(path), 1, retVal);
+	ASSERT_EQUALM( NotNull(path), false, retVal);
 	ASSERTM( NotNull(path),roResult.IsNull());
 }
 

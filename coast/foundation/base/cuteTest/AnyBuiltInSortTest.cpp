@@ -136,7 +136,11 @@ void AnyBuiltInSortTest::SortMany() {
 	dt.Reset();
 	SlotnameSorter::Sort(b);
 	std::cerr << "Slogname sorting of " << size << " took " << dt.Diff() << " ms.\n";
-	ASSERT_EQUAL(a, b);
+	String sexp, act;
+	OStringStream oexp(&sexp), oact(&act);
+	a.Export(oexp, false);
+	b.Export(oact, false);
+	ASSERT_EQUAL(sexp, act);
 }
 
 void AnyBuiltInSortTest::SortManyStringValues() {
