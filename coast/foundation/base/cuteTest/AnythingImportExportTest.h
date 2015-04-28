@@ -12,12 +12,13 @@
 #ifndef _AnythingImportExportTest_H
 #define _AnythingImportExportTest_H
 
+#include "AssertionAnything.h"
 #include "cute.h"
 #include "Anything.h"//lint !e537
 #include "SystemFile.h"
 #include "StringStream.h"
 
-class AnythingImportExportTest {
+class AnythingImportExportTest : public Assertion {
 public:
 	static void runAllTests(cute::suite &s);
 

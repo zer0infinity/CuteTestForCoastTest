@@ -151,7 +151,7 @@ void MmapTest::IntSimpleWrite(int openmode)
 		lseek(fd, 0L, SEEK_SET);
 		ASSERT_EQUAL(filelen, read(fd, buf, filelen));
 		buf[filelen] = 0;
-		ASSERT_EQUAL(fgcContent, buf);
+		ASSERT_EQUAL(fgcContent, (const char *)buf);
 		delete [] buf;
 		close(fd);
 	}
@@ -198,7 +198,7 @@ void MmapTest::OperatorShiftLeftWithReadBuf()
 
 		OStringStream buf;
 		buf << is2->rdbuf();
-		ASSERT_EQUAL(testContent, buf.str());
+		ASSERT_EQUAL((const char *)testContent, buf.str());
 	}
 }
 

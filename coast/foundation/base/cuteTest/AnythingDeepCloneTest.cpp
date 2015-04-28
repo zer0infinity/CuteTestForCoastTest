@@ -129,8 +129,7 @@ void AnythingDeepCloneTest::DeepClone0Test() {
 	ASSERT( anyOriginal[1].AsLong() == 3 );
 	ASSERT( anyClone[1].AsLong() == 3 );
 
-	//PS: try new ASSERT_EQUAL
-	ASSERT_NOT_EQUAL_TO(anyOriginal, anyClone);
+	ASSERT_ANY_EQUAL(anyOriginal, anyClone);
 
 	anyOriginal.Append("Noch ein String");
 	typeBefore = anyOriginal.GetType();
@@ -528,7 +527,7 @@ void AnythingDeepCloneTest::DeepCloneBug232Test() {
 		Anything anyResult(&p);
 		anyResult = roaEntry.DeepClone(&p);
 		TraceAny(anyResult, "cloned");
-		ASSERT_NOT_EQUAL_TOM( "expected cloned any of ROAnything to match",anyExpected, anyResult);
+		ASSERT_ANY_EQUALM( "expected cloned any of ROAnything to match",anyExpected, anyResult);
 	}
 	{
 		// test escaped reference
@@ -547,6 +546,6 @@ void AnythingDeepCloneTest::DeepCloneBug232Test() {
 		Anything anyResult(&p);
 		anyResult = roaEntry["level"]["ServiceLink"].DeepClone(&p);
 		TraceAny(anyResult, "cloned");
-		ASSERT_NOT_EQUAL_TOM( "expected cloned any of ROAnything to match",anyExpected["level"]["ServiceLink"], anyResult);
+		ASSERT_ANY_EQUALM( "expected cloned any of ROAnything to match",anyExpected["level"]["ServiceLink"], anyResult);
 	}
 }

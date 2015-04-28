@@ -17,8 +17,9 @@
 #include "SystemFile.h"
 #include "Tracer.h"
 #include "StringStream.h"
+#include "AssertionAnything.h"
 
-class AnythingDeepCloneTest {
+class AnythingDeepCloneTest : public Assertion {
 public:
 	static void runAllTests(cute::suite &s);
 

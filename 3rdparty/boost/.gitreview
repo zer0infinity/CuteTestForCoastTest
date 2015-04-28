@@ -1,0 +1,8 @@
+[gerrit]
+host=gerrit.coast-project.org
+port=29418
+project=boost.git
+defaultbranch=master
+defaultremote=origin
+defaultrebase=1
+

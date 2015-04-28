@@ -72,7 +72,7 @@ if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
                 'CoastFoundation.Base',
                 'CoastFoundation.Time',
                 'CoastFoundation.Miscellaneous',
-                'cute',],
+                'CuteExtensions',],
             'sourceFiles': SConsider.listFiles(
                 ['*.cpp']),
             'targetType': 'ProgramTest',

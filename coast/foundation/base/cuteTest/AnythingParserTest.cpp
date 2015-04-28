@@ -525,8 +525,7 @@ void AnythingParserTest::parseSimpleTypeNull() {
 	ASSERT_EQUAL(AnyNullType, anyTest.GetType());
 	ASSERT_EQUAL(0, anyTest.GetSize());
 	ASSERT_EQUAL_DELTA(0.0, anyTest.AsDouble(), 0.00001);
-	//TODO: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
-//	ASSERT_EQUAL(NULL, anyTest.AsCharPtr());
+	ASSERT_EQUAL(NULL, (long)anyTest.AsCharPtr());
 	//ASSERT_EQUAL( anyTest.AsCharPtr(), " " );	// ABORT ????
 
 	String input1 = "*";
@@ -535,8 +534,7 @@ void AnythingParserTest::parseSimpleTypeNull() {
 	ASSERT_EQUAL(AnyNullType, anyTest.GetType());
 	ASSERT_EQUAL(0, anyTest.GetSize());
 	ASSERT_EQUAL_DELTA(0.0, anyTest.AsDouble(), 0.00001);
-	//TODO: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
-//	ASSERT_EQUAL(NULL, anyTest.AsCharPtr());
+	ASSERT_EQUAL(NULL, (long)anyTest.AsCharPtr());
 
 	// \01 ist nicht erlaubt --> eNull
 	String input2 = "\01";

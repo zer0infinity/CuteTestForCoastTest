@@ -76,7 +76,7 @@ void AnythingImportExportTest::ImportTest() {
 	Anything expectedValue;
 	expectedValue["DLL"][0L] = "CoastSecurity";
 	expectedValue.Append("grmbl");
-	ASSERT_EQUAL(expectedValue, config);
+	ASSERT_ANY_EQUAL(expectedValue, config);
 	delete ifp;
 }
 
@@ -233,11 +233,11 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyResult.Import(is);
 		// test if the link was made
 		anyExpected["100"] = anyExpected["200"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 		// try to modify the 'original' and compare
 		anyResult["200"]["c"] = "fooBar";
 		anyExpected["200"]["c"] = "fooBar";
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test the inverse order of the reference definition
@@ -248,7 +248,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected["1"]["b"] = "gaga";
 		anyExpected["200"] = anyExpected["1"];
 		anyResult.Import(is);
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a reference to a named slot
@@ -260,7 +260,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected["100"] = anyExpected["200"]["a"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test unnamed references
@@ -274,7 +274,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected.Append(anyExpected["200"]["a"]);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(anyExpected["200"]["a"]);
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a double linked reference
@@ -288,7 +288,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(anyExpected["200"]["a"]);
 		anyExpected.Append(anyExpected["200"]["c"]);
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a reference to a unnamed slot
@@ -303,7 +303,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(34L);
 		anyExpected["100"]["e"] = anyExpected["200"]["c"][0L];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a unnamed reference to a unnamed slot
@@ -318,7 +318,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected["200"]["c"].Append(34L);
 		anyExpected.Append(anyExpected["200"]["c"][0L]);
 		anyExpected["100"]["e"] = anyExpected["200"]["c"][0L];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a unnamed reference to a unnamed slot with a reference
@@ -333,7 +333,7 @@ void AnythingImportExportTest::RefSlotTest() {
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(anyExpected["200"]["a"]);
 		anyExpected["100"]["e"] = anyExpected["200"]["c"][0L];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a unnamed reference to a unnamed slot with a reference
@@ -348,7 +348,7 @@ void AnythingImportExportTest::RefSlotTest() {
 
 		IStringStream is(str);
 		anyResult.Import(is);
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test a unnamed and named reference where the last part of the key contains 'special characters'
@@ -393,7 +393,7 @@ void AnythingImportExportTest::RefSlotTest() {
 
 		IStringStream is(&str);
 		anyResult.Import(is);
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 }
 
@@ -422,7 +422,7 @@ void AnythingImportExportTest::AnyIncludeTest() {
 			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
-		ASSERT_EQUAL(anyRef, anyMain);
+		ASSERT_ANY_EQUAL(anyRef, anyMain);
 	}
 	{
 		// Test an include in a unnamed slot with a absolut uri without localhost
@@ -449,7 +449,7 @@ void AnythingImportExportTest::AnyIncludeTest() {
 			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
-		ASSERT_EQUAL(anyRef, anyMain);
+		ASSERT_ANY_EQUAL(anyRef, anyMain);
 	}
 	//!@FIXME needs further analysis what to do when specifying a machine name
 	// it seems that when a machine name other than localhost is used wh should use FTP to get the file
@@ -531,7 +531,7 @@ void AnythingImportExportTest::AnyIncludeTest() {
 			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
-		ASSERT_EQUAL(anyRef, anyMain);
+		ASSERT_ANY_EQUAL(anyRef, anyMain);
 	}
 	{
 		// Test an include with a query for a subtree with escaped path and index delims in the include file
@@ -557,7 +557,7 @@ void AnythingImportExportTest::AnyIncludeTest() {
 			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
-		ASSERT_EQUAL(anyRef, anyMain);
+		ASSERT_ANY_EQUAL(anyRef, anyMain);
 	}
 	{
 		// Test an include with a query for a subtree in the include file that does not exist
@@ -583,7 +583,7 @@ void AnythingImportExportTest::AnyIncludeTest() {
 			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
-		ASSERT_EQUAL(anyRef, anyMain);
+		ASSERT_ANY_EQUAL(anyRef, anyMain);
 	}
 }
 
@@ -604,7 +604,7 @@ void AnythingImportExportTest::RefBug227Test() {
 		anyResult.Import(is);
 		anyExpected["200"]["a.b.c"] = Anything();
 		anyExpected["name"] = "blub";
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test an unnamed reference
@@ -617,7 +617,7 @@ void AnythingImportExportTest::RefBug227Test() {
 		anyExpected["100"][0L] = anyExpected["name"];
 		anyExpected["100"]["e"] = 123;
 		anyExpected["300"][0L] = anyExpected["100"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 }
 
@@ -638,7 +638,7 @@ void AnythingImportExportTest::RefBug231Test() {
 		anyExpected["Params"]["UseSSL"] = 1L;
 		anyExpected["a.b.c"][0L] = 3L;
 		anyExpected["a.b.c"]["NewRef"] = anyExpected["BackendName"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 }
 
@@ -652,7 +652,7 @@ void AnythingImportExportTest::RefBug220Test() {
 		anyExpected["a.b.c"][0L] = 33;
 		anyExpected["name"] = "blub";
 		anyExpected["300"][0L] = anyExpected["a.b.c"][0L];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test escaped reference
@@ -663,7 +663,7 @@ void AnythingImportExportTest::RefBug220Test() {
 		anyExpected["a.b.c"]["level1"]["level2"] = 33;
 		anyExpected["name"] = "blub";
 		anyExpected["300"][0L] = anyExpected["a.b.c"]["level1"]["level2"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 	{
 		// test escaped reference
@@ -674,6 +674,6 @@ void AnythingImportExportTest::RefBug220Test() {
 		anyExpected["a.b.c"][":3"]["level2"] = 33;
 		anyExpected["name"] = "blub";
 		anyExpected["300"][0L] = anyExpected["a.b.c"][":3"]["level2"];
-		ASSERT_EQUAL(anyExpected, anyResult);
+		ASSERT_ANY_EQUAL(anyExpected, anyResult);
 	}
 }

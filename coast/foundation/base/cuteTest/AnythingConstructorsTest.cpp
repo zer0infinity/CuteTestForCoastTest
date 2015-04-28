@@ -713,7 +713,7 @@ void AnythingConstructorsTest::VoidStarLenConstrTest() {
 	ASSERT( anyTest.At(-1L) == anyTest.At(0L) );
 	ASSERT_EQUAL( (anyTest.At(0L)).AsLong(-1L), -1L );
 	ASSERT( anyTest.At(1L) == NULL );
-	ASSERT_EQUAL( anyTest[0L].AsCharPtr(""), (char *)arrTest);
+	ASSERT_EQUAL( anyTest[0L].AsCharPtr(""), (const char *)arrTest);
 	ASSERT( anyTest[1L] == NULL );
 }
 

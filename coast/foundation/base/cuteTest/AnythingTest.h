@@ -13,10 +13,10 @@
 #define _AnythingTest_H
 
 #include "cute.h"
-#include "Anything.h"//lint !e537
-#include "StringStream.h"
 #include "SystemFile.h"
-class AnythingTest {
+#include "AssertionAnything.h"
+
+class AnythingTest : public Assertion {
 protected:
 	Anything fQuery;
 	Anything fConfig;

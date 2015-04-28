@@ -12,11 +12,13 @@
 #ifndef _AnyBuiltInSortTest_H
 #define _AnyBuiltInSortTest_H
 
+#include "AssertionAnything.h"
 #include "cute.h"
 #include "Anything.h"//lint !e537
 #include "Tracer.h"
 #include "StringStream.h"
-class AnyBuiltInSortTest {
+
+class AnyBuiltInSortTest : public Assertion {
 public:
 	static void runAllTests(cute::suite &s);
 

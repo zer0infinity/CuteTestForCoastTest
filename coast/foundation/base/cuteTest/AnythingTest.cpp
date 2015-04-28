@@ -10,7 +10,6 @@
  */
 
 #include "AnythingTest.h"
-#include "../anythingoptional/AnyIterators.h"
 #include "IFAObject.h"
 
 using namespace coast;
@@ -332,6 +331,15 @@ void AnythingTest::operatorAssignemnt() {
 	ifaObjectOperatorAssign();
 }
 
+bool compareForTestCases(const ROAnything &expected, const ROAnything &actual)
+{
+	String sexp, act;
+	OStringStream oexp(&sexp), oact(&act);
+	expected.Export(oexp, false);
+	actual.Export(oact, false);
+	return (sexp == act);
+}
+
 void AnythingTest::appendTest() {
 	Anything sub;
 	sub["X"] = "x";
@@ -341,20 +349,20 @@ void AnythingTest::appendTest() {
 	a.Append(sub);
 	Anything expected;
 	expected[0L] = sub;
-	ASSERT_EQUAL(expected, a);
+	ASSERT(compareForTestCases(expected, a));
 
 	a.Append(sub);
 	expected[1L] = sub;
-	ASSERT_EQUAL(expected, a);
+	ASSERT(compareForTestCases(expected, a));
 
 	Anything b = "Test"; // AnyStringImpl
 	b.Append(sub); // -> AnyArrayImpl
 	expected[0L] = "Test";
-	ASSERT_EQUAL(expected, b);
+	ASSERT(compareForTestCases(expected, b));
 
 	b["NewKey"].Append(sub);
 	expected["NewKey"][0L] = sub;
-	ASSERT_EQUAL(expected, b);
+	ASSERT(compareForTestCases(expected, b));
 }
 
 void AnythingTest::boolOperatorAssign() {
@@ -693,7 +701,7 @@ void AnythingTest::SlotnameSorterTest() {
 			SlotnameSorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? SlotnameSorter::asc : SlotnameSorter::desc);
 			sorted = cConfig["TestArray"].DeepClone();
 			SlotnameSorter::Sort(sorted, mode);
-			ASSERT_EQUAL( cConfig["ExpectedResult"], sorted);
+			ASSERT_ANY_EQUAL( cConfig["ExpectedResult"], sorted);
 
 	}
 }

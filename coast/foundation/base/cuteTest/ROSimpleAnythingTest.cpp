@@ -39,8 +39,7 @@ void ROSimpleAnythingTest::EmptyConstructor()
 	DummyROIFAObj dummyIFA;
 
 	// test standard defaults
-//	TODO: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
-//	ASSERT_EQUAL(0L, roTest.AsCharPtr());
+	ASSERT_EQUAL(0L, (long)roTest.AsCharPtr());
 	ASSERT_EQUAL(0L, roTest.AsLong(0));
 	ASSERT_EQUAL(false, roTest.AsBool(false));
 	ASSERT_EQUAL(0L, (long)roTest.AsDouble());
