@@ -14,13 +14,11 @@
 
 #include "cute.h"
 #include "boost/function.hpp"
-#include "Tracer.h"
-#include "StringStream.h"
 #include "SystemFile.h"
 #include "SystemBase.h"
-#include "../anythingoptional/AnyIterators.h"
+#include "AssertionAnything.h"
 
-class SystemFileTest {
+class SystemFileTest : public Assertion {
 	void testGetFilePath(boost::function<String()> func, const String& notFoundResult);
 public:
 	static void runAllTests(cute::suite &s);

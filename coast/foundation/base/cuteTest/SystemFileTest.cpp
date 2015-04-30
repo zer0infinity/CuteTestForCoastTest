@@ -1083,9 +1083,9 @@ void SystemFileTest::IOStreamTest() {
 		ASSERTM("expected file to be opened", pStream != NULL);
 			*pStream >> strReadIn;
 			delete pStream;
-			String strExpected;
+			String strExpected(strOut);
 			strExpected << strOutApp;
-			ASSERT_EQUAL(strExpected.cstr(), strReadIn);
+			ASSERT_EQUAL(strExpected, strReadIn);
 
 		pStream = system::OpenStream(strAppFile, NULL, std::ios::app);
 		ASSERTM("expected file to be opened", pStream != NULL);
@@ -1099,10 +1099,10 @@ void SystemFileTest::IOStreamTest() {
 		ASSERTM("expected file to be opened", pStream != NULL);
 			*pStream >> strReadIn;
 			delete pStream;
-			strExpected.Add(strOut);
+			strExpected = String(strOut);
 			strExpected << strOutApp;
 			strExpected << strOut;
-			ASSERT_EQUAL(strExpected.cstr(), strReadIn);
+			ASSERT_EQUAL(strExpected, strReadIn);
 
 		pStream = system::OpenStream(strAteFile, NULL, std::ios::ate);
 		ASSERTM("expected file not to be opened", pStream == NULL);
@@ -1132,7 +1132,7 @@ void SystemFileTest::IOStreamTest() {
 		ASSERTM("expected file to be opened", pStream != NULL);
 			*pStream >> strReadIn;
 			delete pStream;
-			strExpected.Add(strOut);
+			strExpected = String(strOut);
 			strExpected << strOutApp;
 			ASSERT_EQUAL(strExpected.cstr(), strReadIn);
 
@@ -1150,7 +1150,7 @@ void SystemFileTest::IOStreamTest() {
 		ASSERTM("expected file to be opened", pStream != NULL);
 			*pStream >> strReadIn;
 			delete pStream;
-			strExpected.Add(strOut);
+			strExpected = String(strOut);
 			strExpected << strOut;
 			ASSERT_EQUAL(strExpected.cstr(), strReadIn);
 
@@ -1171,7 +1171,7 @@ void SystemFileTest::LoadConfigFileTest() {
 	String realfilename;
 	ASSERT(system::LoadConfigFile(dbg2, "Tracer", "any", realfilename));
 	ASSERT_EQUAL("Tracer.any", realfilename.SubString(realfilename.StrRChr(system::Sep())+1L));
-	ASSERT_EQUAL(dbgany, dbg2);
+	ASSERT_ANY_EQUAL(dbgany, dbg2);
 
 	Anything dbg3;
 	ASSERT(!system::LoadConfigFile(dbg3, "NotExisting", "any", realfilename));
@@ -1257,7 +1257,7 @@ void SystemFileTest::MakeRemoveDirectoryTest() {
 		// multiple level tests
 		strSaveParam = str2Level;
 		ASSERT_EQUALM("expected creation of multiple directory levels at once to fail", system::eNotExists, system::MakeDirectory(str2Level, 0755, false));
-		ASSERT_EQUAL(str1Level, str2Level);
+		ASSERT_EQUAL((const char *)str1Level, str2Level);
 		str2Level = strSaveParam;
 		ASSERT_EQUALM("expected creation of multiple directory levels at once to succeed", system::eSuccess, system::MakeDirectory(str2Level, 0755, true) );
 			system::ResolvePath(strSaveParam);
