@@ -22,6 +22,7 @@ class SystemFileTest : public Assertion {
 	void testGetFilePath(boost::function<String()> func, const String& notFoundResult);
 public:
 	static void runAllTests(cute::suite &s);
+	ROAnything GetTestCaseConfig(String strClassName = "", String strTestName = "");
 	void initPathTest();
 	void pathListTest();
 	void rooDirTest();

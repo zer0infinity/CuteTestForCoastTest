@@ -16,10 +16,6 @@ using namespace coast;
 
 AnythingTest::AnythingTest() {
 	StartTrace(AnythingTest.setUp);
-	if (!system::LoadConfigFile(fConfig, "AnythingTest", "any")) {
-		ASSERT_EQUAL( "'read AnythingTest.any'", "'could not read AnythingTest.any'" );
-	}
-	fQuery = fConfig["Queries"];
 }
 
 class DummyIFAObj: public IFAObject {
@@ -592,6 +588,7 @@ void AnythingTest::SlotCopierTest() {
 }
 
 void AnythingTest::SlotFinderTest() {
+	setQuery("SlotFinderTest");
 	StartTrace(AnythingTest.SlotFinderTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {
@@ -602,11 +599,19 @@ void AnythingTest::SlotFinderTest() {
 		ROAnything expectedStore(config["Result"]);
 		String msg;
 		msg << "." << fQuery.SlotName(l);
-		ASSERT_EQUALM(msg.cstr(), expectedStore, foundResult);
+		ASSERT_ANY_EQUALM(msg.cstr(), expectedStore, foundResult);
 	}
 }
 
+void AnythingTest::setQuery(String name) {
+	if (!system::LoadConfigFile(fConfig, "AnythingTest", "any")) {
+		ASSERT_EQUAL( "'read AnythingTest.any'", "'could not read AnythingTest.any'" );
+	}
+	fQuery = fConfig["Queries"][name];
+}
+
 void AnythingTest::SlotPutterTest() {
+	setQuery(__FUNCTION__)
 	StartTrace(AnythingTest.SlotPutterTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {
@@ -621,11 +626,12 @@ void AnythingTest::SlotPutterTest() {
 		Anything expectedStore(fQuery[l]["Result"]);
 		String msg;
 		msg << "." << fQuery.SlotName(l);
-		ASSERT_EQUALM(msg.cstr(), expectedStore, tmpStore);
+		ASSERT_ANY_EQUALM(msg.cstr(), expectedStore, tmpStore);
 	}
 }
 
 void AnythingTest::SlotPutterAppendTest() {
+	setQuery(__FUNCTION__);
 	StartTrace(AnythingTest.SlotPutterAppendTest);
 	// Set up
 	Anything config = fQuery["Destination"];
@@ -643,13 +649,14 @@ void AnythingTest::SlotPutterAppendTest() {
 
 	TraceAny(rStore, "rStore after");
 
-	Anything expectedStore(fConfig["Results"]);
-	ASSERT_EQUAL(expectedStore, rStore);
+	Anything expectedStore(fConfig["Results"]["SlotPutterAppendTest"]);
+	ASSERT_ANY_EQUAL(expectedStore, rStore);
 }
 
 void AnythingTest::AnythingLeafIteratorTest() {
+	setQuery(__FUNCTION__);
 	StartTrace(AnythingTest.AnythingLeafIteratorTest);
-	ROAnything expectedStore(fConfig["Results"]);
+	ROAnything expectedStore(fConfig["Results"]["AnythingLeafIteratorTest"]);
 	{
 		// Set up
 		Anything iterateMe = fQuery["IterateThis"];
@@ -661,7 +668,7 @@ void AnythingTest::AnythingLeafIteratorTest() {
 		while (iter.Next(akt)) {
 			foundResult.Append(akt);
 		}
-		ASSERT_EQUAL(expectedStore, foundResult);
+		ASSERT_ANY_EQUAL(expectedStore, foundResult);
 	}
 	{
 		// Set up
@@ -672,7 +679,7 @@ void AnythingTest::AnythingLeafIteratorTest() {
 		while (iter.Next(akt)) {
 			foundResult.Append(akt.DeepClone());
 		}
-		ASSERT_EQUAL(expectedStore, foundResult);
+		ASSERT_ANY_EQUAL(expectedStore, foundResult);
 	}
 	{
 		// Set up
@@ -686,11 +693,12 @@ void AnythingTest::AnythingLeafIteratorTest() {
 			foundResult.Append(akt.DeepClone());
 		}
 
-		ASSERT_EQUAL(expectedStore, foundResult);
+		ASSERT_ANY_EQUAL(expectedStore, foundResult);
 	}
 }
 
 void AnythingTest::SlotnameSorterTest() {
+	setQuery();
 	StartTrace(AnythingTest.SlotnameSorterTest);
 	ROAnything roaTestConfig;
 	ASSERT(((ROAnything)fConfig).LookupPath(roaTestConfig, "SlotnameSorterTest"));

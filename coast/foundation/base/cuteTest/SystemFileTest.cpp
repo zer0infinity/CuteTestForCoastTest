@@ -1179,15 +1179,18 @@ void SystemFileTest::LoadConfigFileTest() {
 	ASSERT(dbg3.IsNull());
 }
 
-ROAnything GetConfig() {
+ROAnything SystemFileTest::GetTestCaseConfig(String strClassName, String strTestName) {
 	Anything fConfig;
-	return fConfig;
+	if(!system::LoadConfigFile(fConfig, "SystemFileTest", "any")) {
+		ASSERT_EQUAL("'read SystemFileTest.any'", "'could not read SystemFileTest.any'");
+	}
+	return fConfig[strClassName][strTestName];
 }
 
 void SystemFileTest::MkRmDirTest() {
 	StartTrace(SystemFileTest.MkRmDirTest);
-	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
-	String str1LevelRel;
+	String strTmpDir = GetTestCaseConfig("TmpDir").AsString("/tmp");
+	String str1LevelRel(__FUNCTION__);
 	String str2LevelRel(str1LevelRel);
 	str2LevelRel.Append(system::Sep()).Append("Level2");
 	String str1Level(strTmpDir), str2Level(strTmpDir);
@@ -1224,8 +1227,8 @@ void SystemFileTest::MkRmDirTest() {
 
 void SystemFileTest::MakeRemoveDirectoryTest() {
 	StartTrace(SystemFileTest.MakeRemoveDirectoryTest);
-	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
-	String str1LevelRel;
+	String strTmpDir = GetTestCaseConfig("TmpDir").AsString("/tmp");
+	String str1LevelRel(__FUNCTION__);
 	String str2LevelRel(str1LevelRel);
 	str2LevelRel.Append(system::Sep()).Append("Level2");
 	String str1Level(strTmpDir), str2Level(strTmpDir);
@@ -1292,15 +1295,10 @@ void SystemFileTest::MakeRemoveDirectoryTest() {
 
 }
 
-ROAnything GetTestCaseConfig() {
-	ROAnything fTestCaseConfig;
-	return fTestCaseConfig;
-}
-
 void SystemFileTest::MakeDirectoryTest() {
 	StartTrace(SystemFileTest.MakeDirectoryTest);
-	String strStartDir = GetTestCaseConfig()["BasePath"].AsString("/tmp");
-	long lNumDirsMax = GetTestCaseConfig()["MaxNumDirs"].AsLong(20L), lIdx = 0L;
+	String strStartDir = GetTestCaseConfig(__FUNCTION__, "BasePath").AsString("/tmp");
+	long lNumDirsMax = GetTestCaseConfig(__FUNCTION__, "MaxNumDirs").AsLong(20L), lIdx = 0L;
 	Trace("BasePath [" << strStartDir << "], MaxDirs: " << lNumDirsMax);
 	String strDirToCreate;
 
@@ -1315,7 +1313,7 @@ void SystemFileTest::MakeDirectoryTest() {
 			if (system::MakeDirectory(strDirToCreate, 0755, false) != system::eSuccess) {
 				SYSERROR("failed at index: " << lIdx);
 				break;
-
+			}
 		}
 		ASSERT_EQUALM("expected given number of directories to be created", lIdx, lNumDirsMax);
 		SYSINFO("last directory created [" << strDirToCreate << "] Idx: " << lIdx);
@@ -1324,14 +1322,14 @@ void SystemFileTest::MakeDirectoryTest() {
 			strDirToCreate.Append(strStartDir).Append(system::Sep()).Append(lIdx);
 			system::RemoveDirectory(strDirToCreate, false);
 		}
-	}
+
 	ASSERT_EQUALM("expected deletion of directory to succeed", system::eSuccess, system::RemoveDirectory(strStartDir, false));
 }
 
 void SystemFileTest::MakeDirectoryExtendTest() {
 	StartTrace(SystemFileTest.MakeDirectoryExtendTest);
 
-	String strBaseDir(GetTestCaseConfig()["BaseDir"].AsString());
+	String strBaseDir(GetTestCaseConfig("BaseDir").AsString());
 	const char pcFillerPrefix[] = "dummydir_";
 	bool bCreatedDirs(false);
 	if (strBaseDir.Length() > 0L) {
@@ -1356,7 +1354,7 @@ void SystemFileTest::MakeDirectoryExtendTest() {
 		long iNumLinks = lIdx + 2;
 		Trace("number of dirs created: " << lIdx << ", num of hardlinks: " << iNumLinks);
 
-		AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig()["Tests"]);
+		AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig("Tests"));
 		ROAnything roaConfig;
 		while (lIdx > 0L && aIterator(roaConfig)) {
 			String strEnsureDir(roaConfig["EnsureDirExists"].AsString());
@@ -1494,7 +1492,7 @@ void SystemFileTest::BlocksLeftOnFSTest() {
 	// can only test that we have still some space left, nothing more for now
 	ul_long ulBlocks = 0;
 	unsigned long ulBlockSize = 0;
-	String fsPath(GetConfig()["BlocksLeftOnFSTest"]["FS"].AsString("/"));
+	String fsPath(GetTestCaseConfig(__FUNCTION__, "FS").AsString("/"));
 	ASSERTM("expected function call to succeed", system::BlocksLeftOnFS(fsPath, ulBlocks, ulBlockSize));
 		ASSERTM("expected some blocks left on device", ulBlocks > 0);
 		ASSERTM("expected block size not to be 0", ulBlockSize > 0);

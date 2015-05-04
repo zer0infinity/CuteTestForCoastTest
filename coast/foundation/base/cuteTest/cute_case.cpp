@@ -41,7 +41,6 @@
 #include "StringSTLTest.h"
 #include "AnythingImportExportTest.h"
 #include "AnythingKeyIndexTest.h"
-#include "SystemFileTest.h"
 
 void setupSuite(cute::suite &s) {
 	ROSimpleAnythingTest::runAllTests(s);

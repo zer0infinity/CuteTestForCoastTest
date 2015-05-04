@@ -23,6 +23,7 @@ protected:
 public:
 	AnythingTest();
 	static void runAllTests(cute::suite &s);
+	void setQuery(String name = "");
 	void TypeTest();
 	void SuccessiveAssignments();
 
