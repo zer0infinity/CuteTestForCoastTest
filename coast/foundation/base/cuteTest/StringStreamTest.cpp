@@ -223,21 +223,21 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest2() {
 }
 
 // check formatting problems:
-void StringStreamTest::testformat(const String &source, long expect, bool mustfail, const String &msg) {
+void StringStreamTest::testformat(const String &source, long expect, bool mustfail, const std::string &msg) {
 	IStringStream is(source);
 	long l = -1;
 	is >> l;
-	ASSERT_EQUALM( msg.cstr(),expect, l);
-	ASSERTM( msg.cstr(),(mustfail != 0) == (is.fail() != 0));
+	ASSERT_EQUALM( msg,expect, l);
+	ASSERTM( msg,(mustfail != 0) == (is.fail() != 0));
 }
 
-void StringStreamTest::testformat(const String &source, double expect, bool mustfail, const String &msg) {
+void StringStreamTest::testformat(const String &source, double expect, bool mustfail, const std::string &msg) {
 	IStringStream is(source);
 
 	double l = -1;
 	is >> l;
-	ASSERT_EQUAL_DELTAM( msg.cstr(), expect,  l,  0.0000001);
-	ASSERTM( msg.cstr(),(mustfail != 0) == (is.fail() != 0));
+	ASSERT_EQUAL_DELTAM( msg, expect,  l,  0.0000001);
+	ASSERTM( msg,(mustfail != 0) == (is.fail() != 0));
 }
 
 void StringStreamTest::FormatTests() {

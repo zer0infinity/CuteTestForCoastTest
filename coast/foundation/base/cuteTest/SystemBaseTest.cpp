@@ -39,11 +39,13 @@ void SystemBaseTest::DoSingleSelectTest()
 		difft -= waittime;
 		Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
 		// need some tolerance on some systems, eg. older SunOS5.6
-		String message;
-		message << "assume waiting long enough >=-10ms, diff was: " << difft << "ms";
-		ASSERTM(message.cstr(), difft >= -10);
-		message << "assume 20% (20ms) accuracy, but was " << difft;
-		ASSERTM(message.cstr(), difft < waittime / 5);
+		std::string message("assume waiting long enough >=-10ms, diff was: ");
+		message += difft;
+		message += "ms";
+		ASSERTM(message, difft >= -10);
+		message += "assume 20% (20ms) accuracy, but was ";
+		message += difft;
+		ASSERTM(message, difft < waittime / 5);
 	} else {
 		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
 	}

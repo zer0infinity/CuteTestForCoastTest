@@ -156,7 +156,7 @@ void SystemFileTest::CWDTests() {
 	// on WIN32, if we change to 'root' it is actually the root Dir of the current drive
 	// in the form <drive>:<system::SEP>
 	char driveLetter;
-	ASSERTM(String("couldn't get drive letter from [") << strCwd << "]", system::GetDriveLetter(strCwd, driveLetter));
+	ASSERTM(std::string("couldn't get drive letter from [") << strCwd << "]", system::GetDriveLetter(strCwd, driveLetter));
 	root = "";
 	root << driveLetter << ":" << system::Sep();
 	ASSERT_EQUAL(root, r1);
@@ -728,10 +728,10 @@ void SystemFileTest::OStreamTest() {
 	String str0 = "", str00 = "";
 	String sname("tmp/emptyStr");
 	std::ostream *os0 = system::OpenOStream(sname, "tst");
-	String msg("couldn't open ");
-	msg << system::GetFilePath(sname, "tst");
+	std::string msg("couldn't open ");
+	msg += system::GetFilePath(sname, "tst");
 
-	ASSERTM(msg.cstr(), os0 != 0);
+	ASSERTM(msg, os0 != 0);
 	if (os0) {
 		*os0 << str0;
 		delete os0;
@@ -1379,9 +1379,10 @@ void SystemFileTest::MakeDirectoryExtendTest() {
 				if (!system::IsDirectory(strCreateDir)) {
 					String strTmpDir(strCreateDir);
 					// test should fail without extend link option
-					String msg;
-					msg << "expected creation of directory to fail due to no more available hardlinks, is the test-directory [" << strTmpDir << "] full of subdirs?";
-					ASSERT_EQUALM(msg.cstr(), system::eNoMoreHardlinks, system::MakeDirectory(strTmpDir, 0755, true, false));
+					std::string msg("expected creation of directory to fail due to no more available hardlinks, is the test-directory [");
+					msg += strTmpDir;
+					msg += "] full of subdirs?";
+					ASSERT_EQUALM(msg, system::eNoMoreHardlinks, system::MakeDirectory(strTmpDir, 0755, true, false));
 						strTmpDir.Trim(strTmpDir.StrRChr(system::Sep()));
 						Trace("exhausted directory [" << strTmpDir << "]");
 						ASSERT_EQUAL( iNumLinks, (long)system::GetNumberOfHardLinks(strTmpDir));

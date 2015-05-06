@@ -303,11 +303,11 @@ void MmapTest::SimpleROPutback()
 		IMmapStream is(fgcFilename);
 		ASSERT(is.good());
 		char c;
-		String s;
+		std::string s;
 
 		for (int i = 0; i < 10 ; i++) {
 			is.get(c);
-			s.Append(c);
+			s += c;
 		}
 		ASSERT_EQUAL("This is th", s);
 		is.putback(c);
@@ -326,11 +326,11 @@ void MmapTest::SimplePutback()
 		MmapStream is(fgcFilename, std::ios::in | std::ios::out | std::ios::app); // do not trunc the file
 		ASSERT(is.good());
 		char c;
-		String s;
+		std::string s;
 
 		for (int i = 0; i < 10 ; i++) {
 			ASSERT(! !is.get(c));
-			s.Append(c);
+			s += c;
 		}
 		ASSERT_EQUAL("This is th", s);
 		is.putback(c);

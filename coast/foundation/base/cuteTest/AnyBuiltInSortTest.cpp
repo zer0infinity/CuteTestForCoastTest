@@ -19,9 +19,9 @@ bool AnyBuiltInSortTest::checksorted(const Anything &a, bool shouldfail) {
 		const char *t = a.SlotName(i + 1);
 		if (strcmp(NotNull(s), NotNull(t)) > 0) {
 			if (!shouldfail) {
-				String msg("slots unsorted ");
-				msg.Append(s).Append(" > ").Append(t);
-				ASSERTM(msg.cstr(),false);
+				std::string msg("slots unsorted ");
+				msg.append(s).append(" > ").append(t);
+				ASSERTM(msg,false);
 			}
 			return shouldfail;
 		}
@@ -34,9 +34,9 @@ bool AnyBuiltInSortTest::checksortedbyvalue(const Anything &a, bool shouldfail) 
 		const char *t = a[i + 1].AsCharPtr();
 		if (strcmp(NotNull(s), NotNull(t)) > 0) {
 			if (!shouldfail) {
-				String msg("slots unsorted ");
-				msg.Append(s).Append(" > ").Append(t);
-				ASSERTM(msg.cstr(),false);
+				std::string msg("slots unsorted ");
+				msg.append(s).append(" > ").append(t);
+				ASSERTM(msg,false);
 			}
 			return shouldfail;
 		}
@@ -125,9 +125,7 @@ void AnyBuiltInSortTest::SortMany() {
 	ASSERTM("should be sorted",checksorted(a));
 	ASSERT_EQUAL(size, a.GetSize());
 	for (i = 0; i < size; i++) {
-		String m;
-		m << "in slot i : " << i;
-		ASSERT_EQUALM(m.cstr(),i, a[b.SlotName(i)].AsLong());
+		ASSERT_EQUALM(std::string("in slot i : " + i),i, a[b.SlotName(i)].AsLong());
 	}
 	dt.Reset();
 	a.SortByKey();
@@ -178,9 +176,10 @@ void AnyBuiltInSortTest::SortIsStable() {
 	a.SortByKey();
 	for (i = 0; i < a.GetSize() - 1; i++)
 		if (!a.SlotName(i) && !a.SlotName(i + 1)) {
-			String m;
-			m << ("unstable at: ") << i << ":" << a[i].AsLong() << " not less than " << a[i+1].AsLong();
-			ASSERTM(m.cstr(), a[i].AsLong() < a[i+1].AsLong());
+			std::string m("unstable at: ");
+			m += i + ":" + a[i].AsLong();
+			m += " not less than "+ a[i+1].AsLong();
+			ASSERTM(m, a[i].AsLong() < a[i+1].AsLong());
 		}
 }
 

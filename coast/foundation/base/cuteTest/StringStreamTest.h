@@ -41,8 +41,8 @@ public:
 	static const char *const fgcContent;
 
 protected:
-	void testformat(const String &source, long expect, bool mustfail, const String &msg);
-	void testformat(const String &source, double expect, bool mustfail, const String &msg);
+	void testformat(const String &source, long expect, bool mustfail, const std::string &msg);
+	void testformat(const String &source, double expect, bool mustfail, const std::string &msg);
 };
 
 #endif

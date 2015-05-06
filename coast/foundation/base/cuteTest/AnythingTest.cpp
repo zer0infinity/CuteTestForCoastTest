@@ -572,9 +572,9 @@ void AnythingTest::SlotCopierTest() {
 		SlotCopier::Operate(source, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 
 		ROAnything expectedStore(config["Result"]);
-		String msg;
-		msg << "." << fQuery.SlotName(l);
-		ASSERT_EQUALM(msg.cstr(), expectedStore, result);
+		std::string msg(".");
+		msg += fQuery.SlotName(l);
+		ASSERT_EQUALM(msg, expectedStore, result);
 	}
 }
 
@@ -588,9 +588,9 @@ void AnythingTest::SlotFinderTest() {
 		Anything foundResult;
 		SlotFinder::Operate(source, foundResult, config);
 		ROAnything expectedStore(config["Result"]);
-		String msg;
-		msg << "." << fQuery.SlotName(l);
-		ASSERT_ANY_EQUALM(msg.cstr(), expectedStore, foundResult);
+		std::string msg(".");
+		msg += fQuery.SlotName(l);
+		ASSERT_ANY_EQUALM(msg, expectedStore, foundResult);
 	}
 }
 
@@ -615,9 +615,9 @@ void AnythingTest::SlotPutterTest() {
 		}
 		SlotPutter::Operate(toStore, tmpStore, config);
 		Anything expectedStore(fQuery[l]["Result"]);
-		String msg;
-		msg << "." << fQuery.SlotName(l);
-		ASSERT_ANY_EQUALM(msg.cstr(), expectedStore, tmpStore);
+		std::string msg(".");
+		msg += fQuery.SlotName(l);
+		ASSERT_ANY_EQUALM(msg, expectedStore, tmpStore);
 	}
 }
 
@@ -716,9 +716,9 @@ void AnythingTest::SlotCleanerTest() {
 		SlotCleaner::Operate(removeFromThis, removePath);
 
 		Anything expectedStore(config["Result"]);
-		String msg;
-		msg << "." << fQuery.SlotName(l);
-		ASSERT_EQUALM(msg.cstr(), expectedStore, removeFromThis);
+		std::string msg(".");
+		msg += fQuery.SlotName(l);
+		ASSERT_EQUALM(msg, expectedStore, removeFromThis);
 	}
 }
 

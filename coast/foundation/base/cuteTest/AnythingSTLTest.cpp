@@ -129,18 +129,17 @@ void AnythingSTLTest::testSimpleInsertAtBegin() {
 	checkSimpleInsert(a, "testSimpleInsertAtBegin");
 }
 void AnythingSTLTest::checkInsertInArray(const Anything &a, long testpos, const char *msg, long n) {
-	String m(msg);
-	m.Append(" pos: ");
-	m.Append(testpos);
-	ASSERT_EQUALM(m.cstr(),rangeSize + n, a.size());
+	std::string m(msg);
+	m += " pos: " + testpos;
+	ASSERT_EQUALM(m,rangeSize + n, a.size());
 	for (long i = 0L; i < n; ++i) {
-		ASSERT_EQUALM(m.cstr(),42L, a[testpos+i].AsLong());
+		ASSERT_EQUALM(m,42L, a[testpos+i].AsLong());
 	}
 	for (long i = 0L; i < testpos; ++i) {
-		ASSERT_EQUALM(m.cstr(),rangeinput[i], a[i].AsLong());
+		ASSERT_EQUALM(m,rangeinput[i], a[i].AsLong());
 	}
 	for (long i = testpos; i < rangeSize; ++i) {
-		ASSERT_EQUALM(m.cstr(),rangeinput[i], a[i+n].AsLong());
+		ASSERT_EQUALM(m,rangeinput[i], a[i+n].AsLong());
 	}
 }
 void AnythingSTLTest::testSimpleInsertInArray() {
@@ -159,18 +158,17 @@ Anything makeAnyWithKeys() {
 	return a;
 }
 void AnythingSTLTest::checkInsertWithKeys(const Anything &a, const long testpos, const char *m, const long n) {
-	String msg(m);
-	msg.Append(":run ");
-	msg.Append(testpos);
+	std::string msg(m);
+	msg += ":run " + testpos;
 	long einspos = (testpos > 0 ? 0L : n);
-	ASSERT_EQUALM(msg.cstr(),"eins", a.SlotName(einspos));
-	ASSERT_EQUALM(msg.cstr(),1L, a["eins"].AsLong());
-	ASSERT_EQUAL_DELTAM( msg.cstr(), 2.0,  a["zwei"].AsDouble(),  0.000001);
+	ASSERT_EQUALM(msg,"eins", a.SlotName(einspos));
+	ASSERT_EQUALM(msg,1L, a["eins"].AsLong());
+	ASSERT_EQUAL_DELTAM( msg, 2.0,  a["zwei"].AsDouble(),  0.000001);
 	long dreipos = a.size() - (testpos < 3 ? 2L : 2 + n);
-	ASSERT_EQUALM(msg.cstr(),"drei", a[dreipos].AsCharPtr());
+	ASSERT_EQUALM(msg,"drei", a[dreipos].AsCharPtr());
 	long vierpos = a.size() - (testpos < 4 ? 1L : 1L + n);
-	ASSERT_EQUALM(msg.cstr(),"vier", a[vierpos].AsCharPtr());
-	ASSERT_EQUALM(msg.cstr(),"vier", a.SlotName(vierpos));
+	ASSERT_EQUALM(msg,"vier", a[vierpos].AsCharPtr());
+	ASSERT_EQUALM(msg,"vier", a.SlotName(vierpos));
 }
 void AnythingSTLTest::testSimpleInsertWithKeys() {
 	for (long testpos = 0; testpos <= 4; ++testpos) {
@@ -233,18 +231,18 @@ void AnythingSTLTest::testIterInsertInArray() {
 		Anything a(rangeinput, rangeinput + rangeSize);
 		const long lengthOfInsertion = rangeSize - 1;
 		a.insert(a.begin() + testpos, rangeinput, rangeinput + lengthOfInsertion);
-		String m(" pos: ");
-		m.Append(testpos);
-		ASSERT_EQUALM(m.cstr(),rangeSize + lengthOfInsertion, a.size());
+		std::string m(" pos: ");
+		m += testpos;
+		ASSERT_EQUALM(m,rangeSize + lengthOfInsertion, a.size());
 		checkRange(a, testpos, lengthOfInsertion);
 		for (long i = 0L; i < lengthOfInsertion; ++i) {
-			ASSERT_EQUALM(m.cstr(),rangeinput[i], a[testpos+i].AsLong());
+			ASSERT_EQUALM(m,rangeinput[i], a[testpos+i].AsLong());
 		}
 		for (long i = 0L; i < testpos; ++i) {
-			ASSERT_EQUALM(m.cstr(),rangeinput[i], a[i].AsLong());
+			ASSERT_EQUALM(m,rangeinput[i], a[i].AsLong());
 		}
 		for (long i = testpos; i < rangeSize; ++i) {
-			ASSERT_EQUALM(m.cstr(),rangeinput[i], a[i+lengthOfInsertion].AsLong());
+			ASSERT_EQUALM(m,rangeinput[i], a[i+lengthOfInsertion].AsLong());
 		}
 	}
 }
