@@ -9,6 +9,7 @@
  */
 
 #include "ide_listener.h"
+#include "xml_listener.h"
 #include "cute_runner.h"
 #include "cute.h"
 #include "cute_case.h"
@@ -18,7 +19,8 @@ void setupSuite(cute::suite &s) {}
 int main(int argc, char const *argv[]) {
 	cute::suite s;
 	setupSuite(s);
-	cute::ide_listener<> lis;
+	cute::xml_file_opener xmlfile(argc, argv);
+	cute::xml_listener<cute::ide_listener<> > lis(xmlfile.out);
 	cute::makeRunner(lis)(s, "AllTests");
 	return 0;
 }

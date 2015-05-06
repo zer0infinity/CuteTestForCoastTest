@@ -13,7 +13,6 @@
 #define _ROSimpleAnythingTest_H
 
 #include "cute.h"
-#include "string"
 
 class ROSimpleAnythingTest {
 public:

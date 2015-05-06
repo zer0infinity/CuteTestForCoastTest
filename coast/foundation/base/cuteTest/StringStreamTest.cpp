@@ -21,7 +21,8 @@ using namespace coast;
 typedef std::numeric_limits<long long> ll_limits;
 typedef std::numeric_limits<unsigned long long> ull_limits;
 
-const char * const StringStreamTest::fgcContent = "This is the content of a Test String\n"
+const char * const StringStreamTest::fgcContent =
+		"This is the content of a Test String\n"
 		"it consists of several lines of simple Text\n"
 		"and will be written to a string using the StringStream iostream\n";
 

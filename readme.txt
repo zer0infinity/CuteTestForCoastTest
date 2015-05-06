@@ -10,7 +10,7 @@ University of Applied Sciences Rapperswil (HSR),
 
 
 1. About
-Open Source c++ application server based on work done at Ubilab
+Open source C++ application server based on work done at Ubilab by André Weinand, Erich Gamma
 
 
 2. Features

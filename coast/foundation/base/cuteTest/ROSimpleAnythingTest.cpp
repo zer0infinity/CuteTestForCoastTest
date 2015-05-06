@@ -53,7 +53,7 @@ void ROSimpleAnythingTest::EmptyConstructor()
 	ASSERT_EQUAL(true, roTest.AsBool(true));
 	ASSERT_EQUAL(false, roTest.AsBool(false));
 	ASSERT(1.0 < roTest.AsDouble(1.1));
-	ASSERT_EQUAL((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
+	ASSERT_EQUAL(&dummyIFA, roTest.AsIFAObject(&dummyIFA));
 }
 
 void ROSimpleAnythingTest::AnyConstructor()

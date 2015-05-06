@@ -327,15 +327,6 @@ void AnythingTest::operatorAssignemnt() {
 	ifaObjectOperatorAssign();
 }
 
-bool compareForTestCases(const ROAnything &expected, const ROAnything &actual)
-{
-	String sexp, act;
-	OStringStream oexp(&sexp), oact(&act);
-	expected.Export(oexp, false);
-	actual.Export(oact, false);
-	return (sexp == act);
-}
-
 void AnythingTest::appendTest() {
 	Anything sub;
 	sub["X"] = "x";
@@ -345,20 +336,20 @@ void AnythingTest::appendTest() {
 	a.Append(sub);
 	Anything expected;
 	expected[0L] = sub;
-	ASSERT(compareForTestCases(expected, a));
+	ASSERT_ANY_EQUAL(expected, a);
 
 	a.Append(sub);
 	expected[1L] = sub;
-	ASSERT(compareForTestCases(expected, a));
+	ASSERT_ANY_EQUAL(expected, a);
 
 	Anything b = "Test"; // AnyStringImpl
 	b.Append(sub); // -> AnyArrayImpl
 	expected[0L] = "Test";
-	ASSERT(compareForTestCases(expected, b));
+	ASSERT_ANY_EQUAL(expected, b);
 
 	b["NewKey"].Append(sub);
 	expected["NewKey"][0L] = sub;
-	ASSERT(compareForTestCases(expected, b));
+	ASSERT_ANY_EQUAL(expected, b);
 }
 
 void AnythingTest::boolOperatorAssign() {
@@ -588,7 +579,7 @@ void AnythingTest::SlotCopierTest() {
 }
 
 void AnythingTest::SlotFinderTest() {
-	setQuery("SlotFinderTest");
+	setQuery(__FUNCTION__);
 	StartTrace(AnythingTest.SlotFinderTest);
 	// Set up
 	for (long l = 0; l < fQuery.GetSize(); l++) {

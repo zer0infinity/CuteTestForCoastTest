@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2008, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
  * Copyright (c) 2015, David Tran, Faculty of Computer Science,
  * University of Applied Sciences Rapperswil (HSR),
  * 8640 Rapperswil, Switzerland

@@ -101,7 +101,7 @@ void SystemBaseTest::TimeTest ()
 #if !defined(WIN32)
 void SystemBaseTest::LockFileTest()
 {
-//	StartTrace(SystemBaseTest.GetFileSizeTest);
+	StartTrace(SystemBaseTest.GetFileSizeTest);
 	String lockFile(system::GetTempPath().Append(system::Sep()).Append("LockFileTest.lck"));
 	bool ret = system::GetLockFileState(lockFile);
 	ASSERTM( "expected Lockfile to be unlocked",false == ret);

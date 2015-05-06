@@ -1492,7 +1492,7 @@ void SystemFileTest::BlocksLeftOnFSTest() {
 	// can only test that we have still some space left, nothing more for now
 	ul_long ulBlocks = 0;
 	unsigned long ulBlockSize = 0;
-	String fsPath(GetTestCaseConfig(__FUNCTION__, "FS").AsString("/"));
+	String fsPath(GetTestCaseConfig("FS", __FUNCTION__).AsString("/"));
 	ASSERTM("expected function call to succeed", system::BlocksLeftOnFS(fsPath, ulBlocks, ulBlockSize));
 		ASSERTM("expected some blocks left on device", ulBlocks > 0);
 		ASSERTM("expected block size not to be 0", ulBlockSize > 0);
