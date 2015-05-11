@@ -11,9 +11,7 @@
 
 #include "StringTokenizerTest.h"
 
-StringTokenizerTest::StringTokenizerTest() {
-	fShort = "short";
-	fLong = "a somewhat longer string";
+StringTokenizerTest::StringTokenizerTest() : fShort("short"), fLong("a somewhat longer string") {
 }
 
 void StringTokenizerTest::runAllTests(cute::suite &s) {

@@ -18,11 +18,8 @@ using namespace coast;
 
 #include <limits>
 
-StringTest::StringTest()
-{
+StringTest::StringTest() : fShort("short"), fLong("a somewhat longer string") {
 	StartTrace(StringTest.setUp);
-	fShort = "short";
-	fLong = "a somewhat longer string";
 }
 
 void StringTest::runAllTests(cute::suite &s) {

@@ -13,16 +13,10 @@
 #include "IFAObject.h"
 #include "Tracer.h"
 
-AnythingConstructorsTest::AnythingConstructorsTest() {
+AnythingConstructorsTest::AnythingConstructorsTest() : fString("A String"), fLong(5L), fBool(true), fDouble(7.125), fDouble2(8.1), fFloat(-24.490123456789), fNull(Anything()) {
 	StartTrace(AnythingConstructorsTest.setUp);
-	fString = "A String";
-	fLong = 5L;
-	fBool = true;
-	fDouble = 7.125; // there is an exact binary representation
-	fDouble2 = 8.1; // there is no exact binary representation
-	fFloat = -24.490123456789;
-	fNull = Anything();
 }
+
 void AnythingConstructorsTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(AnythingConstructorsTest, DefaultConstrTest));
 	s.push_back(CUTE_SMEMFUN(AnythingConstructorsTest, IntConstrTest));

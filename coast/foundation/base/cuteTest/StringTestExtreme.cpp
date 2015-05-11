@@ -14,11 +14,8 @@
 
 using namespace coast;
 
-StringTestExtreme::StringTestExtreme() {
+StringTestExtreme::StringTestExtreme() : extremelyLongString(""), trueString("") {
 	char s;
-	extremelyLongString = "";
-	trueString = "";
-
 	std::iostream *is = system::OpenStream("longString", "txt", std::ios::in);
 	while (is && !is->eof()) {
 		if (is->read(&s, 1)) {

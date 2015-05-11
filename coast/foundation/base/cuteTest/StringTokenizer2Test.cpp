@@ -8,9 +8,7 @@
 
 #include "StringTokenizer2Test.h"
 
-StringTokenizer2Test::StringTokenizer2Test () {
-	fShort = "short";
-	fLong = "a somewhat longer string";
+StringTokenizer2Test::StringTokenizer2Test() : fShort("short"), fLong("a somewhat longer string") {
 }
 
 void StringTokenizer2Test::runAllTests(cute::suite &s) {
