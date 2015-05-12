@@ -52,7 +52,7 @@ namespace cute {
 
 		void begin(suite const &t,char const *info, size_t n_of_tests){
 			current_suite=mask_xml_chars(info);
-			out << std::dec << "\t<testsuite name=\"" << current_suite << "\" tests=\"" << n_of_tests << "\">\n";
+			out << "\t<testsuite name=\"" << current_suite << "\" tests=\"" << n_of_tests << "\">\n";
 			Listener::begin(t,info, n_of_tests);
 		}
 		void end(suite const &t, char const *info){
@@ -69,7 +69,7 @@ namespace cute {
 			Listener::success(t,msg);
 		}
 		void failure(test const &t,test_failure const &e){
-			out << std::dec <<  ">\n\t\t\t<failure message=\"" << mask_xml_chars(e.filename) << ":" << e.lineno << " "
+			out <<  ">\n\t\t\t<failure message=\"" << mask_xml_chars(e.filename) << ":" << e.lineno << " "
 				<< mask_xml_chars(e.reason) << "\">\n"<<mask_xml_chars(e.reason)<<"\n\t\t\t</failure>\n\t\t</testcase>\n";
 			Listener::failure(t,e);
 		}
