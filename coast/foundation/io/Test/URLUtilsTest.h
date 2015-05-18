@@ -11,13 +11,11 @@
 
 #include "FoundationTestTypes.h"//lint !e537
 
-class URLUtilsTest : public testframework::TestCaseWithConfig
-{
+class URLUtilsTest: public testframework::TestCaseWithConfig {
 public:
 	URLUtilsTest(TString tstrName);
-	virtual ~URLUtilsTest();
 
-	static Test *suite ();
+	static Test *suite();
 	void urlDecodeTest();
 	void ExhaustiveUrlDecodeTest();
 	void ExhaustiveHTMLDecodeTest();

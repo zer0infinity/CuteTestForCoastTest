@@ -23,7 +23,6 @@ namespace {
 }
 
 URLUtilsTest::URLUtilsTest (TString tname) : TestCaseType(tname) {};
-URLUtilsTest::~URLUtilsTest() {};
 
 void URLUtilsTest::CheckUrlEncodingTest()
 {
@@ -88,80 +87,74 @@ void URLUtilsTest::CheckUrlPathContainsUnsafeCharsTest()
 
 	// --- testing with default set, check ascii extended
 	String arguments("\\");
-	bool ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(true, ret);
+	assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments));
 
 	arguments = "abcd{";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(true, ret);
+	assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments));
 
 	arguments = "{abcd";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(true, ret);
+	assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments));
 
 	arguments = "";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(false, ret);
+	assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments));
 
 	arguments = "abcd efg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(false, ret);
+	assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments));
 
-	arguments = "abcdöefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments);
-	assertEqual(true, ret);
-
-	// --- testing with different set
-
+	char x00 = 0, xF6 = (char)246, xFC = (char)252, xE4 = (char)228;
+	{
+		char srcChars[] = {'a','b','c','d', xF6,'e','f','g',x00};
+		assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars));
+	}
 	arguments = "abcd<\\efg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "<\\");
-	assertEqual(true, ret);
+	assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "<\\"));
 
 	arguments = "abcd{}efg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "<\\");
-	assertEqual(false, ret);
+	assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "<\\"));
 
 	arguments = "ab^cd\\!efg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^");
-	assertEqual(true, ret);
+	assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^"));
 
 	arguments = "ab#cdefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^");
-	assertEqual(false, ret);
+	assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^"));
 
-	// --- testing with do not check ascii extended. Note default set must be given
-	// because it is a default parameter
-
-	arguments = "abcdöefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 0);
-	assertEqual(true, ret);
-
-	// same test, but check for extended ascii, which will return false
-	arguments = "abcdöefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 1);
-	assertEqual(true, ret);
-
-	// no ö present
-	arguments = "abcdäüefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 0);
-	assertEqual(false, ret);
-
-	// no ö present
-	arguments = "abcdäüefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 1);
-	assertEqual(true, ret);
-
-	// Exclude some extended ascii chars from check
-	// no ö present
-	arguments = "abcdäüefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "äü", 1);
-	assertEqual(false, ret);
-
-	// Because ö is declared an unsafe char the ascii override has no impact
-	arguments = "abcdöefg";
-	ret = coast::urlutils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "ö", 1);
-	assertEqual(true, ret);
-
+	bool careAboutExtendedAscii = true, ignoreExtendedAscii = false;
+	{
+		char srcChars[] = {'a','b','c','d', xF6,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {x00};
+		assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, ignoreExtendedAscii));
+	}
+	{
+		char srcChars[] = {'a','b','c','d', xF6,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {x00};
+		assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, careAboutExtendedAscii));
+	}
+	{
+		char srcChars[] = {'a','b','c','d', xE4,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {x00};
+		assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, ignoreExtendedAscii));
+	}
+	{
+		char srcChars[] = {'a','b','c','d', xE4,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {x00};
+		assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, careAboutExtendedAscii));
+	}
+	{
+		char srcChars[] = {'a','b','c','d', xE4,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {xE4,xFC,x00};
+		assertEqual(false, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, careAboutExtendedAscii));
+	}
+	{
+		char srcChars[] = {'a','b','c','d', xF6,'e','f','g',x00};
+		char unsafeChars[] = {xF6, x00};
+		char asciiChars[] = {xF6,x00};
+		assertEqual(true, coast::urlutils::CheckUrlPathContainsUnsafeChars(srcChars, unsafeChars, asciiChars, careAboutExtendedAscii));
+	}
 }
 
 void URLUtilsTest::CheckUrlArgEncodingTest()
@@ -805,7 +798,7 @@ void URLUtilsTest::HTMLEscapeTest()
 
 	assertEqual("abcde", coast::urlutils::HTMLEscape("abcde"));
 	assertEqual("&#60;aTag&#47;&#62;", coast::urlutils::HTMLEscape("<aTag/>"));
-	assertEqual("&#228;&#232;&#233;", coast::urlutils::HTMLEscape("äèé"));
+	assertEqual("&#228;&#232;&#233;", coast::urlutils::HTMLEscape("\xe4\xe8\xe9"));
 }
 
 void URLUtilsTest::urlEncodeTest()
@@ -1596,10 +1589,8 @@ void URLUtilsTest::TrimBlanksTest ()
 	assertEqual("  BlanksAtStartAndEnd", test);
 }
 
-Test *URLUtilsTest::suite ()
-{
+Test *URLUtilsTest::suite() {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, URLUtilsTest, urlDecodeTest);
 	ADD_CASE(testSuite, URLUtilsTest, ExhaustiveUrlDecodeTest);
 	ADD_CASE(testSuite, URLUtilsTest, ExhaustiveHTMLDecodeTest);
@@ -1616,7 +1607,5 @@ Test *URLUtilsTest::suite ()
 	ADD_CASE(testSuite, URLUtilsTest, CheckUrlEncodingTest);
 	ADD_CASE(testSuite, URLUtilsTest, CheckUrlArgEncodingTest);
 	ADD_CASE(testSuite, URLUtilsTest, CheckUrlPathContainsUnsafeCharsTest);
-
 	return testSuite;
-
 }

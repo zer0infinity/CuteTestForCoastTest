@@ -10,13 +10,13 @@
 #include "SystemLog.h"
 #include "SystemBase.h"
 #include "MemHeader.h"
-#include "AllocatorNewDelete.h"
-#include <cstring>
 #include "InitFinisManager.h"
-
+#include <cstring>
 
 MemChecker::MemChecker(const char *scope, Allocator *a) :
-		fAllocator(a), fSizeAllocated((a ? fAllocator->CurrentlyAllocated() : 0LL)), fScope(scope) {
+		fAllocator(a),
+		fSizeAllocated((a ? fAllocator->CurrentlyAllocated() : 0LL)),
+		fScope(scope) {
 }
 
 MemChecker::~MemChecker() {
@@ -31,9 +31,10 @@ void MemChecker::TraceDelta(const char *message) {
 		}
 		const int bufSize = 1024;
 		char msgbuf[bufSize] = { 0 };
-		int charsStoredOrRequired = coast::system::SnPrintf(msgbuf, bufSize, "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
+		int charsStoredOrRequired = coast::system::SnPrintf(msgbuf, bufSize,
+				"\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double) delta, fScope,
 				(fAllocator ? fAllocator->GetId() : 0L));
-		SystemLog::WriteToStderr(msgbuf, charsStoredOrRequired>=bufSize?-1:charsStoredOrRequired);
+		SystemLog::WriteToStderr(msgbuf, charsStoredOrRequired >= bufSize ? -1 : charsStoredOrRequired);
 	}
 }
 
@@ -41,18 +42,17 @@ l_long MemChecker::CheckDelta() {
 	return (fAllocator ? (fAllocator->CurrentlyAllocated() - fSizeAllocated) : 0LL);
 }
 
-MemTracker::MemTracker(const char *name)
-	: fAllocated(0)
-	, fMaxAllocated(0)
-	, fNumAllocs(0)
-	, fSizeAllocated(0)
-	, fNumFrees(0)
-	, fSizeFreed(0)
-	, fId(-1)
-	, fpName(strdup(name))	// copy string to be more flexible when using temporary param objects like Strings
-	, fpUsedList(NULL)
-{
-	if ( coast::storage::GetStatisticLevel() >= 3 ) {
+MemTracker::MemTracker(const char *name) :
+		fAllocated(0),
+		fMaxAllocated(0),
+		fSizeAllocated(0),
+		fSizeFreed(0),
+		fNumAllocs(0),
+		fNumFrees(0),
+		fId(-1),
+		fpName(strdup(name)),
+		fpUsedList(NULL) {
+	if (coast::storage::GetStatisticLevel() >= 3) {
 		fpUsedList = new UsedListType();
 	}
 }
@@ -65,33 +65,30 @@ MemTracker::~MemTracker() {
 	::free(fpName);
 }
 
-void MemTracker::SetId(long id)
-{
+void MemTracker::SetId(long id) {
 	fId = id;
 }
 
-void MemTracker::TrackAlloc(MemoryHeader *mh)
-{
+void MemTracker::TrackAlloc(MemoryHeader *mh) {
 	fAllocated += mh->fUsableSize;
 	++fNumAllocs;
 	fSizeAllocated += mh->fUsableSize;
 	fMaxAllocated = std::max(fMaxAllocated, fAllocated);
 	// only track used pool memory buckets
-	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
+	if (fpUsedList && !(mh->fState & MemoryHeader::eNotPooled)) {
 		fpUsedList->push_back(mh);
 	}
-}//lint !e429
+}	//lint !e429
 
-void MemTracker::TrackFree(MemoryHeader *mh)
-{
+void MemTracker::TrackFree(MemoryHeader *mh) {
 	fAllocated -= mh->fUsableSize;
 	++fNumFrees;
 	fSizeFreed += mh->fUsableSize;
 	// only track used pool memory buckets
-	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
+	if (fpUsedList && !(mh->fState & MemoryHeader::eNotPooled)) {
 		UsedListType::iterator aUsedIterator;
-		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++aUsedIterator ) {
-			if ( *aUsedIterator == mh ) {
+		for (aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++aUsedIterator) {
+			if (*aUsedIterator == mh) {
 				fpUsedList->erase(aUsedIterator);
 				break;
 			}
@@ -99,50 +96,49 @@ void MemTracker::TrackFree(MemoryHeader *mh)
 	}
 }
 
-void MemTracker::DumpUsedBlocks()
-{
-	if ( fpUsedList && fpUsedList->size() ) {
-		SystemLog::Error(String(coast::storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
+void MemTracker::DumpUsedBlocks() {
+	if (fpUsedList && fpUsedList->size()) {
+		SystemLog::Error(
+				String(coast::storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
 		const size_t alignedSize = coast::memory::AlignedSize<MemoryHeader>::value;
 		long lIdx = 0;
-		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
+		for (aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
 			MemoryHeader *pMH = *aUsedIterator;
 			// reserve memory for the following text plus four times the buffer size for dumping as text
-			String strOut(( 40L + ( ( pMH->fUsableSize + alignedSize ) * 4L ) ), coast::storage::Global());
+			String strOut((40L + ((pMH->fUsableSize + alignedSize) * 4L)), coast::storage::Global());
 			strOut.Append("Block ").Append(lIdx).Append('\n');
-			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, alignedSize, coast::storage::Global()).DumpAsHex()).Append('\n');
-			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + alignedSize), pMH->fUsableSize, coast::storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("MemoryHeader:\n").Append(
+					String((void *) pMH, alignedSize, coast::storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("Content:\n").Append(
+					String((void *) ((char *) pMH + alignedSize), pMH->fUsableSize, coast::storage::Global()).DumpAsHex()).Append(
+					'\n');
 			SystemLog::WriteToStderr(strOut);
 		}
 	}
 }
 
-void MemTracker::PrintStatistic(long lLevel)
-{
-	if ( lLevel >= 2 ) {
+void MemTracker::PrintStatistic(long lLevel) {
+	if (lLevel >= 2) {
 		const int bufSize = 2048;
-		char buf[bufSize] = {0};
+		char buf[bufSize] = { 0 };
 		coast::system::SnPrintf(buf, bufSize, "\nAllocator [%ld] [%s]\n"
 #if defined(WIN32)
-				 "Peek Allocated  %20I64d bytes\n"
-				 "Total Allocated %20I64d bytes in %15I64d runs (%ld/run)\n"
-				 "Total Freed     %20I64d bytes in %15I64d runs (%ld/run)\n"
-				 "------------------------------------------\n"
-				 "Difference      %20I64d bytes\n",
+				"Peek Allocated  %20I64d bytes\n"
+				"Total Allocated %20I64u bytes in %15I64u runs (%llu/run)\n"
+				"Total Freed     %20I64u bytes in %15I64u runs (%llu/run)\n"
+				"------------------------------------------\n"
+				"Difference      %20I64d bytes\n",
 #else
-				 "Peek Allocated  %20llu bytes\n"
-				 "Total Allocated %20llu bytes in %20llu runs (%llu/run)\n"
-				 "Total Freed     %20llu bytes in %20llu runs (%llu/run)\n"
-				 "------------------------------------------\n"
-				 "Difference      %20llu bytes\n",
+						"Peek Allocated  %20lld bytes\n"
+						"Total Allocated %20llu bytes in %20llu runs (%llu/run)\n"
+						"Total Freed     %20llu bytes in %20llu runs (%llu/run)\n"
+						"------------------------------------------\n"
+						"Difference      %20lld bytes\n",
 #endif
-				 fId, fpName,
-				 fMaxAllocated,
-				 fSizeAllocated , fNumAllocs, (fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
-				 fSizeFreed, fNumFrees, (fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
-				 fAllocated
-				);
+				fId, fpName, fMaxAllocated, fSizeAllocated, fNumAllocs,
+				(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)), fSizeFreed, fNumFrees,
+				(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)), fAllocated);
 		SystemLog::WriteToStderr(buf, -1);
 	}
 }
@@ -158,16 +154,16 @@ NullMemTracker::~NullMemTracker() {
 namespace {
 	class StorageInitializer {
 		/* define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
-						0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
-						1: Trace overall statistics
-						2: + trace detailed statistics
-						3: + keep track of allocated blocks to trace them in case they were not freed */
+		 0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
+		 1: Trace overall statistics
+		 2: + trace detailed statistics
+		 3: + keep track of allocated blocks to trace them in case they were not freed */
 		long statisticLevel;
 	public:
 		StorageInitializer() {
 			const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 			long lLevel = 0;
-			if ( pEnvVar != 0 && coast::system::StrToL(lLevel, pEnvVar) ) {
+			if (pEnvVar != 0 && coast::system::StrToL(lLevel, pEnvVar)) {
 				statisticLevel = lLevel;
 			}
 			InitFinisManager::IFMTrace("storage::Initialized\n");
@@ -179,15 +175,12 @@ namespace {
 		//exchange this object when MT_Storage is used
 		coast::storage::StorageHooksPtr fgTopHook;
 	};
-    typedef coast::utility::singleton_default<StorageInitializer> StorageInitializerSingleton;
+	typedef coast::utility::singleton_default<StorageInitializer> StorageInitializerSingleton;
 }
 
-namespace coast
-{
-	namespace storage
-	{
-		namespace
-		{
+namespace coast {
+	namespace storage {
+		namespace {
 			//flag to force global store temporarily
 			bool forceGlobal = false;
 			// the global allocator
@@ -284,8 +277,7 @@ namespace coast
 		}
 	} // namespace storage
 
-	namespace memory
-	{
+	namespace memory {
 		Allocator*& allocatorFor(void* ptr) throw () {
 			return (reinterpret_cast<Allocator **>(ptr))[0L];
 		}
@@ -310,7 +302,9 @@ namespace {
 }
 
 Allocator::Allocator(long allocatorid) :
-		fAllocatorId(allocatorid), fRefCnt(0), fTracker(new NullMemTracker("AllocatorNullTracker")) {
+		fAllocatorId(allocatorid),
+		fRefCnt(0),
+		fTracker(new NullMemTracker("AllocatorNullTracker")) {
 }
 
 Allocator::~Allocator() {
@@ -385,13 +379,15 @@ void *GlobalAllocator::Alloc(size_t allocSize) {
 	void *vp = ::malloc(allocSize);
 
 	if (vp) {
-		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - coast::memory::AlignedSize<MemoryHeader>::value, MemoryHeader::eUsedNotPooled);
+		MemoryHeader *mh = new (vp) MemoryHeader(allocSize - coast::memory::AlignedSize<MemoryHeader>::value,
+				MemoryHeader::eUsedNotPooled);
 		fTracker->TrackAlloc(mh);
 		return ExtMemStart(mh); //lint !e593//lint !e429
 	} else {
 		const int bufSize = 256;
 		static char crashmsg[bufSize] = { 0 };
-		coast::system::SnPrintf(crashmsg, bufSize, "FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
+		coast::system::SnPrintf(crashmsg, bufSize,
+				"FATAL: GlobalAllocator::Alloc malloc of sz:%zu failed. I will crash :-(\n", allocSize);
 		SystemLog::WriteToStderr(crashmsg, -1);
 	}
 

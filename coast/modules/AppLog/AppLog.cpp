@@ -16,7 +16,6 @@
 #include <cstdio>
 using namespace coast;
 
-//---- AppLogModule -----------------------------------------------------------
 RegisterModule(AppLogModule);
 
 AppLogModule *AppLogModule::fgAppLogModule = 0;
@@ -24,6 +23,7 @@ AppLogModule *AppLogModule::fgAppLogModule = 0;
 AppLogModule::AppLogModule(const char *name)
 	: WDModule(name)
 	, fRotator(0)
+	, fFlusher(0)
 {
 }
 

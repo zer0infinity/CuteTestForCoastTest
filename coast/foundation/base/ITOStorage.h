@@ -9,19 +9,18 @@
 #ifndef _ITOStorage_H
 #define _ITOStorage_H
 
-#include "foundation.h"			// for definition of own types
+#include "foundation.h"			//!< for definition of own types
 #include <cstdlib>
 #include <vector>
 
 namespace itostorage {
-
-	// adaption of storage::Global / storage::Current for boost::poolXXX usage
+	//! adaption of storage::Global / storage::Current for boost::poolXXX usage
 	struct BoostPoolUserAllocatorGlobal {
 		typedef std::size_t size_type;
 		typedef std::ptrdiff_t difference_type;
 
 		static char *malloc(const size_type bytes);
-		static void free(char *const block);
+		static void free(char * const block);
 	};
 
 	struct BoostPoolUserAllocatorCurrent {
@@ -29,7 +28,7 @@ namespace itostorage {
 		typedef std::ptrdiff_t difference_type;
 
 		static char *malloc(const size_type bytes);
-		static void free(char *const block);
+		static void free(char * const block);
 	};
 }
 
@@ -82,12 +81,12 @@ public:
 	}
 
 protected:
-	//!tracks the currently allocated size in bytes, and the peek allocated size
-	ul_long fAllocated, fMaxAllocated;
-	//!tracks the number and maximum of allocated bytes
-	ul_long fNumAllocs, fSizeAllocated;
-	//!tracks the number and maximum of freed bytes
-	ul_long fNumFrees, fSizeFreed;
+	l_long fAllocated,	//!< tracks the currently allocated size in bytes, might get negative in erroneous situations
+			fMaxAllocated;	//!< tracks the peek allocated size in bytes
+	ul_long fSizeAllocated,	//!< total bytes allocated
+			fSizeFreed;		//!< total bytes freed
+	ul_long fNumAllocs,		//!< tracks the number of allocations
+			fNumFrees;		//!< tracks the number of total frees
 
 private:
 	MemTracker();
@@ -102,18 +101,21 @@ private:
 	UsedListTypePtr fpUsedList;
 };
 
-class NullMemTracker : public MemTracker {
+class NullMemTracker: public MemTracker {
 public:
 	NullMemTracker(const char *);
 	~NullMemTracker();
 	//!tracks allocation; chunk allocated has allocSz
-	virtual void TrackAlloc(MemoryHeader *) {}
+	virtual void TrackAlloc(MemoryHeader *) {
+	}
 
 	//!tracks free; chunk freed has allocSz
-	virtual void TrackFree(MemoryHeader *) {}
+	virtual void TrackFree(MemoryHeader *) {
+	}
 
 	//!prints statistic of allocated and freed bytes
-	virtual void PrintStatistic(long) {}
+	virtual void PrintStatistic(long) {
+	}
 };
 
 //!helper class to check for memory leaks
@@ -201,8 +203,8 @@ public:
 	}
 
 	/*! set an identification for this pool
-		\param lId identification for pool
-		\return old identifier */
+	 \param lId identification for pool
+	 \return old identifier */
 	virtual long SetId(long lId) {
 		long lOldId = fAllocatorId;
 		fAllocatorId = lId;
@@ -210,7 +212,7 @@ public:
 	}
 
 	/*! get identifier of this pool
-		\return identifier of this pool */
+	 \return identifier of this pool */
 	virtual long GetId() {
 		return fAllocatorId;
 	}
@@ -257,8 +259,7 @@ protected:
 };
 
 //!manages storage using the built-in C API and does some statistic
-class GlobalAllocator: public Allocator
-{
+class GlobalAllocator: public Allocator {
 	GlobalAllocator(const GlobalAllocator &);
 	GlobalAllocator &operator=(const GlobalAllocator &);
 public:
@@ -266,7 +267,7 @@ public:
 	~GlobalAllocator();
 
 	//!frees memory allocated by global allocator
-	virtual void Free(void *vp);//lint !e1511
+	virtual void Free(void *vp);	//lint !e1511
 
 	//!frees memory allocated by global allocator
 	virtual void Free(void *vp, size_t sz);
@@ -293,35 +294,31 @@ protected:
 
 class StorageHooks;
 
-namespace coast
-{
-	namespace memory
-	{
+namespace coast {
+	namespace memory {
 		template<typename T>
 		struct AlignedSize {
-			static const size_t value = sizeof(T) +
-					( sizeof(T) % sizeof(long double) ?
-							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
+			static const size_t value = sizeof(T)
+					+ (sizeof(T) % sizeof(long double) ? (sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
 		};
 
-		Allocator*& allocatorFor(void* ptr) throw();
+		Allocator*& allocatorFor(void* ptr) throw ();
 
-		void *realPtrFor(void *ptr) throw();
+		void *realPtrFor(void *ptr) throw ();
 
-		void safeFree(Allocator *a, void *ptr) throw();
+		void safeFree(Allocator *a, void *ptr) throw ();
 	} // namespace memory
 
-	namespace storage
-	{
+	namespace storage {
 		typedef boost::shared_ptr<StorageHooks> StorageHooksPtr;
 
 		//!prints memory management statistics
 		void PrintStatistic(long lLevel = -1);
 
 		/*! allocate a memory tracker object
-			\param name name of the tracker
-			\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
-			\return pointer to a newly created MemTracker object */
+		 \param name name of the tracker
+		 \param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+		 \return pointer to a newly created MemTracker object */
 		MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
 
 		//! get the global allocator
@@ -331,7 +328,7 @@ namespace coast
 		Allocator *Current();
 
 		/*! get statistic level which was initialized by getting value of COAST_TRACE_STORAGE environment variable
-			\return logging level, see description of fglStatisticLevel */
+		 \return logging level, see description of fglStatisticLevel */
 		long GetStatisticLevel();
 
 		//! used by mt system to redefine the hooks for mt-local storage policy
@@ -361,7 +358,7 @@ class StorageHooks {
 	coast::storage::StorageHooksPtr fParentHook;
 public:
 	StorageHooks() :
-		fParentHook() {
+			fParentHook() {
 	}
 
 	virtual ~StorageHooks() {
@@ -420,7 +417,6 @@ protected:
 	virtual MemTracker *DoMakeMemTracker(const char *name, bool bThreadSafe) = 0;
 };
 
-
 class FoundationStorageHooks: public StorageHooks {
 	typedef boost::shared_ptr<Allocator> AllocatorTypePtr;
 	AllocatorTypePtr fAllocator;
@@ -450,7 +446,7 @@ class TestStorageHooks {
 				fAllocator(wdallocator) {
 		}
 		~_Hooks() {
-				fAllocator = 0;
+			fAllocator = 0;
 		}
 		virtual void DoInitialize() {
 		}
@@ -481,4 +477,4 @@ public:
 	}
 };
 
-#endif		//not defined _ITOStorage_H
+#endif

@@ -119,9 +119,9 @@ void NTLMCryptTest::EncodeLMPassword()
 {
 	StartTrace(NTLMCryptTest.EncodeLMPassword);
 	unsigned char expected[21] = {
-		'\x91', '\x90', '\x16', '\xf6', '\x4e', '\xc7', '\xb0', '\x0b',
-		'\xa2', '\x35', '\x02', '\x8c', '\xa5', '\x0c', '\x7a', '\x03',
-		'\x00', '\x00', '\x00', '\x00', '\x00'
+		145, 144, 22, 246, 78, 199, 176, 11,
+		162, 53, 2, 140, 165, 12, 122, 3,
+		0, 0, 0, 0, 0
 	};
 	String expect((void *)expected, 21L);
 	String result = NTLMCoder::EncodeLMPassword("Beeblebrox");
@@ -132,9 +132,9 @@ void NTLMCryptTest::EncodeNTPassword()
 {
 	StartTrace(NTLMCryptTest.EncodeNTPassword);
 	unsigned char expected[21] = {
-		'\x8c', '\x1b', '\x59', '\xe3', '\x2e', '\x66', '\x6d', '\xad',
-		'\xf1', '\x75', '\x74', '\x5f', '\xad', '\x62', '\xc1', '\x33',
-		'\x00', '\x00', '\x00', '\x00', '\x00'
+		140, 27, 89, 227, 46, 102, 109, 173,
+		241, 117, 116, 95, 173, 98, 193, 51,
+		0, 0, 0, 0, 0
 	};
 	String expect((void *)expected, 21L);
 	String result = NTLMCoder::EncodeNTPassword("Beeblebrox");

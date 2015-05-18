@@ -10,6 +10,10 @@
 	/UpperBound							20
 	/DumpAnythings  					1
 
+	/URLUtils {
+		/MainSwitch						10
+		/EnableAll						20
+	}
 	/URLFilter {
 		/MainSwitch						550
 		/EnableAll						0

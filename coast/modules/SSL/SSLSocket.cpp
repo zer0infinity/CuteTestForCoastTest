@@ -272,29 +272,22 @@ int SSLSocket::SSLVerifyCallbackFalse(int preverify_ok, X509_STORE_CTX *ctx)
 int SSLSocket::SSLVerifyCallback(int preverify_ok, X509_STORE_CTX *ctx)
 {
 	StartTrace(SSLSocket.SSLVerifyCallback);
-	SSL *ssl  = NULL;;
-	Anything *pAppData = NULL;
-	X509 *cert;
-	int depth = 0;
-	int err = 0;
-	int allowedDepth = 0;
-
-	err  = X509_STORE_CTX_get_error(ctx);
-	depth = X509_STORE_CTX_get_error_depth(ctx);
+	int err = X509_STORE_CTX_get_error(ctx);
+	int depth = X509_STORE_CTX_get_error_depth(ctx);
 //   /*
 //	* Retrieve the pointer to the SSL of the connection currently treated
 //	* and the application specific data stored into the SSL object.
 //	*/
-	ssl = (SSL *)  X509_STORE_CTX_get_ex_data(ctx, SSL_get_ex_data_X509_STORE_CTX_idx());
-	allowedDepth = SSL_get_verify_depth(ssl);
+	SSL *ssl = (SSL *)  X509_STORE_CTX_get_ex_data(ctx, SSL_get_ex_data_X509_STORE_CTX_idx());
+	int allowedDepth = SSL_get_verify_depth(ssl);
 	int thread_id = (unsigned)Thread::MyId() % 1000000;
-	pAppData =  (Anything *)  SSL_get_ex_data(ssl, thread_id);
+	Anything *pAppData = (Anything *)  SSL_get_ex_data(ssl, thread_id);
 	if (depth > allowedDepth + 1) {
 		preverify_ok = 0;
 		err = X509_V_ERR_CERT_CHAIN_TOO_LONG;
 		X509_STORE_CTX_set_error(ctx, err);
 	}
-	cert = X509_STORE_CTX_get_current_cert(ctx);
+	X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
 	(*pAppData)["Chain"]["Subjects"].Append(SSLSocketUtils::GetPeerAsString(cert));
 	(*pAppData)["Chain"]["Issuers"].Append(SSLSocketUtils::GetPeerIssuerAsString(cert));
 	(*pAppData)["Chain"]["Depth"] = depth;

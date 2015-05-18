@@ -11,7 +11,6 @@
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Tracer.h"
-#include "AllocatorNewDelete.h"
 #include "SystemBase.h"
 #include <algorithm>
 #include <cstring>

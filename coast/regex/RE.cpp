@@ -10,7 +10,7 @@
 #include "Tracer.h"
 #include "REBitSet.h"
 #include "RECompiler.h"
-#include <string.h>
+#include <cstring>
 
 RE::RE(const char *pattern, eMatchFlags matchFlags)
 	: fMatchFlags(matchFlags)
