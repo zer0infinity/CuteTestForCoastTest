@@ -8,11 +8,17 @@
  * the license that is included with this library/application in the file lgpl.txt.
  */
 
-#ifndef CUTE_CASE_H_
-#define CUTE_CASE_H_
+#include "test_dummy.h"
 
-#include "cute.h"
+void TestDummy::dummyTest() {
+	ASSERT(1);
+	ASSERT_EQUAL(1, 1);
+	ASSERT_EQUAL_DELTA(1.2, 1.2000000001, 1E-5);
+	ASSERT_EQUAL("Test", "Test");
+	ASSERT_EQUAL(0, false);
+	ASSERT_EQUAL(1, true);
+}
 
-void setupSuite(cute::suite &s);
-
-#endif /* CUTE_CASE_H_ */
+void TestDummy::runAllTests(cute::suite &s) {
+	s.push_back(CUTE_SMEMFUN(TestDummy, dummyTest));
+}

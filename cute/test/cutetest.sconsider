@@ -9,7 +9,7 @@
 #
 # This library/application is free software; you can redistribute and/or
 # modify it under the terms of the license that is included with this
-# library/application in the file lgpl.txt.
+# library/application in the file license.txt.
 # -------------------------------------------------------------------------
 
 import pkg_resources
@@ -22,10 +22,14 @@ _sconsider_dist = pkg_resources.get_distribution('SConsider').parsed_version
 if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
     buildSettings = {
         packagename: {
+            'linkDependencies': ['cute'],
             'sourceFiles': SConsider.listFiles(['*.cpp']),
-            'targetType': 'LibraryShared',
+            'targetType': 'ProgramTest',
             'public': {
                 'includes': SConsider.listFiles(['*.h']),
+            },
+            'runConfig': {
+                'runParams':'',
             },
         },
     }
