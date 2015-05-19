@@ -97,7 +97,7 @@ void test_SimpleTestFunctionThrows(){
 void test_shouldFailThrowsFailure(){
 	ASSERT_THROWS(shouldFailButNotThrowStdException(),cute::test_failure);
 }
-void setupSuite(cute::suite &s) {
+const char * setupSuite(cute::suite &s) {
 	using namespace std;
 	TestDummy::runAllTests(s);
 	s += make_suite_test_cute_data_driven();
@@ -128,4 +128,5 @@ void setupSuite(cute::suite &s) {
 	s += CUTE_INCARNATE(to_incarnate_without);
 	s += CUTE_INCARNATE_WITH_CONTEXT(to_incarnate,boost_or_tr1::ref(std::cout));
 	s += CUTE_CONTEXT_MEMFUN(boost_or_tr1::ref(std::cerr),to_incarnate,operator());
+	return "cutetest";
 }

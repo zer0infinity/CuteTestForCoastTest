@@ -42,7 +42,7 @@
 #include "AnythingImportExportTest.h"
 #include "AnythingKeyIndexTest.h"
 
-void setupSuite(cute::suite &s) {
+const char * setupSuite(cute::suite &s) {
 	ROSimpleAnythingTest::runAllTests(s);
 	StringIteratorTest::runAllTests(s);
 	StringTestExtreme::runAllTests(s);
@@ -73,4 +73,5 @@ void setupSuite(cute::suite &s) {
 	AnythingKeyIndexTest::runAllTests(s);
 	AnythingParserTest::runAllTests(s);
 	SystemFileTest::runAllTests(s);
+	return "CuteFoundationBaseTest";
 }

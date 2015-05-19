@@ -16,15 +16,18 @@
 #include "cute_case.h"
 #include <iostream>
 
-void setupSuite(cute::suite &s) {}
+const char * setupSuite(cute::suite &s) {
+	return "AllTests";
+}
 
 int main(int argc, char const *argv[]) {
 	cute::suite s;
-	setupSuite(s);
+	const char *test = setupSuite(s);
 	cute::xml_file_opener xmlfile(argc, argv);
 	cute::xml_listener<cute::counting_listener<cute::ide_listener<> > > lis(xmlfile.out);
-	cute::makeRunner(lis)(s, "AllTests");
+	cute::makeRunner(lis)(s, test);
 	std::cerr << lis.numberOfTests << " Tests - expect " << s.size() << std::endl;
+	std::cerr << lis.successfulTests << " successful - expect " << s.size() << std::endl;
 	std::cerr << lis.failedTests << " failed - expect 0 failures" << std::endl;
 	std::cerr << lis.errors << " errors - expect 0 errors" << std::endl;
 	return lis.failedTests;

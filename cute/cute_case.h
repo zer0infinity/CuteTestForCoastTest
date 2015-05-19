@@ -13,6 +13,6 @@
 
 #include "cute.h"
 
-void setupSuite(cute::suite &s);
+const char * setupSuite(cute::suite &s);
 
 #endif /* CUTE_CASE_H_ */
