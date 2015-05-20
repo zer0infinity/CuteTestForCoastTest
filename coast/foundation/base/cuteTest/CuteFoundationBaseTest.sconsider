@@ -60,7 +60,7 @@ def tearDown(target, source, env):
     SConsider.removeFiles(
         SConsider.findFiles(
             [env.getTargetBaseInstallDir()],
-            extensions=['.res', '.tst'],
+            extensions=['.res'],
             matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup(env)
 
