@@ -1,0 +1,33 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/LowerBound							0
+	/UpperBound							20
+	/DumpAnythings  					1
+
+	/AnyUtils {
+		/MainSwitch						0
+		/EnableAll						0
+		/AnyCompareEqual				0
+		/AnyMerge {
+			/MainSwitch					11
+			/EnableAll					0
+			/TraceInputAny				0
+		}
+		/DoAnyMerge {
+			/MainSwitch					11
+			/EnableAll					0
+			/TraceInputAny				0
+		}
+	}
+	/AnyUtilsTest {
+		/MainSwitch						0
+		/EnableAll						0
+		/MergeTest						11
+	}
+}

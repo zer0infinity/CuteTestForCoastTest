@@ -18,6 +18,7 @@
 struct Assertion {
 	void ASSERT_ANY_EQUAL(const ROAnything &expected, const ROAnything &actual);
 	void ASSERT_ANY_EQUALM(std::string msg, const ROAnything &expected, const ROAnything &actual);
+	void ASSERT_ANY_COMPARE(const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, char delimSlot = '.', char delimIdx = ':');
 private:
 	String sexp, act;
 };

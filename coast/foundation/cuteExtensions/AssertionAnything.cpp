@@ -9,6 +9,7 @@
  */
 
 #include "AssertionAnything.h"
+#include "AnyUtils.h"
 
 void Assertion::ASSERT_ANY_EQUAL(const ROAnything &expected, const ROAnything &actual) {
 	OStringStream oexp(&sexp), oact(&act);
@@ -22,4 +23,14 @@ void Assertion::ASSERT_ANY_EQUALM(std::string msg, const ROAnything &expected, c
 	expected.Export(oexp, false);
 	actual.Export(oact, false);
 	ASSERT_EQUALM(msg, sexp, act);
+}
+
+void Assertion::ASSERT_ANY_COMPARE(const ROAnything &master, const ROAnything &actual, String location, char delimSlot, char idxdelim) {
+	OStringStream s;
+	String failingPath(location);
+	if(!AnyUtils::AnyCompareEqual(actual, master, failingPath,&s, delimSlot, idxdelim)) {
+		String strfail(failingPath);
+		strfail << "\n" << s.str();
+		ASSERTM((const char*)strfail, false);
+	}
 }
