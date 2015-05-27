@@ -120,7 +120,6 @@ void AnyUtilsTest::runAllTests(cute::suite &s) {
 	s.push_back(CUTE_SMEMFUN(AnyUtilsTest, printSequenceXmlTest));
 	s.push_back(CUTE_SMEMFUN(AnyUtilsTest, printHashXmlTest));
 	s.push_back(CUTE_SMEMFUN(AnyUtilsTest, printMixedXmlTest));
-	s.push_back(CUTE_SMEMFUN(AnyUtilsTest, CompareTest));
 	s.push_back(CUTE_SMEMFUN(AnyUtilsTest, MergeTest));
 
 

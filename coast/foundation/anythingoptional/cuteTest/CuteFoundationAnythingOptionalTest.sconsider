@@ -30,6 +30,9 @@ if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
                     ['config/*.any']),
                  S_IRUSR | S_IRGRP | S_IROTH),
             ],
+            'runConfig': {
+                'runParams':'',
+            },
         },
     }
 
