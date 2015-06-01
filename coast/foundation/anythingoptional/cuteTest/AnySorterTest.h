@@ -9,30 +9,28 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _AnyUtilsTest_h_
-#define _AnyUtilsTest_h_
+#ifndef _AnySorterTest_H
+#define _AnySorterTest_H
 
 #include "cute.h"
-#include "Anything.h"//lint !e537
 #include "Tracer.h"
-#include "SystemFile.h"
 #include "AssertionAnything.h"
+#include "SystemFile.h"
 
-class AnyUtilsTest : public Assertion {
+class AnySorterTest : public Assertion {
 public:
+	//! TestCase constructor
+	//! \param name name of the test
+	AnySorterTest();
+
+	//! destroys the test case
+	~AnySorterTest();
+
+	//--- public api
+
+	//! builds up a suite of testcases for this test
 	static void runAllTests(cute::suite &s);
-	void CompareTest();
-	void printEmptyXmlTest();
-	void printSimpleXmlTest();
-	void printSequenceXmlTest();
-	void printHashXmlTest();
-	void printMixedXmlTest();
-	void MergeTest();
-
-protected:
-	bool DoXMLTest(const char *expect, ROAnything foroutput);
-	// utility
-	void DoCheck(Anything testCases, bool expectedResult, String description);
+	ROAnything GetTestCaseConfig(String strClassName = "", String strTestName = "");
+	void SorterTest();
 };
-
 #endif

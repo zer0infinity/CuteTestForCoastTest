@@ -10,8 +10,12 @@
 
 #include "cute_case.h"
 #include "AnyUtilsTest.h"
+#include "GenericXMLParserTest.h"
+#include "AnySorterTest.h"
 
 const char * setupSuite(cute::suite &s) {
 	AnyUtilsTest::runAllTests(s);
+	GenericXMLParserTest::runAllTests(s);
+	AnySorterTest::runAllTests(s);
 	return "CuteFoundationAnythingOptionalTest";
 }
