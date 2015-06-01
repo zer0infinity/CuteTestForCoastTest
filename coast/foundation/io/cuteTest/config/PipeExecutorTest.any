@@ -1,0 +1,62 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/CatWorkingDirTest {
+		/WorkingDir	"./config"
+	}
+	/ShellInvocationTest {
+		/NonExistingShellTest {
+			/Params {
+				/ExecutableWin	"noShell.exe"
+				/Executable	"/bin/noshell"
+				/Env 		*
+				/Path		"."
+				/Timeout	1000
+				/UseStderr	1
+				/Command	"./config/testscript.sh -p gaga"
+			}
+			/Expected {
+				/ExecOk 0
+				/Output	""
+				/Error	""
+			}
+		}
+		/SimpleKshDefaultEnvTest {
+			/Params {
+				/ExecutableWin	"bash.exe"
+				/Executable	"/bin/sh"
+				/Path		"."
+				/Timeout	1000
+				/UseStderr	1
+				/Command	"./config/testscript.sh -p gaga"
+			}
+			/Expected {
+				/ExecOk	1
+				/Output	"Params [-p gaga]\n"
+				/Error	""
+			}
+		}
+		/SimpleKshDifferentPathTest {
+			/Params {
+				/ExecutableWin	"bash.exe"
+				/Executable	"/bin/sh"
+				/Env 		*
+				/Path		"./config"
+				/Timeout	1000
+				/UseStderr	1
+				/Command	"./testscript.sh -p gaga"
+			}
+			/Expected {
+				/ExecOk	1
+				/Output	"Params [-p gaga]\n"
+				/Error	""
+			}
+		}
+	}
+}

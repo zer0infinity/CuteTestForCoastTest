@@ -1,0 +1,164 @@
+# vim: set et ai ts=4 sw=4:
+# -------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software
+# at HSR Rapperswil, Switzerland
+# Copyright (c) 2015, David Tran, Faculty of Computer Science,
+# University of Applied Sciences Rapperswil (HSR),
+# 8640 Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or
+# modify it under the terms of the license that is included with this
+# library/application in the file license.txt.
+# -------------------------------------------------------------------------
+
+import pkg_resources
+pkg_resources.require(["SConsider"])
+import os
+import socket
+import shutil
+import threading
+import SCons
+import SConsider
+import Anything
+from stat import *
+from SocketServer import BaseServer, TCPServer, BaseRequestHandler
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+
+Import('*')
+
+
+class MyTCPServer(TCPServer):
+
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+
+class MyHTTPServer(HTTPServer):
+
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+
+class AcceptorHandler(BaseRequestHandler):
+
+    def handle(self):
+        data = self.request.recv(1024)
+        self.request.send('')
+
+
+class HTTPHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+
+
+class NoSendRecvHandler(BaseRequestHandler):
+
+    def handle(self):
+        pass
+
+servers = []
+
+
+def startServer(host, port, server_class, handler_class):
+    server = server_class((host, port), handler_class)
+    servers.append(server)
+    server.serve_forever()
+
+tcpnosendrecvport = 43000
+tcpsendrecvport = 43001
+httpsendrecvport = 43002
+
+hostonly, domain, fqdn = SConsider.getfqdn()
+
+faultyfqdn = 'nonexisting.server.loc'
+localhostname = 'localhost'
+localhostip = socket.gethostbyname(localhostname)
+
+hosttoresolvename = 'www.hsr.ch'
+try:
+    hosttoresolveip = socket.gethostbyname(hosttoresolvename)
+    hosttoresolvename = socket.gethostbyaddr(hosttoresolveip)[0]
+except IOError as e:
+    hosttoresolvename = localhostname
+    hosttoresolveip = localhostip
+
+searchReplace = {
+    'FQDN': fqdn,
+    'FAULTYFQDN': faultyfqdn,
+    'HOSTNAME': hostonly,
+    'HOSTNAMEIP': socket.gethostbyname(hostonly),
+    'DOMAINONLY': domain,
+    'TCPNOSENDRECVPORT': str(tcpnosendrecvport),
+    'TCPSENDRECVPORT': str(tcpsendrecvport),
+    'HTTPSENDRECVPORT': str(httpsendrecvport),
+    'LOCALHOSTNAME': localhostname,
+    'LOCALHOSTIP': localhostip,
+    'RESOLVABLEHOSTFQDN': hosttoresolvename,
+    'RESOLVABLEHOSTIP': hosttoresolveip,
+}
+
+
+def setUp(target, source, env):
+    # setup listener threads for socket tests
+    threading.Thread(
+        target=startServer,
+        args=[
+            localhostname,
+            tcpsendrecvport,
+            MyTCPServer,
+            AcceptorHandler]).start()
+    threading.Thread(
+        target=startServer,
+        args=[
+            localhostname,
+            httpsendrecvport,
+            MyHTTPServer,
+            HTTPHandler]).start()
+    threading.Thread(
+        target=startServer,
+        args=[
+            localhostname,
+            tcpnosendrecvport,
+            MyTCPServer,
+            NoSendRecvHandler]).start()
+
+
+def tearDown(target, source, env):
+    for server in servers:
+        server.shutdown()
+
+_sconsider_dist = pkg_resources.get_distribution("SConsider").parsed_version
+if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
+    buildSettings = {
+        packagename: {
+            'linkDependencies': [
+                'CoastFoundation.IO',
+                'CoastFoundation.Miscellaneous',
+                'CuteExtensions'],
+            'sourceFiles': SConsider.listFiles(
+                ['*.cpp']),
+            'targetType': 'ProgramTest',
+            'copyFiles': [
+                (SConsider.listFiles(
+                    ['config/*.any']),
+                 S_IRUSR | S_IRGRP | S_IROTH,
+                 searchReplace),
+                (SConsider.listFiles(
+                    ['config/*.sh']),
+                 S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+            ],
+            'runConfig': {
+                'setUp': setUp,
+                'tearDown': tearDown,
+                'runParams':'',
+            },
+        },
+    }
+
+    SConsider.createTargets(packagename, buildSettings)

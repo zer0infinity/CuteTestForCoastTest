@@ -1,0 +1,42 @@
+#--------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#--------------------------------------------------------------------
+{
+	/FullQualifiedDomainName	"##FQDN##"
+	/HostName					"##HOSTNAME##"
+	/HostNameIp					"##HOSTNAMEIP##"
+	/DomainName					"##DOMAINONLY##"
+	/LocalHostName				"##LOCALHOSTNAME##"
+	/LocalHostIp				"##LOCALHOSTIP##"
+	/ResolvableHostFqdn			"##RESOLVABLEHOSTFQDN##"
+	/ResolvableHostIp			"##RESOLVABLEHOSTIP##"
+	/FaultyFqdn					"##FAULTYFQDN##"
+
+	/SocketConnectSuccessHost {
+		/ip			%LocalHostIp
+		/port		##TCPSENDRECVPORT##
+		/timeout	50		# in ms
+	}
+	/SocketConnectTimeoutHost {
+		# use some non-existing IP in your LAN!
+		# found on http://www.developerweb.net/forum/archive/index.php/t-3608.html
+		/ip 		"192.167.121.212"
+		/port		12345
+		/timeout	10
+	}
+	/SocketNotAcceptingHost %SocketConnectTimeoutHost
+	/HTTPReplyHost {
+		/name		%LocalHostName
+		/port		##HTTPSENDRECVPORT##
+		/timeout	10
+	}
+	/SocketConnectButNoSendRecv  {
+		/ip			%LocalHostIp
+		/port		##TCPNOSENDRECVPORT##
+		/timeout	100		# in ms
+	}
+}

@@ -1,0 +1,68 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/LowerBound							0
+	/UpperBound							20
+	/DumpAnythings  					1
+
+	/URLUtils {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/URLFilter {
+		/MainSwitch						550
+		/EnableAll						0
+		/DoFilterState {
+			/MainSwitch						680
+			/EnableAll						685
+			/query							681
+		}
+		/FilterState {
+			/MainSwitch						680
+			/EnableAll						685
+			/query							681
+		}
+	}
+	/Pipe {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/PipeExecutor {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/PipeExecutorTest {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/Socket{
+		/MainSwitch						1000
+		/EnableAll						1000
+		/IsReady						1000
+	}
+	/Connector {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/ResolverTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/Resolver {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/Acceptor {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/AcceptorTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+}
