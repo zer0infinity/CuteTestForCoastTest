@@ -25,7 +25,8 @@
 #include <iostream>
 
 #include "cute_case.h"
-#include "test_dummy.h"
+
+#include "test_any.h"
 #include "test_cute_equals.h"
 #include "test_cute_expect.h"
 #include "test_repeated_test.h"
@@ -99,7 +100,7 @@ void test_shouldFailThrowsFailure(){
 }
 const char * setupSuite(cute::suite &s) {
 	using namespace std;
-	TestDummy::runAllTests(s);
+	TestAny::runAllTests(s);
 	s += make_suite_test_cute_data_driven();
 	s += make_suite_test_cute_relops();
 	s += make_suite_test_cute_filter_runner();

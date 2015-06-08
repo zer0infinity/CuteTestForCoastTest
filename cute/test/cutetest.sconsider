@@ -22,7 +22,7 @@ _sconsider_dist = pkg_resources.get_distribution('SConsider').parsed_version
 if _sconsider_dist < pkg_resources.parse_version("0.5.dev"):
     buildSettings = {
         packagename: {
-            'linkDependencies': ['cute'],
+            'linkDependencies': ['cute','CuteExtensions'],
             'sourceFiles': SConsider.listFiles(['*.cpp']),
             'targetType': 'ProgramTest',
             'public': {

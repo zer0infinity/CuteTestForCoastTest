@@ -8,9 +8,9 @@
  * the license that is included with this library/application in the file lgpl.txt.
  */
 
-#include "test_dummy.h"
+#include "test_any.h"
 
-void TestDummy::dummyTest() {
+void TestAny::dummyTest() {
 	ASSERT(1);
 	ASSERT_EQUAL(1, 1);
 	ASSERT_EQUAL_DELTA(1.2, 1.2000000001, 1E-5);
@@ -19,6 +19,17 @@ void TestDummy::dummyTest() {
 	ASSERT_EQUAL(1, true);
 }
 
-void TestDummy::runAllTests(cute::suite &s) {
-	s.push_back(CUTE_SMEMFUN(TestDummy, dummyTest));
+void TestAny::anyTest() {
+	Anything a, b;
+	ASSERT_ANY_EQUAL(a, b);
+	ASSERT_ANY_EQUALM("ANY", a, b);
+	a.Append("Test");
+	b[0L] = "Test";
+	ASSERT_ANY_EQUAL(a, b);
+	ASSERT_ANY_EQUALM("ANY Test", a, b);
+}
+
+void TestAny::runAllTests(cute::suite &s) {
+	s.push_back(CUTE_SMEMFUN(TestAny, dummyTest));
+	s.push_back(CUTE_SMEMFUN(TestAny, anyTest));
 }

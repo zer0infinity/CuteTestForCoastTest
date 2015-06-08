@@ -8,15 +8,17 @@
  * the license that is included with this library/application in the file lgpl.txt.
  */
 
-#ifndef TESTS_TEST_DUMMY_H_
-#define TESTS_TEST_DUMMY_H_
+#ifndef TEST_ANY_H_
+#define TEST_ANY_H_
 
 #include "cute_case.h"
+#include "AssertionAnything.h"
 
-struct TestDummy {
+struct TestAny : public Assertion {
 	void dummyTest();
+	void anyTest();
 	static void runAllTests(cute::suite &s);
 };
 
 
-#endif /* TESTS_TEST_DUMMY_H_ */
+#endif /* TEST_ANY_H_ */
