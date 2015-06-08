@@ -25,10 +25,10 @@ void Assertion::ASSERT_ANY_EQUALM(std::string msg, const ROAnything &expected, c
 	ASSERT_EQUALM(msg, sexp, act);
 }
 
-void Assertion::ASSERT_ANY_COMPARE(const ROAnything &master, const ROAnything &actual, String location, char delimSlot, char idxdelim) {
+void Assertion::ASSERT_ANY_COMPARE(const ROAnything &inputAny, const ROAnything &masterAny, String location, char delimSlot, char idxdelim) {
 	OStringStream s;
 	String failingPath(location);
-	if(!AnyUtils::AnyCompareEqual(actual, master, failingPath,&s, delimSlot, idxdelim)) {
+	if(!AnyUtils::AnyCompareEqual(inputAny, masterAny, failingPath,&s, delimSlot, idxdelim)) {
 		String strfail(failingPath);
 		strfail << "\n" << s.str();
 		ASSERTM((const char*)strfail, false);
